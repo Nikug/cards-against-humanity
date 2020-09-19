@@ -1,22 +1,20 @@
-import React, { useState, useEffect } from 'react';
-import socketIOClient from "socket.io-client";
+import React from 'react';
+import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
+
+import { Home } from "./components/Home";
+import { Game } from "./components/Game";
+
 import './App.css';
 
-const ENDPOINT = "http://127.0.0.1:4000";
-
 function App() {
-    const [state, setState] = useState("");
-
-    useEffect(() => {
-        const socket = socketIOClient(ENDPOINT);
-        socket.on("FromAPI", data => {
-            setState(data);
-        });
-    }, []);
-
     return (
         <div className="App">
-            <p>{state}</p>
+            <Router>
+                <Switch>
+                    <Route exact path="/" component={Home} />
+                    <Route exact path="/g/:id" component={Game} />
+                </Switch>
+            </Router>
         </div>
     );
 }
