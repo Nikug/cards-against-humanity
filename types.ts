@@ -1,3 +1,5 @@
+// Documentation for game object
+
 interface Game {
     id: string,
     url: string,
