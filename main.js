@@ -1,6 +1,7 @@
 const express = require("express");
 const http = require("http");
 const path = require("path");
+const router = require("./routes");
 
 const port = process.env.PORT || 4000;
 const PRODUCTION = false;
@@ -16,9 +17,7 @@ io.on("connection", (socket) => {
 
 app.use(express.static(path.join(__dirname, "client/build")));
 
-app.get("/", (req, res) => {
-    res.send("This is server").status(200);
-});
+app.use("/", router);
 
 if(PRODUCTION) {
     app.get("*", (req, res) => {

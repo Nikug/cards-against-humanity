@@ -68,6 +68,7 @@ type GameState =
     | "gameOver"
 
 type PlayerState = 
+    | "pickingName"
     | "active"
     | "disconnected"
     | "joining"
