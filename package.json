@@ -15,6 +15,7 @@
     "cors": "^2.8.5",
     "express": "^4.17.1",
     "human-readable-ids": "^1.0.4",
+    "nanoid": "^3.1.12",
     "socket.io": "^2.3.0"
   },
   "devDependencies": {

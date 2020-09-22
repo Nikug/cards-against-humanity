@@ -1,16 +1,16 @@
 import React, { useState, useEffect } from "react";
-import socketIOClient from "socket.io-client";
+import io from "socket.io-client";
 
-const SOCKET_URL = "http://localhost:3000";
+// const SOCKET_URL = "http://localhost:3000";
 
 export const Game = (props) => {
-    const [state, setState] = useState("Not from server");
+    const [game, setGame] = useState(props.location.state);
 
     useEffect(() => {
-        const socket = socketIOClient(SOCKET_URL);
+        const socket = io();
+        socket.emit("join_game", game.id);
         socket.on("FromAPI", data => {
             console.log("connection to server");
-            setState(data);
         });
         return () => socket.disconnect();
     }, []);
@@ -18,7 +18,7 @@ export const Game = (props) => {
     return(
         <div>
             <p>{`Game ${props.match.params.id}`}</p>
-            <p>{state}</p>
+            <p>{JSON.stringify(game)}</p>
         </div>
 
     );

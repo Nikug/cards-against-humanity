@@ -15,6 +15,7 @@ interface Player {
     name: string,
     state: PlayerState,
     score: number,
+    isCardCzar: boolean,
     popularVoteScore: number,
     whiteCards: WhiteCard[]
 }
@@ -54,8 +55,9 @@ interface Round {
 interface Options {
     maximumPlayers: number,
     scoreLimit: number,
+    winnerBecomesCardCzar: boolean,
     cardURLs: string[],
-    kickedPlayerJoin: boolean
+    allowKickedPlayerJoin: boolean
 }
 
 type GameState = 
@@ -71,5 +73,5 @@ type PlayerState =
     | "pickingName"
     | "active"
     | "disconnected"
-    | "joining"
+    | "spectating"
     | "kicked"

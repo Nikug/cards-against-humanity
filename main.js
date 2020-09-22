@@ -1,7 +1,6 @@
 const express = require("express");
 const http = require("http");
 const path = require("path");
-const router = require("./routes");
 
 const port = process.env.PORT || 4000;
 const PRODUCTION = false;
@@ -9,15 +8,11 @@ const PRODUCTION = false;
 const app = express();
 const server = http.createServer(app);
 const io = require("socket.io")(server);
-
-io.on("connection", (socket) => {
-    console.log("New client connected");
-    socket.emit("FromAPI", "This is from server");
-});
+const router = require("./routes")(io);
 
 app.use(express.static(path.join(__dirname, "client/build")));
 
-app.use("/", router);
+app.use(router);
 
 if(PRODUCTION) {
     app.get("*", (req, res) => {
