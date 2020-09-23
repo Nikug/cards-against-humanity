@@ -3,17 +3,17 @@ import { Redirect } from "react-router-dom";
 import axios from "axios";
 
 export const Home = (props) => {
-    const [game, setGame] = useState("");
+    const [url, setUrl] = useState("");
 
     const startGame = () => {
         axios.post("/g")
             .then((res) => {
-                setGame(res.data);
+                setUrl(res.data);
             });
     }
 
     return (
-        game === "" ? (
+        url === "" ? (
             <div>
                 <input
                     type="button"
@@ -23,8 +23,8 @@ export const Home = (props) => {
             </div>
         ) : (
             <Redirect to={{
-                pathname: `/g/${game.url}`,
-                state: {...game}
+                pathname: `/g/${url}`,
+                state: url
             }}
             />
         )

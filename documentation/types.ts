@@ -16,6 +16,7 @@ interface Player {
     state: PlayerState,
     score: number,
     isCardCzar: boolean,
+    isHost: boolean,
     popularVoteScore: number,
     whiteCards: WhiteCard[]
 }

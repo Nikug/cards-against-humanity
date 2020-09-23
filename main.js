@@ -8,7 +8,8 @@ const PRODUCTION = false;
 const app = express();
 const server = http.createServer(app);
 const io = require("socket.io")(server);
-const router = require("./routes")(io);
+const router = require("./routes/routes")(io);
+require("./routes/sockets")(io);
 
 app.use(express.static(path.join(__dirname, "client/build")));
 
