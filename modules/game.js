@@ -1,16 +1,16 @@
-const hri = require("human-readable-ids").hri;
-const nanoid = require("nanoid");
+import hri from "human-readable-ids";
+import { nanoid } from "nanoid";
 
 let games = [];
 
-exports.createGame = () => {
-    const gameURL = hri.random();
+export const createGame = () => {
+    const gameURL = hri.hri.random();
     const newGame = createNewGame(gameURL);
     games = [...games, newGame];
     return newGame;
 }
 
-exports.getGame = (id) => {
+export const getGame = (id) => {
     const game = games.filter(game => game.id === id);
     return game.length > 0 ? game[0] : null; 
 }

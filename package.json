@@ -1,8 +1,12 @@
 {
   "name": "cards-against-humanity",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "description": "",
   "main": "main.js",
+  "type": "module",
+  "engines": {
+    "node" : ">= 14.0.0"
+  },
   "scripts": {
     "client": "cd client && npm start",
     "server": "nodemon main.js",

@@ -1,19 +1,19 @@
-const express = require("express");
-const Game = require("../game");
-const router = express.Router();
+import express from "express";
+const expressRouter = express.Router();
+import { createGame, getGame } from "../modules/game.js";
 
-module.exports = () => {
-    router.get("/", (req, res) => {
+export const router = () => {
+    expressRouter.get("/", (req, res) => {
         res.send("This is server").status(200);
     });
     
-    router.post("/g", (req, res) => {
-        const game = Game.createGame();
+    expressRouter.post("/g", (req, res) => {
+        const game = createGame();
         res.send(game.url);
     });
 
-    router.get("/g/:id", (req, res) => {
-        const game = Game.getGame(req.params.id);
+    expressRouter.get("/g/:id", (req, res) => {
+        const game = getGame(req.params.id);
         if(game !== null) {
             res.send().status(200);
         } else {
@@ -21,5 +21,5 @@ module.exports = () => {
         }
     });
 
-    return router;
+    return expressRouter;
 };
