@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import io from "socket.io-client";
 
-export const Game = (props) => {
+export const Game = () => {
     const [game, setGame] = useState(undefined);
 
     const getGameIdFromURL = () => {
@@ -12,8 +12,6 @@ export const Game = (props) => {
     useEffect(() => {
         const socket = io();
         if(game === undefined) {
-            console.log(props);
-            // Client dont get props or at least url when directly going to the game url
             socket.emit("join_game", getGameIdFromURL());
         }
         socket.on("update_game", data => {

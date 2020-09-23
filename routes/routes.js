@@ -12,14 +12,5 @@ export const router = () => {
         res.send(game.url);
     });
 
-    expressRouter.get("/g/:id", (req, res) => {
-        const game = getGame(req.params.id);
-        if(game !== null) {
-            res.send().status(200);
-        } else {
-            res.send(`Game ${req.params.id} was not found :(`).status(404);
-        }
-    });
-
     return expressRouter;
 };
