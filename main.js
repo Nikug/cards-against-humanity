@@ -5,6 +5,9 @@ import socketIo from "socket.io";
 import path, { dirname } from "path";
 import { fileURLToPath } from 'url';
 
+import { router } from"./routes/routes.js";
+import { sockets } from "./routes/sockets.js";
+
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
@@ -14,9 +17,6 @@ const PRODUCTION = false;
 const app = express();
 const server = http.createServer(app);
 const io = socketIo(server);
-
-import { router } from"./routes/routes.js";
-import { sockets } from "./routes/sockets.js";
 
 app.use(express.static(path.join(__dirname, "client/build")));
 
