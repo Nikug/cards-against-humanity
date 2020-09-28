@@ -6,27 +6,21 @@ export const Home = (props) => {
     const [url, setUrl] = useState("");
 
     const startGame = () => {
-        axios.post("/g")
-            .then((res) => {
-                setUrl(res.data);
-            });
-    }
+        axios.post("/g").then((res) => {
+            setUrl(res.data);
+        });
+    };
 
-    return (
-        url === "" ? (
-            <div>
-                <input
-                    type="button"
-                    value="Luo Peli"
-                    onClick={startGame}
-                />
-            </div>
-        ) : (
-            <Redirect to={{
+    return url === "" ? (
+        <div>
+            <input type="button" value="Luo Peli" onClick={startGame} />
+        </div>
+    ) : (
+        <Redirect
+            to={{
                 pathname: `/g/${url}`,
-                state: url
+                state: url,
             }}
-            />
-        )
+        />
     );
-}
+};

@@ -4,7 +4,7 @@ import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import { Home } from "./layouts/Home";
 import { Game } from "./layouts/Game";
 
-import './App.css';
+import './App.scss';
 
 function App() {
     return (

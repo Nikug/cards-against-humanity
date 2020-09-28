@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
-import io from "socket.io-client";
+import { socket } from "../components/sockets/socket";
+
+import { GameOptions } from "../components/options/GameOptions";
 
 export const Game = () => {
     const [game, setGame] = useState(undefined);
@@ -7,24 +9,25 @@ export const Game = () => {
     const getGameIdFromURL = () => {
         const url = window.location.pathname;
         return url.replace("/g/", "");
-    }
+    };
 
     useEffect(() => {
-        const socket = io();
-        if(game === undefined) {
+        if (game === undefined) {
             socket.emit("join_game", getGameIdFromURL());
         }
-        socket.on("update_game", data => {
+        socket.on("update_game", (data) => {
             setGame(data);
         });
         return () => socket.disconnect();
     }, [game]);
 
-    return(
+    return (
         <div>
-            <p>{`Game ${game === undefined ? " not found" : game.url}`}</p>
-            <p>{JSON.stringify(game)}</p>
+            <h1>{`Game ${game === undefined ? " not found" : game.url}`}</h1>
+            <div>
+                <GameOptions options={game?.options} />
+            </div>
+            <pre>{JSON.stringify(game, null, 2)}</pre>
         </div>
-
     );
-}
+};
