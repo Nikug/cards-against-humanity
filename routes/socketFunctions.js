@@ -16,14 +16,14 @@ export const joinToGame = (socket, io, id) => {
     }
 }
 
-export const updateGameOptions = (socket, newOptions) => {
+export const updateGameOptions = (io, newOptions) => {
     const game = getGame(newOptions.id);
     if(!game) return;
 
     game.options = validateOptions({...game.options, ...newOptions});
     const updatedGame = setGame(game);
 
-    socket.to(game.id).emit("update_game_options", updatedGame.options);
+    io.in(game.id).emit("update_game_options", updatedGame.options);
 }
 
 export const updatePlayerName = (io, id, playerID, newName) => {
@@ -33,5 +33,5 @@ export const updatePlayerName = (io, id, playerID, newName) => {
     const validatedName = trimmedName.substr(0, playerName.maximumLength);
     const players = setPlayerName(id, playerID, validatedName);
 
-    io.to(id).emit("update_player_name", players);
+    io.in(id).emit("update_player_name", players);
 }

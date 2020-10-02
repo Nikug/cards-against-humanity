@@ -9,11 +9,10 @@ export const sockets = (io) => {
         });
 
         socket.on("update_game_options", (newOptions) => {
-            updateGameOptions(socket, newOptions);
+            updateGameOptions(io, newOptions);
         });
 
         socket.on("set_player_name", (data) => {
-            console.log(data);
             updatePlayerName(io, data.id, data.playerID, data.playerName);
         });
     });
