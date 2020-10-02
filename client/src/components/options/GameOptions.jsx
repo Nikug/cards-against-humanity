@@ -30,7 +30,7 @@ export const GameOptions = (props) => {
                 type="number"
                 id="maxPlayers"
                 name="maxPlayers"
-                value={options?.maximumPlayers}
+                value={options?.maximumPlayers || 3}
                 min="3"
                 max="50"
                 onChange={(e) => setMaxPlayers(e.target.value)}

@@ -11,7 +11,7 @@ interface Game {
 }
 
 interface Player {
-    id: string,
+    id: string,         
     name: string,
     state: PlayerState,
     score: number,
