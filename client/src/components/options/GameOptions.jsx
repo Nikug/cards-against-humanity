@@ -7,13 +7,21 @@ export const GameOptions = (props) => {
     const setMaxPlayers = (value) => {
         const maxPlayers = parseInt(value);
         if (maxPlayers) {
-            setOptions({ ...options, maximumPlayers: maxPlayers });
+            const newOptions = {...options, maximumPlayers: maxPlayers }
+            setOptions(newOptions);
+            socket.emit("update_game_options", {...newOptions, id: props.id});
         }
     };
 
-    useEffect(() => {}, []);
+    useEffect(() => {
+        setOptions(props.options);
+    }, [props.options]);
 
-    console.log(options);
+    useEffect(() => {
+        socket.on("update_game_options", (newOptions) => {
+            setOptions(newOptions);
+        });
+    }, []);
 
     return (
         <div>
@@ -22,11 +30,12 @@ export const GameOptions = (props) => {
                 type="number"
                 id="maxPlayers"
                 name="maxPlayers"
-                defaultValue={props.options?.maximumPlayers}
+                value={options?.maximumPlayers}
                 min="3"
                 max="50"
                 onChange={(e) => setMaxPlayers(e.target.value)}
             />
+            <pre>{JSON.stringify(options, null, 2)}</pre>
         </div>
     );
 };

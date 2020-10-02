@@ -21,7 +21,8 @@ const io = socketIo(server);
 app.use(express.static(path.join(__dirname, "client/build")));
 
 app.use(router());
-app.use(sockets(io));
+sockets(io);
+
 
 if(PRODUCTION) {
     app.get("*", (req, res) => {

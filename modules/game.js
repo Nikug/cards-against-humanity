@@ -15,6 +15,15 @@ export const getGame = (id) => {
     return game.length > 0 ? game[0] : null; 
 }
 
+export const setGame = (newGame) => {
+    games = games.map(game => {
+        return game.id === newGame.id
+            ? newGame
+            : game
+    });
+    return newGame;
+}
+
 const createNewGame = (url) => {
     const game = {
         id: url,

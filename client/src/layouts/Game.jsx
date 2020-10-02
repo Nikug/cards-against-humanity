@@ -18,14 +18,17 @@ export const Game = () => {
         socket.on("update_game", (data) => {
             setGame(data);
         });
-        return () => socket.disconnect();
     }, [game]);
+
+    useEffect(() => {
+        return () => socket.disconnect();
+    }, [])
 
     return (
         <div>
             <h1>{`Game ${game === undefined ? " not found" : game.url}`}</h1>
             <div>
-                <GameOptions options={game?.options} />
+                <GameOptions options={game?.options} id={game?.id} />
             </div>
             <pre>{JSON.stringify(game, null, 2)}</pre>
         </div>
