@@ -7,9 +7,12 @@ export const GameOptions = (props) => {
     const setMaxPlayers = (value) => {
         const maxPlayers = parseInt(value);
         if (maxPlayers) {
-            const newOptions = {...options, maximumPlayers: maxPlayers }
+            const newOptions = { ...options, maximumPlayers: maxPlayers };
             setOptions(newOptions);
-            socket.emit("update_game_options", {...newOptions, id: props.id});
+            socket.emit("update_game_options", {
+                options: newOptions,
+                gameID: props.gameID,
+            });
         }
     };
 
@@ -17,25 +20,23 @@ export const GameOptions = (props) => {
         setOptions(props.options);
     }, [props.options]);
 
-    useEffect(() => {
-        socket.on("update_game_options", (newOptions) => {
-            setOptions(newOptions);
-        });
-    }, []);
-
     return (
         <div>
-            <label htmlFor="maxPlayers">Pelaajien määrä: </label>
-            <input
-                type="number"
-                id="maxPlayers"
-                name="maxPlayers"
-                value={options?.maximumPlayers || 3}
-                min="3"
-                max="50"
-                onChange={(e) => setMaxPlayers(e.target.value)}
-            />
-            <pre>{JSON.stringify(options, null, 2)}</pre>
+            {!!options && (
+                <div>
+                    <label htmlFor="maxPlayers">Pelaajien määrä: </label>
+                    <input
+                        type="number"
+                        id="maxPlayers"
+                        name="maxPlayers"
+                        value={options?.maximumPlayers || 3}
+                        min="3"
+                        max="50"
+                        onChange={(e) => setMaxPlayers(e.target.value)}
+                    />
+                    <pre>{JSON.stringify(options, null, 2)}</pre>
+                </div>
+            )}
         </div>
     );
 };

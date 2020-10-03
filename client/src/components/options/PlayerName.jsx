@@ -12,7 +12,7 @@ export const PlayerName = (props) => {
         if (!!props.playerID && cleanedName.length > 0) {
             console.log("Setting player name!");
             socket.emit("set_player_name", {
-                id: props.id,
+                gameID: props.gameID,
                 playerID: props.playerID,
                 playerName: cleanedName
             });

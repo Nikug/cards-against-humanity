@@ -6,7 +6,7 @@ import { PlayerName } from "../components/options/PlayerName";
 
 export const Game = () => {
     const [game, setGame] = useState(undefined);
-    const [playerID, setPlayerID] = useState(socket.id);
+    const [playerID, setPlayerID] = useState(undefined);
 
     const getGameIdFromURL = () => {
         const url = window.location.pathname;
@@ -14,31 +14,38 @@ export const Game = () => {
     };
 
     useEffect(() => {
+        window.addEventListener("beforeunload", () => {
+            socket.emit("leave_game", { gameID: game.id, playerID: playerID });
+        });
+
         if (game === undefined) {
-            socket.emit("join_game", getGameIdFromURL());
+            socket.emit("join_game", { gameID: getGameIdFromURL() });
         }
-    }, [game]);
+
+        return () => window.removeEventListener("beforeunload", () => {});
+    }, [game, playerID]);
 
     useEffect(() => {
         socket.on("update_player", (data) => {
-
+            setPlayerID(data.player.id);
         });
+
 
         socket.on("update_game", (data) => {
             console.log("Game updated!");
             setGame(data.game);
         });
-    
-        socket.on("update_player_name", (players) => {
+
+        socket.on("update_player_name", (data) => {
             console.log("player name updated!");
-            setGame(state => ({ ...state, players: players }));
+            setGame((prevGame) => ({ ...prevGame, players: data.players }));
         });
-    }, []);
 
-    // Do this when closing page, switching page etc.
-    // socket.emit("leave_game", { id: game.id, playerID: playerID });
+        socket.on("update_game_options", (data) => {
+            console.log("is this even happening???");
+            setGame((prevGame) => ({ ...prevGame, options: data.options }));
+        });
 
-    useEffect(() => {
         return () => {
             socket.disconnect();
         };
@@ -51,17 +58,20 @@ export const Game = () => {
             <h1>{`Game ${game === undefined ? " not found" : game.url}`}</h1>
             {!!game && (
                 <div>
-                    <PlayerName id={game.id} playerID={playerID} />
+                    <PlayerName gameID={game.id} playerID={playerID} />
                 </div>
             )}
-            {!! game &&
+            {!!game && (
                 <div>
                     <div>
-                        <GameOptions options={game?.options} id={game?.id} />
+                        <GameOptions
+                            options={game?.options}
+                            gameID={game?.id}
+                        />
                     </div>
                     <pre>{JSON.stringify(game, null, 2)}</pre>
                 </div>
-            }
+            )}
         </div>
     );
 };

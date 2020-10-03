@@ -1,4 +1,5 @@
 import hri from "human-readable-ids";
+import { nanoid } from "nanoid";
 import { gameOptions } from "../consts/gameSettings.js";
 
 let games = [];
@@ -10,8 +11,8 @@ export const createGame = () => {
     return newGame;
 };
 
-export const getGame = (id) => {
-    const game = games.filter((game) => game.id === id);
+export const getGame = (gameID) => {
+    const game = games.filter((game) => game.id === gameID);
     return game.length > 0 ? game[0] : null;
 };
 
@@ -41,29 +42,29 @@ export const validateOptions = (newOptions) => {
     return validatedOptions;
 };
 
-export const setPlayerName = (id, playerID, newName) => {
-    const game = getGame(id);
-    if(game) {
-        game.players = game.players.map(player => {
+export const setPlayerName = (gameID, playerID, newName) => {
+    const game = getGame(gameID);
+    if (game) {
+        game.players = game.players.map((player) => {
             return player.id === playerID
-            ? {...player, name: newName}
-            : player
-        })
+                ? { ...player, name: newName }
+                : player;
+        });
         setGame(game);
         return game.players;
     }
-}
+};
 
-export const joinGame = (id, playerID) => {
-    const player = createNewPlayer(playerID);
-    const game = getGame(id);
-    if(!!game) {
+export const joinGame = (gameID, playerSocketID) => {
+    const player = createNewPlayer(playerSocketID);
+    const game = getGame(gameID);
+    if (!!game) {
         game.players.push(player);
         setGame(game);
         return player;
     }
     return null;
-}
+};
 
 const clamp = (value, min, max) => {
     return Math.max(Math.min(value, max), min);
@@ -88,9 +89,10 @@ const createNewGame = (url) => {
     return game;
 };
 
-const createNewPlayer = (id) => {
+const createNewPlayer = (socketID) => {
     const player = {
-        id: id,
+        id: nanoid(),
+        socket: socketID,
         name: "",
         state: "pickingName",
         score: 0,

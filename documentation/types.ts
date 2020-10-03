@@ -11,7 +11,8 @@ interface Game {
 }
 
 interface Player {
-    id: string,         
+    id: string,
+    socket: string,     
     name: string,
     state: PlayerState,
     score: number,
