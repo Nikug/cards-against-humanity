@@ -42,7 +42,6 @@ export const Game = () => {
         });
 
         socket.on("update_game_options", (data) => {
-            console.log("is this even happening???");
             setGame((prevGame) => ({ ...prevGame, options: data.options }));
         });
 
