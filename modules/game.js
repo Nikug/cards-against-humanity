@@ -67,6 +67,13 @@ export const joinGame = (gameID, playerSocketID) => {
     return null;
 };
 
+export const validateHost = (game, playerID) => {
+    const hosts = game.players.filter(
+        (player) => player.id === playerID && player.isHost
+    );
+    return hosts.length === 1;
+};
+
 const clamp = (value, min, max) => {
     return Math.max(Math.min(value, max), min);
 };

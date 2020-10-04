@@ -27,14 +27,17 @@ export const GameOptions = (props) => {
     };
 
     const updateOptions = (key, value) => {
-        if (value !== undefined) {
-            const newOptions = { ...options, [key]: value };
-            setOptions(newOptions);
-            socket.emit("update_game_options", {
-                options: newOptions,
-                gameID: props.gameID,
-            });
-        }
+        if(!props.playerID || !props.gameID) return;
+        if (value === undefined) return;
+
+        const newOptions = { ...options, [key]: value };
+        setOptions(newOptions);
+
+        socket.emit("update_game_options", {
+            options: newOptions,
+            gameID: props.gameID,
+            playerID: props.playerID
+        });        
     };
 
     useEffect(() => {

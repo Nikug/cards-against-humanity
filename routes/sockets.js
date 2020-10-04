@@ -15,7 +15,7 @@ export const sockets = (io) => {
         });
 
         socket.on("update_game_options", (data) => {
-            updateGameOptions(io, data.gameID, data.options);
+            updateGameOptions(io, data.gameID, data.playerID, data.options);
         });
 
         socket.on("set_player_name", (data) => {

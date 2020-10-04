@@ -72,6 +72,7 @@ export const Game = () => {
                             options={game?.options}
                             gameID={game?.id}
                             isHost={player?.isHost}
+                            playerID={player?.id}
                         />
                     </div>
                     <pre>{JSON.stringify(game, null, 2)}</pre>

@@ -4,6 +4,7 @@ import {
     validateOptions,
     setPlayerName,
     joinGame,
+    validateHost,
 } from "../modules/game.js";
 import { playerName } from "../consts/gameSettings.js";
 
@@ -25,9 +26,11 @@ export const joinToGame = (socket, io, gameID) => {
     }
 };
 
-export const updateGameOptions = (io, gameID, newOptions) => {
+export const updateGameOptions = (io, gameID, playerID, newOptions) => {
     const game = getGame(gameID);
+
     if (!game) return;
+    if (!validateHost(game, playerID)) return;
 
     game.options = validateOptions({ ...game.options, ...newOptions });
     const updatedGame = setGame(game);
@@ -50,12 +53,11 @@ export const updatePlayerName = (io, gameID, playerID, newName) => {
 export const leaveFromGame = (io, gameID, playerID) => {
     const game = getGame(gameID);
     if (!!game && !!playerID) {
-        game.players = game.players
-            .map((player) => {
-                return player.id === playerID
-                    ? { ...player, state: "disconnected" }
-                    : player;
-            });
+        game.players = game.players.map((player) => {
+            return player.id === playerID
+                ? { ...player, state: "disconnected" }
+                : player;
+        });
         setGame(game);
         io.in(gameID).emit("update_game", { game: game });
     }
