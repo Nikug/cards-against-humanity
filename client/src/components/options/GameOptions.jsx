@@ -43,6 +43,7 @@ export const GameOptions = (props) => {
 
     return (
         <div>
+            <p>{`Am I host: ${props.isHost ? "Yes" : "No"}`}</p>
             {!!options && (
                 <div>
                     <label htmlFor="maxPlayers">Pelaajien määrä: </label>
@@ -54,6 +55,7 @@ export const GameOptions = (props) => {
                         min="3"
                         max="50"
                         onChange={(e) => setMaxPlayers(e.target.value)}
+                        disabled={!props.isHost}
                     />
                     <br />
                     <label htmlFor="scoreLimit">Pisteraja: </label>
@@ -65,6 +67,7 @@ export const GameOptions = (props) => {
                         min="1"
                         max="100"
                         onChange={(e) => setScoreLimit(e.target.value)}
+                        disabled={!props.isHost}
                     />
                     <br />
                     <label htmlFor="winnerBecomesCardCzar">
@@ -78,6 +81,7 @@ export const GameOptions = (props) => {
                         onChange={(e) =>
                             setWinnerBecomesCardCzar(e.target.checked)
                         }
+                        disabled={!props.isHost}
                     />
                     <br />
                     <label htmlFor="allowKickedPlayerJoin">
@@ -89,6 +93,7 @@ export const GameOptions = (props) => {
                         name="allowKickedPlayerJoin"
                         checked={options?.allowKickedPlayerJoin}
                         onChange={(e) => setKickedPlayerJoin(e.target.checked)}
+                        disabled={!props.isHost}
                     />
                     <br />
                 </div>

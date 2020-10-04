@@ -26,7 +26,6 @@ export const joinToGame = (socket, io, gameID) => {
 };
 
 export const updateGameOptions = (io, gameID, newOptions) => {
-
     const game = getGame(gameID);
     if (!game) return;
 
@@ -51,11 +50,12 @@ export const updatePlayerName = (io, gameID, playerID, newName) => {
 export const leaveFromGame = (io, gameID, playerID) => {
     const game = getGame(gameID);
     if (!!game && !!playerID) {
-        game.players = game.players.map((player) => {
-            player.id === playerID
-                ? { ...player, state: "disconnected" }
-                : player;
-        });
+        game.players = game.players
+            .map((player) => {
+                return player.id === playerID
+                    ? { ...player, state: "disconnected" }
+                    : player;
+            });
         setGame(game);
         io.in(gameID).emit("update_game", { game: game });
     }

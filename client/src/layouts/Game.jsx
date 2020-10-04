@@ -6,7 +6,7 @@ import { PlayerName } from "../components/options/PlayerName";
 
 export const Game = () => {
     const [game, setGame] = useState(undefined);
-    const [playerID, setPlayerID] = useState(undefined);
+    const [player, setPlayer] = useState(undefined);
 
     const getGameIdFromURL = () => {
         const url = window.location.pathname;
@@ -15,7 +15,9 @@ export const Game = () => {
 
     useEffect(() => {
         window.addEventListener("beforeunload", () => {
-            socket.emit("leave_game", { gameID: game.id, playerID: playerID });
+            if(!!game && !!player) {
+                socket.emit("leave_game", { gameID: game.id, playerID: player.id });
+            }
         });
 
         if (game === undefined) {
@@ -23,13 +25,12 @@ export const Game = () => {
         }
 
         return () => window.removeEventListener("beforeunload", () => {});
-    }, [game, playerID]);
+    }, [game, player]);
 
     useEffect(() => {
         socket.on("update_player", (data) => {
-            setPlayerID(data.player.id);
+            setPlayer(data.player);
         });
-
 
         socket.on("update_game", (data) => {
             console.log("Game updated!");
@@ -54,10 +55,14 @@ export const Game = () => {
 
     return (
         <div>
-            <h1>{`Game ${game === undefined ? " not found" : game.url}`}</h1>
+            <h1 style={{ textTransform: "capitalize" }}>{`Game ${
+                game === undefined
+                    ? " not found"
+                    : game.url.replaceAll("-", " ")
+            }`}</h1>
             {!!game && (
                 <div>
-                    <PlayerName gameID={game.id} playerID={playerID} />
+                    <PlayerName gameID={game.id} playerID={player?.id} />
                 </div>
             )}
             {!!game && (
@@ -66,6 +71,7 @@ export const Game = () => {
                         <GameOptions
                             options={game?.options}
                             gameID={game?.id}
+                            isHost={player?.isHost}
                         />
                     </div>
                     <pre>{JSON.stringify(game, null, 2)}</pre>

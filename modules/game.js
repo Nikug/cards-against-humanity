@@ -56,9 +56,10 @@ export const setPlayerName = (gameID, playerID, newName) => {
 };
 
 export const joinGame = (gameID, playerSocketID) => {
-    const player = createNewPlayer(playerSocketID);
     const game = getGame(gameID);
     if (!!game) {
+        const isHost = game.players.length === 0;
+        const player = createNewPlayer(playerSocketID, isHost);
         game.players.push(player);
         setGame(game);
         return player;
@@ -89,7 +90,7 @@ const createNewGame = (url) => {
     return game;
 };
 
-const createNewPlayer = (socketID) => {
+const createNewPlayer = (socketID, isHost) => {
     const player = {
         id: nanoid(),
         socket: socketID,
@@ -97,6 +98,7 @@ const createNewPlayer = (socketID) => {
         state: "pickingName",
         score: 0,
         isCardCzar: false,
+        isHost: isHost,
         popularVoteScore: 0,
         whiteCards: [],
     };
