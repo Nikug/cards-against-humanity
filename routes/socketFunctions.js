@@ -22,7 +22,7 @@ export const joinToGame = (socket, io, gameID) => {
 
         const player = joinGame(gameID, socket.id);
 
-        io.in(gameID).emit("update_game", { game: game });
+        io.in(gameID).emit("update_game", { game: game.client });
         socket.emit("update_player", { player: player });
     } else {
         socket.disconnect(true);
@@ -36,11 +36,11 @@ export const updateGameOptions = (io, gameID, playerID, newOptions) => {
     if (!game) return;
     if (!validateHost(game, playerID)) return;
 
-    game.options = validateOptions({ ...game.options, ...newOptions });
+    game.client.options = validateOptions({ ...game.client.options, ...newOptions });
     const updatedGame = setGame(game);
 
     io.in(game.id).emit("update_game_options", {
-        options: updatedGame.options,
+        options: updatedGame.client.options,
     });
 };
 
@@ -65,7 +65,7 @@ export const leaveFromGame = (io, gameID, playerID) => {
                 : player;
         });
         setGame(game);
-        io.in(gameID).emit("update_game", { game: game });
+        io.in(gameID).emit("update_game", { game: game.client });
     }
 };
 

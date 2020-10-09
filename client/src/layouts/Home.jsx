@@ -7,7 +7,8 @@ export const Home = (props) => {
 
     const startGame = () => {
         axios.post("/g").then((res) => {
-            setUrl(res.data);
+            console.log(res);
+            setUrl(res.data.url);
         });
     };
 

@@ -58,7 +58,7 @@ export const Game = () => {
             <h1 style={{ textTransform: "capitalize" }}>{`Game ${
                 game === undefined
                     ? " not found"
-                    : game.url.replaceAll("-", " ")
+                    : game.id.replaceAll("-", " ")
             }`}</h1>
             {!!game && (
                 <div>

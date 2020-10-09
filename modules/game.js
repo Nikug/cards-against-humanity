@@ -2,6 +2,7 @@ import hri from "human-readable-ids";
 import { nanoid } from "nanoid";
 
 import { gameOptions } from "../consts/gameSettings.js";
+import { createStateMachine } from "../modules/finiteStateMachine.js";
 
 let games = [];
 
@@ -80,20 +81,24 @@ const clamp = (value, min, max) => {
 };
 
 const createNewGame = (url) => {
+    const fsm = createStateMachine();
     const game = {
         id: url,
-        url: url,
+        client: {
+            id: url,
+            state: fsm.state,
+            options: {
+                maximumPlayers: gameOptions.defaultPlayers,
+                scoreLimit: gameOptions.defaultScoreLimit,
+                winnerBecomesCardCzar: gameOptions.defaultWinnerBecomesCardCzar,
+                allowKickedPlayerJoin: gameOptions.defaultAllowKickedPlayerJoin,
+                cardPacks: [],
+            },
+            rounds: [],
+        },
         players: [],
         cards: [],
-        state: "lobby",
-        options: {
-            maximumPlayers: gameOptions.defaultPlayers,
-            scoreLimit: gameOptions.defaultScoreLimit,
-            winnerBecomesCardCzar: gameOptions.defaultWinnerBecomesCardCzar,
-            allowKickedPlayerJoin: gameOptions.defaultAllowKickedPlayerJoin,
-            cardPacks: [],
-        },
-        rounds: [],
+        stateMachine: fsm,
     };
     return game;
 };
@@ -113,32 +118,38 @@ const createNewPlayer = (socketID, isHost) => {
     return player;
 };
 
-export const addCardPackToGame = (gameID, playerID, cardPack, whiteCards, blackCards) => {
+export const addCardPackToGame = (
+    gameID,
+    playerID,
+    cardPack,
+    whiteCards,
+    blackCards
+) => {
     const game = getGame(gameID);
     if (!game) return undefined;
 
-    if(!validateHost(game, playerID)) return undefined;
+    if (!validateHost(game, playerID)) return undefined;
 
-    const existingCardPack = game.options.cardPacks.filter(
+    const existingCardPack = game.client.options.cardPacks.filter(
         (existingCardPack) => existingCardPack.id === cardPack.id
     );
     if (existingCardPack.length > 0) return undefined;
 
-    game.options.cardPacks = [...game.options.cardPacks, cardPack];
+    game.client.options.cardPacks = [...game.client.options.cardPacks, cardPack];
     game.cards.whiteCards = whiteCards;
     game.cards.blackCards = blackCards;
     setGame(game);
 
-    return game.options;
+    return game.client.options;
 };
 
 export const removeCardPackFromGame = (gameID, cardPackID, playerID) => {
     const game = getGame(gameID);
     if (!game) return undefined;
 
-    if(!validateHost(game, playerID)) return undefined;
+    if (!validateHost(game, playerID)) return undefined;
 
-    game.options.cardPacks = game.options.cardPacks.filter(
+    game.client.options.cardPacks = game.client.options.cardPacks.filter(
         (cardPack) => cardPack.id !== cardPackID
     );
     game.cards.whiteCards = game.cards.whiteCards.filter(
@@ -149,5 +160,5 @@ export const removeCardPackFromGame = (gameID, cardPackID, playerID) => {
     );
 
     setGame(game);
-    return game.options;
+    return game.client.options;
 };

@@ -1,11 +1,17 @@
 // Documentation for game object
+import StateMachine from "javascript-state-machine";
 
 interface Game {
     id: string;
-    url: string;
     players: Player[];
     cards: Cards;
-    state: GameState;
+    stateMachine: typeof StateMachine;
+    client: ClientGame;
+}
+
+interface ClientGame {
+    id: string;
+    state: string;
     options: Options;
     rounds: Round[];
 }
