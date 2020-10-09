@@ -20,6 +20,7 @@
     "express": "^4.17.1",
     "human-readable-ids": "^1.0.4",
     "nanoid": "^3.1.12",
+    "node-fetch": "^2.6.1",
     "node-sass": "^4.14.1",
     "socket.io": "^2.3.0"
   },

@@ -9,3 +9,4 @@ type Server2Client =
 type Client2Server =
     | "join_game"               // Player joins a game
     | "update_game_options"     // Update game options
+    | "add_card_pack"           // Send the id of card pack to the server

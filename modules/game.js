@@ -1,5 +1,6 @@
 import hri from "human-readable-ids";
 import { nanoid } from "nanoid";
+
 import { gameOptions } from "../consts/gameSettings.js";
 
 let games = [];
@@ -83,14 +84,14 @@ const createNewGame = (url) => {
         id: url,
         url: url,
         players: [],
-        cards: null,
+        cards: [],
         state: "lobby",
         options: {
             maximumPlayers: gameOptions.defaultPlayers,
             scoreLimit: gameOptions.defaultScoreLimit,
             winnerBecomesCardCzar: gameOptions.defaultWinnerBecomesCardCzar,
-            cardURLs: [],
             allowKickedPlayerJoin: gameOptions.defaultAllowKickedPlayerJoin,
+            cardPacks: [],
         },
         rounds: [],
     };
@@ -112,7 +113,41 @@ const createNewPlayer = (socketID, isHost) => {
     return player;
 };
 
-const addCardPack = (id) => {
-    const url = `https://allbad.cards/api/pack/get?pack=${id}`;
-    return;
+export const addCardPackToGame = (gameID, playerID, cardPack, whiteCards, blackCards) => {
+    const game = getGame(gameID);
+    if (!game) return undefined;
+
+    if(!validateHost(game, playerID)) return undefined;
+
+    const existingCardPack = game.options.cardPacks.filter(
+        (existingCardPack) => existingCardPack.id === cardPack.id
+    );
+    if (existingCardPack.length > 0) return undefined;
+
+    game.options.cardPacks = [...game.options.cardPacks, cardPack];
+    game.cards.whiteCards = whiteCards;
+    game.cards.blackCards = blackCards;
+    setGame(game);
+
+    return game.options;
+};
+
+export const removeCardPackFromGame = (gameID, cardPackID, playerID) => {
+    const game = getGame(gameID);
+    if (!game) return undefined;
+
+    if(!validateHost(game, playerID)) return undefined;
+
+    game.options.cardPacks = game.options.cardPacks.filter(
+        (cardPack) => cardPack.id !== cardPackID
+    );
+    game.cards.whiteCards = game.cards.whiteCards.filter(
+        (card) => card.cardPackID !== cardPackID
+    );
+    game.cards.blackCards = game.cards.blackCards.filter(
+        (card) => card.cardPackID !== cardPackID
+    );
+
+    setGame(game);
+    return game.options;
 };

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { socket } from "../sockets/socket";
+import { CardPackSelector } from "./CardPackSelector";
 
 export const GameOptions = (props) => {
     const [options, setOptions] = useState(props.options);
@@ -27,7 +28,7 @@ export const GameOptions = (props) => {
     };
 
     const updateOptions = (key, value) => {
-        if(!props.playerID || !props.gameID) return;
+        if (!props.playerID || !props.gameID) return;
         if (value === undefined) return;
 
         const newOptions = { ...options, [key]: value };
@@ -36,8 +37,8 @@ export const GameOptions = (props) => {
         socket.emit("update_game_options", {
             options: newOptions,
             gameID: props.gameID,
-            playerID: props.playerID
-        });        
+            playerID: props.playerID,
+        });
     };
 
     useEffect(() => {
@@ -99,6 +100,12 @@ export const GameOptions = (props) => {
                         disabled={!props.isHost}
                     />
                     <br />
+                    <CardPackSelector
+                        gameID={props.gameID}
+                        cardPacks={options?.cardPacks}
+                        isHost={props.isHost}
+                        playerID={props.playerID}
+                    />
                 </div>
             )}
         </div>
