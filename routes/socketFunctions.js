@@ -8,7 +8,7 @@ import {
     joinGame,
     validateHost,
     addCardPackToGame,
-    removeCardPackFromGame,
+    removeCardPackFromGame, validateGameStartRequirements, randomBetween, clientPlayersObject
 } from "../modules/game.js";
 import { playerName } from "../consts/gameSettings.js";
 
@@ -53,7 +53,7 @@ export const updatePlayerName = (io, gameID, playerID, newName) => {
     // TODO: add sanitatization to the player names for obvious reasons
     const players = setPlayerName(gameID, playerID, validatedName);
 
-    io.in(gameID).emit("update_player_name", { players: players });
+    io.in(gameID).emit("update_players", { players: clientPlayersObject(players) });
 };
 
 export const leaveFromGame = (io, gameID, playerID) => {
@@ -116,3 +116,25 @@ export const removeCardPack = (io, gameID, cardPackID, playerID) => {
         io.in(gameID).emit("update_game_options", { options: newOptions });
     }
 };
+
+export const startGame = (io, gameID, playerID) => {
+    const game = getGame(gameID);
+    if(!game) return undefined;
+
+    if(!validateHost(game, playerID)) return undefined;
+
+    const result = validateGameStartRequirements(game);
+    if(!!result.error) return result.error;
+
+    game.stateMachine.startGame();
+    game.client.state = game.stateMachine.state;
+
+    const playerCount = game.players.length;
+    game.players[randomBetween(0, playerCount - 1)].isCardCzar = true;
+    console.log(clientPlayersObject(game.players));
+    io.in(gameID).emit("update_players", { players: clientPlayersObject(game.players) });
+    
+    setGame(game);
+
+    io.in(gameID).emit("update_game", { game: game.client });
+}

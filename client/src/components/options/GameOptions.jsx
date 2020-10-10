@@ -50,7 +50,7 @@ export const GameOptions = (props) => {
             <p>{`Am I host: ${props.isHost ? "Yes" : "No"}`}</p>
             {!!options && (
                 <div>
-                    <label htmlFor="maxPlayers">Pelaajien määrä: </label>
+                    <label htmlFor="maxPlayers">Pelaajien enimmäismäärä: </label>
                     <input
                         type="number"
                         id="maxPlayers"

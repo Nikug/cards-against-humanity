@@ -15,8 +15,11 @@ export const Game = () => {
 
     useEffect(() => {
         window.addEventListener("beforeunload", () => {
-            if(!!game && !!player) {
-                socket.emit("leave_game", { gameID: game.id, playerID: player.id });
+            if (!!game && !!player) {
+                socket.emit("leave_game", {
+                    gameID: game.id,
+                    playerID: player.id,
+                });
             }
         });
 
@@ -34,11 +37,11 @@ export const Game = () => {
 
         socket.on("update_game", (data) => {
             console.log("Game updated!");
-            setGame(data.game);
+            setGame((prevGame) => ({ ...prevGame, ...data.game }));
         });
 
-        socket.on("update_player_name", (data) => {
-            console.log("player name updated!");
+        socket.on("update_players", (data) => {
+            console.log("players updated!");
             setGame((prevGame) => ({ ...prevGame, players: data.players }));
         });
 
@@ -51,14 +54,18 @@ export const Game = () => {
         };
     }, []);
 
+    const startGame = (gameID, playerID) => {
+        if (!!gameID && !!playerID) {
+            socket.emit("start_game", { gameID: gameID, playerID, playerID });
+        }
+    };
+
     console.log(`Is socket still open: ${socket.connected ? "Yes" : "No"}`);
 
     return (
         <div>
             <h1 style={{ textTransform: "capitalize" }}>{`Game ${
-                game === undefined
-                    ? " not found"
-                    : game.id.replaceAll("-", " ")
+                game === undefined ? " not found" : game.id.replaceAll("-", " ")
             }`}</h1>
             {!!game && (
                 <div>
@@ -75,6 +82,15 @@ export const Game = () => {
                             playerID={player?.id}
                         />
                     </div>
+                    {!!player?.isHost && (
+                        <div>
+                            <button
+                                onClick={() => startGame(game?.id, player?.id)}
+                            >
+                                Aloita peli
+                            </button>
+                        </div>
+                    )}
                     <pre>{JSON.stringify(game, null, 2)}</pre>
                 </div>
             )}

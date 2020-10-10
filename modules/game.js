@@ -1,7 +1,7 @@
 import hri from "human-readable-ids";
 import { nanoid } from "nanoid";
 
-import { gameOptions } from "../consts/gameSettings.js";
+import { gameOptions, playerName } from "../consts/gameSettings.js";
 import { createStateMachine } from "../modules/finiteStateMachine.js";
 
 let games = [];
@@ -135,7 +135,10 @@ export const addCardPackToGame = (
     );
     if (existingCardPack.length > 0) return undefined;
 
-    game.client.options.cardPacks = [...game.client.options.cardPacks, cardPack];
+    game.client.options.cardPacks = [
+        ...game.client.options.cardPacks,
+        cardPack,
+    ];
     game.cards.whiteCards = whiteCards;
     game.cards.blackCards = blackCards;
     setGame(game);
@@ -162,3 +165,43 @@ export const removeCardPackFromGame = (gameID, cardPackID, playerID) => {
     setGame(game);
     return game.client.options;
 };
+
+export const validateGameStartRequirements = (game) => {
+    const playerCount = game.players.length;
+    if (playerCount < gameOptions.minimunPlayers)
+        return { result: false, error: "Ei tarpeeksi pelaajia" };
+    if (
+        playerCount > game.client.options.maximumPlayers ||
+        playerCount > gameOptions.maximumPlayers
+    )
+        return { result: false, error: "Liikaa pelaajia" };
+
+    if (
+        game.players.some(
+            (player) =>
+                player.name.length < playerName.minimumLength ||
+                player.name.length > playerName.maximumLength
+        )
+    ) {
+        return { error: "Pelaajien nimet eivät kelpaa" };
+    }
+
+    // Check that there are enough cards to start the game
+
+    return { result: true };
+};
+
+export const randomBetween = (min, max) => {
+    return Math.floor(Math.random() * (max - min + 1) ) + min;
+}
+
+export const clientPlayersObject = (players) => {
+    return players.map(player => ({
+        name: player.name,
+        state: player.state,
+        score: player.score,
+        isCardCzar: player.isCardCzar,
+        isHost: player.isHost,
+        popularVoteScore: player.popularVoteScore
+    }));
+}
