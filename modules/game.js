@@ -49,7 +49,7 @@ export const setPlayerName = (gameID, playerID, newName) => {
     if (game) {
         game.players = game.players.map((player) => {
             return player.id === playerID
-                ? { ...player, name: newName }
+                ? { ...player, name: newName, state: "active" }
                 : player;
         });
         setGame(game);
@@ -76,6 +76,13 @@ export const validateHost = (game, playerID) => {
     return hosts.length === 1;
 };
 
+export const validateCardCzar = (game, playerID) => {
+    const hosts = game.players.filter(
+        (player) => player.id === playerID && player.isCardCzar
+    );
+    return hosts.length === 1;
+};
+
 const clamp = (value, min, max) => {
     return Math.max(Math.min(value, max), min);
 };
@@ -97,7 +104,12 @@ const createNewGame = (url) => {
             rounds: [],
         },
         players: [],
-        cards: [],
+        cards: {
+            whiteCards: [],
+            blackCards: [],
+            playedWhiteCards: [],
+            playedBlackCards: [],
+        },
         stateMachine: fsm,
     };
     return game;
@@ -167,12 +179,17 @@ export const removeCardPackFromGame = (gameID, cardPackID, playerID) => {
 };
 
 export const validateGameStartRequirements = (game) => {
-    const playerCount = game.players.length;
-    if (playerCount < gameOptions.minimunPlayers)
-        return { result: false, error: "Ei tarpeeksi pelaajia" };
+    const activePlayerCount = game.players.filter(
+        (player) => player.state === "active"
+    ).length;
+    if (activePlayerCount < gameOptions.minimunPlayers)
+        return {
+            result: false,
+            error: `Ei tarpeeksi pelaajia, tarvitaan vähintään ${gameOptions.minimunPlayers}`,
+        };
     if (
-        playerCount > game.client.options.maximumPlayers ||
-        playerCount > gameOptions.maximumPlayers
+        activePlayerCount > game.client.options.maximumPlayers ||
+        activePlayerCount > gameOptions.maximumPlayers
     )
         return { result: false, error: "Liikaa pelaajia" };
 
@@ -183,25 +200,72 @@ export const validateGameStartRequirements = (game) => {
                 player.name.length > playerName.maximumLength
         )
     ) {
-        return { error: "Pelaajien nimet eivät kelpaa" };
+        return { result: false, error: "Pelaajien nimet eivät kelpaa" };
     }
 
-    // Check that there are enough cards to start the game
+    if (
+        game.cards.whiteCards.length <
+        gameOptions.startingWhiteCardCount * activePlayerCount
+    ) {
+        return { result: false, error: "Ei tarpeeksi valkoisia kortteja" };
+    }
+    if (game.cards.blackCards.length < 1) {
+        return { result: false, error: "Ei tarpeeksi mustia kortteja" };
+    }
 
     return { result: true };
 };
 
 export const randomBetween = (min, max) => {
-    return Math.floor(Math.random() * (max - min + 1) ) + min;
-}
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+};
 
 export const clientPlayersObject = (players) => {
-    return players.map(player => ({
+    return players.map((player) => ({
         name: player.name,
         state: player.state,
         score: player.score,
         isCardCzar: player.isCardCzar,
         isHost: player.isHost,
-        popularVoteScore: player.popularVoteScore
+        popularVoteScore: player.popularVoteScore,
     }));
-}
+};
+
+export const shuffleCards = (cards) => {
+    for (let i = cards.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [cards[i], cards[j]] = [cards[j], cards[i]];
+    }
+    return cards;
+};
+
+export const drawWhiteCards = (game, count) => {
+    if (game.cards.whiteCards.length < count) {
+        let cards = [...game.cards.whiteCards];
+        if (game.cards.playedWhiteCards.length === 0) return [];
+
+        game.cards.whiteCards = shuffleCards([...game.cards.playedWhiteCards]);
+        game.cards.playedWhiteCards = [];
+
+        cards = [
+            ...cards,
+            game.cards.whiteCards.splice(0, count - cards.length),
+        ];
+        setGame(game);
+        return cards;
+    } else {
+        const drawnCards = game.cards.whiteCards.splice(0, count);
+        setGame(game);
+        return drawnCards;
+    }
+};
+
+export const drawBlackCard = (game) => {
+    if (game.cards.blackCards.length === 0) {
+        game.cards.blackCards = shuffleCards([...game.cards.playedBlackCards]);
+        game.cards.playedBlackCards = [];
+    }
+    const drawnCard = game.cards.blackCards.pop();
+    setGame(game);
+    return drawnCard;
+};

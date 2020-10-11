@@ -3,6 +3,7 @@ import { socket } from "../components/sockets/socket";
 
 import { GameOptions } from "../components/options/GameOptions";
 import { PlayerName } from "../components/options/PlayerName";
+import { BlackCardPicker } from "../components/views/BlackCardPicker";
 
 export const Game = () => {
     const [game, setGame] = useState(undefined);
@@ -56,7 +57,7 @@ export const Game = () => {
 
     const startGame = (gameID, playerID) => {
         if (!!gameID && !!playerID) {
-            socket.emit("start_game", { gameID: gameID, playerID, playerID });
+            socket.emit("start_game", { gameID: gameID, playerID });
         }
     };
 
@@ -74,15 +75,18 @@ export const Game = () => {
             )}
             {!!game && (
                 <div>
-                    <div>
-                        <GameOptions
-                            options={game?.options}
-                            gameID={game?.id}
-                            isHost={player?.isHost}
-                            playerID={player?.id}
-                        />
-                    </div>
-                    {!!player?.isHost && (
+                    {game.state === "lobby" && (
+                        <div>
+                            <GameOptions
+                                options={game?.options}
+                                gameID={game?.id}
+                                isHost={player?.isHost}
+                                playerID={player?.id}
+                            />
+                        </div>
+                    )}
+
+                    {!!player?.isHost && game.state === "lobby" && (
                         <div>
                             <button
                                 onClick={() => startGame(game?.id, player?.id)}
@@ -91,7 +95,17 @@ export const Game = () => {
                             </button>
                         </div>
                     )}
-                    <pre>{JSON.stringify(game, null, 2)}</pre>
+
+                    {game.state === "pickingBlackCard" &&
+                        <BlackCardPicker gameID={game.id} player={player} />
+                    }
+
+                    <div style={{ display: "inline-block" }}>
+                        <pre>{JSON.stringify(game, null, 2)}</pre>
+                    </div>
+                    <div style={{ display: "inline-block" }}>
+                        <pre>{JSON.stringify(player, null, 2)}</pre>
+                    </div>
                 </div>
             )}
         </div>

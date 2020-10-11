@@ -43,7 +43,7 @@ interface WhiteCard {
 
 interface BlackCard {
     id: string;
-    url: string;
+    cardPackID: string;
     text: string;
     whiteCardsToPlay: number;
     whiteCardsToDraw: number;

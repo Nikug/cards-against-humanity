@@ -1,5 +1,5 @@
 export const gameOptions = {
-    minimunPlayers: 3,
+    minimunPlayers: 1,
     maximumPlayers: 50,
     defaultPlayers: 8,
 
@@ -8,7 +8,9 @@ export const gameOptions = {
     defaultScoreLimit: 5,
 
     defaultWinnerBecomesCardCzar: false,
-    defaultAllowKickedPlayerJoin: true
+    defaultAllowKickedPlayerJoin: true,
+
+    startingWhiteCardCount: 10
 }
 
 export const playerName = {

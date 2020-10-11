@@ -8,9 +8,16 @@ import {
     joinGame,
     validateHost,
     addCardPackToGame,
-    removeCardPackFromGame, validateGameStartRequirements, randomBetween, clientPlayersObject
+    removeCardPackFromGame,
+    validateGameStartRequirements,
+    randomBetween,
+    clientPlayersObject,
+    shuffleCards,
+    drawWhiteCards,
+    drawBlackCard,
+    validateCardCzar
 } from "../modules/game.js";
-import { playerName } from "../consts/gameSettings.js";
+import { gameOptions, playerName } from "../consts/gameSettings.js";
 
 export const joinToGame = (socket, io, gameID) => {
     console.log(`Join game id ${gameID}`);
@@ -36,7 +43,10 @@ export const updateGameOptions = (io, gameID, playerID, newOptions) => {
     if (!game) return;
     if (!validateHost(game, playerID)) return;
 
-    game.client.options = validateOptions({ ...game.client.options, ...newOptions });
+    game.client.options = validateOptions({
+        ...game.client.options,
+        ...newOptions,
+    });
     const updatedGame = setGame(game);
 
     io.in(game.id).emit("update_game_options", {
@@ -53,7 +63,9 @@ export const updatePlayerName = (io, gameID, playerID, newName) => {
     // TODO: add sanitatization to the player names for obvious reasons
     const players = setPlayerName(gameID, playerID, validatedName);
 
-    io.in(gameID).emit("update_players", { players: clientPlayersObject(players) });
+    io.in(gameID).emit("update_players", {
+        players: clientPlayersObject(players),
+    });
 };
 
 export const leaveFromGame = (io, gameID, playerID) => {
@@ -119,12 +131,12 @@ export const removeCardPack = (io, gameID, cardPackID, playerID) => {
 
 export const startGame = (io, gameID, playerID) => {
     const game = getGame(gameID);
-    if(!game) return undefined;
+    if (!game) return undefined;
 
-    if(!validateHost(game, playerID)) return undefined;
+    if (!validateHost(game, playerID)) return undefined;
 
     const result = validateGameStartRequirements(game);
-    if(!!result.error) return result.error;
+    if (!!result.error) return result.error;
 
     game.stateMachine.startGame();
     game.client.state = game.stateMachine.state;
@@ -132,9 +144,40 @@ export const startGame = (io, gameID, playerID) => {
     const playerCount = game.players.length;
     game.players[randomBetween(0, playerCount - 1)].isCardCzar = true;
     console.log(clientPlayersObject(game.players));
-    io.in(gameID).emit("update_players", { players: clientPlayersObject(game.players) });
-    
-    setGame(game);
+    io.in(gameID).emit("update_players", {
+        players: clientPlayersObject(game.players),
+    });
 
-    io.in(gameID).emit("update_game", { game: game.client });
-}
+    game.cards.whiteCards = shuffleCards([...game.cards.whiteCards]);
+    game.cards.blackCards = shuffleCards([...game.cards.blackCards]);
+
+    const gameWithStartingHands = dealWhiteCards(
+        io,
+        game,
+        gameOptions.startingWhiteCardCount
+    );
+    setGame(gameWithStartingHands);
+
+    io.in(gameID).emit("update_game", { game: gameWithStartingHands.client });
+};
+
+export const dealWhiteCards = (io, game, count) => {
+    const players = game.players.map((player) => {
+        player.whiteCards = drawWhiteCards(game, count);
+        io.to(player.socket).emit("update_player", { player: player });
+
+        return player;
+    });
+    game.players = players;
+    return game;
+};
+
+export const dealBlackCard = (socket, gameID, playerID) => {
+    const game = getGame(gameID);
+    if (!game) return;
+    
+    if (!validateCardCzar(game, playerID)) return;
+
+    const blackCard = drawBlackCard(game);
+    socket.emit("deal_black_card", { blackCard: blackCard });
+};

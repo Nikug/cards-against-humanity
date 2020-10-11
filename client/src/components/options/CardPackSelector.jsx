@@ -41,7 +41,7 @@ export const CardPackSelector = (props) => {
                     <div key={cardPack.id}>
                         <span>
                             <p>{`${cardPack.id} ${cardPack.name}`}</p>
-                            <p>{`Mustia kortteja: ${cardPack.whiteCards} Valkoisia kortteja: ${cardPack.blackCards}`}</p>
+                            <p>{`Mustia kortteja: ${cardPack.blackCards} Valkoisia kortteja: ${cardPack.whiteCards}`}</p>
                         </span>
                         {cardPack.isNSFW && <p>Vaarallinen töihin</p>}
                         {props.isHost && (
