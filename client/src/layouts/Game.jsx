@@ -62,11 +62,16 @@ export const Game = () => {
     };
 
     console.log(`Is socket still open: ${socket.connected ? "Yes" : "No"}`);
+    if (game) {
+    console.log('game.id', game.id);
+    } else {
+        console.log('was no game');
+    }
 
     return (
         <div>
             <h1 style={{ textTransform: "capitalize" }}>{`Game ${
-                game === undefined ? " not found" : game.id.replaceAll("-", " ")
+                game === undefined ? " not found" : game.id.replace(/-/g, ' ')
             }`}</h1>
             {!!game && (
                 <div>
