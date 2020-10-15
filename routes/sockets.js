@@ -6,7 +6,8 @@ import {
     addCardPack,
     removeCardPack,
     startGame,
-    dealBlackCard,
+    dealBlackCards,
+    selectBlackCard
 } from "./socketFunctions.js";
 
 export const sockets = (io) => {
@@ -43,8 +44,12 @@ export const sockets = (io) => {
             startGame(io, data.gameID, data.playerID);
         });
 
-        socket.on("draw_black_card", (data) => {
-            dealBlackCard(socket, data.gameID, data.playerID);
+        socket.on("draw_black_cards", (data) => {
+            dealBlackCards(socket, data.gameID, data.playerID);
+        });
+
+        socket.on("select_black_card", (data) => {
+            selectBlackCard(io, data.gameID, data.playerID, data.selectedCardID, data.discardedCardIDs);
         });
     });
 

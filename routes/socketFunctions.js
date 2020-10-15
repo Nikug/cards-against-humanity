@@ -11,11 +11,13 @@ import {
     removeCardPackFromGame,
     validateGameStartRequirements,
     randomBetween,
-    clientPlayersObject,
+    publicPlayersObject,
     shuffleCards,
     drawWhiteCards,
-    drawBlackCard,
-    validateCardCzar
+    drawBlackCards,
+    validateCardCzar,
+    shuffleCardsBackToDeck,
+    createRound
 } from "../modules/game.js";
 import { gameOptions, playerName } from "../consts/gameSettings.js";
 
@@ -64,7 +66,7 @@ export const updatePlayerName = (io, gameID, playerID, newName) => {
     const players = setPlayerName(gameID, playerID, validatedName);
 
     io.in(gameID).emit("update_players", {
-        players: clientPlayersObject(players),
+        players: publicPlayersObject(players),
     });
 };
 
@@ -89,12 +91,12 @@ export const addCardPack = async (io, gameID, cardPackID, playerID) => {
     if (json.message === "Pack not found!") return;
 
     const whiteCards = json.definition.white.map((item, i) => ({
-        id: i.toString(),
+        id: `w-${cardPackID}-${i.toString()}`,
         cardPackID: cardPackID,
         text: item,
     }));
     const blackCards = json.definition.black.map((item, i) => ({
-        id: i.toString(),
+        id: `b-${cardPackID}-${i.toString()}`,
         cardPackID: cardPackID,
         text: item.content,
         whiteCardsToPlay: item.pick,
@@ -143,9 +145,9 @@ export const startGame = (io, gameID, playerID) => {
 
     const playerCount = game.players.length;
     game.players[randomBetween(0, playerCount - 1)].isCardCzar = true;
-    console.log(clientPlayersObject(game.players));
+
     io.in(gameID).emit("update_players", {
-        players: clientPlayersObject(game.players),
+        players: publicPlayersObject(game.players),
     });
 
     game.cards.whiteCards = shuffleCards([...game.cards.whiteCards]);
@@ -172,12 +174,38 @@ export const dealWhiteCards = (io, game, count) => {
     return game;
 };
 
-export const dealBlackCard = (socket, gameID, playerID) => {
+export const dealBlackCards = (socket, gameID, playerID) => {
     const game = getGame(gameID);
     if (!game) return;
     
     if (!validateCardCzar(game, playerID)) return;
 
-    const blackCard = drawBlackCard(game);
-    socket.emit("deal_black_card", { blackCard: blackCard });
+    const blackCards = drawBlackCards(game, gameOptions.blackCardsToChooseFrom);
+    socket.emit("deal_black_cards", { blackCards: blackCards });
 };
+
+export const selectBlackCard = (io, gameID, playerID, selectedCardID, discardedCardIDs) => {
+    const game = getGame(gameID);
+    if (!game) return;
+    
+    if (!validateCardCzar(game, playerID)) return;
+
+    if(!game.cards.playedBlackCards.some(blackCard => blackCard.id === selectedCardID)) return;
+    
+    if(discardedCardIDs.length !== gameOptions.blackCardsToChooseFrom - 1) return;
+    const discardedCards = game.cards.playedBlackCards.filter(blackCard => discardedCardIDs.includes(blackCard.id));
+    if(discardedCards.length !== discardedCardIDs.length) return;
+
+    game.cards.playedBlackCards = game.cards.playedBlackCards.filter(blackCard => !discardedCardIDs.includes(blackCard.id));
+    const selectedCard = game.cards.playedBlackCards.filter(blackCard => blackCard.id === selectedCardID);
+    if(selectedCard.length !== 1) return;
+
+    game.cards.blackCards = shuffleCardsBackToDeck(discardedCards, game.cards.blackCards);
+    
+    game.client.rounds = createRound(game.client.rounds.length + 1, selectedCard[0], playerID);
+    game.client.state = "playingWhiteCards";
+    setGame(game);
+
+    console.log(game);
+    io.in(gameID).emit("update_game", {game: game.client});
+}

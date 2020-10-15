@@ -52,12 +52,13 @@ interface BlackCard {
 interface Round {
     round: number;
     blackCard: BlackCard;
+    cardCzar: string;
     whiteCardsByPlayer: {
         wonRound: boolean;
         playerId: string;
         popularVote: number;
         whiteCards: WhiteCard[];
-    };
+    } [];
 }
 
 interface Options {

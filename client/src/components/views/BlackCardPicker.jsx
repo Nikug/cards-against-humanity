@@ -4,26 +4,44 @@ import { socket } from "../sockets/socket";
 import { Card } from "../cards/Card";
 
 export const BlackCardPicker = (props) => {
-
-    const [blackCard, setBlackCard] = useState(undefined);
+    const [blackCards, setBlackCards] = useState(undefined);
 
     useEffect(() => {
-        if(blackCard === undefined && props.player.isCardCzar) {
-            socket.emit("draw_black_card", { gameID: props.gameID, playerID: props.player.id });
+        if (blackCards === undefined && props.player.isCardCzar) {
+            socket.emit("draw_black_cards", {
+                gameID: props.gameID,
+                playerID: props.player.id,
+            });
         }
-    }, [blackCard, props.gameID, props.player.id, props.player.isCardCzar])
+    }, [blackCards, props.gameID, props.player.id, props.player.isCardCzar]);
 
     useEffect(() => {
-        socket.on("deal_black_card", (data) => {
-            setBlackCard(data.blackCard);
+        socket.on("deal_black_cards", (data) => {
+            setBlackCards(data.blackCards);
         });
     }, []);
 
+    const selectBlackCard = (cardID) => {
+        socket.emit("select_black_card", {
+            gameID: props.gameID,
+            playerID: props.player.id,
+            selectedCardID: cardID,
+            discardedCardIDs: blackCards
+                .filter((blackCard) => blackCard.id !== cardID)
+                .map((blackCard) => blackCard.id),
+        });
+    };
+
     return (
         <div>
-            {!!blackCard && 
-                <Card type="black" card={blackCard} />
-            }
+            {blackCards?.map((blackCard, i) => (
+                <Card
+                    key={i}
+                    type="black"
+                    card={blackCard}
+                    selectBlackCard={selectBlackCard}
+                />
+            ))}
         </div>
     );
-}
+};

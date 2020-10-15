@@ -142,17 +142,19 @@ export const addCardPackToGame = (
 
     if (!validateHost(game, playerID)) return undefined;
 
-    const existingCardPack = game.client.options.cardPacks.filter(
-        (existingCardPack) => existingCardPack.id === cardPack.id
-    );
-    if (existingCardPack.length > 0) return undefined;
+    if (
+        game.client.options.cardPacks.some(
+            (existingCardPack) => existingCardPack.id === cardPack.id
+        )
+    )
+        return undefined;
 
     game.client.options.cardPacks = [
         ...game.client.options.cardPacks,
         cardPack,
     ];
-    game.cards.whiteCards = whiteCards;
-    game.cards.blackCards = blackCards;
+    game.cards.whiteCards = [...game.cards.whiteCards, ...whiteCards];
+    game.cards.blackCards = [...game.cards.blackCards, ...blackCards];
     setGame(game);
 
     return game.client.options;
@@ -209,7 +211,7 @@ export const validateGameStartRequirements = (game) => {
     ) {
         return { result: false, error: "Ei tarpeeksi valkoisia kortteja" };
     }
-    if (game.cards.blackCards.length < 1) {
+    if (game.cards.blackCards.length < gameOptions.blackCardsToChooseFrom) {
         return { result: false, error: "Ei tarpeeksi mustia kortteja" };
     }
 
@@ -220,7 +222,7 @@ export const randomBetween = (min, max) => {
     return Math.floor(Math.random() * (max - min + 1)) + min;
 };
 
-export const clientPlayersObject = (players) => {
+export const publicPlayersObject = (players) => {
     return players.map((player) => ({
         name: player.name,
         state: player.state,
@@ -260,12 +262,41 @@ export const drawWhiteCards = (game, count) => {
     }
 };
 
-export const drawBlackCard = (game) => {
-    if (game.cards.blackCards.length === 0) {
+export const drawBlackCards = (game, count) => {
+    if (game.cards.blackCards.length < count) {
+        let blackCards = [...game.cards.blackCards];
+
         game.cards.blackCards = shuffleCards([...game.cards.playedBlackCards]);
         game.cards.playedBlackCards = [];
+
+        blackCards = [
+            ...blackCards,
+            game.cards.blackCards.splice(0, count - blackCards.length),
+        ];
+
+        game.cards.playedBlackCards = [...blackCards];
+        setGame(game);
+        return blackCards;
     }
-    const drawnCard = game.cards.blackCards.pop();
+    const blackCards = game.cards.blackCards.splice(0, count);
+    game.cards.playedBlackCards = [...game.cards.playedBlackCards, ...blackCards];
     setGame(game);
-    return drawnCard;
+    return blackCards;
 };
+
+export const shuffleCardsBackToDeck = (cards, deck) => {
+    let newCards = [...deck];
+    for(const card in cards) {
+        newCards.splice(randomBetween(0, newCards.length), 0, card);
+    }
+    return [...newCards];
+}
+
+export const createRound = (roundNumber, blackCard, playerID) => {
+    return {
+        round: roundNumber,
+        blackCard: blackCard,
+        cardCzar: playerID,
+        whiteCardsByPlayer: []
+    }
+}
