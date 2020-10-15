@@ -206,6 +206,5 @@ export const selectBlackCard = (io, gameID, playerID, selectedCardID, discardedC
     game.client.state = "playingWhiteCards";
     setGame(game);
 
-    console.log(game);
     io.in(gameID).emit("update_game", {game: game.client});
 }
