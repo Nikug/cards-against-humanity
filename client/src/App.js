@@ -10,7 +10,7 @@ import './App.scss';
 function App() {
     return (
         <div className="App">
-            <Header/>
+            <Header isInGame={true}/>
             <Router>
                 <Switch>
                     <Route exact path="/" component={Home} />

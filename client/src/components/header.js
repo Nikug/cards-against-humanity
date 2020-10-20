@@ -4,7 +4,7 @@ import './../styles/header.scss'
 export class Header extends Component {
     render() {
         const text = 'Kortit ihmiskuntaa vastaan';
-        const isInGame = true;
+        const {isInGame} = this.props;
 
         return (
             <div className="header">
