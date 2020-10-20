@@ -10,7 +10,8 @@ export const gameOptions = {
     defaultWinnerBecomesCardCzar: false,
     defaultAllowKickedPlayerJoin: true,
 
-    startingWhiteCardCount: 10
+    startingWhiteCardCount: 10,
+    blackCardsToChooseFrom: 3
 }
 
 export const playerName = {

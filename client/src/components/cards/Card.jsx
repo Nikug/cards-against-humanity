@@ -3,24 +3,31 @@ import React from "react";
 import styles from "./card.module.scss";
 
 export const Card = (props) => {
-    const {type, card} = props;
-    const isBlack = type === "black";
+    const onSelect = () => {
+        if (!!props.selectBlackCard) {
+            props.selectBlackCard(props.card.id);
+        }
+    };
 
     return (
-        <div className={styles.card}>
+        <div className={styles.card} onClick={() => onSelect()}>
             <div className={styles.innerCard}>
-                <div className={isBlack ? styles.black : styles.white}>
+                <div
+                    className={
+                        props.type === "black" ? styles.black : styles.white
+                    }
+                >
                     <div className={styles.text}>
                         <p>{card.text}</p>
                     </div>
                     <div className={styles.footer}>
-                        {isBlack && 
-                            <p>{`Pelaa: ${card.whiteCardsToPlay}, nosta: ${card.whiteCardsToDraw}`}</p>
-                        }
-                        <p>{card.cardPackID}</p>
+                        {props.type === "black" && (
+                            <p>{`Pelaa: ${props.card.whiteCardsToPlay}, nosta: ${props.card.whiteCardsToDraw}`}</p>
+                        )}
+                        <p>{props.card.cardPackID}</p>
                     </div>
                 </div>
             </div>
         </div>
     );
-}
+};
