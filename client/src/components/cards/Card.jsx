@@ -3,18 +3,21 @@ import React from "react";
 import styles from "./card.module.scss";
 
 export const Card = (props) => {
+    const {type, card} = props;
+    const isBlack = type === "black";
+
     return (
         <div className={styles.card}>
             <div className={styles.innerCard}>
-                <div className={props.type === "black" ? styles.black : styles.white}>
+                <div className={isBlack ? styles.black : styles.white}>
                     <div className={styles.text}>
-                        <p>{props.card.text}</p>
+                        <p>{card.text}</p>
                     </div>
                     <div className={styles.footer}>
-                        {props.type === "black" && 
-                            <p>{`Pelaa: ${props.card.whiteCardsToPlay}, nosta: ${props.card.whiteCardsToDraw}`}</p>
+                        {isBlack && 
+                            <p>{`Pelaa: ${card.whiteCardsToPlay}, nosta: ${card.whiteCardsToDraw}`}</p>
                         }
-                        <p>{props.card.cardPackID}</p>
+                        <p>{card.cardPackID}</p>
                     </div>
                 </div>
             </div>

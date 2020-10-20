@@ -3,12 +3,14 @@ import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 
 import { Home } from "./layouts/Home";
 import { Game } from "./layouts/Game";
+import {Header} from "./components/header"
 
 import './App.scss';
 
 function App() {
     return (
         <div className="App">
+            <Header/>
             <Router>
                 <Switch>
                     <Route exact path="/" component={Home} />

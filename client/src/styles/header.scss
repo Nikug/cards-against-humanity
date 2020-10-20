@@ -1,0 +1,34 @@
+@import "./colors.scss";
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    padding: 0.6rem 0;
+    background-color: $color-black;
+    color: $color-white;
+    box-shadow: 0 5px 30px 5px $header-shadow inset;
+}
+
+.header-text {
+    margin-left: 0.8rem;
+    font-weight: 800;
+}
+
+.buttons {
+    margin-right: 1.2rem;
+
+    // All except the first child.
+    :nth-child(n + 2) {
+        border-left: $color-white 1px solid;
+        padding-left: 0.5rem;
+    }
+
+    .button {
+        padding-right: 0.5rem;
+
+        &:hover {
+            color: $header-button-hover;
+        }
+    }
+}

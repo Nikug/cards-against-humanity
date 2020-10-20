@@ -1,0 +1,21 @@
+//// Basic color palette
+// Colorless colors
+$color-black: #000000;
+$color-white: #ffffff;
+$color-dark-grey: #313131;
+$color-light-grey: #bdbdbd;
+// Bright colors
+$color-yellow: #b58900;
+$color-orange: #cb4b16;
+$color-red: #dc322f;
+$color-magenta: #d33682;
+$color-violet: #6c71c4;
+$color-blue: #268bd2;
+$color-cyan: #2aa198;
+$color-green: #859900;
+
+// Colors in usage
+$header-background: $color-black;
+$header-text: $color-white;
+$header-shadow: $color-dark-grey;
+$header-button-hover: $color-light-grey;

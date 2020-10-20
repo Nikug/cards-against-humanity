@@ -2,21 +2,31 @@ import React, { useState } from "react";
 import { Redirect } from "react-router-dom";
 import axios from "axios";
 
-export const Home = (props) => {
+export function Home(props) {
     const [url, setUrl] = useState("");
 
-    const startGame = () => {
+    function startNewGame() {
         axios.post("/g").then((res) => {
-            console.log(res);
             setUrl(res.data.url);
         });
     };
 
-    return url === "" ? (
-        <div>
-            <input type="button" value="Luo Peli" onClick={startGame} />
-        </div>
-    ) : (
+    function joinExistingGame(gameUrl) {
+        setUrl(gameUrl);
+    }
+
+    const urlIsEmpty = url === "";
+
+    if (urlIsEmpty) { 
+        return (
+            <div>
+                <input type="button" value="Luo Peli" onClick={startNewGame} />
+                <input type="button" value="Liity Peliin" onClick={() => joinExistingGame(url)} />
+            </div>
+        )
+    }
+    
+    return (
         <Redirect
             to={{
                 pathname: `/g/${url}`,

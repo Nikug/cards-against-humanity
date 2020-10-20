@@ -4,27 +4,29 @@ import { socket } from "../sockets/socket";
 export const CardPackSelector = (props) => {
     const [text, setText] = useState("");
 
+    const {gameID, playerID, isHost, cardPacks} = props;
+
     const handleSubmit = (e) => {
         e.preventDefault();
         socket.emit("add_card_pack", {
-            gameID: props.gameID,
+            gameID: gameID,
             cardPackID: text,
-            playerID: props.playerID,
+            playerID: playerID,
         });
         setText("");
     };
 
     const removeCardPack = (packID) => {
         socket.emit("remove_card_pack", {
-            gameID: props.gameID,
+            gameID: gameID,
             cardPackID: packID,
-            playerID: props.playerID,
+            playerID: playerID,
         });
     };
 
     return (
         <div>
-            {props.isHost && (
+            {isHost && (
                 <form onSubmit={handleSubmit}>
                     <input
                         type="text"
@@ -37,14 +39,14 @@ export const CardPackSelector = (props) => {
             )}
             <h3>Korttipakat</h3>
             <div>
-                {props.cardPacks.map((cardPack) => (
+                {cardPacks.map((cardPack) => (
                     <div key={cardPack.id}>
                         <span>
                             <p>{`${cardPack.id} ${cardPack.name}`}</p>
                             <p>{`Mustia kortteja: ${cardPack.blackCards} Valkoisia kortteja: ${cardPack.whiteCards}`}</p>
                         </span>
                         {cardPack.isNSFW && <p>Vaarallinen töihin</p>}
-                        {props.isHost && (
+                        {isHost && (
                             <button
                                 value={cardPack.id}
                                 onClick={(e) => {
