@@ -18,7 +18,7 @@ export const Card = (props) => {
                     }
                 >
                     <div className={styles.text}>
-                        <p>{card.text}</p>
+                        <p>{props.card.text}</p>
                     </div>
                     <div className={styles.footer}>
                         {props.type === "black" && (

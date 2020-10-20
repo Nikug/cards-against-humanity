@@ -28,7 +28,24 @@
         padding-right: 0.5rem;
 
         &:hover {
-            color: $header-button-hover;
+            color: $header-button-text-hover;
+            text-shadow: -2px -2px $header-button-hover,
+                -2px -1.5px $header-button-hover, -2px -1px $header-button-hover,
+                -2px -0.5px $header-button-hover, -2px 0px $header-button-hover,
+                -2px 0.5px $header-button-hover, -2px 1px $header-button-hover,
+                -2px 1.5px $header-button-hover, -2px 2px $header-button-hover,
+                -1.5px 2px $header-button-hover, -1px 2px $header-button-hover,
+                -0.5px 2px $header-button-hover, 0px 2px $header-button-hover,
+                0.5px 2px $header-button-hover, 1px 2px $header-button-hover,
+                1.5px 2px $header-button-hover, 2px 2px $header-button-hover,
+                2px 1.5px $header-button-hover, 2px 1px $header-button-hover,
+                2px 0.5px $header-button-hover, 2px 0px $header-button-hover,
+                2px -0.5px $header-button-hover, 2px -1px $header-button-hover,
+                2px -1.5px $header-button-hover, 2px -2px $header-button-hover,
+                1.5px -2px $header-button-hover, 1px -2px $header-button-hover,
+                0.5px -2px $header-button-hover, 0px -2px $header-button-hover,
+                -0.5px -2px $header-button-hover, -1px -2px $header-button-hover,
+                -1.5px -2px $header-button-hover;
         }
     }
 }
