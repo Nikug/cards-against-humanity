@@ -15,8 +15,8 @@ export class Header extends Component {
                     </div>
                 </Link>
                 <div className="buttons">
-                    <span className="button" onClick={() => alert('This should open settings popover or smth')}>Asetukset</span>
-                    {isInGame && <Link to="/"><span href="/" className="button" onClick={() => toggleIsInGame(false)}>Poistu</span></Link>}
+                    <span className="header-button" onClick={() => alert('Tästä aukeaa vielä joskus ehkä asetusvalikko')}>Asetukset</span>
+                    {isInGame && <Link to="/"><span href="/" className="header-button" onClick={() => toggleIsInGame(false)}>Poistu</span></Link>}
                 </div>
             </div>
         )

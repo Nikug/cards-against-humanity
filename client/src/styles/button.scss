@@ -1,0 +1,37 @@
+@import "./colors.scss";
+
+.button {
+    font-weight: 600;
+    font-size: 1.3rem;
+    color: $button-text;
+    outline: 0;
+    display: inline-flex;
+    align-items: center;
+    position: relative;
+    padding: 0.4rem 1rem;
+    height: fit-content;
+    width: fit-content;
+    min-width: 5rem;
+    text-align: center;
+    background: linear-gradient(180deg, $button-shadow, $button-background)
+        $button-background;
+    border: 1px solid $button-border;
+    cursor: pointer;
+    user-select: none;
+    white-space: nowrap;
+    box-shadow: 0 1.1px 1.1px 0 rgba(0, 0, 0, 0.25);
+    border-radius: 4px;
+    line-height: 29px;
+    backface-visibility: hidden;
+
+    &.primary {
+        color: $button-text-primary;
+        border: 1px solid $button-border-primary;
+        background: linear-gradient(
+                180deg,
+                $button-shadow-primary,
+                $button-background-primary
+            )
+            $button-background-primary;
+    }
+}

@@ -3,6 +3,8 @@ import { Redirect } from "react-router-dom";
 
 import "../styles/home.scss"
 
+import Button, { BUTTON_TYPES } from "../components/button";
+
 export class Home extends Component {
     constructor(props) {
         super(props)
@@ -37,14 +39,14 @@ export class Home extends Component {
                         <div className="container">
                             <div className="text">Luo uusi peli, johon voit kutsua kaverisi mukaan</div>
                             <div className="input-and-button-container">
-                            <button className="button primary" onClick={startNewGame}>Luo peli</button>
+                            <Button text="Luo peli" type={BUTTON_TYPES.PRIMARY} callback={startNewGame}></Button>
                             </div>
                         </div>
                         <div className="container border">
                             <div className="text">Liity olemassa olevaan peliin syöttämällä pelin nimi</div>
                             <div className="input-and-button-container">
                                 <input type="text" className="input" placeholder="existing-game-name-44" onChange={(e) => this.newUrlChange(e)} value={this.state.newUrl} onKeyDown={(e) => this.handleKeyDown(e)}/> 
-                                <input type="button" value="Liity peliin" className="button primary" onClick={() => joinExistingGame(this.state.newUrl)} />
+                                <Button text="Liity peliin" type={BUTTON_TYPES.PRIMARY} callback={joinExistingGame} callbackParams={this.state.newUrl}></Button>
                             </div>
                         </div>
                     </div>

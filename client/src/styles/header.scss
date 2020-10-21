@@ -24,11 +24,11 @@
     // All except the first child.
     :nth-child(n + 2) {
         border-left: $color-white 1px solid;
-        padding-left: 0.5rem;
+        padding-left: 0.8rem;
     }
 
-    .button {
-        padding-right: 0.5rem;
+    .header-button {
+        padding-right: 0.8rem;
         cursor: pointer;
 
         &:hover {
