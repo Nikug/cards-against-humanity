@@ -1,20 +1,8 @@
-import React, { useState } from "react";
+import React from "react";
 import { Redirect } from "react-router-dom";
-import axios from "axios";
 
 export function Home(props) {
-    const [url, setUrl] = useState("");
-
-    function startNewGame() {
-        axios.post("/g").then((res) => {
-            setUrl(res.data.url);
-        });
-    };
-
-    function joinExistingGame(gameUrl) {
-        setUrl(gameUrl);
-    }
-
+    const {url, startNewGame, joinExistingGame} = props;
     const urlIsEmpty = url === "";
 
     if (urlIsEmpty) { 

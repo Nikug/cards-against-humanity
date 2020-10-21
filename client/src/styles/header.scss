@@ -8,11 +8,13 @@
     background-color: $color-black;
     color: $color-white;
     box-shadow: 0 5px 30px 5px $header-shadow inset;
+    user-select: none;
 }
 
 .header-text {
     margin-left: 0.8rem;
     font-weight: 800;
+    cursor: pointer;
 }
 
 .buttons {
@@ -26,6 +28,7 @@
 
     .button {
         padding-right: 0.5rem;
+        cursor: pointer;
 
         &:hover {
             color: $header-button-text-hover;

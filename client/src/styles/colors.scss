@@ -19,4 +19,4 @@ $header-background: $color-black;
 $header-text: $color-white;
 $header-shadow: $color-dark-grey;
 $header-button-text-hover: $color-white;
-$header-button-hover: $color-blue;
+$header-button-hover: darken($color-blue, 15%);
