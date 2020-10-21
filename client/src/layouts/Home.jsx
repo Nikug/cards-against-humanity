@@ -41,7 +41,7 @@ export class Home extends Component {
                             </div>
                         </div>
                         <div className="container border">
-                            <div className="text">Liity olemassa olevaan peliin syöttämällä linkki</div>
+                            <div className="text">Liity olemassa olevaan peliin syöttämällä pelin nimi</div>
                             <div className="input-and-button-container">
                                 <input type="text" className="input" placeholder="existing-game-name-44" onChange={(e) => this.newUrlChange(e)} value={this.state.newUrl} onKeyDown={(e) => this.handleKeyDown(e)}/> 
                                 <input type="button" value="Liity peliin" className="button primary" onClick={() => joinExistingGame(this.state.newUrl)} />
