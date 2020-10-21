@@ -24,6 +24,24 @@
     line-height: 29px;
     backface-visibility: hidden;
 
+    &:hover {
+        background: linear-gradient(
+                180deg,
+                $button-shadow-hover,
+                $button-background-hover
+            )
+            $button-background-hover;
+    }
+
+    &:focus {
+        background: linear-gradient(
+                180deg,
+                $button-background-hover,
+                $button-shadow-hover
+            )
+            $button-shadow-hover;
+    }
+
     &.primary {
         color: $button-text-primary;
         border: 1px solid $button-border-primary;
@@ -33,5 +51,23 @@
                 $button-background-primary
             )
             $button-background-primary;
+
+        &:hover {
+            background: linear-gradient(
+                    180deg,
+                    $button-shadow-primary-hover,
+                    $button-background-primary-hover
+                )
+                $button-background-primary-hover;
+        }
+
+        &:focus {
+            background: linear-gradient(
+                    180deg,
+                    $button-background-primary-hover,
+                    $button-shadow-primary-hover
+                )
+                $button-shadow-primary-hover;
+        }
     }
 }
