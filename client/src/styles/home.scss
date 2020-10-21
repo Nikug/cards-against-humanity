@@ -1,0 +1,48 @@
+@import "./colors.scss";
+
+.home-wrapper {
+    height: 100%;
+    margin-top: auto;
+    margin-bottom: auto;
+    padding-bottom: 10rem;
+
+    .create-or-join-game-buttons {
+        display: flex;
+        flex-direction: row;
+        color: $app-text;
+
+        // All except the first child.
+        .border {
+            border-left: $color-white 1px solid;
+            padding-left: 0.5rem;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-content: center;
+            width: 50%;
+            padding: 10rem 0;
+
+            .text {
+                align-self: center;
+            }
+
+            .input-and-button-container {
+                display: flex;
+                flex-direction: column;
+            }
+
+            .button {
+                align-self: center;
+                width: 30%;
+                height: 100%;
+            }
+
+            .input {
+                align-self: center;
+                width: 70%;
+            }
+        }
+    }
+}
