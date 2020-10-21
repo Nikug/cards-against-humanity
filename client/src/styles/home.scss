@@ -6,6 +6,32 @@
     margin-bottom: auto;
     padding-bottom: 10rem;
 
+    .welcome-text {
+        margin: 5rem auto 10rem auto;
+        color: $app-text;
+        font-family: "Staatliches", cursive;
+        max-width: 30%;
+        text-align: center;
+
+        text-shadow: -2px -2px $header-button-hover,
+            -2px -1.5px $header-button-hover, -2px -1px $header-button-hover,
+            -2px -0.5px $header-button-hover, -2px 0px $header-button-hover,
+            -2px 0.5px $header-button-hover, -2px 1px $header-button-hover,
+            -2px 1.5px $header-button-hover, -2px 2px $header-button-hover,
+            -1.5px 2px $header-button-hover, -1px 2px $header-button-hover,
+            -0.5px 2px $header-button-hover, 0px 2px $header-button-hover,
+            0.5px 2px $header-button-hover, 1px 2px $header-button-hover,
+            1.5px 2px $header-button-hover, 2px 2px $header-button-hover,
+            2px 1.5px $header-button-hover, 2px 1px $header-button-hover,
+            2px 0.5px $header-button-hover, 2px 0px $header-button-hover,
+            2px -0.5px $header-button-hover, 2px -1px $header-button-hover,
+            2px -1.5px $header-button-hover, 2px -2px $header-button-hover,
+            1.5px -2px $header-button-hover, 1px -2px $header-button-hover,
+            0.5px -2px $header-button-hover, 0px -2px $header-button-hover,
+            -0.5px -2px $header-button-hover, -1px -2px $header-button-hover,
+            -1.5px -2px $header-button-hover;
+    }
+
     .create-or-join-game-buttons {
         display: flex;
         flex-direction: row;
@@ -26,6 +52,7 @@
 
             .text {
                 align-self: center;
+                margin-bottom: 2rem;
             }
 
             .input-and-button-container {
@@ -34,14 +61,51 @@
             }
 
             .button {
-                align-self: center;
-                width: 30%;
-                height: 100%;
+                color: $button-text;
+                outline: 0;
+                display: inline-flex;
+                align-items: center;
+                position: relative;
+                padding: 0 16px;
+                height: 2.3rem;
+                width: fit-content;
+                min-width: 5rem;
+                text-align: center;
+                background: linear-gradient(
+                        180deg,
+                        $button-shadow,
+                        $button-background
+                    )
+                    $button-background;
+                border: 1px solid $button-border;
+                cursor: pointer;
+                user-select: none;
+                white-space: nowrap;
+                box-shadow: 0 1.1px 1.1px 0 rgba(0, 0, 0, 0.25);
+                border-radius: 4px;
+                line-height: 29px;
+                backface-visibility: hidden;
+
+                &.primary {
+                    color: $button-text-primary;
+                    border: 1px solid $button-border-primary;
+                    background: linear-gradient(
+                            180deg,
+                            $button-shadow-primary,
+                            $button-background-primary
+                        )
+                        $button-background-primary;
+                }
             }
 
             .input {
                 align-self: center;
                 width: 70%;
+                background-color: $input-background;
+                border: 1px solid $input-underline;
+                border-radius: 3px;
+                height: 1rem;
+                padding: 0.3rem;
             }
         }
     }

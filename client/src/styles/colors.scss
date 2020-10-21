@@ -2,7 +2,8 @@
 // Colorless colors
 $color-black: #000000;
 $color-white: #ffffff;
-$color-dark-grey: #313131;
+$color-dark-grey: #222222;
+$color-grey: #727272;
 $color-light-grey: #bdbdbd;
 // Bright colors
 $color-yellow: #b58900;
@@ -23,3 +24,24 @@ $header-button-hover: darken($color-blue, 15%);
 
 $app-background: $color-dark-grey;
 $app-text: $color-white;
+
+// Buttons
+
+$button-text: $color-black;
+$button-text-primary: $color-white;
+
+$button-border: $color-white;
+$button-border-primary: $color-blue;
+
+$button-background: $color-light-grey;
+$button-shadow: $color-white;
+
+$button-background-primary: darken($color-blue, 30%);
+$button-shadow-primary: darken($color-blue, 10%);
+
+$input-background: $color-light-grey;
+$input-underline: $color-dark-grey;
+
+// Copyrights
+
+$copyright-text: $color-grey;

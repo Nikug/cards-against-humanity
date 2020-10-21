@@ -70,6 +70,7 @@ class App extends Component {
                         />
                     </Switch>
                 </Router>
+                <div className="copyrights">&copy; 2020</div>
             </div>
         );
     }

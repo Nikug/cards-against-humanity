@@ -7,7 +7,8 @@
     padding: 0.6rem 0;
     background-color: $color-black;
     color: $color-white;
-    box-shadow: 0 5px 30px 5px $header-shadow inset;
+    background: linear-gradient(180deg, $header-shadow, $color-black)
+        $color-black;
     user-select: none;
 }
 

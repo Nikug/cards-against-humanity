@@ -11,9 +11,25 @@
         text-decoration: none;
     }
 
+    input {
+        text-decoration: none;
+    }
+
     background-color: $app-background;
+    //background-image: url("vbwKmY.png");
+    background: linear-gradient(rgba(27, 27, 27, 0.8), rgba(0, 0, 0, 0.7)),
+        url("vbwKmY.png");
+    background-position: center top;
     min-height: 100vh;
     height: 100%;
     display: flex;
     flex-direction: column;
+    color: $app-text;
+
+    .copyrights {
+        position: fixed;
+        bottom: 0;
+        right: 0;
+        color: $copyright-text;
+    }
 }
