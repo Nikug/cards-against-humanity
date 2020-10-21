@@ -15,12 +15,18 @@
         text-decoration: none;
     }
 
-    background-color: $app-background;
-    background: linear-gradient(rgba(27, 27, 27, 0.8), rgba(0, 0, 0, 0.7)),
-        url("background_img.png");
-    background-repeat: no-repeat;
-    background-size: cover;
-    background-position: center top;
+    &.mono-background {
+        background-color: $app-background;
+    }
+
+    &.background-img {
+        background: linear-gradient(rgba(27, 27, 27, 0.8), rgba(0, 0, 0, 0.7)),
+            url("background_img.png");
+        background-repeat: no-repeat;
+        background-size: cover;
+        background-position: center top;
+    }
+
     min-height: 100vh;
     height: 100%;
     display: flex;

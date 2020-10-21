@@ -104,7 +104,8 @@
                 align-self: center;
                 width: 70%;
                 background-color: $input-background;
-                border: 1px solid $input-underline;
+                border: 0;
+                border-bottom: 1px solid $input-underline;
                 border-radius: 3px;
                 height: 1rem;
                 padding: 0.3rem;

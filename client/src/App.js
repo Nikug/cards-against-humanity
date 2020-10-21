@@ -1,6 +1,5 @@
 import React, {Component} from 'react';
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
-import { Redirect } from "react-router-dom";
 import axios from "axios";
 
 import { Home } from "./layouts/Home";
@@ -47,18 +46,19 @@ class App extends Component {
     }
 
     render() {
-        console.log({state: this.state});
+        const {isInGame, url} = this.state;
+
         return (
-            <div className="App">
+            <div className={`App ${isInGame ? 'mono-background' : 'background-img'}`}>
                 <Router>
-                <Header isInGame={this.state.isInGame} toggleIsInGame={this.toggleIsInGame}/>
+                <Header isInGame={isInGame} toggleIsInGame={this.toggleIsInGame}/>
                     <Switch>
                         <Route 
                             exact path="/" 
                             render={(props) => 
                                 <Home 
-                                    isInGame={this.state.isInGame}
-                                    url={this.state.url}
+                                    isInGame={isInGame}
+                                    url={url}
                                     startNewGame={this.startNewGame} 
                                     joinExistingGame={this.joinExistingGame}
                                 />
@@ -66,7 +66,7 @@ class App extends Component {
                         />
                         <Route 
                             exact path="/g/:id" 
-                            render={(props) => <Game isInGame={this.state.isInGame} resetUrl={this.resetUrl}/>} 
+                            render={(props) => <Game isInGame={isInGame} resetUrl={this.resetUrl}/>} 
                         />
                     </Switch>
                 </Router>
