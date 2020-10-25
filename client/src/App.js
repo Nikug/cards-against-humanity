@@ -4,9 +4,11 @@ import axios from "axios";
 
 import { Home } from "./layouts/Home";
 import { Game } from "./layouts/Game";
-import {Header} from "./components/header"
+import { Header } from "./components/header"
+import Music from "./components/music";
 
 import './styles/App.scss';
+import './styles/footer.scss';
 
 class App extends Component {
     constructor(props) {
@@ -70,7 +72,12 @@ class App extends Component {
                         />
                     </Switch>
                 </Router>
-                <div className="copyrights">&copy; {new Date().getFullYear()}</div>
+                <div className="footer">
+                    <Music/>
+                    <span className="copyrights">
+                        &copy; {new Date().getFullYear()}
+                    </span>
+                </div>
             </div>
         );
     }

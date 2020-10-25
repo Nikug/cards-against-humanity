@@ -35,6 +35,7 @@ export class Home extends Component {
                     <h1 className="welcome-text">
                         Tervetuloa pelaamaan kortteja ihmiskuntaa vastaan!
                     </h1>
+                    
                     <div className="create-or-join-game-buttons">
                         <div className="container">
                             <div className="text">Luo uusi peli, johon voit kutsua kaverisi mukaan</div>
@@ -45,7 +46,7 @@ export class Home extends Component {
                         <div className="container border">
                             <div className="text">Liity olemassa olevaan peliin syöttämällä pelin nimi</div>
                             <div className="input-and-button-container">
-                                <input type="text" className="input" placeholder="existing-game-name-44" onChange={(e) => this.newUrlChange(e)} value={this.state.newUrl} onKeyDown={(e) => this.handleKeyDown(e)}/> 
+                                <input type="text" className="input" placeholder="existing-game-69" onChange={(e) => this.newUrlChange(e)} value={this.state.newUrl} onKeyDown={(e) => this.handleKeyDown(e)}/> 
                                 <Button text="Liity peliin" type={BUTTON_TYPES.PRIMARY} callback={joinExistingGame} callbackParams={this.state.newUrl}  icon="login"></Button>
                             </div>
                         </div>
