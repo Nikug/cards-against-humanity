@@ -19,37 +19,59 @@
 }
 
 .buttons {
+    display: flex;
     margin-right: 1.2rem;
+    justify-items: center;
+    align-items: center;
 
     // All except the first child.
     :nth-child(n + 2) {
         border-left: $color-white 1px solid;
         padding-left: 0.8rem;
     }
+}
 
-    .header-button {
-        padding-right: 0.8rem;
-        cursor: pointer;
+.header-button {
+    display: flex;
+    justify-items: center;
+    align-items: center;
+    padding-right: 0.8rem;
+    cursor: pointer;
 
-        &:hover {
-            color: $header-button-text-hover;
-            text-shadow: -2px -2px $header-button-hover,
-                -2px -1.5px $header-button-hover, -2px -1px $header-button-hover,
-                -2px -0.5px $header-button-hover, -2px 0px $header-button-hover,
-                -2px 0.5px $header-button-hover, -2px 1px $header-button-hover,
-                -2px 1.5px $header-button-hover, -2px 2px $header-button-hover,
-                -1.5px 2px $header-button-hover, -1px 2px $header-button-hover,
-                -0.5px 2px $header-button-hover, 0px 2px $header-button-hover,
-                0.5px 2px $header-button-hover, 1px 2px $header-button-hover,
-                1.5px 2px $header-button-hover, 2px 2px $header-button-hover,
-                2px 1.5px $header-button-hover, 2px 1px $header-button-hover,
-                2px 0.5px $header-button-hover, 2px 0px $header-button-hover,
-                2px -0.5px $header-button-hover, 2px -1px $header-button-hover,
-                2px -1.5px $header-button-hover, 2px -2px $header-button-hover,
-                1.5px -2px $header-button-hover, 1px -2px $header-button-hover,
-                0.5px -2px $header-button-hover, 0px -2px $header-button-hover,
-                -0.5px -2px $header-button-hover, -1px -2px $header-button-hover,
-                -1.5px -2px $header-button-hover;
-        }
+    :nth-child(n) {
+        border-left: none;
+        padding-left: 0;
     }
+
+    &:hover {
+        color: $header-button-text-hover;
+        text-shadow: -2px -2px $header-button-hover,
+            -2px -1.5px $header-button-hover, -2px -1px $header-button-hover,
+            -2px -0.5px $header-button-hover, -2px 0px $header-button-hover,
+            -2px 0.5px $header-button-hover, -2px 1px $header-button-hover,
+            -2px 1.5px $header-button-hover, -2px 2px $header-button-hover,
+            -1.5px 2px $header-button-hover, -1px 2px $header-button-hover,
+            -0.5px 2px $header-button-hover, 0px 2px $header-button-hover,
+            0.5px 2px $header-button-hover, 1px 2px $header-button-hover,
+            1.5px 2px $header-button-hover, 2px 2px $header-button-hover,
+            2px 1.5px $header-button-hover, 2px 1px $header-button-hover,
+            2px 0.5px $header-button-hover, 2px 0px $header-button-hover,
+            2px -0.5px $header-button-hover, 2px -1px $header-button-hover,
+            2px -1.5px $header-button-hover, 2px -2px $header-button-hover,
+            1.5px -2px $header-button-hover, 1px -2px $header-button-hover,
+            0.5px -2px $header-button-hover, 0px -2px $header-button-hover,
+            -0.5px -2px $header-button-hover, -1px -2px $header-button-hover,
+            -1.5px -2px $header-button-hover;
+    }
+}
+
+.header-button-text {
+    margin-bottom: -0.3rem;
+}
+
+.header-icon {
+    display: flex;
+    justify-items: center;
+    align-items: center;
+    margin-right: 0.5rem;
 }

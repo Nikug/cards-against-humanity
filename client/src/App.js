@@ -70,7 +70,7 @@ class App extends Component {
                         />
                     </Switch>
                 </Router>
-                <div className="copyrights">&copy; 2020</div>
+                <div className="copyrights">&copy; {new Date().getFullYear()}</div>
             </div>
         );
     }

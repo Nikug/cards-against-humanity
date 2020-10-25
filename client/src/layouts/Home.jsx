@@ -39,14 +39,14 @@ export class Home extends Component {
                         <div className="container">
                             <div className="text">Luo uusi peli, johon voit kutsua kaverisi mukaan</div>
                             <div className="input-and-button-container">
-                            <Button text="Luo peli" type={BUTTON_TYPES.PRIMARY} callback={startNewGame}></Button>
+                            <Button text="Luo peli" type={BUTTON_TYPES.PRIMARY} callback={startNewGame} icon="add_circle_outline"></Button>
                             </div>
                         </div>
                         <div className="container border">
                             <div className="text">Liity olemassa olevaan peliin syöttämällä pelin nimi</div>
                             <div className="input-and-button-container">
                                 <input type="text" className="input" placeholder="existing-game-name-44" onChange={(e) => this.newUrlChange(e)} value={this.state.newUrl} onKeyDown={(e) => this.handleKeyDown(e)}/> 
-                                <Button text="Liity peliin" type={BUTTON_TYPES.PRIMARY} callback={joinExistingGame} callbackParams={this.state.newUrl}></Button>
+                                <Button text="Liity peliin" type={BUTTON_TYPES.PRIMARY} callback={joinExistingGame} callbackParams={this.state.newUrl}  icon="login"></Button>
                             </div>
                         </div>
                     </div>
