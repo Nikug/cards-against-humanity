@@ -1,12 +1,5 @@
 @import "./colors.scss";
 
-.footer {
-    display: flex;
-    justify-content: space-between;
-    align-content: space-between;
-    height: fit-content;
-}
-
 .copyrights {
     position: fixed;
     bottom: 0;
@@ -17,4 +10,10 @@
 
 .music-player {
     color: $music-player;
+
+    position: fixed;
+    bottom: 0;
+    left: 0px;
+    color: $copyright-text;
+    font-size: 0.6em;
 }

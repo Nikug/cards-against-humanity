@@ -17,18 +17,29 @@ export class Header extends Component {
                     </div>
                 </Link>
                 <div className="buttons">
+                    <Link to="/instructions">
+                        <span className="header-button">
+                            <Icon className="header-icon" name="help_center"/>
+                            <span className="header-button-text">
+                                Ohjeet
+                            </span>
+                        </span>
+                    </Link>
                     <span className="header-button" onClick={() => alert('Tästä aukeaa vielä joskus ehkä asetusvalikko')}>
                         <Icon className="header-icon" name="settings"/>
                         <span className="header-button-text">
                             Asetukset
                         </span>
                     </span>
-                    {isInGame && <Link to="/"><span href="/" className="header-button" onClick={() => toggleIsInGame(false)}>
-                        <Icon className="header-icon" name="exit_to_app"/>
-                        <span className="header-button-text">
-                            Poistu
+                    {isInGame && 
+                    <Link to="/">
+                        <span href="/" className="header-button" onClick={() => toggleIsInGame(false)}>
+                            <Icon className="header-icon" name="exit_to_app"/>
+                            <span className="header-button-text">
+                                Poistu
+                            </span>
                         </span>
-                    </span></Link>}
+                    </Link>}
                 </div>
             </div>
         )

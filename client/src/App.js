@@ -67,13 +67,19 @@ class App extends Component {
                             } 
                         />
                         <Route 
+                            exact path="/instructions" 
+                            render={(props) => 
+                                <div>Instructions under construction!</div>
+                            } 
+                        />
+                        <Route 
                             exact path="/g/:id" 
                             render={(props) => <Game isInGame={isInGame} resetUrl={this.resetUrl}/>} 
                         />
                     </Switch>
                 </Router>
                 <div className="footer">
-                    <Music/>
+                    <span className="music-player"><Music/></span>
                     <span className="copyrights">
                         &copy; {new Date().getFullYear()}
                     </span>
