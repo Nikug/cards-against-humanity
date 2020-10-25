@@ -1,0 +1,92 @@
+@import "./colors.scss";
+
+.home-wrapper {
+    height: 100%;
+    margin-top: auto;
+    margin-bottom: auto;
+    padding-bottom: 10rem;
+    user-select: none;
+
+    .welcome-text {
+        margin: 5rem auto 10rem auto;
+        color: $app-text;
+        font-family: "Staatliches", cursive;
+        max-width: 30%;
+        text-align: center;
+        font-size: 2.8rem;
+
+        text-shadow: -2px -2px $header-button-hover,
+            -2px -1.5px $header-button-hover, -2px -1px $header-button-hover,
+            -2px -0.5px $header-button-hover, -2px 0px $header-button-hover,
+            -2px 0.5px $header-button-hover, -2px 1px $header-button-hover,
+            -2px 1.5px $header-button-hover, -2px 2px $header-button-hover,
+            -1.5px 2px $header-button-hover, -1px 2px $header-button-hover,
+            -0.5px 2px $header-button-hover, 0px 2px $header-button-hover,
+            0.5px 2px $header-button-hover, 1px 2px $header-button-hover,
+            1.5px 2px $header-button-hover, 2px 2px $header-button-hover,
+            2px 1.5px $header-button-hover, 2px 1px $header-button-hover,
+            2px 0.5px $header-button-hover, 2px 0px $header-button-hover,
+            2px -0.5px $header-button-hover, 2px -1px $header-button-hover,
+            2px -1.5px $header-button-hover, 2px -2px $header-button-hover,
+            1.5px -2px $header-button-hover, 1px -2px $header-button-hover,
+            0.5px -2px $header-button-hover, 0px -2px $header-button-hover,
+            -0.5px -2px $header-button-hover, -1px -2px $header-button-hover,
+            -1.5px -2px $header-button-hover;
+    }
+
+    .create-or-join-game-buttons {
+        display: flex;
+        flex-direction: row;
+        color: $app-text;
+
+        // All except the first child.
+        .border {
+            border-left: $color-white 1px solid;
+            padding-left: 0.5rem;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-content: center;
+            width: 50%;
+            padding: 8rem 0 10rem 0;
+
+            .text {
+                align-self: center;
+                margin: 2rem;
+                margin-top: 0;
+                font-size: larger;
+                text-align: center;
+            }
+
+            .input-and-button-container {
+                display: flex;
+                flex-direction: row;
+                justify-content: center;
+            }
+
+            .input {
+                align-self: center;
+                width: 20rem;
+                background-color: $input-background;
+                color: $input-text;
+                border: 0;
+                border-bottom: 1px solid $input-underline;
+                border-radius: 3px;
+                height: 1.3rem;
+                padding: 0.5rem;
+                margin: 0 0.5rem;
+                font-size: 1.3rem;
+
+                &:hover {
+                    background-color: $input-background-hover;
+                }
+
+                &:focus {
+                    background-color: $input-background-hover;
+                }
+            }
+        }
+    }
+}

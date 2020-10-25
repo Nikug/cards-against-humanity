@@ -1,37 +1,67 @@
-import React, { useState } from "react";
+import React, {Component} from "react";
 import { Redirect } from "react-router-dom";
-import axios from "axios";
 
-export function Home(props) {
-    const [url, setUrl] = useState("");
+import "../styles/home.scss"
 
-    function startNewGame() {
-        axios.post("/g").then((res) => {
-            setUrl(res.data.url);
-        });
-    };
+import Button, { BUTTON_TYPES } from "../components/button";
 
-    function joinExistingGame(gameUrl) {
-        setUrl(gameUrl);
+export class Home extends Component {
+    constructor(props) {
+        super(props)
+
+        this.state = {
+            newUrl: ""
+        }
     }
 
-    const urlIsEmpty = url === "";
+    handleKeyDown(event) {
+        if (event.key === 'Enter') {
+            this.props.joinExistingGame(this.state.newUrl);
+        }
+    }
 
-    if (urlIsEmpty) { 
+    newUrlChange(event) {
+        console.log(event);
+        this.setState({newUrl: event.target.value})
+    }
+
+    render() {
+        const {url, startNewGame, joinExistingGame} = this.props;
+        const urlIsEmpty = url === "";
+
+        if (urlIsEmpty) { 
+            return (
+                <div className="home-wrapper">
+                    <h1 className="welcome-text">
+                        Tervetuloa pelaamaan kortteja ihmiskuntaa vastaan!
+                    </h1>
+                    
+                    <div className="create-or-join-game-buttons">
+                        <div className="container">
+                            <div className="text">Luo uusi peli, johon voit kutsua kaverisi mukaan</div>
+                            <div className="input-and-button-container">
+                            <Button text="Luo peli" type={BUTTON_TYPES.PRIMARY} callback={startNewGame} icon="add_circle_outline"></Button>
+                            </div>
+                        </div>
+                        <div className="container border">
+                            <div className="text">Liity olemassa olevaan peliin syöttämällä pelin nimi</div>
+                            <div className="input-and-button-container">
+                                <input type="text" className="input" placeholder="existing-game-69" onChange={(e) => this.newUrlChange(e)} value={this.state.newUrl} onKeyDown={(e) => this.handleKeyDown(e)}/> 
+                                <Button text="Liity peliin" type={BUTTON_TYPES.PRIMARY} callback={joinExistingGame} callbackParams={this.state.newUrl}  icon="login"></Button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            )
+        }
+        
         return (
-            <div>
-                <input type="button" value="Luo Peli" onClick={startNewGame} />
-                <input type="button" value="Liity Peliin" onClick={() => joinExistingGame(url)} />
-            </div>
-        )
+            <Redirect
+                to={{
+                    pathname: `/g/${url}`,
+                    state: url,
+                }}
+            />
+        );
     }
-    
-    return (
-        <Redirect
-            to={{
-                pathname: `/g/${url}`,
-                state: url,
-            }}
-        />
-    );
 };

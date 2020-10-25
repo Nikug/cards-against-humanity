@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { socket } from "../components/sockets/socket";
+import { Redirect } from "react-router-dom";
 
 import { GameOptions } from "../components/options/GameOptions";
 import { PlayerName } from "../components/options/PlayerName";
 import { BlackCardPicker } from "../components/views/BlackCardPicker";
 
-export const Game = () => {
+export const Game = (props) => {
     const [game, setGame] = useState(undefined);
     const [player, setPlayer] = useState(undefined);
 

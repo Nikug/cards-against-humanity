@@ -1,0 +1,19 @@
+@import "./colors.scss";
+
+.copyrights {
+    position: fixed;
+    bottom: 0;
+    right: 10px;
+    color: $copyright-text;
+    font-size: 0.6em;
+}
+
+.music-player {
+    color: $music-player;
+
+    position: fixed;
+    bottom: 0;
+    left: 0px;
+    color: $copyright-text;
+    font-size: 0.6em;
+}

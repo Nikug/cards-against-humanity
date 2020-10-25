@@ -2,7 +2,8 @@
 // Colorless colors
 $color-black: #000000;
 $color-white: #ffffff;
-$color-dark-grey: #313131;
+$color-dark-grey: #222222;
+$color-grey: #727272;
 $color-light-grey: #bdbdbd;
 // Bright colors
 $color-yellow: #b58900;
@@ -15,8 +16,46 @@ $color-cyan: #2aa198;
 $color-green: #859900;
 
 // Colors in usage
+
+// Header
 $header-background: $color-black;
 $header-text: $color-white;
 $header-shadow: $color-dark-grey;
 $header-button-text-hover: $color-white;
-$header-button-hover: $color-blue;
+$header-button-hover: darken($color-blue, 15%);
+
+// App general
+
+$app-background: $color-dark-grey;
+$app-text: $color-white;
+
+// Buttons
+
+$button-text: $color-black;
+$button-text-primary: $color-white;
+
+$button-border: $color-white;
+$button-border-primary: $color-blue;
+
+$button-background: $color-light-grey;
+$button-shadow: $color-white;
+$button-background-hover: lighten($color-light-grey, 30%);
+$button-shadow-hover: lighten($color-white, 10%);
+
+$button-background-primary: darken($color-blue, 30%);
+$button-shadow-primary: darken($color-blue, 10%);
+$button-background-primary-hover: darken($color-blue, 20%);
+$button-shadow-primary-hover: darken($color-blue, 0%);
+
+// Input
+
+$input-background: $color-dark-grey;
+$input-background-hover: lighten($color-dark-grey, 5%);
+$input-background-focus: lighten($color-dark-grey, 5%);
+$input-underline: $color-light-grey;
+$input-text: $color-white;
+
+// Footer
+
+$copyright-text: $color-grey;
+$music-player: $color-grey;
