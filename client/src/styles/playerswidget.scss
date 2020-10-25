@@ -1,0 +1,61 @@
+@import "./colors.scss";
+
+.players-widget {
+    font-size: 1.5rem;
+    background: linear-gradient(
+            180deg,
+            $players-background-shadow,
+            $players-background
+        )
+        $players-background;
+    margin: 1rem 1.5rem 0 1.5rem;
+    padding: 1rem;
+    border-radius: 2px;
+
+    display: flex;
+    flex-direction: row;
+
+    // All except the first child.
+    :nth-child(n + 2) {
+        padding-left: 1.2rem;
+    }
+
+    &:hover {
+        background: linear-gradient(
+                180deg,
+                $players-background-shadow,
+                $players-background-hover
+            )
+            $players-background-hover;
+    }
+}
+
+.player {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.status-waiting {
+    color: $player-waiting;
+}
+
+.status-ready {
+    color: $player-ready;
+}
+
+.status-ghost {
+    color: $player-ghost;
+}
+
+.status-error {
+    color: $player-error;
+}
+
+.win-icon {
+    color: $icon-win;
+}
+
+.popular-vote-icon {
+    color: $icon-popular-vote;
+}

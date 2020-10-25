@@ -5,6 +5,8 @@ import { Redirect } from "react-router-dom";
 import { GameOptions } from "../components/options/GameOptions";
 import { PlayerName } from "../components/options/PlayerName";
 import { BlackCardPicker } from "../components/views/BlackCardPicker";
+import { PlayersWidget } from "../components/players-widget/playerswidget";
+import { Timer } from "../components/timer";
 
 export const Game = (props) => {
     const [game, setGame] = useState(undefined);
@@ -71,6 +73,8 @@ export const Game = (props) => {
 
     return (
         <div>
+            <PlayersWidget />
+            <Timer/>
             <h1 style={{ textTransform: "capitalize" }}>{`Game ${
                 game === undefined ? " not found" : game.id.replace(/-/g, ' ')
             }`}</h1>

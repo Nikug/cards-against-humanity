@@ -3,17 +3,19 @@
 $color-black: #000000;
 $color-white: #ffffff;
 $color-dark-grey: #222222;
+$color-darkish-grey: #363636;
 $color-grey: #727272;
 $color-light-grey: #bdbdbd;
 // Bright colors
-$color-yellow: #b58900;
+$color-bright-yellow: #ffc518;
+$color-yellow: #ce9a00;
 $color-orange: #cb4b16;
 $color-red: #dc322f;
 $color-magenta: #d33682;
 $color-violet: #6c71c4;
 $color-blue: #268bd2;
 $color-cyan: #2aa198;
-$color-green: #859900;
+$color-green: #459900;
 
 // Colors in usage
 
@@ -59,3 +61,21 @@ $input-text: $color-white;
 
 $copyright-text: $color-grey;
 $music-player: $color-grey;
+
+// Players widget
+
+$players-background: $color-darkish-grey;
+$players-background-shadow: lighten($color-darkish-grey, 10%);
+$players-background-hover: darken($color-grey, 20%);
+
+// Player statuses
+
+$player-ready: $color-green;
+$player-waiting: $color-yellow;
+$player-ghost: $color-light-grey;
+$player-error: $color-red;
+
+// Icons
+
+$icon-win: $color-bright-yellow;
+$icon-popular-vote: $color-blue;
