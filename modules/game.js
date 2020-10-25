@@ -25,6 +25,12 @@ export const setGame = (newGame) => {
     return newGame;
 };
 
+export const getPlayer = (game, playerID) => {
+    const players = game.players.filter((player) => player.id === playerID);
+    if (players.length !== 1) return undefined;
+    return players[0];
+};
+
 export const validateOptions = (newOptions) => {
     const validatedOptions = {
         ...newOptions,
@@ -279,24 +285,68 @@ export const drawBlackCards = (game, count) => {
         return blackCards;
     }
     const blackCards = game.cards.blackCards.splice(0, count);
-    game.cards.playedBlackCards = [...game.cards.playedBlackCards, ...blackCards];
+    game.cards.playedBlackCards = [
+        ...game.cards.playedBlackCards,
+        ...blackCards,
+    ];
     setGame(game);
     return blackCards;
 };
 
 export const shuffleCardsBackToDeck = (cards, deck) => {
     let newCards = [...deck];
-    for(const card in cards) {
+    for (const card in cards) {
         newCards.splice(randomBetween(0, newCards.length), 0, card);
     }
     return [...newCards];
-}
+};
 
 export const createRound = (roundNumber, blackCard, playerID) => {
     return {
         round: roundNumber,
         blackCard: blackCard,
         cardCzar: playerID,
-        whiteCardsByPlayer: []
-    }
-}
+        whiteCardsByPlayer: [],
+    };
+};
+
+export const validatePlayerPlayingWhiteCard = (
+    game,
+    playerID,
+    whiteCardIDs
+) => {
+    if (game.state !== "playingWhiteCards")
+        return { error: "Tällä hetkellä ei voi pelata valkoisia kortteja" };
+
+    const player = getPlayer(game, playerID);
+    if (players.length !== 1)
+        return { result: false, error: "Pelaajaa ei löytynyt" };
+
+    const player = players[0];
+    if (
+        player.whiteCards.filter((whiteCard) =>
+            whiteCardIDs.includes(whiteCard.id)
+        ).length !== whiteCardIDs.length
+    )
+        return { result: false, error: "Pelaajalla ei ole kortteja" };
+
+    return { result: true };
+};
+
+export const createWhiteCardsByPlayer = (whiteCards, playerID) => {
+    return {
+        wonRound: false,
+        playerID: playerID,
+        popularVote: 0,
+        whiteCards: whiteCards,
+    };
+};
+
+export const everyoneHasPlayedTurn = (game) => {
+    const activePlayers = game.players.filter(player.state === "waiting" || player.isCardCzar);
+    return (
+        activePlayers.length ===
+        game.client.rounds[game.client.rounds.length - 1].whiteCardsByPlayer
+            .length
+    );
+};

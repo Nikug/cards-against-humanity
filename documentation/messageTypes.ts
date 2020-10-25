@@ -15,3 +15,5 @@ type Client2Server =
     | "start_game"              // Starts the game from lobby
     | "draw_black_cards"        // Card Czar draws a black card
     | "select_black_card"       // Returns the selected black card and the other not selected blackcards
+    | "play_white_cards"        // Client sends white cards it wants to play that turn
+    

@@ -7,11 +7,12 @@ interface Game {
     cards: Cards;
     stateMachine: typeof StateMachine;
     client: ClientGame;
+    currentRound: Round;
 }
 
 interface ClientGame {
     id: string;
-    state: string;
+    state: GameState;
     options: Options;
     rounds: Round[];
 }
@@ -55,7 +56,7 @@ interface Round {
     cardCzar: string;
     whiteCardsByPlayer: {
         wonRound: boolean;
-        playerId: string;
+        playerID: string;
         popularVote: number;
         whiteCards: WhiteCard[];
     } [];
@@ -87,8 +88,12 @@ type GameState =
     | "gameOver";
 
 type PlayerState =
+    // Active states
+    | "active"      // Default active state
+    | "playing"     // Picking a white card
+    | "waiting"     // Has played white cards, waiting for pick phase to end
+    // Inactive states
     | "pickingName"
-    | "active"
     | "disconnected"
     | "spectating"
     | "kicked";
