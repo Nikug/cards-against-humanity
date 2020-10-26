@@ -1,14 +1,19 @@
-import React, {Component} from 'react'
+import React from 'react';
 
-import "./../styles/timer.scss";
+import './../styles/timer.scss';
 
-export class Timer extends Component {
-    render() {
+export function Timer({width, percent}) {
+    const [value, setValue] = React.useState(0);
 
-        return (
-            <div className="timer">
-                timer
+    React.useEffect(() => {
+        setValue(percent * width);
+    });
+
+    return (
+        <div>
+            <div className="progress-div" style={{ width: `${width}%` }}>
+                <div style={{ width: `${value}%` }} className="progress" />
             </div>
-        )
-    }
-}
+        </div>
+    );
+};

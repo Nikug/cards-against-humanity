@@ -1,5 +1,14 @@
 @import "./colors.scss";
 
-.timer {
-    background-color: red;
+.progress-div {
+    background-color: $timer-background;
+    border-radius: 0 0 2px 2px;
+}
+
+.progress {
+    background-color: $timer-progress;
+    height: 10px;
+    border-radius: 0 0 2px 2px;
+    transition: 1s ease;
+    transition-delay: 0.5s;
 }

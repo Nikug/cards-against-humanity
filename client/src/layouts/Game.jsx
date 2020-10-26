@@ -8,6 +8,8 @@ import { BlackCardPicker } from "../components/views/BlackCardPicker";
 import { PlayersWidget } from "../components/players-widget/playerswidget";
 import { Timer } from "../components/timer";
 
+import "./../styles/game.scss";
+
 export const Game = (props) => {
     const [game, setGame] = useState(undefined);
     const [player, setPlayer] = useState(undefined);
@@ -73,8 +75,10 @@ export const Game = (props) => {
 
     return (
         <div>
-            <PlayersWidget />
-            <Timer/>
+            <div className="info">
+                <PlayersWidget />
+                <Timer width={100} percent={0.5}/>
+            </div>
             <h1 style={{ textTransform: "capitalize" }}>{`Game ${
                 game === undefined ? " not found" : game.id.replace(/-/g, ' ')
             }`}</h1>
