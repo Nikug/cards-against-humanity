@@ -9,6 +9,7 @@
     background-color: $timer-progress;
     height: 10px;
     border-radius: 0 0 2px 2px;
-    transition: 1s ease;
-    transition-delay: 0.5s;
+    transition: 10s linear; // TODO: Replace number 10 with variable
+    //transition-delay: 0.5s;
+    //margin-left: auto;
 }
