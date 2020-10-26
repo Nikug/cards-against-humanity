@@ -5,10 +5,16 @@ import { Redirect } from "react-router-dom";
 import { GameOptions } from "../components/options/GameOptions";
 import { PlayerName } from "../components/options/PlayerName";
 import { BlackCardPicker } from "../components/views/BlackCardPicker";
+import { PlayersWidget } from "../components/players-widget/playerswidget";
+import { Timer } from "../components/timer";
+import Button, { BUTTON_TYPES } from "../components/button";
+
+import "./../styles/game.scss";
 
 export const Game = (props) => {
     const [game, setGame] = useState(undefined);
     const [player, setPlayer] = useState(undefined);
+    const [progress, setProgress] = useState(0);
 
     const getGameIdFromURL = () => {
         const url = window.location.pathname;
@@ -69,8 +75,25 @@ export const Game = (props) => {
         console.log('was no game');
     }
 
+    const addProgress = () => {
+        console.log(progress);
+        if (progress < 0.95) {
+        setProgress(progress + 1)
+        return;
+        }
+
+        setProgress(0)
+    }
+
     return (
         <div>
+            <div className="info">
+                <PlayersWidget />
+                <Timer width={100} percent={progress}/>
+            </div>
+            <div style={{marginTop: '2rem'}}>
+                <Button text="try the timer" callback={addProgress} />
+            </div>
             <h1 style={{ textTransform: "capitalize" }}>{`Game ${
                 game === undefined ? " not found" : game.id.replace(/-/g, ' ')
             }`}</h1>

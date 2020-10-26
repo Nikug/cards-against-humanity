@@ -1,0 +1,15 @@
+@import "./colors.scss";
+
+.progress-div {
+    background-color: $timer-background;
+    border-radius: 0 0 2px 2px;
+}
+
+.progress {
+    background-color: $timer-progress;
+    height: 10px;
+    border-radius: 0 0 2px 2px;
+    transition: 10s linear; // TODO: Replace number 10 with variable
+    //transition-delay: 0.5s;
+    //margin-left: auto;
+}

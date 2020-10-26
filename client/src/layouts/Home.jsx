@@ -4,6 +4,7 @@ import { Redirect } from "react-router-dom";
 import "../styles/home.scss"
 
 import Button, { BUTTON_TYPES } from "../components/button";
+import {Timer} from "../components/timer";
 
 export class Home extends Component {
     constructor(props) {

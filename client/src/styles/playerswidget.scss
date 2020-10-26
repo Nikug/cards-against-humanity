@@ -1,0 +1,143 @@
+@import "./colors.scss";
+
+.players-widget {
+    font-size: 1.5rem;
+    background: linear-gradient(
+            180deg,
+            $players-background-shadow,
+            $players-background
+        )
+        $players-background;
+    border-radius: 2px 2px 0 0;
+
+    cursor: default;
+
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+
+    &:hover {
+        background: linear-gradient(
+                180deg,
+                $players-background-shadow,
+                $players-background-hover
+            )
+            $players-background-hover;
+    }
+}
+
+.player {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    padding: 1rem;
+
+    &:hover {
+        .player-name {
+            text-overflow: clip;
+            overflow: visible;
+            white-space: normal;
+            max-width: 14rem;
+            text-align: center;
+        }
+
+        .player-status {
+            margin-top: 0.35rem;
+        }
+    }
+}
+
+.player-name {
+    max-width: 6rem;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+    /* take in use when player name is clickable
+    &:hover {
+        color: $header-button-text-hover;
+        text-shadow: -2px -2px $header-button-hover,
+            -2px -1.5px $header-button-hover, -2px -1px $header-button-hover,
+            -2px -0.5px $header-button-hover, -2px 0px $header-button-hover,
+            -2px 0.5px $header-button-hover, -2px 1px $header-button-hover,
+            -2px 1.5px $header-button-hover, -2px 2px $header-button-hover,
+            -1.5px 2px $header-button-hover, -1px 2px $header-button-hover,
+            -0.5px 2px $header-button-hover, 0px 2px $header-button-hover,
+            0.5px 2px $header-button-hover, 1px 2px $header-button-hover,
+            1.5px 2px $header-button-hover, 2px 2px $header-button-hover,
+            2px 1.5px $header-button-hover, 2px 1px $header-button-hover,
+            2px 0.5px $header-button-hover, 2px 0px $header-button-hover,
+            2px -0.5px $header-button-hover, 2px -1px $header-button-hover,
+            2px -1.5px $header-button-hover, 2px -2px $header-button-hover,
+            1.5px -2px $header-button-hover, 1px -2px $header-button-hover,
+            0.5px -2px $header-button-hover, 0px -2px $header-button-hover,
+            -0.5px -2px $header-button-hover, -1px -2px $header-button-hover,
+            -1.5px -2px $header-button-hover;
+    }
+    */
+}
+
+.player-status {
+    margin-right: 0.2rem;
+    margin-top: 0.35rem;
+}
+
+.player-name-and-status {
+    display: flex;
+    align-content: center;
+    justify-content: center;
+}
+
+.player-scores {
+    display: flex;
+    align-content: center;
+    justify-content: center;
+    user-select: none;
+}
+
+.player-score {
+    display: flex;
+    align-content: center;
+    justify-content: center;
+}
+
+.player-popularVoteScore {
+    display: flex;
+    align-content: center;
+    justify-content: center;
+}
+
+.win-icon {
+    margin-right: 0.2rem;
+}
+
+.popular-vote-icon {
+    margin-right: 0.2rem;
+    margin-left: 0.4rem;
+    padding-left: 0.4rem;
+    //border-left: 1px solid white;
+}
+
+.status-waiting {
+    color: $player-waiting;
+}
+
+.status-ready {
+    color: $player-ready;
+}
+
+.status-ghost {
+    color: $player-ghost;
+}
+
+.status-error {
+    color: $player-error;
+}
+
+.win-icon {
+    color: $icon-win;
+}
+
+.popular-vote-icon {
+    color: $icon-popular-vote;
+}
