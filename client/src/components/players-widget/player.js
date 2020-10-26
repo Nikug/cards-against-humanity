@@ -24,7 +24,7 @@ export class Player extends Component {
         return (
             <div className="player">
                 <span className="player-name-and-status">
-                    <Icon name="fiber_manual_record" className={`status-${state}`}/>
+                    <Icon name="stop_circle" className={`player-status md-18 status-${state}`}/>
                     <span className="player-name">{name}</span>
                 </span>
                 <span className="player-scores">
