@@ -1,7 +1,8 @@
-import React, {Component} from 'react'
+import React, {Component} from 'react';
 import Icon from '../icon';
 
-import "./../../styles/playerswidget.scss"
+import "./../../styles/playerswidget.scss";
+import "./../../styles/tooltip.scss";
 
 /*
 interface Player {
@@ -25,7 +26,7 @@ export class Player extends Component {
             <div className="player">
                 <span className="player-name-and-status">
                     <Icon name="stop_circle" className={`player-status md-18 status-${state}`}/>
-                    <span className="player-name">{name}</span>
+                    <span className="player-name"><span className="tooltip"><span className="tooltiptext">{name}</span>{name}</span></span>
                 </span>
                 <span className="player-scores">
                     <span className="player-score">

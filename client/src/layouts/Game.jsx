@@ -89,7 +89,7 @@ export const Game = (props) => {
         <div>
             <div className="info">
                 <PlayersWidget />
-                <Timer width={100} percent={progress}/>
+                <Timer width={100} percent={progress} startingPercent={0.4} time={10}/>
             </div>
             <div style={{marginTop: '2rem'}}>
                 <Button text="try the timer" callback={addProgress} />
