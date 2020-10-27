@@ -41,10 +41,6 @@
             max-width: 14rem;
             //text-align: center;
         }
-
-        .player-status {
-            margin-top: 0.35rem;
-        }
     }
 }
 
@@ -79,7 +75,7 @@
 
 .player-status {
     margin-right: 0.2rem;
-    margin-top: 0.35rem;
+    margin-top: 0.25rem;
 }
 
 .player-name-and-status {
@@ -134,10 +130,29 @@
     color: $player-error;
 }
 
+.status-card-czar {
+    color: $player-card-czar;
+}
+
 .win-icon {
     color: $icon-win;
 }
 
 .popular-vote-icon {
     color: $icon-popular-vote;
+}
+
+.icon-with-border {
+    text-shadow: -2px -2px $icon-border, -2px -1.5px $icon-border,
+        -2px -1px $icon-border, -2px -0.5px $icon-border, -2px 0px $icon-border,
+        -2px 0.5px $icon-border, -2px 1px $icon-border, -2px 1.5px $icon-border,
+        -2px 2px $icon-border, -1.5px 2px $icon-border, -1px 2px $icon-border,
+        -0.5px 2px $icon-border, 0px 2px $icon-border, 0.5px 2px $icon-border,
+        1px 2px $icon-border, 1.5px 2px $icon-border, 2px 2px $icon-border,
+        2px 1.5px $icon-border, 2px 1px $icon-border, 2px 0.5px $icon-border,
+        2px 0px $icon-border, 2px -0.5px $icon-border, 2px -1px $icon-border,
+        2px -1.5px $icon-border, 2px -2px $icon-border, 1.5px -2px $icon-border,
+        1px -2px $icon-border, 0.5px -2px $icon-border, 0px -2px $icon-border,
+        -0.5px -2px $icon-border, -1px -2px $icon-border,
+        -1.5px -2px $icon-border;
 }

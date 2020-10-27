@@ -25,7 +25,7 @@ export class Player extends Component {
         return (
             <div className="player">
                 <span className="player-name-and-status">
-                    <Icon name="stop_circle" className={`player-status md-18 status-${state}`}/>
+                    <Icon name={isCardCzar? "star" : "radio_button_unchecked"} className={`player-status md-18 status-${state} ${isCardCzar ? 'icon-with-border' : ''}`}/>
                     <span className="player-name"><span className="tooltip"><span className="tooltiptext">{name}</span>{name}</span></span>
                 </span>
                 <span className="player-scores">
@@ -34,7 +34,7 @@ export class Player extends Component {
                         {score}
                     </span>
                     <span className="player-popularVoteScore">
-                        <Icon name="thumb_up" className="popular-vote-icon"/>
+                        <Icon name="thumb_up_alt" className="popular-vote-icon"/>
                         {popularVoteScore}
                     </span>
                 </span>
