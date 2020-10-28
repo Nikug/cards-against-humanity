@@ -202,3 +202,17 @@
         text-shadow: none;
     }
 }
+
+.number-control {
+    display: flex;
+    flex-direction: row;
+    height: 100%;
+    align-items: center;
+
+    .number {
+        margin-left: -0.5rem;
+        margin-right: 0.3rem;
+        min-width: 1.4rem;
+        text-align: center;
+    }
+}

@@ -24,7 +24,23 @@ export class Setting extends Component {
 
     renderNumberSelect(currentValue, isDisabled, onChangeCallback) {
         return (
-            <span>{currentValue}</span>
+            <div className="number-control">
+            <Icon 
+            name="arrow_back_ios"
+            className='md-24 button-icon'
+            color={isDisabled ? 'disabled' : 'active'}
+            onClick={() => onChangeCallback(false)}
+            />
+            <span className="number">
+                {currentValue}
+            </span>
+            <Icon 
+            name="arrow_forward_ios" 
+            className='md-24 button-icon'
+            color={isDisabled ? 'disabled' : 'active'}
+            onClick={() => onChangeCallback(true)}
+            />
+            </div>
         );
     }
 
