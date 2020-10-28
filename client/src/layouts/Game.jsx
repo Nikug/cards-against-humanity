@@ -6,6 +6,7 @@ import { GameOptions } from "../components/options/GameOptions";
 import { PlayerName } from "../components/options/PlayerName";
 import { BlackCardPicker } from "../components/views/BlackCardPicker";
 import { PlayersWidget } from "../components/players-widget/playerswidget";
+import { GameSettingsContainer } from "../components/game-settings/gamesettingscontainer";
 import { Timer } from "../components/timer";
 import Button, { BUTTON_TYPES } from "../components/button";
 
@@ -89,10 +90,13 @@ export const Game = (props) => {
         <div>
             <div className="info">
                 <PlayersWidget />
-                <Timer width={100} percent={progress}/>
+                <Timer width={100} percent={progress} startingPercent={0.4} time={10}/>
             </div>
-            <div style={{marginTop: '2rem'}}>
+            <div style={{marginTop: '2rem', marginBottom: '2rem'}} className="info">
                 <Button text="try the timer" callback={addProgress} />
+            </div>
+            <div className="info">
+                <GameSettingsContainer />
             </div>
             <h1 style={{ textTransform: "capitalize" }}>{`Game ${
                 game === undefined ? " not found" : game.id.replace(/-/g, ' ')

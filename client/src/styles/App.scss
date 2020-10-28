@@ -17,7 +17,11 @@
     }
 
     &.mono-background {
-        background-color: $app-background;
+        background: linear-gradient(rgba(27, 27, 27, 0.8), rgba(0, 0, 0, 0.7)),
+            url("abstract_background.jpg");
+        background-repeat: space;
+        background-size: cover;
+        background-position: center;
     }
 
     &.background-img {

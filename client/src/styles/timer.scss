@@ -3,13 +3,29 @@
 .progress-div {
     background-color: $timer-background;
     border-radius: 0 0 2px 2px;
+    display: flex;
+}
+
+.no-animation {
+    background-color: $timer-progress;
+    height: 10px;
+    border-radius: 0 0 0 2px;
+    transition: none;
 }
 
 .progress {
     background-color: $timer-progress;
     height: 10px;
     border-radius: 0 0 2px 2px;
-    transition: 10s linear; // TODO: Replace number 10 with variable
-    //transition-delay: 0.5s;
-    //margin-left: auto;
+    //transition-duration: 10s; // Added as an inline style.
+    transition-timing-function: linear;
+
+    &.continuing {
+        border-radius: 0 0 2px 0;
+    }
+
+    &.reverse {
+        //transition-delay: 0.5s;
+        margin-left: auto;
+    }
 }

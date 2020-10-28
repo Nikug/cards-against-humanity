@@ -74,13 +74,29 @@ $player-ready: $color-green;
 $player-waiting: $color-yellow;
 $player-ghost: $color-light-grey;
 $player-error: $color-red;
+$player-card-czar: $color-dark-grey;
 
 // Icons
 
 $icon-win: $color-bright-yellow;
 $icon-popular-vote: $color-blue;
+$icon-border: $color-white;
 
 // Timer
 
 $timer-background: $color-darkish-grey;
 $timer-progress: $color-blue;
+
+// Settings
+$settings-text: $color-white;
+$settings-text-disabled: darken($color-light-grey, 10%);
+$settings-divider: $color-light-grey;
+$setting-background: darken($color-grey, 5%);
+$setting-background-hover: darken($color-grey, 0%);
+$settings-item-hover-text-shadow: darken($color-blue, 10%);
+$settings-item-hover-text: $color-white;
+$settings-control: $color-white;
+$settings-control-shadow: darken($color-blue, 10%);
+$settings-control-disabled: darken($color-light-grey, 10%);
+$settings-icon-disabled: darken($color-light-grey, 10%);
+$settings-icon: lighten($color-cyan, 5%);

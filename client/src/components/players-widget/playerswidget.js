@@ -36,7 +36,7 @@ export class PlayersWidget extends Component {
 
         return (
             <div className="players-widget">
-                <Player name="player 1" state="waiting" score={3} popularVoteScore={5}/>
+                <Player name="player 1" state="card-czar" score={3} popularVoteScore={5} isCardCzar={true}/>
                 <Player name="player 2" state="ready" score={0} popularVoteScore={3}/>
                 <Player name="player 3 with longer name name name name" state="waiting" score={2} popularVoteScore={8}/>
                 <Player name="player 4" state="waiting" score={6} popularVoteScore={13}/>
