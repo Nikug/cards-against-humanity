@@ -95,3 +95,8 @@ $setting-background: darken($color-grey, 5%);
 $setting-background-hover: darken($color-grey, 0%);
 $settings-item-hover-text-shadow: darken($color-blue, 10%);
 $settings-item-hover-text: $color-white;
+$settings-control: $color-white;
+$settings-control-shadow: darken($color-blue, 10%);
+$settings-control-disabled: darken($color-light-grey, 10%);
+$settings-icon-disabled: darken($color-light-grey, 10%);
+$settings-icon: lighten($color-cyan, 5%);

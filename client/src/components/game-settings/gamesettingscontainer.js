@@ -20,46 +20,61 @@ export class GameSettingsContainer extends Component {
                             <Setting 
                                 text={'Pelaajien enimmäismäärä'} 
                                 controlType={CONTROL_TYPES.number}
+                                onChangeCallback={() => console.log('clicked')}
                                 currentValue={8}
+                                isDisabled={false}
                                 icon={{
                                     name: 'groups',
-                                    className: iconClassnames
+                                    className: iconClassnames,
+                                    isDisabled: false
                                 }}
                             />
                             <Setting 
                                 text={'Pisteraja'} 
                                 controlType={CONTROL_TYPES.number}
+                                onChangeCallback={() => console.log('clicked')}
                                 currentValue={10}
+                                isDisabled={false}
                                 icon={{
                                     name: 'emoji_events',
-                                    className: iconClassnames
+                                    className: iconClassnames,
+                                    isDisabled: false
                                 }}
                             />
                             <Setting 
                                 text={'Yleisöäänet käytössä'} 
                                 controlType={CONTROL_TYPES.toggle}
+                                onChangeCallback={() => console.log('clicked')}
                                 currentValue={true}
+                                isDisabled={false}
                                 icon={{
                                     name: 'thumb_up',
-                                    className: iconClassnames
+                                    className: iconClassnames,
+                                    isDisabled: false
                                 }}
                             />
                             <Setting 
                                 text={'Kierroksen voittajasta tulee seuraava korttikuningas'} 
                                 controlType={CONTROL_TYPES.toggle}
+                                onChangeCallback={() => console.log('clicked')}
                                 currentValue={false}
+                                isDisabled={false}
                                 icon={{
                                     name: 'low_priority',
-                                    className: iconClassnames
+                                    className: iconClassnames,
+                                    isDisabled: false
                                 }}
                             />
                             <Setting 
                                 text={'Potkitut pelaajat eivät voi liittyä takaisin peliin'} 
                                 controlType={CONTROL_TYPES.toggle}
+                                onChangeCallback={() => console.log('clicked')}
                                 currentValue={true}
+                                isDisabled={false}
                                 icon={{
                                     name: 'remove_circle_outline',
-                                    className: iconClassnames
+                                    className: iconClassnames,
+                                    isDisabled: false
                                 }}
                             />
                         </div>
@@ -68,13 +83,18 @@ export class GameSettingsContainer extends Component {
                                 Korttipakat
                             </h2>
                             <Setting 
-                                text={'Pelin korttipakat'} 
+                                text={'Lisää korttipakka'} 
                                 controlType={CONTROL_TYPES.custom}
+                                customControl={'custom control'}
                                 icon={{
-                                    name: 'filter_none',
-                                    className: iconClassnames
+                                    name: 'library_add',
+                                    className: iconClassnames,
+                                    isDisabled: false
                                 }}
                             />
+                            <div className="imported-card-packs">
+                                korttipakat:
+                            </div>
                         </div>
                     </div>
                 </div>

@@ -11,49 +11,47 @@ export const CONTROL_TYPES = {
 }
 
 export class Setting extends Component {
-    renderToggle(currentValue, onChangeCallback) {
+    renderToggle(currentValue, isDisabled, onChangeCallback) {
         return (
             <Icon 
             name={`${currentValue === true ? 'check_box' : 'check_box_outline_blank'}`} 
             className='md-36 button-icon'
+            color={isDisabled ? 'disabled' : 'active'}
             onClick={onChangeCallback}
             />
         );
     }
 
-    renderNumberSelect(currentValue) {
+    renderNumberSelect(currentValue, isDisabled, onChangeCallback) {
         return (
-            <span>number select</span>
+            <span>{currentValue}</span>
         );
     }
 
-    renderTextField(currentValue) {
+    renderTextField(currentValue, isDisabled, onChangeCallback) {
         return (
             <span>number select</span>
         );
     }
 
     renderIcon(icon) {
-        const {name, className, color, onClick} = icon;
+        const {name, className, color, onClick, isDisabled} = icon;
 
         return (
-            <Icon name={name} className={className} color={color} onClick={onClick} />
+            <Icon name={name} className={`${className ? className : ''} ${isDisabled ? 'disabled' : ''}`} color={color} onClick={onClick} />
         );
     }
 
-    renderControl(controlType, currentValue, onChangeCallback) {
+    renderControl(controlType, currentValue, isDisabled, onChangeCallback) {
         switch(controlType) {
             case CONTROL_TYPES.toggle:
-                return this.renderToggle(currentValue, onChangeCallback);
+                return this.renderToggle(currentValue, isDisabled, onChangeCallback);
                 break;
             case CONTROL_TYPES.number:
-                return "number";
+                return this.renderNumberSelect(currentValue, isDisabled, onChangeCallback)
                 break;
             case CONTROL_TYPES.text:
                 return "text";
-                break;
-            case CONTROL_TYPES.custom:
-                return "custom";
                 break;
             default:
                 break;
@@ -61,14 +59,14 @@ export class Setting extends Component {
     }
 
     render() {
-        const {icon, text, controlType, currentValue, onChangeCallback} = this.props;
+        const {icon, text, controlType, currentValue, isDisabled, onChangeCallback, customControl} = this.props;
         let renderedIcon;
 
         if (icon !== undefined) {
             renderedIcon = this.renderIcon(icon);
         }
 
-        const control = this.renderControl(controlType, currentValue, onChangeCallback);
+        const control = controlType === CONTROL_TYPES.custom ? customControl : this.renderControl(controlType, currentValue, isDisabled, onChangeCallback);
 
         return (
             <div className="setting">
