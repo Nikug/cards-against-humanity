@@ -18,7 +18,7 @@ export function Timer({width, percent, startingPercent, time}) {
     return (
         <div>
             <div className="progress-div" style={{ width: `${width}%` }}>
-                <div style={{ width: `${startingValue}%` }} className="still-progress" />
+                <div style={{ width: `${startingValue}%` }} className="no-animation" />
                 <div style={{ width: `${value}%`, transitionDuration: `${timeLeft}s`}} className={`progress ${startingValue > 0 ? 'continuing' : ''}`}/>
             </div>
         </div>

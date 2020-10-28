@@ -86,3 +86,12 @@ $icon-border: $color-white;
 
 $timer-background: $color-darkish-grey;
 $timer-progress: $color-blue;
+
+// Settings
+$settings-text: $color-white;
+$settings-text-disabled: darken($color-light-grey, 10%);
+$settings-divider: $color-light-grey;
+$setting-background: darken($color-grey, 5%);
+$setting-background-hover: darken($color-grey, 0%);
+$settings-item-hover-text-shadow: darken($color-blue, 10%);
+$settings-item-hover-text: $color-white;
