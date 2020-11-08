@@ -11,7 +11,12 @@ export const gameOptions = {
     defaultAllowKickedPlayerJoin: true,
 
     startingWhiteCardCount: 10,
-    blackCardsToChooseFrom: 3
+    blackCardsToChooseFrom: 3,
+
+    selectWhiteCardTimeLimit: 60,
+    selectBlackCardTimeLimit: 30,
+
+    defaultGracePeriod: 3,
 }
 
 export const playerName = {

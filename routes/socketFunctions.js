@@ -22,6 +22,8 @@ import {
     getPlayer,
     createWhiteCardsByPlayer,
     everyoneHasPlayedTurn,
+    setPlayersPlaying,
+    changeGameStateAfterTime,
 } from "../modules/game.js";
 import { gameOptions, playerName } from "../consts/gameSettings.js";
 
@@ -149,10 +151,7 @@ export const startGame = (io, gameID, playerID) => {
 
     const playerCount = game.players.length;
     game.players[randomBetween(0, playerCount - 1)].isCardCzar = true;
-    game.players = game.players.map((player) => ({
-        ...player,
-        state: "playing",
-    }));
+    game.players = setPlayersPlaying(game.players);
 
     io.in(gameID).emit("update_players", {
         players: publicPlayersObject(game.players),
@@ -173,7 +172,9 @@ export const startGame = (io, gameID, playerID) => {
 
 export const dealWhiteCards = (io, game, count) => {
     const players = game.players
-        .filter((player) => ["active", "playing", "waiting"].includes(player.state))
+        .filter((player) =>
+            ["active", "playing", "waiting"].includes(player.state)
+        )
         .map((player) => {
             player.whiteCards = drawWhiteCards(game, count);
             io.to(player.socket).emit("update_player", { player: player });
@@ -233,19 +234,28 @@ export const selectBlackCard = (
         game.cards.blackCards
     );
 
-    game.client.rounds = createRound(
+    game.currentRound = createRound(
         game.client.rounds.length + 1,
         selectedCard[0],
         playerID
     );
-    game.client.state = "playingWhiteCards";
+    game.stateMachine.startPlayingWhiteCards();
+    game.client.state = game.stateMachine.state;
+    game.players = setPlayersPlaying(game.players);
     setGame(game);
 
     io.in(gameID).emit("update_game", { game: game.client });
+    changeGameStateAfterTime(
+        io,
+        gameID,
+        "startReading",
+        game.client.options.selectWhiteCardTimeLimit +
+            gameOptions.defaultGracePeriod
+    );
 };
 
 export const playWhiteCard = (io, socket, gameID, playerID, whiteCardIDs) => {
-    game = getGame(gameID);
+    let game = getGame(gameID);
     if (!game) return;
     if (!validatePlayerPlayingWhiteCards(game, playerID, whiteCardIDs).result)
         return;
@@ -259,25 +269,21 @@ export const playWhiteCard = (io, socket, gameID, playerID, whiteCardIDs) => {
     player.whiteCards = player.whiteCards.filter(
         (whiteCard) => !whiteCardIDs.includes(whiteCard.id)
     );
-    
+
     game.cards.playedWhiteCards = [
         ...game.cards.playedWhiteCards,
         ...whiteCards,
     ];
-    
-    player.state = "waiting";
 
+    player.state = "waiting";
     game.players = game.players.map((oldPlayer) =>
         oldPlayer.id === player.id ? player : oldPlayer
     );
 
-    // TODO: use currentRound instead of client rounds until everyone has played their cards
-    // dont update client rounds here
-    // still update the player that played the cards
-    game.client.rounds.whiteCardsByPlayer = createWhiteCardsByPlayer(
-        whiteCards,
-        playerID
-    );
+    game.currentRound.whiteCardsByPlayer = [
+        ...game.currentRound.whiteCardsByPlayer,
+        createWhiteCardsByPlayer(whiteCards, playerID),
+    ];
 
     if (everyoneHasPlayedTurn(game)) {
         game.client.state = "readingCards";
@@ -285,5 +291,8 @@ export const playWhiteCard = (io, socket, gameID, playerID, whiteCardIDs) => {
 
     setGame(game);
     io.in(gameID).emit("update_game", { game: game.client });
+    io.in(gameID).emit("update_players", {
+        players: publicPlayersObject(game.players),
+    });
     io.to(player.socket).emit("update_player", { player: player });
 };

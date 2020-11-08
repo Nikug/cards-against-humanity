@@ -106,6 +106,8 @@ const createNewGame = (url) => {
                 winnerBecomesCardCzar: gameOptions.defaultWinnerBecomesCardCzar,
                 allowKickedPlayerJoin: gameOptions.defaultAllowKickedPlayerJoin,
                 cardPacks: [],
+                selectWhiteCardTimeLimit: gameOptions.selectWhiteCardTimeLimit,
+                selectBlackCardTimeLimit: gameOptions.selectBlackCardTimeLimit,
             },
             rounds: [],
         },
@@ -117,6 +119,12 @@ const createNewGame = (url) => {
             playedBlackCards: [],
         },
         stateMachine: fsm,
+        currentRound: {
+            round: 0,
+            blackCard: null,
+            cardCzar: null,
+            whiteCardsByPlayer: [],
+        },
     };
     return game;
 };
@@ -310,7 +318,7 @@ export const createRound = (roundNumber, blackCard, playerID) => {
     };
 };
 
-export const validatePlayerPlayingWhiteCard = (
+export const validatePlayerPlayingWhiteCards = (
     game,
     playerID,
     whiteCardIDs
@@ -322,7 +330,6 @@ export const validatePlayerPlayingWhiteCard = (
     if (players.length !== 1)
         return { result: false, error: "Pelaajaa ei löytynyt" };
 
-    const player = players[0];
     if (
         player.whiteCards.filter((whiteCard) =>
             whiteCardIDs.includes(whiteCard.id)
@@ -343,10 +350,43 @@ export const createWhiteCardsByPlayer = (whiteCards, playerID) => {
 };
 
 export const everyoneHasPlayedTurn = (game) => {
-    const activePlayers = game.players.filter(player.state === "waiting" || player.isCardCzar);
+    const activePlayers = game.players.filter(
+        player.state === "waiting" || player.isCardCzar
+    );
     return (
         activePlayers.length ===
         game.client.rounds[game.client.rounds.length - 1].whiteCardsByPlayer
             .length
     );
+};
+
+export const setPlayersPlaying = (players) => {
+    return players.map((player) =>
+        player.state === "active" ? { ...player, state: "playing" } : player
+    );
+};
+
+export const setPlayersActive = (players) => {
+    return players.map((player) =>
+        player.state === "playing" || player.state === "waiting"
+            ? { ...player, state: "active" }
+            : player
+    );
+};
+
+export const changeGameStateAfterTime = (io, gameID, transition, time) => {
+    setTimeout(() => {
+        const game = getGame(gameID);
+        if (!game) return;
+
+        game.stateMachine[transition]();
+        game.client.state = game.stateMachine.state;
+        game.players = setPlayersActive(game.players);
+
+        setGame(game);
+        io.in(gameID).emit("update_game", { game: game.client });
+        io.in(gameID).emit("update_players", {
+            players: publicPlayersObject(game.players),
+        });
+    }, (time) * 1000);
 };

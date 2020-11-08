@@ -68,6 +68,8 @@ interface Options {
     winnerBecomesCardCzar: boolean;
     allowKickedPlayerJoin: boolean;
     cardPacks: CardPack[];
+    selectWhiteCardTimeLimit: number;
+    selectBlackCardTimeLimit: number;
 }
 
 interface CardPack {
