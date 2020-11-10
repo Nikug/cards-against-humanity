@@ -1,4 +1,4 @@
-// Documentation for game object
+// Documentation for different types used
 import StateMachine from "javascript-state-machine";
 
 interface Game {
@@ -17,6 +17,7 @@ interface ClientGame {
     rounds: Round[];
 }
 
+// This information is only shown to each player separately
 interface Player {
     id: string;
     socket: string;
@@ -27,6 +28,16 @@ interface Player {
     isHost: boolean;
     popularVoteScore: number;
     whiteCards: WhiteCard[];
+}
+
+// This information about a player is shown to other players
+interface PlayerPublic {
+    name: string;
+    state: PlayerState;
+    score: number;
+    isCardCzar: boolean;
+    isHost: boolean;
+    popularVoteScore: number;
 }
 
 interface Cards {

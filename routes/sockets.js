@@ -8,7 +8,7 @@ import {
     startGame,
     dealBlackCards,
     selectBlackCard,
-    playWhiteCard
+    playWhiteCards
 } from "./socketFunctions.js";
 
 export const sockets = (io) => {
@@ -54,7 +54,7 @@ export const sockets = (io) => {
         });
 
         socket.on("play_white_cards", (data) => {
-            playWhiteCard(io, data.gameID, data.playerID, data.whiteCardIDs);
+            playWhiteCards(io, socket, data.gameID, data.playerID, data.whiteCardIDs);
         });
     });
 

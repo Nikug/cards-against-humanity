@@ -239,6 +239,8 @@ export const selectBlackCard = (
         selectedCard[0],
         playerID
     );
+    game.client.rounds = [...game.client.rounds, game.currentRound];
+
     game.stateMachine.startPlayingWhiteCards();
     game.client.state = game.stateMachine.state;
     game.players = setPlayersPlaying(game.players);
@@ -254,7 +256,7 @@ export const selectBlackCard = (
     );
 };
 
-export const playWhiteCard = (io, socket, gameID, playerID, whiteCardIDs) => {
+export const playWhiteCards = (io, socket, gameID, playerID, whiteCardIDs) => {
     let game = getGame(gameID);
     if (!game) return;
     if (!validatePlayerPlayingWhiteCards(game, playerID, whiteCardIDs).result)
@@ -295,4 +297,6 @@ export const playWhiteCard = (io, socket, gameID, playerID, whiteCardIDs) => {
         players: publicPlayersObject(game.players),
     });
     io.to(player.socket).emit("update_player", { player: player });
+
+    console.log("made it to end");
 };

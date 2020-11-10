@@ -39,7 +39,7 @@ export const BlackCardPicker = (props) => {
                     key={i}
                     type="black"
                     card={blackCard}
-                    selectBlackCard={selectBlackCard}
+                    onClick={selectBlackCard}
                 />
             ))}
         </div>

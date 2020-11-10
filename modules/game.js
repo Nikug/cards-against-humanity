@@ -323,19 +323,28 @@ export const validatePlayerPlayingWhiteCards = (
     playerID,
     whiteCardIDs
 ) => {
-    if (game.state !== "playingWhiteCards")
+    if (game.client.state !== "playingWhiteCards") {
+        console.log("Wrong game state to play cards");
         return { error: "Tällä hetkellä ei voi pelata valkoisia kortteja" };
+    }
 
+    
     const player = getPlayer(game, playerID);
-    if (players.length !== 1)
+    if (player === undefined) {
+        console.log("Player was not found");
         return { result: false, error: "Pelaajaa ei löytynyt" };
+    }
+    
+    // Do check for if the player is cardczar
 
     if (
         player.whiteCards.filter((whiteCard) =>
             whiteCardIDs.includes(whiteCard.id)
         ).length !== whiteCardIDs.length
-    )
+    ) {
+        console.log("Player does not have the right cards");
         return { result: false, error: "Pelaajalla ei ole kortteja" };
+    }
 
     return { result: true };
 };
@@ -351,7 +360,7 @@ export const createWhiteCardsByPlayer = (whiteCards, playerID) => {
 
 export const everyoneHasPlayedTurn = (game) => {
     const activePlayers = game.players.filter(
-        player.state === "waiting" || player.isCardCzar
+        (player) => player.state === "waiting" || player.isCardCzar
     );
     return (
         activePlayers.length ===
@@ -388,5 +397,5 @@ export const changeGameStateAfterTime = (io, gameID, transition, time) => {
         io.in(gameID).emit("update_players", {
             players: publicPlayersObject(game.players),
         });
-    }, (time) * 1000);
+    }, time * 1000);
 };

@@ -5,6 +5,7 @@ import { Redirect } from "react-router-dom";
 import { GameOptions } from "../components/options/GameOptions";
 import { PlayerName } from "../components/options/PlayerName";
 import { BlackCardPicker } from "../components/views/BlackCardPicker";
+import { WhiteCardPicker } from "../components/views/WhiteCardPicker";
 import { PlayersWidget } from "../components/players-widget/playerswidget";
 import { GameSettingsContainer } from "../components/game-settings/gamesettingscontainer";
 import { Timer } from "../components/timer";
@@ -46,6 +47,7 @@ export const Game = (props) => {
 
         socket.on("update_game", (data) => {
             console.log("Game updated!");
+            console.log(data);
             setGame((prevGame) => ({ ...prevGame, ...data.game }));
         });
 
@@ -71,35 +73,43 @@ export const Game = (props) => {
 
     console.log(`Is socket still open: ${socket.connected ? "Yes" : "No"}`);
     if (game) {
-    console.log('game.id', game.id);
+        console.log("game.id", game.id);
     } else {
-        console.log('was no game');
+        console.log("was no game");
     }
 
     const addProgress = () => {
         console.log(progress);
         if (progress < 0.95) {
-        setProgress(progress + 1)
-        return;
+            setProgress(progress + 1);
+            return;
         }
 
-        setProgress(0)
-    }
+        setProgress(0);
+    };
 
     return (
         <div>
             <div className="info">
                 <PlayersWidget />
-                <Timer width={100} percent={progress} startingPercent={0.4} time={10}/>
+                <Timer
+                    width={100}
+                    percent={progress}
+                    startingPercent={0.4}
+                    time={10}
+                />
             </div>
-            <div style={{marginTop: '2rem', marginBottom: '2rem'}} className="info">
+            <div
+                style={{ marginTop: "2rem", marginBottom: "2rem" }}
+                className="info"
+            >
                 <Button text="try the timer" callback={addProgress} />
             </div>
             <div className="info">
                 <GameSettingsContainer />
             </div>
             <h1 style={{ textTransform: "capitalize" }}>{`Game ${
-                game === undefined ? " not found" : game.id.replace(/-/g, ' ')
+                game === undefined ? " not found" : game.id.replace(/-/g, " ")
             }`}</h1>
             {!!game && (
                 <div>
@@ -129,9 +139,19 @@ export const Game = (props) => {
                         </div>
                     )}
 
-                    {game.state === "pickingBlackCard" &&
+                    {game.state === "pickingBlackCard" && (
                         <BlackCardPicker gameID={game.id} player={player} />
-                    }
+                    )}
+                    {game.state === "playingWhiteCards" && (
+                        <WhiteCardPicker
+                            gameID={game.id}
+                            player={player}
+                            pickLimit={
+                                game.rounds[game.rounds.length - 1].blackCard
+                                    .whiteCardsToPlay
+                            }
+                        />
+                    )}
 
                     <div style={{ display: "inline-block" }}>
                         <pre>{JSON.stringify(game, null, 2)}</pre>

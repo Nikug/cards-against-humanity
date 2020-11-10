@@ -3,14 +3,9 @@ import React from "react";
 import styles from "./card.module.scss";
 
 export const Card = (props) => {
-    const onSelect = () => {
-        if (!!props.selectBlackCard) {
-            props.selectBlackCard(props.card.id);
-        }
-    };
 
     return (
-        <div className={styles.card} onClick={() => onSelect()}>
+        <div className={styles.card} onClick={() => props.onClick(props.card.id)}>
             <div className={styles.innerCard}>
                 <div
                     className={
