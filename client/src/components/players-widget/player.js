@@ -26,7 +26,7 @@ export class Player extends Component {
             <div className="player">
                 <span className="player-name-and-status">
                     <Icon name={isCardCzar? "star" : "radio_button_unchecked"} className={`player-status md-18 status-${state} ${isCardCzar ? 'icon-with-border' : ''}`}/>
-                    <span className="player-name"><span className="tooltip"><span className="tooltiptext">{name}</span>{name}</span></span>
+                    <span className="player-name">{name}</span>
                 </span>
                 <span className="player-scores">
                     <span className="player-score">

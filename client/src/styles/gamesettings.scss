@@ -84,7 +84,7 @@
     flex-direction: row;
     flex-wrap: wrap;
     justify-content: space-between;
-    padding: 0.5rem 0.8rem;
+    padding: 0.6rem 0.8rem;
     margin: 0.2rem 0;
     border-radius: 2px;
     background-color: $setting-background;
@@ -92,14 +92,19 @@
     .icon-and-text {
         max-width: 80%;
         align-items: center;
+        line-height: 1.8rem;
     }
 
     .control {
-        max-width: 20%;
         height: 100%;
         display: flex;
         margin: auto 0;
         align-items: center;
+    }
+
+    .text-control {
+        display: flex;
+        flex-direction: row;
     }
 
     &:hover {
@@ -146,9 +151,11 @@
     }
 }
 
-.card-packs {
+.imported-card-packs {
     padding-right: 0;
+    margin-top: 0.8rem;
 }
+
 .icon-and-text {
     display: flex;
     flex-direction: row;

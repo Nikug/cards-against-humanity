@@ -1,21 +1,22 @@
 /* Tooltip container */
+/*
 .tooltip {
     position: relative;
     display: inline-block;
 
     .tooltiptext {
         visibility: hidden;
-        width: 120px;
-        background-color: black;
+        width: fit-content;
+        max-width: 20rem;
+        background-color: rgba(0, 0, 0, 0.705);
         color: #fff;
         text-align: center;
-        padding: 5px 0;
+        padding: 0.3rem 1rem;
         border-radius: 6px;
-        top: 100%;
-        left: 50%;
+        right: 105%;
         margin-left: -60px;
 
-        /* Position the tooltip text - see examples below! */
+        /* Position the tooltip text - see examples below! */ /*
         position: absolute;
         z-index: 1;
     }
@@ -26,3 +27,4 @@
         }
     }
 }
+*/

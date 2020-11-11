@@ -10,13 +10,15 @@ export const BUTTON_TYPES = {
 
 export default function Button(props) {
     const {text, type, icon, callback, callbackParams} = props;
+    const noText = text === undefined || text === null || text.length === 0;
+
     return (
         <>
             <button
                 className={`button ${type === 1 ? 'primary' : ''}`}
                 onClick={() => callback(callbackParams)} 
             >
-                {icon && <Icon name={icon} className="button-icon"/>}
+                {icon && <Icon name={icon} className={`button-icon ${noText ? 'no-margin-right' : ''}`}/>}
                 {text}
             </button>
         </>

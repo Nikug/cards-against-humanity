@@ -1,28 +1,63 @@
 import React, {Component} from 'react';
+import { emptyFn } from '../../helpers/generalhelpers';
+
+import { socket } from "../sockets/socket";
+
 import './../../styles/gamesettings.scss'
+import './../../styles/home.scss'
 
 import {Setting, CONTROL_TYPES} from './../settings/setting';
+import {CardPack} from './cardpack';
+
+/*
+CardPack {
+    id: string;
+    name: string;
+    isNSFW: boolean;
+    whiteCards: number;
+    blackCards: number;
+}
+
+Options {
+    maximumPlayers: number;
+    scoreLimit: number;
+    winnerBecomesCardCzar: boolean;
+    allowKickedPlayerJoin: boolean;
+    cardPacks: CardPack[];
+    selectWhiteCardTimeLimit: number;
+    selectBlackCardTimeLimit: number;
+}
+*/
 
 export class GameSettingsContainer extends Component {
     constructor(props) {
         super(props);
 
-        this.state = {
-            maxPlayers: 8,
-            roundTime: 30,
-            winScore: 4,
-            popularVote: true,
-            winnerIsNextCardCzar: false,
-            kickedPlayersCantRejoin: true
-        }
-
         this.changeMaxPlayers = this.changeMaxPlayers.bind(this);
         this.changeWinScore = this.changeWinScore.bind(this);
-        this.changeRoundTime = this.changeRoundTime.bind(this);
+        this.changeWhiteCardSelectionTime = this.changeWhiteCardSelectionTime.bind(this);
+        this.changeBlackCardSelectionTime = this.changeBlackCardSelectionTime.bind(this);
+        this.toggleValue = this.toggleValue.bind(this);
+        this.addCardPack = this.addCardPack.bind(this);
     }
 
+    updateOptions(key, value) {
+        const {playerID, gameID} = this.props;
+
+        if (!playerID || !gameID) return;
+        if (value === undefined) return;
+
+        const newOptions = { ...this.state, [key]: value };
+
+        socket.emit("update_game_options", {
+            options: newOptions,
+            gameID: gameID,
+            playerID: playerID,
+        });
+    };
+
     changeMaxPlayers(increase) {
-        const oldValue = this.state.maxPlayers;
+        const oldValue = this.props.options.maximumPlayers;
         let newValue;
 
         if (increase) {
@@ -31,11 +66,15 @@ export class GameSettingsContainer extends Component {
             newValue= oldValue - 1;
         }
 
-        this.setState({maxPlayers: newValue})
+        if (newValue > 99) {
+            return;
+        }
+
+        this.updateOptions("maximumPlayers", newValue);
     }
 
     changeWinScore(increase) {
-        const oldValue = this.state.winScore;
+        const oldValue = this.props.options.scoreLimit;
         let newValue;
 
         if (increase) {
@@ -44,11 +83,23 @@ export class GameSettingsContainer extends Component {
             newValue= oldValue - 1;
         }
 
-        this.setState({winScore: newValue})
+        if (newValue > 99) {
+            return;
+        }
+
+        this.updateOptions("scoreLimit", newValue);
     }
 
-    changeRoundTime(increase) {
-        const oldValue = this.state.roundTime;
+    changeWhiteCardSelectionTime(increase) {
+        this.changeCardSelectionTime(true, increase);
+    }
+
+    changeBlackCardSelectionTime(increase) {
+        this.changeCardSelectionTime(false, increase);
+    }
+
+    changeCardSelectionTime(isWhite = true, increase) {
+        const oldValue = isWhite? this.props.options.selectWhiteCardTimeLimit : this.props.options.selectBlackCardTimeLimit;
         let newValue;
 
         if (increase) {
@@ -57,13 +108,63 @@ export class GameSettingsContainer extends Component {
             newValue= oldValue - 5;
         }
 
-        this.setState({roundTime: newValue})
+        if (newValue > 99) {
+            return;
+        }
+
+        if (isWhite) {
+            this.updateOptions("selectWhiteCardTimeLimit", newValue);
+        } else {
+            this.updateOptions("selectBlackCardTimeLimit", newValue);
+        }
+        
+    }
+
+    toggleValue(value) {
+        const oldValue = this.props.options[value];
+        const newValue = !oldValue;
+
+        this.updateOptions(value, newValue);
+    }
+
+    addCardPack(id) {
+        const {gameID, playerID} = this.props;
+
+        console.log({gameID, id, playerID});
+        socket.emit("add_card_pack", {
+            gameID: gameID,
+            cardPackID: id,
+            playerID: playerID,
+        });
+    }
+
+    renderCardPacks(cardPacks) {
+        const renderedCardPacks = [];
+
+        if (!cardPacks) {
+            return;
+        }
+
+        cardPacks.forEach(cardPack => {
+            const {name, id, isNSFW, whiteCards, blackCards} = cardPack;
+
+            renderedCardPacks.push(
+                <CardPack key={id} name={name} isNSFW={isNSFW} whiteCards={whiteCards} blackCards={blackCards} />
+                
+            )
+        });
+
+        return (
+            renderedCardPacks
+        );
     }
 
     render() {
-        const {isDisabled} = this.props;
+        const isDisabled = this.props.isDisabled;
         const iconClassnames = 'md-36 icon-margin-right';
-        const {maxPlayers, roundTime, winScore, popularVote, winnerIsNextCardCzar, kickedPlayersCantRejoin} = this.state;
+        const {maximumPlayers, selectWhiteCardTimeLimit, selectBlackCardTimeLimit, scoreLimit, popularVote,
+            winnerBecomesCardCzar, allowKickedPlayerJoin, cardPacks} = this.props.options;
+        const renderedCardPacks = this.renderCardPacks(cardPacks);
 
         return (
             <div className={`game-settings-container ${isDisabled ? 'disabled' : ''}`}>
@@ -74,75 +175,87 @@ export class GameSettingsContainer extends Component {
                                 Pelin asetukset
                             </h2>
                             <Setting 
-                                text={'Pelaajien enimmäismäärä'} 
-                                controlType={CONTROL_TYPES.number}
-                                onChangeCallback={this.changeMaxPlayers}
-                                currentValue={maxPlayers}
-                                isDisabled={false}
-                                icon={{
-                                    name: 'groups',
-                                    className: iconClassnames,
-                                    isDisabled: false
-                                }}
-                            />
-                            <Setting 
-                                text={'Kortin valinnan aikaraja'} 
-                                controlType={CONTROL_TYPES.number}
-                                onChangeCallback={this.changeRoundTime}
-                                currentValue={roundTime}
-                                isDisabled={false}
-                                icon={{
-                                    name: 'hourglass_bottom',
-                                    className: iconClassnames,
-                                    isDisabled: false
-                                }}
-                            />
-                            <Setting 
                                 text={'Pisteraja'} 
                                 controlType={CONTROL_TYPES.number}
                                 onChangeCallback={this.changeWinScore}
-                                currentValue={winScore}
-                                isDisabled={false}
+                                currentValue={scoreLimit}
+                                isDisabled={isDisabled}
                                 icon={{
                                     name: 'emoji_events',
                                     className: iconClassnames,
-                                    isDisabled: false
+                                    isDisabled: isDisabled
                                 }}
                             />
                             <Setting 
+                                text={'Valkoisen kortin valinnan aikaraja'} 
+                                controlType={CONTROL_TYPES.number}
+                                onChangeCallback={this.changeWhiteCardSelectionTime}
+                                currentValue={selectWhiteCardTimeLimit}
+                                isDisabled={isDisabled}
+                                icon={{
+                                    name: 'hourglass_bottom',
+                                    className: iconClassnames,
+                                    isDisabled: isDisabled
+                                }}
+                            />
+                            <Setting 
+                                text={'Mustan kortin valinnan aikaraja'} 
+                                controlType={CONTROL_TYPES.number}
+                                onChangeCallback={this.changeBlackCardSelectionTime}
+                                currentValue={selectBlackCardTimeLimit}
+                                isDisabled={isDisabled}
+                                icon={{
+                                    name: 'hourglass_bottom',
+                                    className: iconClassnames,
+                                    isDisabled: isDisabled
+                                }}
+                            />
+                            <Setting 
+                                text={'Pelaajien enimmäismäärä'} 
+                                controlType={CONTROL_TYPES.number}
+                                onChangeCallback={this.changeMaxPlayers}
+                                currentValue={maximumPlayers}
+                                isDisabled={isDisabled}
+                                icon={{
+                                    name: 'groups',
+                                    className: iconClassnames,
+                                    isDisabled: isDisabled
+                                }}
+                            />
+                            {false && <Setting 
                                 text={'Yleisöäänet käytössä'} 
                                 controlType={CONTROL_TYPES.toggle}
-                                onChangeCallback={() => console.log('clicked')}
-                                currentValue={popularVote}
-                                isDisabled={false}
+                                onChangeCallback={() => this.toggleValue('popularVote')}
+                                currentValue={popularVote ? popularVote : false}
+                                isDisabled={isDisabled}
                                 icon={{
                                     name: 'thumb_up',
                                     className: iconClassnames,
-                                    isDisabled: false
+                                    isDisabled: isDisabled
                                 }}
-                            />
+                            />}
                             <Setting 
-                                text={'Kierroksen voittajasta tulee seuraava korttikuningas'} 
+                                text={'Voittajasta tulee seuraava korttikuningas'}
                                 controlType={CONTROL_TYPES.toggle}
-                                onChangeCallback={() => console.log('clicked')}
-                                currentValue={winnerIsNextCardCzar}
-                                isDisabled={false}
+                                onChangeCallback={() => this.toggleValue('winnerBecomesCardCzar')}
+                                currentValue={winnerBecomesCardCzar}
+                                isDisabled={isDisabled}
                                 icon={{
                                     name: 'low_priority',
                                     className: iconClassnames,
-                                    isDisabled: false
+                                    isDisabled: isDisabled
                                 }}
                             />
                             <Setting 
-                                text={'Potkitut pelaajat eivät voi liittyä takaisin peliin'} 
+                                text={'Potkitut pelaajat voivat liittyä takaisin peliin'} 
                                 controlType={CONTROL_TYPES.toggle}
-                                onChangeCallback={() => console.log('clicked')}
-                                currentValue={kickedPlayersCantRejoin}
-                                isDisabled={false}
+                                onChangeCallback={() => this.toggleValue('allowKickedPlayerJoin')}
+                                currentValue={allowKickedPlayerJoin}
+                                isDisabled={isDisabled}
                                 icon={{
                                     name: 'remove_circle_outline',
                                     className: iconClassnames,
-                                    isDisabled: false
+                                    isDisabled: isDisabled
                                 }}
                             />
                         </div>
@@ -152,16 +265,19 @@ export class GameSettingsContainer extends Component {
                             </h2>
                             <Setting 
                                 text={'Lisää korttipakka'} 
-                                controlType={CONTROL_TYPES.custom}
+                                placeholderText={'rAnD0MchArs'}
+                                controlType={CONTROL_TYPES.textWithConfirm}
+                                onChangeCallback={this.addCardPack}
                                 customControl={'custom control'}
                                 icon={{
                                     name: 'library_add',
                                     className: iconClassnames,
-                                    isDisabled: false
+                                    isDisabled: isDisabled
                                 }}
                             />
                             <div className="imported-card-packs">
-                                korttipakat:
+                                Lisätyt korttipakat
+                                {renderedCardPacks}
                             </div>
                         </div>
                     </div>

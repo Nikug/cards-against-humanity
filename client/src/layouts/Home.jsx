@@ -41,7 +41,7 @@ export class Home extends Component {
                         <div className="container">
                             <div className="text">Luo uusi peli, johon voit kutsua kaverisi mukaan</div>
                             <div className="input-and-button-container">
-                            <Button text="Luo peli" type={BUTTON_TYPES.PRIMARY} callback={startNewGame} icon="add_circle_outline"></Button>
+                                <Button text="Luo peli" type={BUTTON_TYPES.PRIMARY} callback={startNewGame} icon="add_circle_outline"></Button>
                             </div>
                         </div>
                         <div className="container border">

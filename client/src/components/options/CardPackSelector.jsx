@@ -8,6 +8,7 @@ export const CardPackSelector = (props) => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
+        console.log({gameID, text, playerID});
         socket.emit("add_card_pack", {
             gameID: gameID,
             cardPackID: text,

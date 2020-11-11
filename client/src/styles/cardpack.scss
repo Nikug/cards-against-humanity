@@ -1,0 +1,63 @@
+@import "./colors.scss";
+
+.cardpack-container {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+
+    .cardpack {
+        display: flex;
+        flex-direction: column;
+        background-color: $setting-background;
+        border-radius: 2px 0 0 2px;
+        width: 100%;
+        padding: 0;
+
+        .cardpack-info-row {
+            display: flex;
+            flex-direction: row;
+            width: 100%;
+
+            .label-and-value-wrapper {
+                display: flex;
+                flex-direction: row;
+                width: 50%;
+
+                .underline {
+                    border-bottom: 1px solid lighten(grey, 20%);
+                }
+
+                &.divider {
+                    padding-right: 0;
+                    border-left: 1px solid lighten(grey, 20%);
+                }
+
+                .label-and-value {
+                    display: flex;
+                    flex-direction: row;
+                    justify-content: space-between;
+                    width: 100%;
+                    //background-color: lighten($setting-background, 10%);
+                    //border-radius: 2px;
+                    padding: 0 0.8rem;
+                    padding-right: 1rem;
+                    padding-left: 1rem;
+                }
+            }
+        }
+    }
+
+    .remove {
+        display: flex;
+        background-color: lighten($setting-background, 15%);
+        border-radius: 0 10px 10px 0;
+        padding: 1rem;
+        margin: 0.2rem 0;
+        justify-items: center;
+        align-items: center;
+
+        &:hover {
+            background-color: red;
+        }
+    }
+}

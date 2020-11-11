@@ -34,6 +34,7 @@
 
     padding: 1rem;
 
+    /*
     &:hover {
         .player-name {
             text-overflow: clip;
@@ -43,11 +44,11 @@
             //text-align: center;
         }
     }
+    */
 }
 
 .player-name {
-    max-width: 6rem;
-    text-overflow: ellipsis;
+    width: fit-content;
     overflow: hidden;
     white-space: nowrap;
 }

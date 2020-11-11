@@ -106,7 +106,12 @@ export const Game = (props) => {
                 <Button text="try the timer" callback={addProgress} />
             </div>
             <div className="info">
-                <GameSettingsContainer />
+                <GameSettingsContainer
+                    options={game ? game.options : {}}
+                    gameID={game?.id}
+                    isHost={player?.isHost}
+                    playerID={player?.id}
+                />
             </div>
             <h1 style={{ textTransform: "capitalize" }}>{`Game ${
                 game === undefined ? " not found" : game.id.replace(/-/g, " ")
