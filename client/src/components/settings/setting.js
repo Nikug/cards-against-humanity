@@ -56,7 +56,7 @@ export class Setting extends Component {
         );
     }
 
-    renderTextField(currentValue, isDisabled, onChangeCallback, placeholderText, hasConfirm = false) {
+    renderTextField(currentValue = this.state.inputText, isDisabled, onChangeCallback, placeholderText, hasConfirm = false) {
         return (
             <div className="text-control">
                 <input type="text" className="text-input" placeholder={placeholderText} value={currentValue} onChange={hasConfirm ? (e) => this.handleKeyDown(e) : (e) => this.handleTextFieldChange(e, onChangeCallback)}/> 
@@ -66,13 +66,18 @@ export class Setting extends Component {
     }
 
     handleKeyDown(event) {
+        event.preventDefault();
+
         this.setState({inputText: event.target.value});
     }
 
     handleTextFieldChange(event, changeCallback) {
+        console.log({event, changeCallback});
         if (event === null) {
             changeCallback(this.state.inputText);
+            this.setState({inputText: ''});
         } else {
+            event.preventDefault();
             changeCallback(event.target.value);
         }
         

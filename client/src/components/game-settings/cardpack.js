@@ -4,7 +4,7 @@ import Icon from './../icon';
 import '../../styles/cardpack.scss';
 import '../../styles/gamesettings.scss';
 
-export function CardPack({name, isNSFW, whiteCards, blackCards}) {
+export function CardPack({id, name, isNSFW, whiteCards, blackCards, removeCardpack}) {
     console.log({name, isNSFW, whiteCards, blackCards});
     return (
         <div className="cardpack-container">
@@ -45,7 +45,7 @@ export function CardPack({name, isNSFW, whiteCards, blackCards}) {
                 
                 
             </div>
-            <div className="remove">
+            <div className="remove" onClick={() => removeCardpack(id)}>
                 <Icon name="delete_outline" className="md-36"/>
             </div>
         </div>

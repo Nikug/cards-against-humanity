@@ -71,10 +71,85 @@
                 $button-shadow-primary-hover;
         }
     }
+
+    &.green {
+        color: $button-text-green;
+        border: 1px solid $button-border-green;
+        background: linear-gradient(
+                180deg,
+                $button-shadow-green,
+                $button-background-green
+            )
+            $button-background-green;
+
+        &:hover {
+            background: linear-gradient(
+                    180deg,
+                    $button-shadow-green-hover,
+                    $button-background-green-hover
+                )
+                $button-background-green-hover;
+        }
+
+        &:focus {
+            background: linear-gradient(
+                    180deg,
+                    $button-background-green-hover,
+                    $button-shadow-green-hover
+                )
+                $button-shadow-green-hover;
+        }
+    }
+
+    &.disabled {
+        cursor: not-allowed;
+        background: linear-gradient(180deg, $button-shadow, $button-background)
+            $button-background;
+        border: 1px solid $button-border;
+
+        &:hover {
+            background: linear-gradient(
+                    180deg,
+                    $button-shadow,
+                    $button-background
+                )
+                $button-background;
+            border: 1px solid $button-border;
+        }
+
+        &:focus {
+            background: linear-gradient(
+                    180deg,
+                    $button-shadow,
+                    $button-background
+                )
+                $button-background;
+            border: 1px solid $button-border;
+        }
+
+        .button-icon {
+            cursor: not-allowed;
+        }
+    }
+
+    &.big-btn {
+        font-weight: 600;
+        font-size: 2.2rem;
+        padding: 0.8rem 1.4rem;
+
+        .button-icon {
+            font-size: 36px;
+        }
+    }
 }
 
 .button-icon {
     margin-right: 0.5rem;
+
+    &.after-text {
+        margin-right: 0;
+        margin-left: 0.5rem;
+    }
 }
 
 .no-margin-right {

@@ -52,38 +52,40 @@ class App extends Component {
 
         return (
             <div className={`App ${isInGame ? 'mono-background' : 'background-img'}`}>
-                <Router>
-                <Header isInGame={isInGame} toggleIsInGame={this.toggleIsInGame}/>
-                    <Switch>
-                        <Route 
-                            exact path="/" 
-                            render={(props) => 
-                                <Home 
-                                    isInGame={isInGame}
-                                    url={url}
-                                    startNewGame={this.startNewGame} 
-                                    joinExistingGame={this.joinExistingGame}
+                    <Router>
+                        <div className="basic-grid">
+                            <Header isInGame={isInGame} toggleIsInGame={this.toggleIsInGame}/>
+                            <Switch>
+                                <Route 
+                                    exact path="/" 
+                                    render={(props) => 
+                                        <Home 
+                                            isInGame={isInGame}
+                                            url={url}
+                                            startNewGame={this.startNewGame} 
+                                            joinExistingGame={this.joinExistingGame}
+                                        />
+                                    } 
                                 />
-                            } 
-                        />
-                        <Route 
-                            exact path="/instructions" 
-                            render={(props) => 
-                                <div>Instructions under construction!</div>
-                            } 
-                        />
-                        <Route 
-                            exact path="/g/:id" 
-                            render={(props) => <Game isInGame={isInGame} resetUrl={this.resetUrl}/>} 
-                        />
-                    </Switch>
-                </Router>
-                <div className="footer">
-                    <span className="music-player"><Music/></span>
-                    <span className="copyrights">
-                        &copy; {new Date().getFullYear()}
-                    </span>
-                </div>
+                                <Route 
+                                    exact path="/instructions" 
+                                    render={(props) => 
+                                        <div>Instructions under construction!</div>
+                                    } 
+                                />
+                                <Route 
+                                    exact path="/g/:id" 
+                                    render={(props) => <Game isInGame={isInGame} resetUrl={this.resetUrl}/>} 
+                                />
+                            </Switch>
+                        </div>
+                        <div className="footer">
+                            <span className="music-player"><Music/></span>
+                            <span className="copyrights">
+                                &copy; {new Date().getFullYear()}
+                            </span>
+                        </div>
+                    </Router>
             </div>
         );
     }

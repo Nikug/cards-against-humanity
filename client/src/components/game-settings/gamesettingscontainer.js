@@ -39,6 +39,8 @@ export class GameSettingsContainer extends Component {
         this.changeBlackCardSelectionTime = this.changeBlackCardSelectionTime.bind(this);
         this.toggleValue = this.toggleValue.bind(this);
         this.addCardPack = this.addCardPack.bind(this);
+        this.removeCardpack = this.removeCardpack.bind(this);
+        
     }
 
     updateOptions(key, value) {
@@ -138,6 +140,17 @@ export class GameSettingsContainer extends Component {
         });
     }
 
+    removeCardpack(id) {
+        const {gameID, playerID} = this.props;
+
+        console.log({gameID, id, playerID});
+        socket.emit("remove_card_pack", {
+            gameID: gameID,
+            cardPackID: id,
+            playerID: playerID,
+        });   
+    }
+
     renderCardPacks(cardPacks) {
         const renderedCardPacks = [];
 
@@ -149,7 +162,15 @@ export class GameSettingsContainer extends Component {
             const {name, id, isNSFW, whiteCards, blackCards} = cardPack;
 
             renderedCardPacks.push(
-                <CardPack key={id} name={name} isNSFW={isNSFW} whiteCards={whiteCards} blackCards={blackCards} />
+                <CardPack 
+                    key={id} 
+                    id={id} 
+                    name={name} 
+                    isNSFW={isNSFW} 
+                    whiteCards={whiteCards} 
+                    blackCards={blackCards}
+                    removeCardpack={this.removeCardpack}
+                />
                 
             )
         });

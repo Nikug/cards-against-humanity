@@ -10,8 +10,11 @@ import { PlayersWidget } from "../components/players-widget/playerswidget";
 import { GameSettingsContainer } from "../components/game-settings/gamesettingscontainer";
 import { Timer } from "../components/timer";
 import Button, { BUTTON_TYPES } from "../components/button";
+import {Setting, CONTROL_TYPES} from './../components/settings/setting';
 
 import "./../styles/game.scss";
+import { emptyFn } from "../helpers/generalhelpers";
+import { GAME_STATES } from "../consts/gamestates";
 
 export const Game = (props) => {
     const [game, setGame] = useState(undefined);
@@ -66,8 +69,9 @@ export const Game = (props) => {
     }, []);
 
     const startGame = (gameID, playerID) => {
+        console.log({gameID, playerID})
         if (!!gameID && !!playerID) {
-            socket.emit("start_game", { gameID: gameID, playerID });
+            socket.emit("start_game", { gameID, playerID });
         }
     };
 
@@ -88,10 +92,28 @@ export const Game = (props) => {
         setProgress(0);
     };
 
+    const setPlayerName = (name) => {
+        const cleanedName = name.trim();
+
+        console.log('setPlayerName', {name, cleanedName}, game?.id, player?.id);
+
+        if (!!player?.id && cleanedName.length > 0) {
+            socket.emit("set_player_name", {
+                gameID: game?.id,
+                playerID: player?.id,
+                playerName: cleanedName
+            });
+        }
+    };
+
+    const iconClassnames = 'md-36 icon-margin-right';
+    const canStartGame = (player?.name || true) && game?.options?.cardPacks?.length > 0; // TODO: Why is player name not there?
+    console.log('game.state', game?.state);
+
     return (
         <div>
             <div className="info">
-                <PlayersWidget />
+                <PlayersWidget players={game?.players}/>
                 <Timer
                     width={100}
                     percent={progress}
@@ -99,73 +121,105 @@ export const Game = (props) => {
                     time={10}
                 />
             </div>
-            <div
-                style={{ marginTop: "2rem", marginBottom: "2rem" }}
-                className="info"
-            >
-                <Button text="try the timer" callback={addProgress} />
-            </div>
-            <div className="info">
-                <GameSettingsContainer
-                    options={game ? game.options : {}}
-                    gameID={game?.id}
-                    isHost={player?.isHost}
-                    playerID={player?.id}
-                />
-            </div>
-            <h1 style={{ textTransform: "capitalize" }}>{`Game ${
-                game === undefined ? " not found" : game.id.replace(/-/g, " ")
-            }`}</h1>
-            {!!game && (
-                <div>
-                    <PlayerName gameID={game.id} playerID={player?.id} />
+            <div className="lobby-container">
+                <div hidden={true}
+                    style={{ marginTop: "2rem", marginBottom: "2rem" }}
+                    className="info"
+                >
+                    <Button text="try the timer" callback={addProgress} />
                 </div>
-            )}
-            {!!game && (
-                <div>
-                    {game.state === "lobby" && (
-                        <div>
-                            <GameOptions
-                                options={game?.options}
-                                gameID={game?.id}
-                                isHost={player?.isHost}
-                                playerID={player?.id}
+                <div className="info" hidden={game?.state !== GAME_STATES.LOBBY}>
+                    <div className="game-settings-container">
+                        <div className="nick-and-start-container">
+                            <div className="nickname-selector">
+                                <Setting 
+                                    text={'Nimimerkki'} 
+                                    placeholderText={'nickname'}
+                                    controlType={CONTROL_TYPES.textWithConfirm}
+                                    onChangeCallback={setPlayerName}
+                                    icon={{
+                                        name: 'person',
+                                        className: iconClassnames
+                                    }}
+                                />
+                            </div>
+                            <Button icon={'play_circle_filled'} iconPosition={'after'} text={'Aloita peli'} type={BUTTON_TYPES.GREEN} additionalClassname={'big-btn'}
+                                callback={() => startGame(game?.id, player?.id)} disabled={!canStartGame}
                             />
                         </div>
-                    )}
-
-                    {!!player?.isHost && game.state === "lobby" && (
-                        <div>
-                            <button
-                                onClick={() => startGame(game?.id, player?.id)}
-                            >
-                                Aloita peli
-                            </button>
-                        </div>
-                    )}
-
-                    {game.state === "pickingBlackCard" && (
-                        <BlackCardPicker gameID={game.id} player={player} />
-                    )}
-                    {game.state === "playingWhiteCards" && (
-                        <WhiteCardPicker
-                            gameID={game.id}
-                            player={player}
-                            pickLimit={
-                                game.rounds[game.rounds.length - 1].blackCard
-                                    .whiteCardsToPlay
-                            }
-                        />
-                    )}
-
-                    <div style={{ display: "inline-block" }}>
-                        <pre>{JSON.stringify(game, null, 2)}</pre>
-                    </div>
-                    <div style={{ display: "inline-block" }}>
-                        <pre>{JSON.stringify(player, null, 2)}</pre>
                     </div>
                 </div>
-            )}
+                <div className="info" hidden={game?.state !== GAME_STATES.LOBBY}>
+                    <GameSettingsContainer
+                        options={game ? game.options : {}}
+                        gameID={game?.id}
+                        isHost={player?.isHost}
+                        playerID={player?.id}
+                    />
+                </div>
+
+                <div hidden={game?.state !== GAME_STATES.PICKING_BLACK_CARD}>
+                    picking black card
+                </div>
+
+
+
+                <div hidden={true}>
+                    <h1 style={{ textTransform: "capitalize" }}>{`Game ${
+                        game === undefined ? " not found" : game.id.replace(/-/g, " ")
+                    }`}</h1>
+                    {!!game && (
+                        <div>
+                            <PlayerName gameID={game.id} playerID={player?.id} />
+                        </div>
+                    )}
+                    {!!game && (
+                        <div>
+                            {game.state === "lobby" && (
+                                <div>
+                                    <GameOptions
+                                        options={game?.options}
+                                        gameID={game?.id}
+                                        isHost={player?.isHost}
+                                        playerID={player?.id}
+                                    />
+                                </div>
+                            )}
+
+                            {!!player?.isHost && game.state === "lobby" && (
+                                <div>
+                                    <button
+                                        onClick={() => startGame(game?.id, player?.id)}
+                                    >
+                                        Aloita peli
+                                    </button>
+                                </div>
+                            )}
+
+                            {game.state === "pickingBlackCard" && (
+                                <BlackCardPicker gameID={game.id} player={player} />
+                            )}
+                            {game.state === "playingWhiteCards" && (
+                                <WhiteCardPicker
+                                    gameID={game.id}
+                                    player={player}
+                                    pickLimit={
+                                        game.rounds[game.rounds.length - 1].blackCard
+                                            .whiteCardsToPlay
+                                    }
+                                />
+                            )}
+
+                            <div style={{ display: "inline-block" }}>
+                                <pre>{JSON.stringify(game, null, 2)}</pre>
+                            </div>
+                            <div style={{ display: "inline-block" }}>
+                                <pre>{JSON.stringify(player, null, 2)}</pre>
+                            </div>
+                        </div>
+                    )}
+                </div>
+            </div>
         </div>
     );
 };

@@ -35,9 +35,11 @@ $app-text: $color-white;
 
 $button-text: $color-black;
 $button-text-primary: $color-white;
+$button-text-green: $color-white;
 
 $button-border: $color-white;
 $button-border-primary: $color-blue;
+$button-border-green: $color-green;
 
 $button-background: $color-light-grey;
 $button-shadow: $color-white;
@@ -48,6 +50,11 @@ $button-background-primary: darken($color-blue, 30%);
 $button-shadow-primary: darken($color-blue, 10%);
 $button-background-primary-hover: darken($color-blue, 20%);
 $button-shadow-primary-hover: darken($color-blue, 0%);
+
+$button-background-green: darken($color-green, 20%);
+$button-shadow-green: darken($color-green, 0%);
+$button-background-green-hover: darken($color-green, 10%);
+$button-shadow-green-hover: lighten($color-green, 10%);
 
 // Input
 

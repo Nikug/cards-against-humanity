@@ -1,3 +1,35 @@
 .info {
     margin: 1rem 1.5rem 0 1.5rem;
+
+    &.center {
+        margin-right: auto;
+        margin-left: auto;
+    }
+}
+
+.lobby-container {
+    height: 44rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+    padding-top: 2rem;
+
+    .nick-and-start-container {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        justify-self: center;
+        max-width: 80rem;
+
+        .nickname-selector {
+            width: 50%;
+            margin-right: 8rem;
+        }
+    }
+
+    .info {
+        margin-top: 0;
+        margin-bottom: 0;
+    }
 }
