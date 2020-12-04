@@ -17,7 +17,8 @@ export const sockets = (io) => {
         console.log(`Client joined! ID: ${socket.id}`);
 
         socket.on("join_game", (data) => {
-            if (!data.gameID) {
+            const missingFields = validateFields(["gameID"], data);
+            if (missingFields.length > 0) {
                 sendError(socket, "Invalid data");
             } else {
                 joinToGame(socket, io, data.gameID);
@@ -25,7 +26,8 @@ export const sockets = (io) => {
         });
 
         socket.on("leave_game", (data) => {
-            if (!data.gameID || !data.playerID) {
+            const missingFields = validateFields(["gameID", "playerID"], data);
+            if (missingFields.length > 0) {
                 sendError(socket, "Invalid data");
             } else {
                 console.log("Some dude just left");
@@ -35,7 +37,11 @@ export const sockets = (io) => {
         });
 
         socket.on("update_game_options", (data) => {
-            if (!data.gameID || !data.playerID || !data.options) {
+            const missingFields = validateFields(
+                ["gameID", "playerID", "options"],
+                data
+            );
+            if (missingFields.length > 0) {
                 sendError(socket, "Invalid data");
             } else {
                 updateGameOptions(io, data.gameID, data.playerID, data.options);
@@ -43,7 +49,11 @@ export const sockets = (io) => {
         });
 
         socket.on("set_player_name", (data) => {
-            if (!data.gameID || !data.playerID || !data.playerName) {
+            const missingFields = validateFields(
+                ["gameID", "playerID", "playerName"],
+                data
+            );
+            if (missingFields.length > 0) {
                 sendError(socket, "Invalid data");
             } else {
                 updatePlayerName(
@@ -56,7 +66,11 @@ export const sockets = (io) => {
         });
 
         socket.on("add_card_pack", (data) => {
-            if (!data.gameID || !data.cardPackID || !data.playerID) {
+            const missingFields = validateFields(
+                ["gameID", "cardPackID", "playerID"],
+                data
+            );
+            if (missingFields.length > 0) {
                 sendError(socket, "Invalid data");
             } else {
                 addCardPack(io, data.gameID, data.cardPackID, data.playerID);
@@ -64,7 +78,11 @@ export const sockets = (io) => {
         });
 
         socket.on("remove_card_pack", (data) => {
-            if (!data.gameID || !data.cardPackID || !data.playerID) {
+            const missingFields = validateFields(
+                ["gameID", "playerID", "cardPackID"],
+                data
+            );
+            if (missingFields.length > 0) {
                 sendError(socket, "Invalid data");
             } else {
                 removeCardPack(io, data.gameID, data.cardPackID, data.playerID);
@@ -72,7 +90,8 @@ export const sockets = (io) => {
         });
 
         socket.on("start_game", (data) => {
-            if (!data.gameID || !data.playerID) {
+            const missingFields = validateFields(["gameID", "playerID"], data);
+            if (missingFields.length > 0) {
                 sendError(socket, "Invalid data");
             } else {
                 startGame(io, data.gameID, data.playerID);
@@ -80,7 +99,8 @@ export const sockets = (io) => {
         });
 
         socket.on("draw_black_cards", (data) => {
-            if (!data.gameID || !data.playerID) {
+            const missingFields = validateFields(["gameID", "playerID"], data);
+            if (missingFields.length > 0) {
                 sendError(socket, "Invalid data");
             } else {
                 dealBlackCards(socket, data.gameID, data.playerID);
@@ -88,12 +108,11 @@ export const sockets = (io) => {
         });
 
         socket.on("select_black_card", (data) => {
-            if (
-                !data.gameID ||
-                !data.playerID ||
-                !data.selectedCardID ||
-                !data.discardedCardIDs
-            ) {
+            const missingFields = validateFields(
+                ["gameID", "playerID", "selectedCardID", "discardedCardIDs"],
+                data
+            );
+            if (missingFields.length > 0) {
                 sendError(socket, "Invalid data");
             } else {
                 selectBlackCard(
@@ -107,7 +126,11 @@ export const sockets = (io) => {
         });
 
         socket.on("play_white_cards", (data) => {
-            if (!data.gameID || !data.playerID || !data.whiteCardIDs) {
+            const missingFields = validateFields(
+                ["gameID", "playerID", "whiteCardIDs"],
+                data
+            );
+            if (missingFields.length > 0) {
                 sendError(socket, "Invalid data");
             } else {
                 playWhiteCards(
@@ -126,6 +149,14 @@ export const sockets = (io) => {
     });
 };
 
-const sendError = (socket, message) => {
-    socket.emit("error", { message: message });
+const sendError = (socket, id, message) => {
+    socket.emit("error", { id: id, message: message });
+};
+
+const validateFields = (fields, data) => {
+    return fields
+        .map((field) => {
+            return !data[field] ? field : null;
+        })
+        .filter((error) => error !== null);
 };
