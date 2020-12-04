@@ -17,61 +17,115 @@ export const sockets = (io) => {
         console.log(`Client joined! ID: ${socket.id}`);
 
         socket.on("join_game", (data) => {
-            joinToGame(socket, io, data.gameID);
+            if (!data.gameID) {
+                sendError(socket, "Invalid data");
+            } else {
+                joinToGame(socket, io, data.gameID);
+            }
         });
 
         socket.on("leave_game", (data) => {
-            console.log("Some dude just left");
-            socket.disconnect(true);
-            leaveFromGame(io, data.gameID, data.playerID);
+            if (!data.gameID || !data.playerID) {
+                sendError(socket, "Invalid data");
+            } else {
+                console.log("Some dude just left");
+                socket.disconnect(true);
+                leaveFromGame(io, data.gameID, data.playerID);
+            }
         });
 
         socket.on("update_game_options", (data) => {
-            updateGameOptions(io, data.gameID, data.playerID, data.options);
+            if (!data.gameID || !data.playerID || !data.options) {
+                sendError(socket, "Invalid data");
+            } else {
+                updateGameOptions(io, data.gameID, data.playerID, data.options);
+            }
         });
 
         socket.on("set_player_name", (data) => {
-            updatePlayerName(io, data.gameID, data.playerID, data.playerName);
+            if (!data.gameID || !data.playerID || !data.playerName) {
+                sendError(socket, "Invalid data");
+            } else {
+                updatePlayerName(
+                    io,
+                    data.gameID,
+                    data.playerID,
+                    data.playerName
+                );
+            }
         });
 
         socket.on("add_card_pack", (data) => {
-            addCardPack(io, data.gameID, data.cardPackID, data.playerID);
+            if (!data.gameID || !data.cardPackID || !data.playerID) {
+                sendError(socket, "Invalid data");
+            } else {
+                addCardPack(io, data.gameID, data.cardPackID, data.playerID);
+            }
         });
 
         socket.on("remove_card_pack", (data) => {
-            removeCardPack(io, data.gameID, data.cardPackID, data.playerID);
+            if (!data.gameID || !data.cardPackID || !data.playerID) {
+                sendError(socket, "Invalid data");
+            } else {
+                removeCardPack(io, data.gameID, data.cardPackID, data.playerID);
+            }
         });
 
         socket.on("start_game", (data) => {
-            startGame(io, data.gameID, data.playerID);
+            if (!data.gameID || !data.playerID) {
+                sendError(socket, "Invalid data");
+            } else {
+                startGame(io, data.gameID, data.playerID);
+            }
         });
 
         socket.on("draw_black_cards", (data) => {
-            dealBlackCards(socket, data.gameID, data.playerID);
+            if (!data.gameID || !data.playerID) {
+                sendError(socket, "Invalid data");
+            } else {
+                dealBlackCards(socket, data.gameID, data.playerID);
+            }
         });
 
         socket.on("select_black_card", (data) => {
-            selectBlackCard(
-                io,
-                data.gameID,
-                data.playerID,
-                data.selectedCardID,
-                data.discardedCardIDs
-            );
+            if (
+                !data.gameID ||
+                !data.playerID ||
+                !data.selectedCardID ||
+                !data.discardedCardIDs
+            ) {
+                sendError(socket, "Invalid data");
+            } else {
+                selectBlackCard(
+                    io,
+                    data.gameID,
+                    data.playerID,
+                    data.selectedCardID,
+                    data.discardedCardIDs
+                );
+            }
         });
 
         socket.on("play_white_cards", (data) => {
-            playWhiteCards(
-                io,
-                socket,
-                data.gameID,
-                data.playerID,
-                data.whiteCardIDs
-            );
+            if (!data.gameID || !data.playerID || !data.whiteCardIDs) {
+                sendError(socket, "Invalid data");
+            } else {
+                playWhiteCards(
+                    io,
+                    socket,
+                    data.gameID,
+                    data.playerID,
+                    data.whiteCardIDs
+                );
+            }
         });
     });
 
     io.on("disconnect", (socket) => {
         console.log(`Client left :( ID: ${socket.id}`);
     });
+};
+
+const sendError = (socket, message) => {
+    socket.emit("error", { message: message });
 };

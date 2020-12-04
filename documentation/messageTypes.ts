@@ -5,7 +5,7 @@ type Server2Client =
     | "update_game_options"     // Sends the updated game object to players
     | "update_player"           // Sends the updated player object
     | "update_players"          // Updates all players with client players object
-    | "deal_black_cards"         // Server deals a black card to card czar
+    | "deal_black_cards"        // Server deals a black card to card czar
 
 type Client2Server =
     | "join_game"               // Player joins a game
