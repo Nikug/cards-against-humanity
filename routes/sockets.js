@@ -1,15 +1,16 @@
 import {
     joinToGame,
-    updateGameOptions,
-    updatePlayerName,
     leaveFromGame,
-    addCardPack,
-    removeCardPack,
+    updateGameOptions,
     startGame,
+} from "../modules/game.js";
+import { updatePlayerName } from "../modules/player.js";
+import { addCardPack, removeCardPack } from "../modules/cardpack.js";
+import {
     dealBlackCards,
     selectBlackCard,
-    playWhiteCards
-} from "./socketFunctions.js";
+    playWhiteCards,
+} from "../modules/card.js";
 
 export const sockets = (io) => {
     io.on("connection", (socket) => {
@@ -50,11 +51,23 @@ export const sockets = (io) => {
         });
 
         socket.on("select_black_card", (data) => {
-            selectBlackCard(io, data.gameID, data.playerID, data.selectedCardID, data.discardedCardIDs);
+            selectBlackCard(
+                io,
+                data.gameID,
+                data.playerID,
+                data.selectedCardID,
+                data.discardedCardIDs
+            );
         });
 
         socket.on("play_white_cards", (data) => {
-            playWhiteCards(io, socket, data.gameID, data.playerID, data.whiteCardIDs);
+            playWhiteCards(
+                io,
+                socket,
+                data.gameID,
+                data.playerID,
+                data.whiteCardIDs
+            );
         });
     });
 
