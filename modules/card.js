@@ -8,10 +8,19 @@ import {
 import {
     validatePlayerPlayingWhiteCards,
     validateCardCzar,
+    validateShowingWhiteCard,
 } from "./validate.js";
-import { getPlayer, publicPlayersObject, setPlayersPlaying } from "./player.js";
-import { gameOptions } from "../consts/gameSettings.js";
-import { randomBetween } from "./util.js";
+import {
+    getPlayer,
+    publicPlayersObject,
+    setPlayersPlaying
+} from "./player.js";
+import {
+    gameOptions
+} from "../consts/gameSettings.js";
+import {
+    randomBetween
+} from "./util.js";
 
 export const playWhiteCards = (io, socket, gameID, playerID, whiteCardIDs) => {
     let game = getGame(gameID);
@@ -46,14 +55,19 @@ export const playWhiteCards = (io, socket, gameID, playerID, whiteCardIDs) => {
 
     if (everyoneHasPlayedTurn(game)) {
         game.client.state = "readingCards";
+        game.client.whiteCardsByPlayer = shuffleCards([...game.client.whiteCardsByPlayer]);
     }
 
     setGame(game);
-    io.in(gameID).emit("update_game", { game: game.client });
+    io.in(gameID).emit("update_game", {
+        game: game.client
+    });
     io.in(gameID).emit("update_players", {
         players: publicPlayersObject(game.players),
     });
-    io.to(player.socket).emit("update_player", { player: player });
+    io.to(player.socket).emit("update_player", {
+        player: player
+    });
 
     console.log("made it to end");
 };
@@ -109,13 +123,15 @@ export const selectBlackCard = (
     game.players = setPlayersPlaying(game.players);
     setGame(game);
 
-    io.in(gameID).emit("update_game", { game: game.client });
+    io.in(gameID).emit("update_game", {
+        game: game.client
+    });
     changeGameStateAfterTime(
         io,
         gameID,
         "startReading",
         game.client.options.selectWhiteCardTimeLimit +
-            gameOptions.defaultGracePeriod
+        gameOptions.defaultGracePeriod
     );
 };
 
@@ -126,17 +142,19 @@ export const dealBlackCards = (socket, gameID, playerID) => {
     if (!validateCardCzar(game, playerID)) return;
 
     const blackCards = drawBlackCards(game, gameOptions.blackCardsToChooseFrom);
-    socket.emit("deal_black_cards", { blackCards: blackCards });
+    socket.emit("deal_black_cards", {
+        blackCards: blackCards
+    });
 };
 
 export const dealWhiteCards = (io, game, count) => {
     const players = game.players
-        .filter((player) =>
-            ["active", "playing", "waiting"].includes(player.state)
-        )
+        .filter((player) => ["active", "playing", "waiting"].includes(player.state))
         .map((player) => {
             player.whiteCards = drawWhiteCards(game, count);
-            io.to(player.socket).emit("update_player", { player: player });
+            io.to(player.socket).emit("update_player", {
+                player: player
+            });
 
             return player;
         });
@@ -214,3 +232,55 @@ export const shuffleCards = (cards) => {
     }
     return cards;
 };
+
+export const showWhiteCard = (io, gameID, playerID) => {
+    const game = getGame(gameID);
+    if (!game) return;
+
+    const {
+        result,
+        error
+    } = validateShowingWhiteCard(game, playerID);
+    if (!result || error) {
+        console.log(error);
+        return;
+    }
+
+    if (game.currentRound.cardIndex === game.currentRound.whiteCardsByPlayer.length) {
+        game.client.state = "showingCards";
+        setGame(game);
+        io.in(gameID).emit("update_game", {
+            game: {
+                anonymizedGameClient(game);
+            }
+        });
+    } else {
+        const whiteCards = game.currentRound.whiteCardsByPlayer[game.currentRound.cardIndex].whiteCards;
+        game.currentRound.cardIndex = game.currentRound.cardIndex + 1;
+        setGame(game);
+
+        io.in(gameID).emit("show_white_card", whiteCards);
+    }
+}
+
+export const anonymizePlayedWhiteCards = (playedWhiteCards) => {
+    return playedWhiteCards.map(card => ({
+        ...card,
+        playerID: null
+    }));
+}
+
+export const anonymizedGameClient = (game) => {
+    const roundCount = game.client.rounds.length;
+    const lastRound = {
+        ...game.client.rounds[roundCount - 1]
+    };
+
+    const cards = anonymizePlayedWhiteCards(game.currentRound.whiteCardsByPlayer);
+    lastRound.whiteCardsByPlayer = cards;
+
+    return {
+        ...game.client,
+        rounds: [...game.client.rounds].splice(-1, 1, lastRound)
+    }
+}

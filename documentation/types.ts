@@ -65,9 +65,10 @@ interface Round {
     round: number;
     blackCard: BlackCard;
     cardCzar: string;
+    cardIndex: number; // Used to show cards one by one
     whiteCardsByPlayer: {
         wonRound: boolean;
-        playerID: string;
+        playerID: string | null;
         popularVote: number;
         whiteCards: WhiteCard[];
     } [];

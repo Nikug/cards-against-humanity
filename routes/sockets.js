@@ -4,12 +4,18 @@ import {
     updateGameOptions,
     startGame,
 } from "../modules/game.js";
-import { updatePlayerName } from "../modules/player.js";
-import { addCardPack, removeCardPack } from "../modules/cardpack.js";
+import {
+    updatePlayerName
+} from "../modules/player.js";
+import {
+    addCardPack,
+    removeCardPack
+} from "../modules/cardpack.js";
 import {
     dealBlackCards,
     selectBlackCard,
     playWhiteCards,
+    showWhiteCard,
 } from "../modules/card.js";
 
 export const sockets = (io) => {
@@ -142,15 +148,27 @@ export const sockets = (io) => {
                 );
             }
         });
+
+        socket.on("show_next_white_card", (data) => {
+            const missingFields = validateFields(["gameID", "playerID"], data);
+            if (missingFields.length > 0) {
+                sendError(socket, "Invalid data");
+            } else {
+                showWhiteCard(io, data.gameID, data.playerID);
+            }
+        });
     });
 
     io.on("disconnect", (socket) => {
-        console.log(`Client left :( ID: ${socket.id}`);
+        console.log(`Client left :( Socket ID: ${socket.id}`);
     });
 };
 
 const sendError = (socket, id, message) => {
-    socket.emit("error", { id: id, message: message });
+    socket.emit("error", {
+        id: id,
+        message: message
+    });
 };
 
 const validateFields = (fields, data) => {

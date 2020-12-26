@@ -6,7 +6,8 @@ type Server2Client =
     | "update_player"           // Sends the updated player object
     | "update_players"          // Updates all players with client players object
     | "deal_black_cards"        // Server deals a black card to card czar
-    | "error"
+    | "error"                   // Send any error message to frontend
+    | "show_white_card"         // Sends a white card to be shown
 
 type Client2Server =
     | "join_game"               // Player joins a game
@@ -17,4 +18,5 @@ type Client2Server =
     | "draw_black_cards"        // Card Czar draws a black card
     | "select_black_card"       // Returns the selected black card and the other not selected blackcards
     | "play_white_cards"        // Client sends white cards it wants to play that turn
+    | "show_next_white_card"    // In the reading phase returns the cards played by one player
     

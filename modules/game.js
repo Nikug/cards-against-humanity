@@ -79,17 +79,19 @@ const createNewGame = (url) => {
             round: 0,
             blackCard: null,
             cardCzar: null,
+            cardIndex: 0,
             whiteCardsByPlayer: [],
         },
     };
     return game;
 };
 
-export const createRound = (roundNumber, blackCard, playerID) => {
+export const createRound = (roundNumber, blackCard, cardCzarID) => {
     return {
         round: roundNumber,
         blackCard: blackCard,
-        cardCzar: playerID,
+        cardCzar: cardCzarID,
+        cardIndex: 0,
         whiteCardsByPlayer: [],
     };
 };
