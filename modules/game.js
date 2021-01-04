@@ -1,8 +1,20 @@
 import hri from "human-readable-ids";
-import { nanoid } from "nanoid";
 
-import { gameOptions, playerName } from "../consts/gameSettings.js";
-import { createStateMachine } from "../modules/finiteStateMachine.js";
+import { gameOptions } from "../consts/gameSettings.js";
+import { createStateMachine } from "./finiteStateMachine.js";
+import {
+    createNewPlayer,
+    setPlayersActive,
+    publicPlayersObject,
+    setPlayersPlaying,
+} from "./player.js";
+import {
+    validateHost,
+    validateOptions,
+    validateGameStartRequirements,
+} from "./validate.js";
+import { randomBetween } from "./util.js";
+import { shuffleCards, dealWhiteCards } from "./card.js";
 
 let games = [];
 
@@ -25,44 +37,6 @@ export const setGame = (newGame) => {
     return newGame;
 };
 
-export const getPlayer = (game, playerID) => {
-    const players = game.players.filter((player) => player.id === playerID);
-    if (players.length !== 1) return undefined;
-    return players[0];
-};
-
-export const validateOptions = (newOptions) => {
-    const validatedOptions = {
-        ...newOptions,
-        maximumPlayers: clamp(
-            newOptions.maximumPlayers,
-            gameOptions.minimunPlayers,
-            gameOptions.maximumPlayers
-        ),
-        scoreLimit: clamp(
-            newOptions.scoreLimit,
-            gameOptions.minimumScoreLimit,
-            gameOptions.maximumScoreLimit
-        ),
-        winnerBecomesCardCzar: !!newOptions.winnerBecomesCardCzar,
-        allowKickedPlayerJoin: !!newOptions.allowKickedPlayerJoin,
-    };
-    return validatedOptions;
-};
-
-export const setPlayerName = (gameID, playerID, newName) => {
-    const game = getGame(gameID);
-    if (game) {
-        game.players = game.players.map((player) => {
-            return player.id === playerID
-                ? { ...player, name: newName, state: "active" }
-                : player;
-        });
-        setGame(game);
-        return game.players;
-    }
-};
-
 export const joinGame = (gameID, playerSocketID) => {
     const game = getGame(gameID);
     if (!!game) {
@@ -73,24 +47,6 @@ export const joinGame = (gameID, playerSocketID) => {
         return player;
     }
     return null;
-};
-
-export const validateHost = (game, playerID) => {
-    const hosts = game.players.filter(
-        (player) => player.id === playerID && player.isHost
-    );
-    return hosts.length === 1;
-};
-
-export const validateCardCzar = (game, playerID) => {
-    const hosts = game.players.filter(
-        (player) => player.id === playerID && player.isCardCzar
-    );
-    return hosts.length === 1;
-};
-
-const clamp = (value, min, max) => {
-    return Math.max(Math.min(value, max), min);
 };
 
 const createNewGame = (url) => {
@@ -123,238 +79,20 @@ const createNewGame = (url) => {
             round: 0,
             blackCard: null,
             cardCzar: null,
+            cardIndex: 0,
             whiteCardsByPlayer: [],
         },
     };
     return game;
 };
 
-const createNewPlayer = (socketID, isHost) => {
-    const player = {
-        id: nanoid(),
-        socket: socketID,
-        name: "",
-        state: "pickingName",
-        score: 0,
-        isCardCzar: false,
-        isHost: isHost,
-        popularVoteScore: 0,
-        whiteCards: [],
-    };
-    return player;
-};
-
-export const addCardPackToGame = (
-    gameID,
-    playerID,
-    cardPack,
-    whiteCards,
-    blackCards
-) => {
-    const game = getGame(gameID);
-    if (!game) return undefined;
-
-    if (!validateHost(game, playerID)) return undefined;
-
-    if (
-        game.client.options.cardPacks.some(
-            (existingCardPack) => existingCardPack.id === cardPack.id
-        )
-    )
-        return undefined;
-
-    game.client.options.cardPacks = [
-        ...game.client.options.cardPacks,
-        cardPack,
-    ];
-    game.cards.whiteCards = [...game.cards.whiteCards, ...whiteCards];
-    game.cards.blackCards = [...game.cards.blackCards, ...blackCards];
-    setGame(game);
-
-    return game.client.options;
-};
-
-export const removeCardPackFromGame = (gameID, cardPackID, playerID) => {
-    const game = getGame(gameID);
-    if (!game) return undefined;
-
-    if (!validateHost(game, playerID)) return undefined;
-
-    game.client.options.cardPacks = game.client.options.cardPacks.filter(
-        (cardPack) => cardPack.id !== cardPackID
-    );
-    game.cards.whiteCards = game.cards.whiteCards.filter(
-        (card) => card.cardPackID !== cardPackID
-    );
-    game.cards.blackCards = game.cards.blackCards.filter(
-        (card) => card.cardPackID !== cardPackID
-    );
-
-    setGame(game);
-    return game.client.options;
-};
-
-export const validateGameStartRequirements = (game) => {
-    const activePlayerCount = game.players.filter(
-        (player) => player.state === "active"
-    ).length;
-    if (activePlayerCount < gameOptions.minimunPlayers)
-        return {
-            result: false,
-            error: `Ei tarpeeksi pelaajia, tarvitaan vähintään ${gameOptions.minimunPlayers}`,
-        };
-    if (
-        activePlayerCount > game.client.options.maximumPlayers ||
-        activePlayerCount > gameOptions.maximumPlayers
-    )
-        return { result: false, error: "Liikaa pelaajia" };
-
-    if (
-        game.players.some(
-            (player) =>
-                player.name.length < playerName.minimumLength ||
-                player.name.length > playerName.maximumLength
-        )
-    ) {
-        return { result: false, error: "Pelaajien nimet eivät kelpaa" };
-    }
-
-    if (
-        game.cards.whiteCards.length <
-        gameOptions.startingWhiteCardCount * activePlayerCount
-    ) {
-        return { result: false, error: "Ei tarpeeksi valkoisia kortteja" };
-    }
-    if (game.cards.blackCards.length < gameOptions.blackCardsToChooseFrom) {
-        return { result: false, error: "Ei tarpeeksi mustia kortteja" };
-    }
-
-    return { result: true };
-};
-
-export const randomBetween = (min, max) => {
-    return Math.floor(Math.random() * (max - min + 1)) + min;
-};
-
-export const publicPlayersObject = (players) => {
-    return players.map((player) => ({
-        name: player.name,
-        state: player.state,
-        score: player.score,
-        isCardCzar: player.isCardCzar,
-        isHost: player.isHost,
-        popularVoteScore: player.popularVoteScore,
-    }));
-};
-
-export const shuffleCards = (cards) => {
-    for (let i = cards.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [cards[i], cards[j]] = [cards[j], cards[i]];
-    }
-    return cards;
-};
-
-export const drawWhiteCards = (game, count) => {
-    if (game.cards.whiteCards.length < count) {
-        let cards = [...game.cards.whiteCards];
-        if (game.cards.playedWhiteCards.length === 0) return [];
-
-        game.cards.whiteCards = shuffleCards([...game.cards.playedWhiteCards]);
-        game.cards.playedWhiteCards = [];
-
-        cards = [
-            ...cards,
-            game.cards.whiteCards.splice(0, count - cards.length),
-        ];
-        setGame(game);
-        return cards;
-    } else {
-        const drawnCards = game.cards.whiteCards.splice(0, count);
-        setGame(game);
-        return drawnCards;
-    }
-};
-
-export const drawBlackCards = (game, count) => {
-    if (game.cards.blackCards.length < count) {
-        let blackCards = [...game.cards.blackCards];
-
-        game.cards.blackCards = shuffleCards([...game.cards.playedBlackCards]);
-        game.cards.playedBlackCards = [];
-
-        blackCards = [
-            ...blackCards,
-            game.cards.blackCards.splice(0, count - blackCards.length),
-        ];
-
-        game.cards.playedBlackCards = [...blackCards];
-        setGame(game);
-        return blackCards;
-    }
-    const blackCards = game.cards.blackCards.splice(0, count);
-    game.cards.playedBlackCards = [
-        ...game.cards.playedBlackCards,
-        ...blackCards,
-    ];
-    setGame(game);
-    return blackCards;
-};
-
-export const shuffleCardsBackToDeck = (cards, deck) => {
-    let newCards = [...deck];
-    for (const card in cards) {
-        newCards.splice(randomBetween(0, newCards.length), 0, card);
-    }
-    return [...newCards];
-};
-
-export const createRound = (roundNumber, blackCard, playerID) => {
+export const createRound = (roundNumber, blackCard, cardCzarID) => {
     return {
         round: roundNumber,
         blackCard: blackCard,
-        cardCzar: playerID,
+        cardCzar: cardCzarID,
+        cardIndex: 0,
         whiteCardsByPlayer: [],
-    };
-};
-
-export const validatePlayerPlayingWhiteCards = (
-    game,
-    playerID,
-    whiteCardIDs
-) => {
-    if (game.client.state !== "playingWhiteCards") {
-        console.log("Wrong game state to play cards");
-        return { error: "Tällä hetkellä ei voi pelata valkoisia kortteja" };
-    }
-
-    
-    const player = getPlayer(game, playerID);
-    if (player === undefined) {
-        console.log("Player was not found");
-        return { result: false, error: "Pelaajaa ei löytynyt" };
-    }
-    
-    // Do check for if the player is cardczar
-
-    if (
-        player.whiteCards.filter((whiteCard) =>
-            whiteCardIDs.includes(whiteCard.id)
-        ).length !== whiteCardIDs.length
-    ) {
-        console.log("Player does not have the right cards");
-        return { result: false, error: "Pelaajalla ei ole kortteja" };
-    }
-
-    return { result: true };
-};
-
-export const createWhiteCardsByPlayer = (whiteCards, playerID) => {
-    return {
-        wonRound: false,
-        playerID: playerID,
-        popularVote: 0,
-        whiteCards: whiteCards,
     };
 };
 
@@ -366,20 +104,6 @@ export const everyoneHasPlayedTurn = (game) => {
         activePlayers.length ===
         game.client.rounds[game.client.rounds.length - 1].whiteCardsByPlayer
             .length
-    );
-};
-
-export const setPlayersPlaying = (players) => {
-    return players.map((player) =>
-        player.state === "active" ? { ...player, state: "playing" } : player
-    );
-};
-
-export const setPlayersActive = (players) => {
-    return players.map((player) =>
-        player.state === "playing" || player.state === "waiting"
-            ? { ...player, state: "active" }
-            : player
     );
 };
 
@@ -398,4 +122,85 @@ export const changeGameStateAfterTime = (io, gameID, transition, time) => {
             players: publicPlayersObject(game.players),
         });
     }, time * 1000);
+};
+
+export const joinToGame = (socket, io, gameID) => {
+    console.log(`Join game id ${gameID}`);
+
+    const game = getGame(gameID);
+    if (game !== null) {
+        socket.join(gameID);
+        console.log(`Client joined room ${gameID}`);
+
+        const player = joinGame(gameID, socket.id);
+
+        io.in(gameID).emit("update_game", { game: game.client });
+        socket.emit("update_player", { player: player });
+    } else {
+        socket.disconnect(true);
+        console.log(`Client disconnected :( ${gameID}`);
+    }
+};
+
+export const updateGameOptions = (io, gameID, playerID, newOptions) => {
+    const game = getGame(gameID);
+
+    if (!game) return;
+    if (!validateHost(game, playerID)) return;
+
+    game.client.options = validateOptions({
+        ...game.client.options,
+        ...newOptions,
+    });
+    const updatedGame = setGame(game);
+
+    io.in(game.id).emit("update_game_options", {
+        options: updatedGame.client.options,
+    });
+};
+
+export const leaveFromGame = (io, gameID, playerID) => {
+    const game = getGame(gameID);
+    if (!!game && !!playerID) {
+        game.players = game.players.map((player) => {
+            return player.id === playerID
+                ? { ...player, state: "disconnected" }
+                : player;
+        });
+        setGame(game);
+        io.in(gameID).emit("update_game", { game: game.client });
+    }
+};
+
+export const startGame = (io, gameID, playerID) => {
+    const game = getGame(gameID);
+    if (!game) return undefined;
+
+    if (!validateHost(game, playerID)) return undefined;
+
+    const result = validateGameStartRequirements(game);
+    if (!!result.error) return result.error;
+
+    game.stateMachine.startGame();
+    game.client.state = game.stateMachine.state;
+
+    const playerCount = game.players.length;
+    game.players[randomBetween(0, playerCount - 1)].isCardCzar = true;
+    game.players = setPlayersPlaying(game.players);
+
+    io.in(gameID).emit("update_players", {
+        players: publicPlayersObject(game.players),
+    });
+
+    game.cards.whiteCards = shuffleCards([...game.cards.whiteCards]);
+    game.cards.blackCards = shuffleCards([...game.cards.blackCards]);
+
+    const gameWithStartingHands = dealWhiteCards(
+        io,
+        game,
+        gameOptions.startingWhiteCardCount
+    );
+    setGame(gameWithStartingHands);
+
+    io.in(gameID).emit("update_game", { game: gameWithStartingHands.client });
 };
