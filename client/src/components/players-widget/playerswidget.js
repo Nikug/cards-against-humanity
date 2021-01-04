@@ -49,7 +49,7 @@ export class PlayersWidget extends Component {
         let playersToRender = game?.players || [];
 
         if (playersToRender.length === 0 && player) {
-        playersToRender.unshift(player);
+            playersToRender.unshift(player);
         }
 
         const renderedPlayers = this.renderPlayers(playersToRender);

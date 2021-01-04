@@ -251,7 +251,7 @@ export const showWhiteCard = (io, gameID, playerID) => {
         setGame(game);
         io.in(gameID).emit("update_game", {
             game: {
-                anonymizedGameClient(game);
+                ...anonymizedGameClient(game)
             }
         });
     } else {

@@ -107,7 +107,8 @@ export const Game = (props) => {
     };
 
     const iconClassnames = 'md-36 icon-margin-right';
-    const canStartGame = (player?.name || true) && game?.options?.cardPacks?.length > 0; // TODO: Why is player name not there?
+    console.log('aaaa', {player, game});
+    const canStartGame = game?.players?.length > 0 && game?.options?.cardPacks?.length > 0; // TODO: Why is player name not there? Player is not updated by back-end
     console.log('game.state', game?.state);
 
     return (
