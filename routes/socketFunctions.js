@@ -1,4 +1,5 @@
 import fetch from "node-fetch";
+import fs from 'fs';
 
 import {
     getGame,
@@ -90,9 +91,20 @@ export const leaveFromGame = (io, gameID, playerID) => {
 };
 
 export const addCardPack = async (io, gameID, cardPackID, playerID) => {
-    const url = `https://allbad.cards/api/pack/get?pack=${cardPackID}`;
+    const url = `https://allbad.cards/api/abc/pack/get?pack=${cardPackID}`;
     const res = await fetch(url);
+    console.log(res);
     const json = await res.json();
+
+    /*
+    // Save fetched pack to json
+    fs.writeFile(`${cardPackID}.json`, JSON.stringify(json), (err) => {
+        if (err) {
+            throw err;
+        }
+        console.log('saved');
+    })
+    */
 
     if (json.message === "Pack not found!") return;
 

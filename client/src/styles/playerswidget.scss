@@ -51,6 +51,11 @@
     width: fit-content;
     overflow: hidden;
     white-space: nowrap;
+
+    &.no-name {
+        font-style: italic;
+        padding-right: 0.2rem;
+    }
 }
 
 .player-status {

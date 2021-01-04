@@ -113,7 +113,7 @@ export const Game = (props) => {
     return (
         <div>
             <div className="info">
-                <PlayersWidget players={game?.players}/>
+                <PlayersWidget game={game} player={player}/>
                 <Timer
                     width={100}
                     percent={progress}
@@ -122,7 +122,7 @@ export const Game = (props) => {
                 />
             </div>
             <div className="lobby-container">
-                <div hidden={true}
+                <div hidden={false}
                     style={{ marginTop: "2rem", marginBottom: "2rem" }}
                     className="info"
                 >

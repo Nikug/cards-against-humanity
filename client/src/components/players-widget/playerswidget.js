@@ -1,4 +1,6 @@
 import React, {Component} from 'react'
+import { GAME_STATES } from '../../consts/gamestates';
+import { PLAYER_STATES } from '../../consts/playerstates';
 
 import "./../../styles/playerswidget.scss"
 
@@ -19,28 +21,43 @@ interface Player {
 */
 
 export class PlayersWidget extends Component {
-    constructor(props) {
-        super(props);
+    renderPlayers(players) {
+        const renderedPlayers = [];
 
-        this.state = {
-            self: {},
-            players: [],
-            gameState: null,
-            timer: null
-        };
+        for(let i = 0, len = players.length; i < len; i++) {
+            const player = players[i];
+            console.log({player})
+            const {id, name, state, score, popularVoteScore, isCardCzar} = player;
+
+            renderedPlayers.push(
+                <Player
+                    key={id}
+                    name={state === PLAYER_STATES.PICKING_NAME ? null : name}
+                    state={state}
+                    score={score}
+                    popularVoteScore={popularVoteScore}
+                    isCardCzar={isCardCzar}
+                />
+            )
+        }
+
+        return renderedPlayers;
     }
 
     render() {
-        const { self, players, gameState, timer } = this.state;
-        const playersToRender = players.unshift(self);
+        const { game, player } = this.props;
+        let playersToRender = game?.players || [];
 
+        if (playersToRender.length === 0 && player) {
+        playersToRender.unshift(player);
+        }
+
+        const renderedPlayers = this.renderPlayers(playersToRender);
+
+        console.log({playersToRender, player, renderedPlayers});
         return (
             <div className="players-widget">
-                <Player name="player 1" state="card-czar" score={3} popularVoteScore={5} isCardCzar={true}/>
-                <Player name="player 2" state="ready" score={0} popularVoteScore={3}/>
-                <Player name="player 3 with longer name name name name" state="waiting" score={2} popularVoteScore={8}/>
-                <Player name="player 4" state="waiting" score={6} popularVoteScore={13}/>
-                <Player name="player 5" state="error" score={1} popularVoteScore={100}/>
+                {renderedPlayers}
             </div>
         )
     }

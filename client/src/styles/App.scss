@@ -7,7 +7,9 @@
     text-decoration: none;
     font-family: "Teko", sans-serif;
     min-height: 100vh;
+    max-height: 100vh;
     color: $app-text;
+    overflow-y: auto;
 
     .basic-grid {
         display: grid;

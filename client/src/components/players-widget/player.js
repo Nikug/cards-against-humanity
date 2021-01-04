@@ -21,12 +21,13 @@ interface Player {
 export class Player extends Component {
     render() {
         const { id, socket, name, state, score, isCardCzar, isHost, popularVoteScore, whiteCards } = this.props;
+        const noName = name === null || name === undefined;
 
         return (
             <div className="player">
                 <span className="player-name-and-status">
                     <Icon name={isCardCzar? "star" : "radio_button_unchecked"} className={`player-status md-18 status-${state} ${isCardCzar ? 'icon-with-border' : ''}`}/>
-                    <span className="player-name">{name}</span>
+                    <span className={`player-name ${noName ? 'no-name' : ''}`}>{noName ? 'valitsee nimimerkkiä' : name}</span>
                 </span>
                 <span className="player-scores">
                     <span className="player-score">
