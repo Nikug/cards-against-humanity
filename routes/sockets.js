@@ -4,18 +4,14 @@ import {
     updateGameOptions,
     startGame,
 } from "../modules/game.js";
-import {
-    updatePlayerName
-} from "../modules/player.js";
-import {
-    addCardPack,
-    removeCardPack
-} from "../modules/cardpack.js";
+import { updatePlayerName } from "../modules/player.js";
+import { addCardPack, removeCardPack } from "../modules/cardpack.js";
 import {
     dealBlackCards,
     selectBlackCard,
     playWhiteCards,
     showWhiteCard,
+    selectWinner,
 } from "../modules/card.js";
 
 export const sockets = (io) => {
@@ -159,11 +155,23 @@ export const sockets = (io) => {
         });
 
         socket.on("pick_winning_card", (data) => {
-            const missingFields = validateFields(["gameID", "playerID", "whiteCardIDs"], data);
-            if(missingFields.length > 0) {
+            const missingFields = validateFields(
+                ["gameID", "playerID", "whiteCardIDs"],
+                data
+            );
+            if (missingFields.length > 0) {
                 sendError(socket, "Invalid data");
             } else {
-                // selectWinner(io, gameID, playerID, whiteCardIDs)
+                selectWinner(io, gameID, playerID, whiteCardIDs);
+            }
+        });
+
+        socket.on("start_round", (data) => {
+            const missingFields = validateFields(["gameID", "playerID"], data);
+            if (missingFields.length > 0) {
+                sendError(socket, "Invalid data");
+            } else {
+                // Start new round
             }
         });
     });
@@ -176,7 +184,7 @@ export const sockets = (io) => {
 const sendError = (socket, id, message) => {
     socket.emit("error", {
         id: id,
-        message: message
+        message: message,
     });
 };
 
