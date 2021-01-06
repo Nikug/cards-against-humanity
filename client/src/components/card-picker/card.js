@@ -54,18 +54,9 @@ function formatTextWithBlanks(text, blankTexts) {
  */
 
 export default function Card(props) {
-    if (isNullOrUndefined(props.card)) {
-        return;
-    }
-
-    const {
-        id,
-        cardPackID,
-        text,
-        whiteCardsToPlay,
-        whiteCardsToDraw,
-    } = props.card;
-    const { blankTexts, selected, confirmed, bigCard } = props;
+    const card = props.card;
+    const { id, cardPackID, text, whiteCardsToPlay, whiteCardsToDraw } = card;
+    const { blankTexts, selected, confirmed, bigCard, selectCard } = props;
     let type = CARD_TYPES.BLACK;
 
     if (isNullOrUndefined(whiteCardsToPlay)) {
@@ -85,6 +76,9 @@ export default function Card(props) {
             className={`card-wrapper ${bigCard ? "big-card" : ""} ${
                 confirmed ? "confirmed" : selected ? "selected" : ""
             } ${type === CARD_TYPES.BLACK ? "black" : "white"}`}
+            onClick={() => {
+                selectCard(card);
+            }}
         >
             <div
                 className={`card ${
@@ -94,10 +88,16 @@ export default function Card(props) {
                 {textToRender}
                 <div className="footer">
                     {type === CARD_TYPES.BLACK && (
-                        <span className="draw-and-play">{`Nosta ${whiteCardsToDraw}, Pelaa ${whiteCardsToPlay}`}</span>
+                        <span className="draw-and-play">
+                            {isNullOrUndefined(cardPackID)
+                                ? ""
+                                : `Nosta ${whiteCardsToDraw}, Pelaa ${whiteCardsToPlay}`}
+                        </span>
                     )}
                     <span>&nbsp;</span>
-                    <span className="cardpackid">{cardPackID}</span>
+                    <span className="cardpackid">
+                        {isNullOrUndefined(cardPackID) ? "" : cardPackID}
+                    </span>
                 </div>
             </div>
         </div>

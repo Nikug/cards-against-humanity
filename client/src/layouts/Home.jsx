@@ -4,11 +4,6 @@ import { Redirect } from "react-router-dom";
 import "../styles/home.scss";
 
 import Button, { BUTTON_TYPES } from "../components/button";
-import { getBlackCard, getWhiteCard } from "../fakedata/fakecarddata";
-import Card from "../components/card-picker/card";
-import { CardPicker } from "../components/card-picker/cardpicker";
-import { emptyFn } from "../helpers/generalhelpers";
-
 export class Home extends Component {
     constructor(props) {
         super(props);
@@ -38,20 +33,6 @@ export class Home extends Component {
                     <h1 className="welcome-text">
                         Tervetuloa pelaamaan kortteja ihmiskuntaa vastaan!
                     </h1>
-                    {/*
-                    <CardPicker
-                        mainCard={getBlackCard()}
-                        selectableCards={[
-                            getWhiteCard(0),
-                            getWhiteCard(1),
-                            getWhiteCard(2),
-                        ]}
-                        selectedCards={[getWhiteCard(0)]}
-                        confirmedCards={[getWhiteCard(1)]}
-                        selectCard={emptyFn}
-                        confirmCards={emptyFn}
-                    />
-                    */}
 
                     <div className="create-or-join-game-buttons">
                         <div className="container">

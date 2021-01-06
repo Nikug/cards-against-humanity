@@ -1,9 +1,18 @@
 import React, { useEffect, useState } from "react";
 import { socket } from "../sockets/socket";
 
+import { CardPicker } from "./cardpicker";
+import { getBlackCard, getWhiteCard } from "./../../fakedata/fakecarddata";
+import {
+    emptyFn,
+    isNullOrUndefined,
+    containsObjectWithMatchingFieldIndex,
+} from "../../helpers/generalhelpers";
+
 export function BlackCardPickerContainer(props) {
     const [blackCards, setBlackCards] = useState(undefined);
     const [selectedCards, setSelectedCards] = useState([]);
+    const [confirmedCards, setConfirmedCards] = useState([]);
 
     useEffect(() => {
         const { player, game } = props;
@@ -26,43 +35,61 @@ export function BlackCardPickerContainer(props) {
         });
     }, []);
 
-    const selectCard = (cardID) => {
+    const selectCard = (card) => {
         const game = props.game;
-        const pickLimit =
-            game.rounds[game.rounds.length - 1].blackCard.whiteCardsToPlay;
+        const newSelectedCards = selectedCards.slice();
+        let pickLimit = 1;
+
+        if (isNullOrUndefined(card.whiteCardsToPlay)) {
+            pickLimit =
+                game.rounds[game.rounds.length - 1].blackCard.whiteCardsToPlay;
+        }
+
+        const i = containsObjectWithMatchingFieldIndex(
+            card,
+            newSelectedCards,
+            "id"
+        );
+        if (i !== -1) {
+            newSelectedCards.splice(i);
+        } else if (newSelectedCards.length < pickLimit) {
+            newSelectedCards.push(card);
+        } else {
+            newSelectedCards.pop();
+            newSelectedCards.push(card);
+        }
+        setSelectedCards(newSelectedCards);
     };
 
-    const confirmCard = (cardID) => {
-        if (props.selectectedCardType === "black") {
+    const confirmCard = () => {
+        if (selectedCards.length === 1) {
+            const cardID = selectedCards[0].id;
+            const gameID = props.game.id;
+            const playerID = props.player.id;
             socket.emit("select_black_card", {
-                gameID: props.gameID,
-                playerID: props.player.id,
+                gameID: gameID,
+                playerID: playerID,
                 selectedCardID: cardID,
                 discardedCardIDs: blackCards
                     .filter((blackCard) => blackCard.id !== cardID)
                     .map((blackCard) => blackCard.id),
             });
         } else {
-            if (selectedCards.length !== props.pickLimit) return;
-            socket.emit("play_white_cards", {
-                gameID: props.gameID,
-                playerID: props.player.id,
-                whiteCardIDs: selectedCards,
-            });
+            console.log("There was no black card to confirm");
         }
     };
 
     return (
-        <div className="cardpicker-wrapper">
-            <span>aaaa</span>
-            {blackCards?.map((blackCard, i) => (
-                <div
-                    key={i}
-                    type="black"
-                    card={blackCard}
-                    onClick={selectCard}
-                />
-            ))}
+        <div className="blackcardpicker">
+            <CardPicker
+                pickingBlackCard={true}
+                selectableCards={blackCards}
+                selectedCards={selectedCards}
+                confirmedCards={confirmedCards}
+                selectCard={selectCard}
+                confirmCards={confirmCard}
+                description={"Valitse musta kortti"}
+            />
         </div>
     );
 }
