@@ -89,9 +89,10 @@ export const getPlayerByWhiteCards = (game, whiteCardIDs) => {
     return players.length === 1 ? players[0].playerID : undefined;
 }
 
-export const getNextCardCzar = (players, cardCzarID) => {
-    const cardCzarIndex = players.findIndex(player => player.id === cardCzarID);
-    const playerCount = players.length;
+export const getNextCardCzar = (players, previousCardCzarID) => {
+    const activePlayers = players.filter(player => player.state === "active");
+    const cardCzarIndex = activePlayers.findIndex(player => player.id === previousCardCzarID);
+    const playerCount = activePlayers.length;
     
     // TODO: add support for the winner becoming next card czar
     if(cardCzarIndex === playerCount - 1) {
@@ -99,4 +100,8 @@ export const getNextCardCzar = (players, cardCzarID) => {
     } else {
         return players[cardCzarIndex + 1].id
     }
+}
+
+export const addScore = (players, playerID, scoreToAdd) => {
+    return players.map(player => player.id === playerID ? { ...player, score: player.score + scoreToAdd } : player);
 }

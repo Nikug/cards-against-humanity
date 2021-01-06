@@ -11,7 +11,7 @@ import {
     validateShowingWhiteCard,
     validatePickingWinner,
 } from "./validate.js";
-import { getPlayer, publicPlayersObject, setPlayersActive, setPlayersPlaying } from "./player.js";
+import { addScore, getNextCardCzar, getPlayer, publicPlayersObject, setPlayersActive, setPlayersPlaying } from "./player.js";
 import { gameOptions } from "../consts/gameSettings.js";
 import { randomBetween } from "./util.js";
 
@@ -248,13 +248,8 @@ export const showWhiteCard = (io, gameID, playerID) => {
         setGame(game);
         io.in(gameID).emit("update_game", {
             game: {
-<<<<<<< HEAD
                 ...anonymizedGameClient(game),
             },
-=======
-                ...anonymizedGameClient(game)
-            }
->>>>>>> ecc706f18e47fe0c0d2d2ce1e391f4331b9d59dc
         });
     } else {
         const whiteCards =
@@ -303,6 +298,7 @@ export const selectWinner = (io, gameID, playerID, whiteCardIDs) => {
 
     const winnerID = getPlayerByWhiteCards(game, whiteCardIDs);
     if (!winnerID) return;
+    game.players = addScore(game.players, winnerID, 1);
 
     const updatedCardsByPlayer = game.currentRound.whiteCardsByPlayer.map(
         (cardsByPlayer) =>
@@ -319,17 +315,10 @@ export const selectWinner = (io, gameID, playerID, whiteCardIDs) => {
     game.client.state = game.stateMachine.state;
 
     game.players = setPlayersActive(game.players);
-    // Set new CardCzar
-    // Set score for the winner
 
     setGame(game);
 
     io.in(gameID).emit("update_game", {
         game: { ...anonymizedGameClient(game) },
     });
-
-    // Update game state to round end
-    // Update client round to show winner
-    // Server needs to know playerIDs to keep track of popular vote
-    // Client can only know the winnerID since that is puclic information
 };
