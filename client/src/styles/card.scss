@@ -1,0 +1,109 @@
+@import "./colors.scss";
+
+.card-wrapper {
+    font-family: "Ubuntu", sans-serif;
+    font-size: 1.3rem;
+    width: 20rem;
+    height: fit-content;
+    min-height: 10rem;
+    text-align: left;
+    border-radius: 6px;
+    padding: 0.25rem;
+    justify-content: center;
+    align-content: center;
+    display: flex;
+    line-height: 1.6em;
+
+    .card {
+        width: 20rem;
+        height: fit-content;
+        min-height: 10rem;
+        padding: 0.5rem 0.8rem;
+        text-align: left;
+        border-radius: 6px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+
+        &.white {
+            background-color: $white-card-background;
+            color: $white-card-text;
+        }
+
+        &.black {
+            background-color: $black-card-background;
+            color: $black-card-text;
+        }
+
+        > .text {
+            margin: auto 0;
+
+            .blank {
+                //text-decoration: underline;
+                border-bottom: 1px solid $black-card-text;
+            }
+        }
+
+        > .footer {
+            font-size: 0.6rem;
+            text-align: right;
+            line-height: normal;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            margin-top: 0.2rem;
+
+            > .cardpackid {
+                height: 0.6rem;
+            }
+
+            > .draw-and-play {
+                font-size: 0.8rem;
+            }
+        }
+    }
+
+    &.big-card {
+        width: 40rem;
+
+        .card {
+            width: 40rem;
+        }
+    }
+
+    &.white {
+        background-color: $white-card-background;
+    }
+
+    &.black {
+        background-color: $black-card-background;
+    }
+
+    &.selected {
+        background-color: $card-selected;
+    }
+
+    &.confirmed {
+        background-color: $card-confimerd;
+    }
+}
+
+.cardpicker-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    > .main {
+        margin-bottom: 2rem;
+    }
+
+    > .selectable {
+        display: flex;
+        flex-direction: row;
+
+        .card-wrapper {
+            margin: 0 0.5rem;
+            cursor: pointer;
+        }
+    }
+}

@@ -5,7 +5,6 @@ import './../../styles/input.scss'
 import Icon from './../icon';
 import Button from './../button'
 import {BUTTON_TYPES} from './../button'
-import { emptyFn } from '../../helpers/generalhelpers';
 
 export const CONTROL_TYPES = {
     toggle: 'toggle',
@@ -21,6 +20,10 @@ export class Setting extends Component {
 
         this.state = {
             inputText: ''
+        };
+
+        if (this.props.DEV_CARD_PACK_AUTOFILL === true) {
+            this.state.inputText = 'qM1V1IaYBE';
         }
     }
     renderToggle(currentValue, isDisabled, onChangeCallback) {
@@ -72,7 +75,6 @@ export class Setting extends Component {
     }
 
     handleTextFieldChange(event, changeCallback) {
-        console.log({event, changeCallback});
         if (event === null) {
             changeCallback(this.state.inputText);
             this.setState({inputText: ''});
