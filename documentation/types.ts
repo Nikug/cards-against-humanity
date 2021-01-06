@@ -71,7 +71,7 @@ interface Round {
         playerID: string | null; // Always null unless is winner in client
         popularVote: number;
         whiteCards: WhiteCard[];
-    } [];
+    }[];
 }
 
 interface Options {
@@ -103,9 +103,9 @@ type GameState =
 
 type PlayerState =
     // Active states
-    | "active"      // Default active state
-    | "playing"     // Picking a white card
-    | "waiting"     // Has played white cards, waiting for pick phase to end
+    | "active" // Default active state
+    | "playing" // Picking a white card
+    | "waiting" // Has played white cards, waiting for pick phase to end
     // Inactive states
     | "pickingName"
     | "disconnected"

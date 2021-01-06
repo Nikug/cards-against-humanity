@@ -95,14 +95,24 @@
 
     > .main {
         margin-bottom: 2rem;
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+
+        > .confirm-button {
+            align-self: center;
+            justify-self: center;
+        }
     }
 
     > .selectable {
         display: flex;
         flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        max-width: 65rem;
 
         .card-wrapper {
-            margin: 0 0.5rem;
+            margin: 0.3rem 0.5rem;
             cursor: pointer;
         }
     }

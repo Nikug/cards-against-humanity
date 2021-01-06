@@ -4,6 +4,7 @@ import { socket } from "../sockets/socket";
 import Card from "./card";
 import { getBlackCard, getWhiteCard } from "../../fakedata/fakecarddata";
 import { containsObjectWithMatchingField } from "../../helpers/generalhelpers";
+import Button, { BUTTON_TYPES } from "../button";
 
 /**
  * Everything given via props
@@ -13,6 +14,7 @@ import { containsObjectWithMatchingField } from "../../helpers/generalhelpers";
  * @param {confirmedCards} Array Which cards have been confirmed.
  * @param {selectCard} function Callback function to select a card. Calls the function with the card obj.
  * @param {confirmCards} function Callback function to confirm all selected cards.
+ * @param {pickingBlackCard} boolean Is the picked card black.
  */
 
 export function CardPicker(props) {
@@ -24,10 +26,13 @@ export function CardPicker(props) {
         selectCard,
         confirmCards,
         pickingBlackCard,
+        description,
     } = props;
     const renderedCards = [];
 
-    for (let i = 0, len = selectableCards.length; i < len; i++) {
+    const selectableCardsLength = selectableCards ? selectableCards.length : 0;
+
+    for (let i = 0; i < selectableCardsLength; i++) {
         const card = selectableCards[i];
 
         renderedCards.push(
@@ -44,6 +49,7 @@ export function CardPicker(props) {
                     confirmedCards,
                     "id"
                 )}
+                selectCard={selectCard}
             />
         );
     }
@@ -51,12 +57,32 @@ export function CardPicker(props) {
     return (
         <div className="cardpicker-wrapper">
             <div className="main">
+                <span />
                 {pickingBlackCard ? (
-                    <Card card={selectedCards[0]} />
+                    <Card
+                        card={
+                            selectedCards.length > 0
+                                ? selectedCards[0]
+                                : confirmedCards.length > 0
+                                ? confirmedCards[0]
+                                : { text: "", whiteCardsToPlay: 2 }
+                        }
+                    />
                 ) : (
                     <Card card={mainCard} bigCard={true} blankTexts={[]} />
                 )}
+                <Button
+                    additionalClassname="confirm-button"
+                    text="Valitse"
+                    callback={() => confirmCards()}
+                    type={BUTTON_TYPES.PRIMARY}
+                    icon="send"
+                    iconPosition="after"
+                >
+                    aaaa
+                </Button>
             </div>
+            {description}
             <div className="selectable">{renderedCards}</div>
         </div>
     );

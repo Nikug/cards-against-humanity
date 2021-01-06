@@ -101,6 +101,7 @@ export const sockets = (io) => {
         });
 
         socket.on("draw_black_cards", (data) => {
+            console.log(data);
             const missingFields = validateFields(["gameID", "playerID"], data);
             if (missingFields.length > 0) {
                 sendError(socket, "Invalid data");
