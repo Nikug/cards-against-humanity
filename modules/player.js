@@ -75,3 +75,28 @@ export const getPlayer = (game, playerID) => {
     if (players.length !== 1) return undefined;
     return players[0];
 };
+
+export const getPlayerByWhiteCards = (game, whiteCardIDs) => {
+    const players = game.currentRound.whiteCardsByPlayer.filter(whiteCardByPlayer => {
+        if(whiteCardIDs.length !== whiteCardByPlayer.length) return false;
+
+        const ids = whiteCardByPlayer.whiteCards.map(whiteCard => whiteCard.id);
+        return !whiteCardIDs.some(id => !ids.includes(id));
+    });
+
+    // There should always be exactly one player
+    // No more, no less
+    return players.length === 1 ? players[0].playerID : undefined;
+}
+
+// TODO: add support for the winner becoming next card czar
+export const getNextCardCzar = (players, cardCzarID) => {
+    const cardCzarIndex = players.findIndex(player => player.id === cardCzarID);
+    const playerCount = players.length;
+
+    if(cardCzarIndex === playerCount - 1) {
+        return players[0].id;
+    } else {
+        return players[cardCzarIndex + 1].id
+    }
+}
