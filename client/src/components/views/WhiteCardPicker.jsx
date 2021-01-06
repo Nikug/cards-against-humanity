@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { socket } from "../sockets/socket";
 
 import { Card } from "../cards/Card";
@@ -17,7 +17,6 @@ export const WhiteCardPicker = (props) => {
     };
 
     const playCards = () => {
-        console.log(selectedCards);
         if (selectedCards.length !== props.pickLimit) return;
         socket.emit("play_white_cards", {
             gameID: props.gameID,

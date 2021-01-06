@@ -2,6 +2,7 @@
 // Colorless colors
 $color-black: #000000;
 $color-white: #ffffff;
+$color-very-dark-grey: #111111;
 $color-dark-grey: #222222;
 $color-darkish-grey: #363636;
 $color-grey: #727272;
@@ -109,3 +110,11 @@ $settings-icon-disabled: darken($color-light-grey, 10%);
 $settings-icon: lighten($color-cyan, 8%);
 
 $cardpack-remove-hover: $color-orange;
+
+// Card
+$white-card-background: $color-white;
+$white-card-text: $color-very-dark-grey;
+$black-card-background: $color-very-dark-grey;
+$black-card-text: $color-white;
+$card-selected: $color-bright-yellow;
+$card-confimerd: $color-green;

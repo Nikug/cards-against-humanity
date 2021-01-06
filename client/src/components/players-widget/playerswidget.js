@@ -1,8 +1,7 @@
-import React, {Component} from 'react'
-import { GAME_STATES } from '../../consts/gamestates';
+import React, {Component} from 'react';
 import { PLAYER_STATES } from '../../consts/playerstates';
 
-import "./../../styles/playerswidget.scss"
+import "./../../styles/playerswidget.scss";
 
 import {Player} from "./player";
 
@@ -26,12 +25,12 @@ export class PlayersWidget extends Component {
 
         for(let i = 0, len = players.length; i < len; i++) {
             const player = players[i];
-            console.log({player})
             const {id, name, state, score, popularVoteScore, isCardCzar} = player;
 
             renderedPlayers.push(
                 <Player
-                    key={id}
+                    key={i}
+                    id={id}
                     name={state === PLAYER_STATES.PICKING_NAME ? null : name}
                     state={state}
                     score={score}
@@ -49,12 +48,11 @@ export class PlayersWidget extends Component {
         let playersToRender = game?.players || [];
 
         if (playersToRender.length === 0 && player) {
-        playersToRender.unshift(player);
+            playersToRender.unshift(player);
         }
 
         const renderedPlayers = this.renderPlayers(playersToRender);
 
-        console.log({playersToRender, player, renderedPlayers});
         return (
             <div className="players-widget">
                 {renderedPlayers}

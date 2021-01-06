@@ -1,5 +1,4 @@
 import React, {Component} from 'react';
-import { emptyFn } from '../../helpers/generalhelpers';
 
 import { socket } from "../sockets/socket";
 
@@ -132,7 +131,6 @@ export class GameSettingsContainer extends Component {
     addCardPack(id) {
         const {gameID, playerID} = this.props;
 
-        console.log({gameID, id, playerID});
         socket.emit("add_card_pack", {
             gameID: gameID,
             cardPackID: id,
@@ -143,7 +141,6 @@ export class GameSettingsContainer extends Component {
     removeCardpack(id) {
         const {gameID, playerID} = this.props;
 
-        console.log({gameID, id, playerID});
         socket.emit("remove_card_pack", {
             gameID: gameID,
             cardPackID: id,
@@ -284,7 +281,8 @@ export class GameSettingsContainer extends Component {
                             <h2 className="game-settings-title">
                                 Korttipakat
                             </h2>
-                            <Setting 
+                            <Setting
+                                DEV_CARD_PACK_AUTOFILL={true}
                                 text={'Lisää korttipakka'} 
                                 placeholderText={'rAnD0MchArs'}
                                 controlType={CONTROL_TYPES.textWithConfirm}

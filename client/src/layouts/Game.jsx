@@ -1,11 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { socket } from "../components/sockets/socket";
-import { Redirect } from "react-router-dom";
 
-import { GameOptions } from "../components/options/GameOptions";
-import { PlayerName } from "../components/options/PlayerName";
-import { BlackCardPicker } from "../components/views/BlackCardPicker";
-import { WhiteCardPicker } from "../components/views/WhiteCardPicker";
 import { PlayersWidget } from "../components/players-widget/playerswidget";
 import { GameSettingsContainer } from "../components/game-settings/gamesettingscontainer";
 import { Timer } from "../components/timer";
@@ -13,8 +8,8 @@ import Button, { BUTTON_TYPES } from "../components/button";
 import {Setting, CONTROL_TYPES} from './../components/settings/setting';
 
 import "./../styles/game.scss";
-import { emptyFn } from "../helpers/generalhelpers";
 import { GAME_STATES } from "../consts/gamestates";
+import { CardPicker } from "../components/card-picker/cardpicker";
 
 export const Game = (props) => {
     const [game, setGame] = useState(undefined);
@@ -49,8 +44,6 @@ export const Game = (props) => {
         });
 
         socket.on("update_game", (data) => {
-            console.log("Game updated!");
-            console.log(data);
             setGame((prevGame) => ({ ...prevGame, ...data.game }));
         });
 
@@ -75,15 +68,15 @@ export const Game = (props) => {
         }
     };
 
-    console.log(`Is socket still open: ${socket.connected ? "Yes" : "No"}`);
+    //console.log(`Is socket still open: ${socket.connected ? "Yes" : "No"}`);
     if (game) {
-        console.log("game.id", game.id);
+        //console.log("game.id", game.id);
     } else {
-        console.log("was no game");
+        //console.log("was no game");
     }
 
     const addProgress = () => {
-        console.log(progress);
+        //console.log(progress);
         if (progress < 0.95) {
             setProgress(progress + 1);
             return;
@@ -95,7 +88,7 @@ export const Game = (props) => {
     const setPlayerName = (name) => {
         const cleanedName = name.trim();
 
-        console.log('setPlayerName', {name, cleanedName}, game?.id, player?.id);
+        //console.log('setPlayerName', {name, cleanedName}, game?.id, player?.id);
 
         if (!!player?.id && cleanedName.length > 0) {
             socket.emit("set_player_name", {
@@ -107,7 +100,7 @@ export const Game = (props) => {
     };
 
     const iconClassnames = 'md-36 icon-margin-right';
-    const canStartGame = (player?.name || true) && game?.options?.cardPacks?.length > 0; // TODO: Why is player name not there?
+    const canStartGame = game?.players?.length > 0 && game?.options?.cardPacks?.length > 0; // TODO: Why is player name not there? Player is not updated by back-end
     console.log('game.state', game?.state);
 
     return (
@@ -158,12 +151,17 @@ export const Game = (props) => {
                     />
                 </div>
 
-                <div hidden={game?.state !== GAME_STATES.PICKING_BLACK_CARD}>
-                    picking black card
+                <div hidden={
+                        game?.state !== GAME_STATES.PICKING_BLACK_CARD && 
+                        game?.state !== GAME_STATES.PLAYING_WHITE_CARDS &&
+                        game?.state !== GAME_STATES.READING_CARDS &&
+                        game?.state !== GAME_STATES.SHOWING_CARDS &&
+                        game?.state !== GAME_STATES.ROUND_END
+                    }>
+                    <CardPicker player={player} game={game} altText={'Korttikuningas valitsee mustaa korttia...'}/>
                 </div>
 
-
-
+{/*
                 <div hidden={true}>
                     <h1 style={{ textTransform: "capitalize" }}>{`Game ${
                         game === undefined ? " not found" : game.id.replace(/-/g, " ")
@@ -219,6 +217,7 @@ export const Game = (props) => {
                         </div>
                     )}
                 </div>
+                                */}
             </div>
         </div>
     );

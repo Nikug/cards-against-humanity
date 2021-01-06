@@ -89,11 +89,11 @@ export const getPlayerByWhiteCards = (game, whiteCardIDs) => {
     return players.length === 1 ? players[0].playerID : undefined;
 }
 
-// TODO: add support for the winner becoming next card czar
 export const getNextCardCzar = (players, cardCzarID) => {
     const cardCzarIndex = players.findIndex(player => player.id === cardCzarID);
     const playerCount = players.length;
-
+    
+    // TODO: add support for the winner becoming next card czar
     if(cardCzarIndex === playerCount - 1) {
         return players[0].id;
     } else {

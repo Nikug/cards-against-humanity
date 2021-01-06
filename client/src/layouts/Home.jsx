@@ -1,61 +1,100 @@
-import React, {Component} from "react";
+import React, { Component } from "react";
 import { Redirect } from "react-router-dom";
 
-import "../styles/home.scss"
+import "../styles/home.scss";
 
 import Button, { BUTTON_TYPES } from "../components/button";
-import {Timer} from "../components/timer";
+import { getBlackCard, getWhiteCard } from "../fakedata/fakecarddata";
+import Card from "../components/card-picker/card";
+import { CardPicker } from "../components/card-picker/cardpicker";
+import { emptyFn } from "../helpers/generalhelpers";
 
 export class Home extends Component {
     constructor(props) {
-        super(props)
+        super(props);
 
         this.state = {
-            newUrl: ""
-        }
+            newUrl: "",
+        };
     }
 
     handleKeyDown(event) {
-        if (event.key === 'Enter') {
+        if (event.key === "Enter") {
             this.props.joinExistingGame(this.state.newUrl);
         }
     }
 
     newUrlChange(event) {
-        console.log(event);
-        this.setState({newUrl: event.target.value})
+        this.setState({ newUrl: event.target.value });
     }
 
     render() {
-        const {url, startNewGame, joinExistingGame} = this.props;
+        const { url, startNewGame, joinExistingGame } = this.props;
         const urlIsEmpty = url === "";
 
-        if (urlIsEmpty) { 
+        if (urlIsEmpty) {
             return (
                 <div className="home-wrapper">
                     <h1 className="welcome-text">
                         Tervetuloa pelaamaan kortteja ihmiskuntaa vastaan!
                     </h1>
-                    
+                    {/*
+                    <CardPicker
+                        mainCard={getBlackCard()}
+                        selectableCards={[
+                            getWhiteCard(0),
+                            getWhiteCard(1),
+                            getWhiteCard(2),
+                        ]}
+                        selectedCards={[getWhiteCard(0)]}
+                        confirmedCards={[getWhiteCard(1)]}
+                        selectCard={emptyFn}
+                        confirmCards={emptyFn}
+                    />
+                    */}
+
                     <div className="create-or-join-game-buttons">
                         <div className="container">
-                            <div className="text">Luo uusi peli, johon voit kutsua kaverisi mukaan</div>
+                            <div className="text">
+                                Luo uusi peli, johon voit kutsua kaverisi mukaan
+                            </div>
                             <div className="input-and-button-container">
-                                <Button text="Luo peli" type={BUTTON_TYPES.PRIMARY} callback={startNewGame} icon="add_circle_outline"></Button>
+                                <Button
+                                    text="Luo peli"
+                                    type={BUTTON_TYPES.PRIMARY}
+                                    callback={startNewGame}
+                                    icon="add_circle_outline"
+                                ></Button>
                             </div>
                         </div>
                         <div className="container border">
-                            <div className="text">Liity olemassa olevaan peliin syöttämällä pelin nimi</div>
+                            <div className="text">
+                                Liity olemassa olevaan peliin syöttämällä pelin
+                                nimi
+                            </div>
                             <div className="input-and-button-container">
-                                <input type="text" className="input" placeholder="existing-game-69" onChange={(e) => this.newUrlChange(e)} value={this.state.newUrl} onKeyDown={(e) => this.handleKeyDown(e)}/> 
-                                <Button text="Liity peliin" type={BUTTON_TYPES.PRIMARY} callback={joinExistingGame} callbackParams={this.state.newUrl}  icon="login"></Button>
+                                <input
+                                    type="text"
+                                    className="input"
+                                    placeholder="existing-game-69"
+                                    onChange={(e) => this.newUrlChange(e)}
+                                    value={this.state.newUrl}
+                                    onKeyDown={(e) => this.handleKeyDown(e)}
+                                />
+                                <Button
+                                    text="Liity peliin"
+                                    type={BUTTON_TYPES.PRIMARY}
+                                    callback={joinExistingGame}
+                                    callbackParams={this.state.newUrl}
+                                    icon="login"
+                                ></Button>
                             </div>
                         </div>
                     </div>
                 </div>
-            )
+            );
         }
-        
+
         return (
             <Redirect
                 to={{
@@ -65,4 +104,4 @@ export class Home extends Component {
             />
         );
     }
-};
+}

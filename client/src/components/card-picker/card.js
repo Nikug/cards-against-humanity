@@ -1,0 +1,105 @@
+import React from "react";
+import { isNullOrUndefined } from "./../../helpers/generalhelpers.js";
+import "./../../styles/card.scss";
+
+const CARD_TYPES = {
+    WHITE: 1,
+    BLACK: 2,
+};
+
+function formatTextWithBlanks(text, blankTexts) {
+    const splittedText = text.split("_");
+    const piecesToRender = [];
+
+    for (
+        let i = 0, blankIterator = 0, len = splittedText.length;
+        i < len;
+        i++
+    ) {
+        const piece = splittedText[i];
+        piecesToRender.push(
+            <span key={`t-${i}`} className="text">
+                {piece}
+            </span>
+        );
+        if (i === len - 1) {
+            break;
+        }
+        if (blankTexts && blankTexts[blankIterator]) {
+            piecesToRender.push(
+                <span key={`b-${i}`} className="blank">
+                    {blankTexts[blankIterator]}
+                </span>
+            );
+            blankIterator++;
+        } else {
+            piecesToRender.push(
+                <span key={`b-${i}`} className="blank">
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                </span>
+            );
+        }
+    }
+
+    return <div className="text">{piecesToRender}</div>;
+}
+
+/**
+ * Everything given via props
+ * @param {card} Card The basic card object
+ * @param {blankTexts} Array The white cards selected for black card
+ * @param {bigCard} boolean Is the card big
+ * @param {selected} boolean Is the card selected
+ * @param {confirmed} boolean Is the card selection confimred
+ */
+
+export default function Card(props) {
+    if (isNullOrUndefined(props.card)) {
+        return;
+    }
+
+    const {
+        id,
+        cardPackID,
+        text,
+        whiteCardsToPlay,
+        whiteCardsToDraw,
+    } = props.card;
+    const { blankTexts, selected, confirmed, bigCard } = props;
+    let type = CARD_TYPES.BLACK;
+
+    if (isNullOrUndefined(whiteCardsToPlay)) {
+        type = CARD_TYPES.WHITE;
+    }
+
+    let textToRender;
+
+    if (type === CARD_TYPES.BLACK) {
+        textToRender = formatTextWithBlanks(text, blankTexts);
+    } else {
+        textToRender = <div className="text">{text}</div>;
+    }
+
+    return (
+        <div
+            className={`card-wrapper ${bigCard ? "big-card" : ""} ${
+                confirmed ? "confirmed" : selected ? "selected" : ""
+            } ${type === CARD_TYPES.BLACK ? "black" : "white"}`}
+        >
+            <div
+                className={`card ${
+                    type === CARD_TYPES.BLACK ? "black" : "white"
+                }`}
+            >
+                {textToRender}
+                <div className="footer">
+                    {type === CARD_TYPES.BLACK && (
+                        <span className="draw-and-play">{`Nosta ${whiteCardsToDraw}, Pelaa ${whiteCardsToPlay}`}</span>
+                    )}
+                    <span>&nbsp;</span>
+                    <span className="cardpackid">{cardPackID}</span>
+                </div>
+            </div>
+        </div>
+    );
+}

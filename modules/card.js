@@ -248,8 +248,13 @@ export const showWhiteCard = (io, gameID, playerID) => {
         setGame(game);
         io.in(gameID).emit("update_game", {
             game: {
+<<<<<<< HEAD
                 ...anonymizedGameClient(game),
             },
+=======
+                ...anonymizedGameClient(game)
+            }
+>>>>>>> ecc706f18e47fe0c0d2d2ce1e391f4331b9d59dc
         });
     } else {
         const whiteCards =

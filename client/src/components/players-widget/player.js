@@ -20,7 +20,7 @@ interface Player {
 
 export class Player extends Component {
     render() {
-        const { id, socket, name, state, score, isCardCzar, isHost, popularVoteScore, whiteCards } = this.props;
+        const { name, state, score, isCardCzar, popularVoteScore } = this.props;
         const noName = name === null || name === undefined;
 
         return (

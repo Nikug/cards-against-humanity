@@ -99,24 +99,32 @@
     //border-left: 1px solid white;
 }
 
-.status-waiting {
+.status-playing {
     color: $player-waiting;
 }
 
-.status-ready {
+.status-active {
     color: $player-ready;
 }
 
-.status-ghost {
+.status-spectating {
     color: $player-ghost;
 }
 
-.status-error {
+.status-pickingName {
+    color: $player-ghost;
+}
+
+.status-kicked {
+    color: $player-error;
+}
+
+.status-disconnected {
     color: $player-error;
 }
 
 .status-card-czar {
-    color: $player-card-czar;
+    color: $player-card-czar !important;
 }
 
 .win-icon {
