@@ -158,6 +158,15 @@ export const sockets = (io) => {
                 showWhiteCard(io, data.gameID, data.playerID);
             }
         });
+
+        socket.on("pick_winning_card", (data) => {
+            const missingFields = validateFields(["gameID", "playerID", "whiteCardIDs"], data);
+            if(missingFields.length > 0) {
+                sendError(socket, "Invalid data");
+            } else {
+                // selectWinner(io, gameID, playerID, whiteCardIDs)
+            }
+        });
     });
 
     io.on("disconnect", (socket) => {

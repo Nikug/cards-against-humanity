@@ -68,7 +68,7 @@ interface Round {
     cardIndex: number; // Used to show cards one by one
     whiteCardsByPlayer: {
         wonRound: boolean;
-        playerID: string | null;
+        playerID: string | null; // Always null unless is winner in client
         popularVote: number;
         whiteCards: WhiteCard[];
     }[];
