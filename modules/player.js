@@ -77,31 +77,41 @@ export const getPlayer = (game, playerID) => {
 };
 
 export const getPlayerByWhiteCards = (game, whiteCardIDs) => {
-    const players = game.currentRound.whiteCardsByPlayer.filter(whiteCardByPlayer => {
-        if(whiteCardIDs.length !== whiteCardByPlayer.length) return false;
+    const players = game.currentRound.whiteCardsByPlayer.filter(
+        (whiteCardByPlayer) => {
+            if (whiteCardIDs.length !== whiteCardByPlayer.length) return false;
 
-        const ids = whiteCardByPlayer.whiteCards.map(whiteCard => whiteCard.id);
-        return !whiteCardIDs.some(id => !ids.includes(id));
-    });
+            const ids = whiteCardByPlayer.whiteCards.map(
+                (whiteCard) => whiteCard.id
+            );
+            return !whiteCardIDs.some((id) => !ids.includes(id));
+        }
+    );
 
     // There should always be exactly one player
     // No more, no less
     return players.length === 1 ? players[0].playerID : undefined;
-}
+};
 
 export const getNextCardCzar = (players, previousCardCzarID) => {
-    const activePlayers = players.filter(player => player.state === "active");
-    const cardCzarIndex = activePlayers.findIndex(player => player.id === previousCardCzarID);
+    const activePlayers = players.filter((player) => player.state === "active");
+    const cardCzarIndex = activePlayers.findIndex(
+        (player) => player.id === previousCardCzarID
+    );
     const playerCount = activePlayers.length;
-    
+
     // TODO: add support for the winner becoming next card czar
-    if(cardCzarIndex === playerCount - 1) {
+    if (cardCzarIndex === playerCount - 1) {
         return players[0].id;
     } else {
-        return players[cardCzarIndex + 1].id
+        return players[cardCzarIndex + 1].id;
     }
-}
+};
 
 export const addScore = (players, playerID, scoreToAdd) => {
-    return players.map(player => player.id === playerID ? { ...player, score: player.score + scoreToAdd } : player);
-}
+    return players.map((player) =>
+        player.id === playerID
+            ? { ...player, score: player.score + scoreToAdd }
+            : player
+    );
+};

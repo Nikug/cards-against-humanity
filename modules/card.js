@@ -11,7 +11,14 @@ import {
     validateShowingWhiteCard,
     validatePickingWinner,
 } from "./validate.js";
-import { addScore, getNextCardCzar, getPlayer, publicPlayersObject, setPlayersActive, setPlayersPlaying } from "./player.js";
+import {
+    addScore,
+    getNextCardCzar,
+    getPlayer,
+    publicPlayersObject,
+    setPlayersActive,
+    setPlayersPlaying,
+} from "./player.js";
 import { gameOptions } from "../consts/gameSettings.js";
 import { randomBetween } from "./util.js";
 
