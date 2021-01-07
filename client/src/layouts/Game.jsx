@@ -13,6 +13,7 @@ import { CardPicker } from "../components/card-picker/cardpicker";
 import { getBlackCard, getWhiteCard } from "../fakedata/fakecarddata";
 import { emptyFn } from "../helpers/generalhelpers";
 import { BlackCardPickerContainer } from "../components/card-picker/blackcardpickercontainer";
+import { WhiteCardPickerContainer } from "../components/card-picker/whitecardpickercontainer";
 
 export const Game = (props) => {
     const [game, setGame] = useState(undefined);
@@ -106,6 +107,106 @@ export const Game = (props) => {
     const canStartGame =
         game?.players?.length > 0 && game?.options?.cardPacks?.length > 0; // TODO: Why is player name not there? Player is not updated by back-end
     console.log("game.state", game?.state);
+
+    const gameState = game?.state;
+    let renderedContent;
+
+    switch (gameState) {
+        case GAME_STATES.LOBBY:
+            renderedContent = (
+                <>
+                    <div className="info">
+                        <div className="game-settings-container">
+                            <div className="nick-and-start-container">
+                                <div className="nickname-selector">
+                                    <Setting
+                                        text={"Nimimerkki"}
+                                        placeholderText={"nickname"}
+                                        controlType={
+                                            CONTROL_TYPES.textWithConfirm
+                                        }
+                                        onChangeCallback={setPlayerName}
+                                        icon={{
+                                            name: "person",
+                                            className: iconClassnames,
+                                        }}
+                                    />
+                                </div>
+                                <Button
+                                    icon={"play_circle_filled"}
+                                    iconPosition={"after"}
+                                    text={"Aloita peli"}
+                                    type={BUTTON_TYPES.GREEN}
+                                    additionalClassname={"big-btn"}
+                                    callback={() =>
+                                        startGame(game?.id, player?.id)
+                                    }
+                                    disabled={!canStartGame}
+                                />
+                            </div>
+                        </div>
+                    </div>
+                    <div className="info">
+                        <GameSettingsContainer
+                            options={game ? game.options : {}}
+                            gameID={game?.id}
+                            isHost={player?.isHost}
+                            playerID={player?.id}
+                        />
+                    </div>
+                </>
+            );
+            break;
+        case GAME_STATES.PICKING_BLACK_CARD:
+            if (player?.isHost) {
+                renderedContent = (
+                    <div>
+                        <BlackCardPickerContainer player={player} game={game} />
+                    </div>
+                );
+            } else {
+                renderedContent = (
+                    <div>
+                        <BlackCardPickerContainer player={player} game={game} />
+                    </div>
+                );
+            }
+            break;
+        case GAME_STATES.PLAYING_WHITE_CARDS:
+            console.log({ player });
+            renderedContent = (
+                <WhiteCardPickerContainer player={player} game={game} />
+            );
+            break;
+        case GAME_STATES.READING_CARDS:
+            break;
+        case GAME_STATES.SHOWING_CARDS:
+            break;
+        case GAME_STATES.ROUND_END:
+            break;
+        default:
+            renderedContent = (
+                <div className="error-info">
+                    Something went wrong. Try to reload the page.
+                </div>
+            );
+            break;
+    }
+
+    return (
+        <div>
+            <div className="info">
+                <PlayersWidget game={game} player={player} />
+                <Timer
+                    width={100}
+                    percent={progress}
+                    startingPercent={0.4}
+                    time={10}
+                />
+            </div>
+            <div className="lobby-container">{renderedContent}</div>
+        </div>
+    );
 
     return (
         <div>

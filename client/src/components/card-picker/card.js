@@ -1,5 +1,5 @@
 import React from "react";
-import { isNullOrUndefined } from "./../../helpers/generalhelpers.js";
+import { isNullOrUndefined } from "../../helpers/generalhelpers.js";
 import "./../../styles/card.scss";
 
 const CARD_TYPES = {
@@ -77,7 +77,9 @@ export default function Card(props) {
                 confirmed ? "confirmed" : selected ? "selected" : ""
             } ${type === CARD_TYPES.BLACK ? "black" : "white"}`}
             onClick={() => {
-                selectCard(card);
+                if (!isNullOrUndefined(selectCard)) {
+                    selectCard(card);
+                }
             }}
         >
             <div

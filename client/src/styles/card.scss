@@ -94,13 +94,23 @@
     align-items: center;
 
     > .main {
-        margin-bottom: 2rem;
+        margin-bottom: 3rem;
         display: grid;
         grid-template-columns: 1fr 1fr 1fr;
 
+        > .alternativetext {
+            background-color: lighten($app-background, 10%);
+            padding: 0.2rem 0.6rem;
+            border-radius: 5px;
+
+            > .fa {
+                margin-left: 0.6rem;
+            }
+        }
+
         > .confirm-button {
             align-self: center;
-            justify-self: center;
+            margin-left: 3rem;
         }
     }
 
@@ -108,12 +118,16 @@
         display: flex;
         flex-direction: row;
         flex-wrap: wrap;
-        justify-content: space-between;
-        max-width: 65rem;
+        max-width: 108rem;
+        justify-content: center;
 
         .card-wrapper {
-            margin: 0.3rem 0.5rem;
+            margin: 0.5rem 0.5rem;
             cursor: pointer;
+        }
+
+        .description {
+            text-align: left;
         }
     }
 }

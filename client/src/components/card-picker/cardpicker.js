@@ -3,7 +3,10 @@ import { socket } from "../sockets/socket";
 
 import Card from "./card";
 import { getBlackCard, getWhiteCard } from "../../fakedata/fakecarddata";
-import { containsObjectWithMatchingField } from "../../helpers/generalhelpers";
+import {
+    containsObjectWithMatchingField,
+    isNullOrUndefined,
+} from "../../helpers/generalhelpers";
 import Button, { BUTTON_TYPES } from "../button";
 
 /**
@@ -19,6 +22,8 @@ import Button, { BUTTON_TYPES } from "../button";
 
 export function CardPicker(props) {
     const {
+        alternativeText,
+        disableConfirmButton,
         mainCard,
         selectableCards,
         selectedCards,
@@ -27,6 +32,7 @@ export function CardPicker(props) {
         confirmCards,
         pickingBlackCard,
         description,
+        selectDisabled,
     } = props;
     const renderedCards = [];
 
@@ -54,23 +60,50 @@ export function CardPicker(props) {
         );
     }
 
+    const hasAlternativeText = !isNullOrUndefined(alternativeText);
+    let mainContent;
+
+    if (hasAlternativeText) {
+        mainContent = (
+            <div className="alternativetext">
+                {alternativeText}
+                <i class="fa fa-spinner fa-spin" style={{ fontSize: "24px" }} />
+            </div>
+        );
+    } else if (pickingBlackCard) {
+        mainContent = (
+            <Card
+                card={
+                    selectedCards.length > 0
+                        ? selectedCards[0]
+                        : confirmedCards.length > 0
+                        ? confirmedCards[0]
+                        : {
+                              text: "",
+                              whiteCardsToPlay: 0,
+                          }
+                }
+            />
+        );
+    } else {
+        const blankTexts = [];
+
+        for (let i = 0, len = selectedCards.length; i < len; i++) {
+            const card = selectedCards[i];
+
+            blankTexts.push(card.text.slice(0, card.text.length - 1)); // Cut the extra dot.
+        }
+
+        mainContent = (
+            <Card card={mainCard} bigCard={true} blankTexts={blankTexts} />
+        );
+    }
+
     return (
         <div className="cardpicker-wrapper">
             <div className="main">
                 <span />
-                {pickingBlackCard ? (
-                    <Card
-                        card={
-                            selectedCards.length > 0
-                                ? selectedCards[0]
-                                : confirmedCards.length > 0
-                                ? confirmedCards[0]
-                                : { text: "", whiteCardsToPlay: 2 }
-                        }
-                    />
-                ) : (
-                    <Card card={mainCard} bigCard={true} blankTexts={[]} />
-                )}
+                {mainContent}
                 <Button
                     additionalClassname="confirm-button"
                     text="Valitse"
@@ -78,12 +111,17 @@ export function CardPicker(props) {
                     type={BUTTON_TYPES.PRIMARY}
                     icon="send"
                     iconPosition="after"
-                >
-                    aaaa
-                </Button>
+                    disabled={hasAlternativeText || disableConfirmButton}
+                />
             </div>
-            {description}
-            <div className="selectable">{renderedCards}</div>
+            <div className="description">{description}</div>
+            <div
+                className={`selectable ${
+                    selectDisabled ? "non-selectable" : ""
+                }`}
+            >
+                {renderedCards}
+            </div>
         </div>
     );
 }

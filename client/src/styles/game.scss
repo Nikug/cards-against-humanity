@@ -12,6 +12,7 @@
     display: flex;
     flex-direction: column;
     justify-content: space-between;
+    margin-top: 4rem;
 
     .nick-and-start-container {
         display: flex;
@@ -30,4 +31,9 @@
         margin-top: 0;
         margin-bottom: 0;
     }
+}
+
+.error-info {
+    margin: 2rem;
+    font-size: 3rem;
 }

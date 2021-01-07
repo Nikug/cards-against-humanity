@@ -9,41 +9,18 @@ import {
     containsObjectWithMatchingFieldIndex,
 } from "../../helpers/generalhelpers";
 
-export function BlackCardPickerContainer(props) {
-    const [blackCards, setBlackCards] = useState(undefined);
+export function WhiteCardPickerContainer(props) {
+    const [whiteCards, setWhiteCards] = useState(props.player.whiteCards);
     const [selectedCards, setSelectedCards] = useState([]);
     const [confirmedCards, setConfirmedCards] = useState([]);
 
-    useEffect(() => {
-        const { player, game } = props;
-        if (blackCards === undefined && game && player && player.isCardCzar) {
-            socket.emit("draw_black_cards", {
-                gameID: game.id,
-                playerID: props.player.id,
-            });
-        }
-    }, [
-        blackCards,
-        props.game?.id,
-        props.player?.id,
-        props.player?.isCardCzar,
-    ]);
-
-    useEffect(() => {
-        socket.on("deal_black_cards", (data) => {
-            setBlackCards(data.blackCards);
-        });
-    }, []);
+    const { game, player } = props;
 
     const selectCard = (card) => {
-        const game = props.game;
         const newSelectedCards = selectedCards.slice();
-        let pickLimit = 1;
 
-        if (isNullOrUndefined(card.whiteCardsToPlay)) {
-            pickLimit =
-                game.rounds[game.rounds.length - 1].blackCard.whiteCardsToPlay;
-        }
+        const pickLimit =
+            game.rounds[game.rounds.length - 1].blackCard.whiteCardsToPlay;
 
         const i = containsObjectWithMatchingFieldIndex(
             card,
@@ -62,34 +39,36 @@ export function BlackCardPickerContainer(props) {
     };
 
     const confirmCard = () => {
-        if (selectedCards.length === 1) {
-            const cardID = selectedCards[0].id;
+        const pickLimit =
+            game.rounds[game.rounds.length - 1].blackCard.whiteCardsToPlay;
+
+        if (selectedCards.length === pickLimit) {
             const gameID = props.game.id;
             const playerID = props.player.id;
-            socket.emit("select_black_card", {
+            socket.emit("play_white_cards", {
                 gameID: gameID,
                 playerID: playerID,
-                selectedCardID: cardID,
-                discardedCardIDs: blackCards
-                    .filter((blackCard) => blackCard.id !== cardID)
-                    .map((blackCard) => blackCard.id),
+                whiteCardIDs: selectedCards.map((whiteCard) => whiteCard.id),
             });
+
+            setConfirmedCards(selectedCards);
         } else {
-            console.log("There was no black card to confirm");
+            console.log("There was not enough white cards to confirm");
         }
     };
+
+    const blackCard = game.rounds[game.rounds.length - 1].blackCard;
 
     return (
         <div className="blackcardpicker">
             <CardPicker
-                pickingBlackCard={true}
-                selectableCards={blackCards}
+                mainCard={blackCard}
+                selectableCards={whiteCards}
                 selectedCards={selectedCards}
                 confirmedCards={confirmedCards}
                 selectCard={selectCard}
                 confirmCards={confirmCard}
-                description={"Valitse musta kortti"}
-                //alternativeText={"Korttikuningas valitsee mustaa korttia"}
+                description={"Valitse valkoinen kortti"}
                 disableConfirmButton={confirmedCards.length > 0}
             />
         </div>
