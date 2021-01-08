@@ -108,6 +108,20 @@ export const getNextCardCzar = (players, previousCardCzarID) => {
     }
 };
 
+export const appointNextCardCzar = (game, previousCardCzarID) => {
+    const nextCardCzarID = getNextCardCzar(game.players, previousCardCzarID);
+    const players = game.players.map(player => {
+        if(player.id === previousCardCzarID) {
+            return {...player, isCardCzar: false};
+        } else if (player.id === nextCardCzarID) {
+            return {...player, isCardCzar: true};
+        } else {
+            return {...player};
+        }
+    });
+    return players;
+};
+
 export const addScore = (players, playerID, scoreToAdd) => {
     return players.map((player) =>
         player.id === playerID

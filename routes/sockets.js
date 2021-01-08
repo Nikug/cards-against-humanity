@@ -3,6 +3,7 @@ import {
     leaveFromGame,
     updateGameOptions,
     startGame,
+    startNewRound,
 } from "../modules/game.js";
 import { updatePlayerName } from "../modules/player.js";
 import { addCardPack, removeCardPack } from "../modules/cardpack.js";
@@ -163,7 +164,7 @@ export const sockets = (io) => {
             if (missingFields.length > 0) {
                 sendError(socket, "Invalid data");
             } else {
-                selectWinner(io, gameID, playerID, whiteCardIDs);
+                selectWinner(io, data.gameID, data.playerID, data.whiteCardIDs);
             }
         });
 
@@ -172,7 +173,7 @@ export const sockets = (io) => {
             if (missingFields.length > 0) {
                 sendError(socket, "Invalid data");
             } else {
-                // Start new round
+                startNewRound(io, data.gameID, data.playerID);
             }
         });
     });

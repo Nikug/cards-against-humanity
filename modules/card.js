@@ -13,7 +13,6 @@ import {
 } from "./validate.js";
 import {
     addScore,
-    getNextCardCzar,
     getPlayer,
     publicPlayersObject,
     setPlayersActive,
@@ -55,8 +54,8 @@ export const playWhiteCards = (io, socket, gameID, playerID, whiteCardIDs) => {
 
     if (everyoneHasPlayedTurn(game)) {
         game.client.state = "readingCards";
-        game.client.whiteCardsByPlayer = shuffleCards([
-            ...game.client.whiteCardsByPlayer,
+        game.currentRound.whiteCardsByPlayer = shuffleCards([
+            ...game.currentRound.whiteCardsByPlayer,
         ]);
     }
 

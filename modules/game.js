@@ -7,11 +7,13 @@ import {
     setPlayersActive,
     publicPlayersObject,
     setPlayersPlaying,
+    appointNextCardCzar,
 } from "./player.js";
 import {
     validateHost,
     validateOptions,
     validateGameStartRequirements,
+    validateCardCzar,
 } from "./validate.js";
 import { randomBetween } from "./util.js";
 import { shuffleCards, dealWhiteCards } from "./card.js";
@@ -203,4 +205,18 @@ export const startGame = (io, gameID, playerID) => {
     setGame(gameWithStartingHands);
 
     io.in(gameID).emit("update_game", { game: gameWithStartingHands.client });
+};
+
+export const startNewRound = (io, gameID, playerID) => {
+    const game = getGame(gameID);
+    if (!game) return undefined;
+
+    if (!validateCardCzar(game, playerID)) return;
+
+    game.stateMachine.startRound();
+    game.client.state = game.stateMachine.state;
+
+    game.players = appointNextCardCzar(game, playerID);
+
+    io.in(gameID).emit("update_game", { game: newGame });
 };
