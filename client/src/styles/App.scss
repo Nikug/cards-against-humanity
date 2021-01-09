@@ -10,6 +10,7 @@
     max-height: 100vh;
     color: $app-text;
     overflow-y: auto;
+    scrollbar-color: lighten($app-background, 10%) $app-background;
 
     .basic-grid {
         display: grid;

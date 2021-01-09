@@ -21,7 +21,7 @@ export function CardPack({
                 </span>
                 <span className="cardcount">{blackCards} mustaa korttia</span>
                 <span className="nsfw">
-                    {isNSFW ? "Not safe for work" : "Safe for work"}
+                    {isNSFW ? "NSFW" : "Perheystävällinen"}
                 </span>
             </div>
             <div className="remove" onClick={() => removeCardpack(id)}>

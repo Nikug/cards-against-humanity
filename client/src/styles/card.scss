@@ -111,6 +111,10 @@
         > .confirm-button {
             align-self: center;
             margin-left: 3rem;
+
+            &.non-selectable {
+                pointer-events: none;
+            }
         }
     }
 
@@ -129,5 +133,15 @@
         .description {
             text-align: left;
         }
+
+        &.non-selectable {
+            cursor: default;
+        }
+    }
+}
+
+.waiting {
+    .card-wrapper {
+        cursor: default !important;
     }
 }

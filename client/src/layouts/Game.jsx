@@ -14,6 +14,8 @@ import { getBlackCard, getWhiteCard } from "../fakedata/fakecarddata";
 import { emptyFn } from "../helpers/generalhelpers";
 import { BlackCardPickerContainer } from "../components/card-picker/blackcardpickercontainer";
 import { WhiteCardPickerContainer } from "../components/card-picker/whitecardpickercontainer";
+import { WinnerCardPickerContainer } from "../components/card-picker/winnercardpickercontainer";
+import { WaitingCardPickerContainer } from "../components/card-picker/waitincardpickercontainer";
 
 export const Game = (props) => {
     const [game, setGame] = useState(undefined);
@@ -111,86 +113,180 @@ export const Game = (props) => {
     const gameState = game?.state;
     let renderedContent;
 
-    switch (gameState) {
-        case GAME_STATES.LOBBY:
-            renderedContent = (
-                <>
-                    <div className="info">
-                        <div className="game-settings-container">
-                            <div className="nick-and-start-container">
-                                <div className="nickname-selector">
-                                    <Setting
-                                        text={"Nimimerkki"}
-                                        placeholderText={"nickname"}
-                                        controlType={
-                                            CONTROL_TYPES.textWithConfirm
+    if (player?.isCardCzar) {
+        switch (gameState) {
+            case GAME_STATES.LOBBY:
+                renderedContent = (
+                    <>
+                        <div className="info">
+                            <div className="game-settings-container">
+                                <div className="nick-and-start-container">
+                                    <div className="nickname-selector">
+                                        <Setting
+                                            text={"Nimimerkki"}
+                                            placeholderText={"nickname"}
+                                            controlType={
+                                                CONTROL_TYPES.textWithConfirm
+                                            }
+                                            onChangeCallback={setPlayerName}
+                                            icon={{
+                                                name: "person",
+                                                className: iconClassnames,
+                                            }}
+                                        />
+                                    </div>
+                                    <Button
+                                        icon={"play_circle_filled"}
+                                        iconPosition={"after"}
+                                        text={"Aloita peli"}
+                                        type={BUTTON_TYPES.GREEN}
+                                        additionalClassname={"big-btn"}
+                                        callback={() =>
+                                            startGame(game?.id, player?.id)
                                         }
-                                        onChangeCallback={setPlayerName}
-                                        icon={{
-                                            name: "person",
-                                            className: iconClassnames,
-                                        }}
+                                        disabled={
+                                            !canStartGame ||
+                                            player?.isHost !== true
+                                        }
                                     />
                                 </div>
-                                <Button
-                                    icon={"play_circle_filled"}
-                                    iconPosition={"after"}
-                                    text={"Aloita peli"}
-                                    type={BUTTON_TYPES.GREEN}
-                                    additionalClassname={"big-btn"}
-                                    callback={() =>
-                                        startGame(game?.id, player?.id)
-                                    }
-                                    disabled={!canStartGame}
-                                />
                             </div>
                         </div>
+                        <div className="info">
+                            <GameSettingsContainer
+                                options={game ? game.options : {}}
+                                gameID={game?.id}
+                                isHost={player?.isHost}
+                                isDisabled={player?.isHost !== true}
+                                playerID={player?.id}
+                            />
+                        </div>
+                    </>
+                );
+                break;
+            case GAME_STATES.PICKING_BLACK_CARD:
+                renderedContent = (
+                    <div>
+                        <BlackCardPickerContainer player={player} game={game} />
                     </div>
-                    <div className="info">
-                        <GameSettingsContainer
-                            options={game ? game.options : {}}
-                            gameID={game?.id}
-                            isHost={player?.isHost}
-                            playerID={player?.id}
+                );
+                break;
+            case GAME_STATES.PLAYING_WHITE_CARDS:
+                renderedContent = (
+                    <WaitingCardPickerContainer
+                        player={player}
+                        game={game}
+                        alternativeText={
+                            "Muut valitsevat valkoisia korttejaan..."
+                        }
+                        showMainCard={true}
+                    />
+                );
+                break;
+            case GAME_STATES.READING_CARDS:
+                break;
+            case GAME_STATES.SHOWING_CARDS:
+                renderedContent = (
+                    <WinnerCardPickerContainer player={player} game={game} />
+                );
+                break;
+            case GAME_STATES.ROUND_END:
+                break;
+            default:
+                renderedContent = (
+                    <div className="error-info">
+                        Something went wrong. Try to reload the page.
+                    </div>
+                );
+                break;
+        }
+    } else {
+        switch (gameState) {
+            case GAME_STATES.LOBBY:
+                renderedContent = (
+                    <>
+                        <div className="info">
+                            <div className="game-settings-container">
+                                <div className="nick-and-start-container">
+                                    <div className="nickname-selector">
+                                        <Setting
+                                            text={"Nimimerkki"}
+                                            placeholderText={"nickname"}
+                                            controlType={
+                                                CONTROL_TYPES.textWithConfirm
+                                            }
+                                            onChangeCallback={setPlayerName}
+                                            icon={{
+                                                name: "person",
+                                                className: iconClassnames,
+                                            }}
+                                        />
+                                    </div>
+                                    <Button
+                                        icon={"play_circle_filled"}
+                                        iconPosition={"after"}
+                                        text={"Aloita peli"}
+                                        type={BUTTON_TYPES.GREEN}
+                                        additionalClassname={"big-btn"}
+                                        callback={() =>
+                                            startGame(game?.id, player?.id)
+                                        }
+                                        disabled={
+                                            !canStartGame ||
+                                            player?.isHost !== true
+                                        }
+                                    />
+                                </div>
+                            </div>
+                        </div>
+                        <div className="info">
+                            <GameSettingsContainer
+                                options={game ? game.options : {}}
+                                gameID={game?.id}
+                                isHost={player?.isHost}
+                                isDisabled={player?.isHost !== true}
+                                playerID={player?.id}
+                            />
+                        </div>
+                    </>
+                );
+                break;
+            case GAME_STATES.PICKING_BLACK_CARD:
+                renderedContent = (
+                    <div>
+                        <WaitingCardPickerContainer
+                            player={player}
+                            game={game}
+                            alternativeText={
+                                "Korttikuningas valitsee korttia..."
+                            }
+                            showMainCard={false}
                         />
                     </div>
-                </>
-            );
-            break;
-        case GAME_STATES.PICKING_BLACK_CARD:
-            if (player?.isHost) {
+                );
+                break;
+            case GAME_STATES.PLAYING_WHITE_CARDS:
                 renderedContent = (
-                    <div>
-                        <BlackCardPickerContainer player={player} game={game} />
+                    <WhiteCardPickerContainer player={player} game={game} />
+                );
+                break;
+            case GAME_STATES.READING_CARDS:
+                break;
+            case GAME_STATES.SHOWING_CARDS:
+                renderedContent = (
+                    <WinnerCardPickerContainer player={player} game={game} />
+                );
+                break;
+            case GAME_STATES.ROUND_END:
+                break;
+            default:
+                renderedContent = (
+                    <div className="error-info">
+                        Something went wrong. Try to reload the page.
                     </div>
                 );
-            } else {
-                renderedContent = (
-                    <div>
-                        <BlackCardPickerContainer player={player} game={game} />
-                    </div>
-                );
-            }
-            break;
-        case GAME_STATES.PLAYING_WHITE_CARDS:
-            console.log({ player });
-            renderedContent = (
-                <WhiteCardPickerContainer player={player} game={game} />
-            );
-            break;
-        case GAME_STATES.READING_CARDS:
-            break;
-        case GAME_STATES.SHOWING_CARDS:
-            break;
-        case GAME_STATES.ROUND_END:
-            break;
-        default:
-            renderedContent = (
-                <div className="error-info">
-                    Something went wrong. Try to reload the page.
-                </div>
-            );
-            break;
+                break;
+        }
     }
 
     return (

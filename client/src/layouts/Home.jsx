@@ -11,6 +11,11 @@ export class Home extends Component {
         this.state = {
             newUrl: "",
         };
+
+        this.startNewGame = this.startNewGame.bind(this);
+        this.joinExistingGameCallback = this.joinExistingGameCallback.bind(
+            this
+        );
     }
 
     handleKeyDown(event) {
@@ -23,8 +28,16 @@ export class Home extends Component {
         this.setState({ newUrl: event.target.value });
     }
 
+    startNewGame() {
+        this.props.startNewGame();
+    }
+
+    joinExistingGameCallback() {
+        this.props.joinExistingGame(this.state.newUrl);
+    }
+
     render() {
-        const { url, startNewGame, joinExistingGame } = this.props;
+        const { url } = this.props;
         const urlIsEmpty = url === "";
 
         if (urlIsEmpty) {
@@ -43,7 +56,7 @@ export class Home extends Component {
                                 <Button
                                     text="Luo peli"
                                     type={BUTTON_TYPES.PRIMARY}
-                                    callback={startNewGame}
+                                    callback={this.startNewGame}
                                     icon="add_circle_outline"
                                 ></Button>
                             </div>
@@ -65,8 +78,8 @@ export class Home extends Component {
                                 <Button
                                     text="Liity peliin"
                                     type={BUTTON_TYPES.PRIMARY}
-                                    callback={joinExistingGame}
-                                    callbackParams={this.state.newUrl}
+                                    callback={this.joinExistingGameCallback}
+                                    callbackParams={{}}
                                     icon="login"
                                 ></Button>
                             </div>

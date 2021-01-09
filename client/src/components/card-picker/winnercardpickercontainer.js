@@ -9,12 +9,11 @@ import {
     containsObjectWithMatchingFieldIndex,
 } from "../../helpers/generalhelpers";
 
-export function WhiteCardPickerContainer(props) {
-    const [whiteCards, setWhiteCards] = useState(props.player.whiteCards);
+export function WinnerCardPickerContainer(props) {
+    const { game, player } = props;
+    const [whiteCards, setWhiteCards] = useState(player.whiteCards);
     const [selectedCards, setSelectedCards] = useState([]);
     const [confirmedCards, setConfirmedCards] = useState([]);
-
-    const { game, player } = props;
 
     const selectCard = (card) => {
         if (confirmedCards.length > 0) {
@@ -22,8 +21,7 @@ export function WhiteCardPickerContainer(props) {
         }
         const newSelectedCards = selectedCards.slice();
 
-        const pickLimit =
-            game.rounds[game.rounds.length - 1].blackCard.whiteCardsToPlay;
+        const pickLimit = 1;
 
         const i = containsObjectWithMatchingFieldIndex(
             card,
@@ -71,7 +69,7 @@ export function WhiteCardPickerContainer(props) {
                 confirmedCards={confirmedCards}
                 selectCard={selectCard}
                 confirmCards={confirmCard}
-                description={"Valitse valkoinen kortti"}
+                description={"Valitse voittaja"}
             />
         </div>
     );

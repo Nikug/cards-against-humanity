@@ -36,3 +36,9 @@
         }
     }
 }
+
+.disabled {
+    .remove {
+        pointer-events: none;
+    }
+}

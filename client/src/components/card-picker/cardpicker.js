@@ -61,17 +61,10 @@ export function CardPicker(props) {
     }
 
     const hasAlternativeText = !isNullOrUndefined(alternativeText);
-    let mainContent;
+    const mainContent = [];
 
-    if (hasAlternativeText) {
-        mainContent = (
-            <div className="alternativetext">
-                {alternativeText}
-                <i class="fa fa-spinner fa-spin" style={{ fontSize: "24px" }} />
-            </div>
-        );
-    } else if (pickingBlackCard) {
-        mainContent = (
+    if (pickingBlackCard) {
+        mainContent.push(
             <Card
                 card={
                     selectedCards.length > 0
@@ -86,18 +79,34 @@ export function CardPicker(props) {
             />
         );
     } else {
-        const blankTexts = [];
+        if (mainCard) {
+            const blankTexts = [];
 
-        for (let i = 0, len = selectedCards.length; i < len; i++) {
-            const card = selectedCards[i];
+            for (let i = 0, len = selectedCards.length; i < len; i++) {
+                const card = selectedCards[i];
 
-            blankTexts.push(card.text.slice(0, card.text.length - 1)); // Cut the extra dot.
+                blankTexts.push(card.text.slice(0, card.text.length - 1)); // Cut the extra dot.
+            }
+
+            mainContent.push(
+                <Card card={mainCard} bigCard={true} blankTexts={blankTexts} />
+            );
         }
 
-        mainContent = (
-            <Card card={mainCard} bigCard={true} blankTexts={blankTexts} />
-        );
+        if (alternativeText) {
+            mainContent.push(
+                <div className="alternativetext">
+                    {alternativeText}
+                    <i
+                        className="fa fa-spinner fa-spin"
+                        style={{ fontSize: "24px" }}
+                    />
+                </div>
+            );
+        }
     }
+
+    const cardsAreSelected = confirmedCards.length > 0;
 
     return (
         <div className="cardpicker-wrapper">
@@ -105,19 +114,25 @@ export function CardPicker(props) {
                 <span />
                 {mainContent}
                 <Button
-                    additionalClassname="confirm-button"
-                    text="Valitse"
+                    additionalClassname={`confirm-button ${
+                        cardsAreSelected ? "non-selectable" : ""
+                    }`}
+                    text={cardsAreSelected ? "Valinta tehty" : "Valitse"}
                     callback={() => confirmCards()}
-                    type={BUTTON_TYPES.PRIMARY}
-                    icon="send"
+                    type={
+                        cardsAreSelected
+                            ? BUTTON_TYPES.GREEN
+                            : BUTTON_TYPES.PRIMARY
+                    }
+                    icon={cardsAreSelected ? "done" : "send"}
                     iconPosition="after"
-                    disabled={hasAlternativeText || disableConfirmButton}
+                    disabled={hasAlternativeText}
                 />
             </div>
             <div className="description">{description}</div>
             <div
                 className={`selectable ${
-                    selectDisabled ? "non-selectable" : ""
+                    cardsAreSelected ? "non-selectable" : ""
                 }`}
             >
                 {renderedCards}

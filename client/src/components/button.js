@@ -1,4 +1,5 @@
 import React from "react";
+import { isNullOrUndefined } from "../helpers/generalhelpers";
 
 import "../styles/button.scss";
 
@@ -25,20 +26,24 @@ export default function Button(props) {
     return (
         <>
             <button
-                className={`button ${
-                    disabled ? "disabled" : ""
-                } ${additionalClassname} ${
+                className={`button ${disabled ? "disabled" : ""} ${
+                    additionalClassname ? additionalClassname : ""
+                } ${
                     type === BUTTON_TYPES.PRIMARY
                         ? "primary"
                         : type === BUTTON_TYPES.GREEN
                         ? "green"
                         : ""
                 }`}
-                onClick={() => {
+                onClick={(e) => {
                     if (disabled) {
                         return;
                     }
                     callback(callbackParams);
+                    if (e.target.nodeName !== "BUTTON") {
+                        e.target.parentElement.blur();
+                    }
+                    e.target.blur();
                 }}
             >
                 {icon && iconPosition !== "after" && (
