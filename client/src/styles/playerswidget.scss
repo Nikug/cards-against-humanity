@@ -16,6 +16,8 @@
     flex-direction: row;
     flex-wrap: wrap;
 
+    padding: 0.6rem;
+
     /*
     &:hover {
         background: linear-gradient(
@@ -34,7 +36,7 @@
     align-items: center;
     justify-content: space-between;
 
-    padding: 1rem;
+    padding: 0.4rem;
 
     /*
     &:hover {
@@ -51,8 +53,8 @@
 
 .player-name {
     width: fit-content;
-    overflow: hidden;
-    white-space: nowrap;
+    max-width: 10rem;
+    white-space: wrap;
 
     &.no-name {
         font-style: italic;

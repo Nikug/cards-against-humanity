@@ -101,7 +101,10 @@ export class Setting extends Component {
     handleKeyDown(event) {
         event.preventDefault();
 
-        this.setState({ inputText: event.target.value });
+        const charLimit = this.props.charLimit;
+        const newInput = event.target.value.slice(0, charLimit);
+
+        this.setState({ inputText: newInput });
     }
 
     handleTextFieldChange(event, changeCallback) {

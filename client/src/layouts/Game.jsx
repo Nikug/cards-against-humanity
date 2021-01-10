@@ -122,6 +122,7 @@ export const Game = (props) => {
                                                 name: "person",
                                                 className: iconClassnames,
                                             }}
+                                            charLimit={35}
                                         />
                                     </div>
                                     <Button
@@ -213,6 +214,7 @@ export const Game = (props) => {
                                                 name: "person",
                                                 className: iconClassnames,
                                             }}
+                                            charLimit={35}
                                         />
                                     </div>
                                     <Button

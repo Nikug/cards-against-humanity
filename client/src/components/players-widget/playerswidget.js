@@ -1,31 +1,27 @@
-import React, {Component} from 'react';
-import { PLAYER_STATES } from '../../consts/playerstates';
+import React, { Component } from "react";
+import { PLAYER_STATES } from "../../consts/playerstates";
+import { getPlayersList } from "../../fakedata/fakeplayerdata";
 
 import "./../../styles/playerswidget.scss";
 
-import {Player} from "./player";
-
-/*
-interface Player {
-    id: string;
-    socket: string;
-    name: string;
-    state: PlayerState;
-    score: number;
-    isCardCzar: boolean;
-    isHost: boolean;
-    popularVoteScore: number;
-    whiteCards: WhiteCard[];
-}
-*/
+import { Player } from "./player";
 
 export class PlayersWidget extends Component {
     renderPlayers(players) {
         const renderedPlayers = [];
+        const game = this.props.game;
+        const options = game?.options;
 
-        for(let i = 0, len = players.length; i < len; i++) {
+        for (let i = 0, len = players.length; i < len; i++) {
             const player = players[i];
-            const {id, name, state, score, popularVoteScore, isCardCzar} = player;
+            const {
+                id,
+                name,
+                state,
+                score,
+                popularVoteScore,
+                isCardCzar,
+            } = player;
 
             renderedPlayers.push(
                 <Player
@@ -34,10 +30,12 @@ export class PlayersWidget extends Component {
                     name={state === PLAYER_STATES.PICKING_NAME ? null : name}
                     state={state}
                     score={score}
-                    popularVoteScore={popularVoteScore}
+                    popularVoteScore={
+                        options?.popularVote ? popularVoteScore : undefined
+                    }
                     isCardCzar={isCardCzar}
                 />
-            )
+            );
         }
 
         return renderedPlayers;
@@ -45,7 +43,7 @@ export class PlayersWidget extends Component {
 
     render() {
         const { game, player } = this.props;
-        let playersToRender = game?.players || [];
+        let playersToRender = getPlayersList(); // game?.players || [];
 
         if (playersToRender.length === 0 && player) {
             playersToRender.unshift(player);
@@ -53,10 +51,6 @@ export class PlayersWidget extends Component {
 
         const renderedPlayers = this.renderPlayers(playersToRender);
 
-        return (
-            <div className="players-widget">
-                {renderedPlayers}
-            </div>
-        )
+        return <div className="players-widget">{renderedPlayers}</div>;
     }
 }
