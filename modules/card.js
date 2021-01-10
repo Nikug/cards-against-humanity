@@ -304,6 +304,7 @@ export const selectWinner = (io, gameID, playerID, whiteCardIDs) => {
     if (!!error || !result) return;
 
     const winnerID = getPlayerByWhiteCards(game, whiteCardIDs);
+    // TODO: winnerID is undefined!!! (should not be)
     if (!winnerID) return;
     game.players = addScore(game.players, winnerID, 1);
 
