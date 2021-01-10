@@ -79,6 +79,7 @@ interface Options {
     scoreLimit: number;
     winnerBecomesCardCzar: boolean;
     allowKickedPlayerJoin: boolean;
+    popularVote: boolean;
     cardPacks: CardPack[];
     selectWhiteCardTimeLimit: number;
     selectBlackCardTimeLimit: number;
