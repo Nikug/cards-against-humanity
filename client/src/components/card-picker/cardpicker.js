@@ -8,6 +8,7 @@ import {
     isNullOrUndefined,
 } from "../../helpers/generalhelpers";
 import Button, { BUTTON_TYPES } from "../button";
+import { CardPack } from "../game-settings/cardpack";
 
 /**
  * Everything given via props
@@ -33,6 +34,8 @@ export function CardPicker(props) {
         pickingBlackCard,
         description,
         selectDisabled,
+        customButtonTexts,
+        customButtonIcons,
     } = props;
     const renderedCards = [];
 
@@ -79,22 +82,48 @@ export function CardPicker(props) {
             />
         );
     } else {
+        const content = [];
+
         if (mainCard) {
             const blankTexts = [];
+            let selectedWhiteCards = selectedCards.slice();
 
-            for (let i = 0, len = selectedCards.length; i < len; i++) {
-                const card = selectedCards[i];
+            // If selectedCard is actually multiplse selected cards, convert to better format
+            if (
+                !isNullOrUndefined(selectedCards) &&
+                (selectedCards.length > 0) & Array.isArray(selectedCards[0]?.id)
+            ) {
+                selectedWhiteCards = [];
+
+                for (let i = 0, len = selectedCards.length; i < len; i++) {
+                    const card = selectedCards[i];
+
+                    for (let j = 0, len2 = card.id.length; j < len2; j++) {
+                        const newCard = {
+                            id: card.id[j],
+                            cardPackID: card.cardPackID[j],
+                            text: card.text[j],
+                        };
+
+                        selectedWhiteCards.push(newCard);
+                    }
+                }
+            }
+
+            console.log({ selectedWhiteCards });
+            for (let i = 0, len = selectedWhiteCards.length; i < len; i++) {
+                const card = selectedWhiteCards[i];
 
                 blankTexts.push(card.text.slice(0, card.text.length - 1)); // Cut the extra dot.
             }
 
-            mainContent.push(
+            content.push(
                 <Card card={mainCard} bigCard={true} blankTexts={blankTexts} />
             );
         }
 
         if (alternativeText) {
-            mainContent.push(
+            content.push(
                 <div className="alternativetext">
                     {alternativeText}
                     <i
@@ -104,9 +133,31 @@ export function CardPicker(props) {
                 </div>
             );
         }
+
+        mainContent.push(<div>{content}</div>);
     }
 
     const cardsAreSelected = confirmedCards.length > 0;
+    let buttonTexts = ["Valitse", "Valinta tehty"];
+    let buttonIcons = ["send", "done"];
+
+    if (!isNullOrUndefined(customButtonTexts) && customButtonTexts.length > 0) {
+        for (let i = 0, len = buttonTexts.length; i < len; i++) {
+            if (customButtonTexts.length - 1 < i) {
+                break;
+            }
+            buttonTexts[i] = customButtonTexts[i];
+        }
+    }
+    if (!isNullOrUndefined(customButtonIcons) && customButtonIcons.length > 0) {
+        for (let i = 0, len = buttonIcons.length; i < len; i++) {
+            if (customButtonIcons.length - 1 < i) {
+                break;
+            }
+            buttonIcons[i] = customButtonIcons[i];
+        }
+        buttonIcons = customButtonIcons;
+    }
 
     return (
         <div className="cardpicker-wrapper">
@@ -116,15 +167,15 @@ export function CardPicker(props) {
                 <Button
                     additionalClassname={`confirm-button ${
                         cardsAreSelected ? "non-selectable" : ""
-                    }`}
-                    text={cardsAreSelected ? "Valinta tehty" : "Valitse"}
+                    } ${selectDisabled ? "disabled" : ""}`}
+                    text={cardsAreSelected ? buttonTexts[1] : buttonTexts[0]}
                     callback={() => confirmCards()}
                     type={
                         cardsAreSelected
                             ? BUTTON_TYPES.GREEN
                             : BUTTON_TYPES.PRIMARY
                     }
-                    icon={cardsAreSelected ? "done" : "send"}
+                    icon={cardsAreSelected ? buttonIcons[1] : buttonIcons[0]}
                     iconPosition="after"
                     disabled={hasAlternativeText}
                 />

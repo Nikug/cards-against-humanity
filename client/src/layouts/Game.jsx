@@ -16,6 +16,7 @@ import { BlackCardPickerContainer } from "../components/card-picker/blackcardpic
 import { WhiteCardPickerContainer } from "../components/card-picker/whitecardpickercontainer";
 import { WinnerCardPickerContainer } from "../components/card-picker/winnercardpickercontainer";
 import { WaitingCardPickerContainer } from "../components/card-picker/waitincardpickercontainer";
+import { CardReadingContainer } from "../components/card-picker/cardreadingcontainer";
 
 export const Game = (props) => {
     const [game, setGame] = useState(undefined);
@@ -184,6 +185,9 @@ export const Game = (props) => {
                 );
                 break;
             case GAME_STATES.READING_CARDS:
+                renderedContent = (
+                    <CardReadingContainer player={player} game={game} />
+                );
                 break;
             case GAME_STATES.SHOWING_CARDS:
                 renderedContent = (
@@ -191,6 +195,7 @@ export const Game = (props) => {
                 );
                 break;
             case GAME_STATES.ROUND_END:
+                renderedContent = <div>round end lol xd</div>;
                 break;
             default:
                 renderedContent = (
@@ -271,13 +276,26 @@ export const Game = (props) => {
                 );
                 break;
             case GAME_STATES.READING_CARDS:
+                renderedContent = (
+                    <CardReadingContainer player={player} game={game} />
+                );
                 break;
             case GAME_STATES.SHOWING_CARDS:
                 renderedContent = (
-                    <WinnerCardPickerContainer player={player} game={game} />
+                    <div>
+                        <WaitingCardPickerContainer
+                            player={player}
+                            game={game}
+                            alternativeText={
+                                "Korttikuningas valitsee voittajaa..."
+                            }
+                            gameState={GAME_STATES.SHOWING_CARDS}
+                        />
+                    </div>
                 );
                 break;
             case GAME_STATES.ROUND_END:
+                renderedContent = <div>round end lol xd</div>;
                 break;
             default:
                 renderedContent = (

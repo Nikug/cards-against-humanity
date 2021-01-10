@@ -97,11 +97,16 @@
         margin-bottom: 3rem;
         display: grid;
         grid-template-columns: 1fr 1fr 1fr;
+        justify-items: center;
+        align-items: center;
 
-        > .alternativetext {
+        .alternativetext {
             background-color: lighten($app-background, 10%);
             padding: 0.2rem 0.6rem;
             border-radius: 5px;
+            width: fit-content;
+            text-align: center;
+            margin: 1rem auto 0 auto;
 
             > .fa {
                 margin-left: 0.6rem;
@@ -110,7 +115,7 @@
 
         > .confirm-button {
             align-self: center;
-            margin-left: 3rem;
+            margin: 0 3rem;
 
             &.non-selectable {
                 pointer-events: none;

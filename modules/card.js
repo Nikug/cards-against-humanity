@@ -17,6 +17,7 @@ import {
     publicPlayersObject,
     setPlayersActive,
     setPlayersPlaying,
+    getPlayerByWhiteCards,
 } from "./player.js";
 import { gameOptions } from "../consts/gameSettings.js";
 import { randomBetween } from "./util.js";

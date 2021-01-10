@@ -3,6 +3,7 @@ import { socket } from "../sockets/socket";
 
 import { CardPicker } from "./cardpicker";
 import { getBlackCard, getWhiteCard } from "../../fakedata/fakecarddata";
+import { CardPack } from "../game-settings/cardpack";
 import {
     emptyFn,
     isNullOrUndefined,
@@ -11,7 +12,31 @@ import {
 
 export function WinnerCardPickerContainer(props) {
     const { game, player } = props;
-    const [whiteCards, setWhiteCards] = useState(player.whiteCards);
+
+    const whiteCardsByPlayer =
+        game.rounds[game.rounds.length - 1].whiteCardsByPlayer;
+    const whiteCardsToRender = [];
+
+    for (let i = 0, len = whiteCardsByPlayer.length; i < len; i++) {
+        const whiteCards = whiteCardsByPlayer[i].whiteCards;
+        const newWhiteCard = {
+            id: [],
+            cardPackID: [],
+            text: [],
+        };
+
+        for (let j = 0, len2 = whiteCards.length; j < len2; j++) {
+            const whiteCard = whiteCards[j];
+
+            newWhiteCard.id.push(whiteCard.id);
+            newWhiteCard.cardPackID.push(whiteCard.cardPackID);
+            newWhiteCard.text.push(whiteCard.text);
+        }
+
+        whiteCardsToRender.push(newWhiteCard);
+    }
+
+    const [whiteCards, setWhiteCards] = useState(whiteCardsToRender);
     const [selectedCards, setSelectedCards] = useState([]);
     const [confirmedCards, setConfirmedCards] = useState([]);
 
@@ -40,16 +65,17 @@ export function WinnerCardPickerContainer(props) {
     };
 
     const confirmCard = () => {
-        const pickLimit =
-            game.rounds[game.rounds.length - 1].blackCard.whiteCardsToPlay;
+        const pickLimit = 1;
 
         if (selectedCards.length === pickLimit) {
             const gameID = props.game.id;
             const playerID = props.player.id;
-            socket.emit("play_white_cards", {
+
+            console.log("aaaa", { selectedCards });
+            socket.emit("pick_winning_card", {
                 gameID: gameID,
                 playerID: playerID,
-                whiteCardIDs: selectedCards.map((whiteCard) => whiteCard.id),
+                whiteCardIDs: selectedCards[0].id,
             });
 
             setConfirmedCards(selectedCards);

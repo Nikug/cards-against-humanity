@@ -13,13 +13,13 @@ export const gameOptions = {
     startingWhiteCardCount: 10,
     blackCardsToChooseFrom: 3,
 
-    selectWhiteCardTimeLimit: 60,
+    selectWhiteCardTimeLimit: 10,
     selectBlackCardTimeLimit: 30,
 
     defaultGracePeriod: 3,
-}
+};
 
 export const playerName = {
     minimumLength: 1,
-    maximumLength: 50
-}
+    maximumLength: 50,
+};

@@ -8,18 +8,23 @@ import {
     isNullOrUndefined,
     containsObjectWithMatchingFieldIndex,
 } from "../../helpers/generalhelpers";
+import { GAME_STATES } from "../../consts/gamestates";
 
 export function WaitingCardPickerContainer(props) {
-    const { game, player, alternativeText, showMainCard = true } = props;
-    const [whiteCards, setWhiteCards] = useState(player.whiteCards);
+    const { game, player, alternativeText, showMainCard, gameState } = props;
+    const [whiteCards, setWhiteCards] = useState(
+        gameState === GAME_STATES.SHOWING_CARDS
+            ? game.rounds[game.rounds.length - 1].whiteCardsByPlayer
+            : player.whiteCards
+    );
 
     let mainCard = null;
 
-    if (showMainCard) {
+    if (showMainCard !== false) {
         mainCard = game?.rounds[game?.rounds?.length - 1].blackCard;
     }
 
-    console.log("waiting cardpicker", { game });
+    console.log("waiting cardpicker", { whiteCards });
 
     return (
         <div className="blackcardpicker waiting">

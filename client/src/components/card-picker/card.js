@@ -68,7 +68,21 @@ export default function Card(props) {
     if (type === CARD_TYPES.BLACK) {
         textToRender = formatTextWithBlanks(text, blankTexts);
     } else {
-        textToRender = <div className="text">{text}</div>;
+        if (typeof text === "string") {
+            textToRender = <div className="text">{text}</div>;
+        } else if (Array.isArray(text)) {
+            const texts = [];
+
+            for (let i = 0, len = text.length; i < len; i++) {
+                const temp = text[i];
+                console.log({ temp });
+
+                texts.push(<div key={i}>{temp}</div>);
+            }
+
+            console.log({ texts, text });
+            textToRender = <div className="text">{texts}</div>;
+        }
     }
 
     return (
@@ -98,7 +112,11 @@ export default function Card(props) {
                     )}
                     <span>&nbsp;</span>
                     <span className="cardpackid">
-                        {isNullOrUndefined(cardPackID) ? "" : cardPackID}
+                        {isNullOrUndefined(cardPackID)
+                            ? ""
+                            : Array.isArray(cardPackID)
+                            ? ""
+                            : cardPackID}
                     </span>
                 </div>
             </div>

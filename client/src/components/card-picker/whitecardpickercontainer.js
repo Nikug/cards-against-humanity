@@ -15,6 +15,8 @@ export function WhiteCardPickerContainer(props) {
     const [confirmedCards, setConfirmedCards] = useState([]);
 
     const { game, player } = props;
+    const pickLimit =
+        game.rounds[game.rounds.length - 1].blackCard.whiteCardsToPlay;
 
     const selectCard = (card) => {
         if (confirmedCards.length > 0) {
@@ -42,9 +44,6 @@ export function WhiteCardPickerContainer(props) {
     };
 
     const confirmCard = () => {
-        const pickLimit =
-            game.rounds[game.rounds.length - 1].blackCard.whiteCardsToPlay;
-
         if (selectedCards.length === pickLimit) {
             const gameID = props.game.id;
             const playerID = props.player.id;
@@ -72,6 +71,7 @@ export function WhiteCardPickerContainer(props) {
                 selectCard={selectCard}
                 confirmCards={confirmCard}
                 description={"Valitse valkoinen kortti"}
+                selectDisabled={selectedCards.length !== pickLimit}
             />
         </div>
     );
