@@ -1,30 +1,20 @@
-import React, { useEffect, useState } from "react";
-import { socket } from "../sockets/socket";
+import React from "react";
 
 import { CardPicker } from "./cardpicker";
-import { getBlackCard, getWhiteCard } from "../../fakedata/fakecarddata";
-import {
-    emptyFn,
-    isNullOrUndefined,
-    containsObjectWithMatchingFieldIndex,
-} from "../../helpers/generalhelpers";
+import { emptyFn } from "../../helpers/generalhelpers";
 import { GAME_STATES } from "../../consts/gamestates";
 
 export function WaitingCardPickerContainer(props) {
     const { game, player, alternativeText, showMainCard, gameState } = props;
-    const [whiteCards, setWhiteCards] = useState(
+    const whiteCards =
         gameState === GAME_STATES.SHOWING_CARDS
             ? game.rounds[game.rounds.length - 1].whiteCardsByPlayer
-            : player.whiteCards
-    );
-
+            : player.whiteCards;
     let mainCard = null;
 
     if (showMainCard !== false) {
         mainCard = game?.rounds[game?.rounds?.length - 1].blackCard;
     }
-
-    console.log("waiting cardpicker", { whiteCards });
 
     return (
         <div className="blackcardpicker waiting">

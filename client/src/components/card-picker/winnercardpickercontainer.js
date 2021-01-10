@@ -1,14 +1,8 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { socket } from "../sockets/socket";
 
 import { CardPicker } from "./cardpicker";
-import { getBlackCard, getWhiteCard } from "../../fakedata/fakecarddata";
-import { CardPack } from "../game-settings/cardpack";
-import {
-    emptyFn,
-    isNullOrUndefined,
-    containsObjectWithMatchingFieldIndex,
-} from "../../helpers/generalhelpers";
+import { containsObjectWithMatchingFieldIndex } from "../../helpers/generalhelpers";
 
 export function WinnerCardPickerContainer(props) {
     const { game, player } = props;
@@ -36,7 +30,7 @@ export function WinnerCardPickerContainer(props) {
         whiteCardsToRender.push(newWhiteCard);
     }
 
-    const [whiteCards, setWhiteCards] = useState(whiteCardsToRender);
+    const whiteCards = whiteCardsToRender;
     const [selectedCards, setSelectedCards] = useState([]);
     const [confirmedCards, setConfirmedCards] = useState([]);
 
@@ -68,10 +62,9 @@ export function WinnerCardPickerContainer(props) {
         const pickLimit = 1;
 
         if (selectedCards.length === pickLimit) {
-            const gameID = props.game.id;
-            const playerID = props.player.id;
+            const gameID = game.id;
+            const playerID = player.id;
 
-            console.log("aaaa", { selectedCards });
             socket.emit("pick_winning_card", {
                 gameID: gameID,
                 playerID: playerID,

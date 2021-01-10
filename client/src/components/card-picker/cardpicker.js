@@ -1,14 +1,11 @@
-import React, { useEffect, useState } from "react";
-import { socket } from "../sockets/socket";
+import React from "react";
 
 import Card from "./card";
-import { getBlackCard, getWhiteCard } from "../../fakedata/fakecarddata";
 import {
     containsObjectWithMatchingField,
     isNullOrUndefined,
 } from "../../helpers/generalhelpers";
 import Button, { BUTTON_TYPES } from "../button";
-import { CardPack } from "../game-settings/cardpack";
 
 /**
  * Everything given via props
@@ -79,6 +76,7 @@ export function CardPicker(props) {
                               whiteCardsToPlay: 0,
                           }
                 }
+                key={"mainCard"}
             />
         );
     } else {
@@ -110,7 +108,6 @@ export function CardPicker(props) {
                 }
             }
 
-            console.log({ selectedWhiteCards });
             for (let i = 0, len = selectedWhiteCards.length; i < len; i++) {
                 const card = selectedWhiteCards[i];
 
@@ -118,13 +115,18 @@ export function CardPicker(props) {
             }
 
             content.push(
-                <Card card={mainCard} bigCard={true} blankTexts={blankTexts} />
+                <Card
+                    card={mainCard}
+                    bigCard={true}
+                    blankTexts={blankTexts}
+                    key={"mainCard"}
+                />
             );
         }
 
         if (alternativeText) {
             content.push(
-                <div className="alternativetext">
+                <div className="alternativetext" key="alternativeText">
                     {alternativeText}
                     <i
                         className="fa fa-spinner fa-spin"
@@ -134,7 +136,7 @@ export function CardPicker(props) {
             );
         }
 
-        mainContent.push(<div>{content}</div>);
+        mainContent.push(<div key="content">{content}</div>);
     }
 
     const cardsAreSelected = confirmedCards.length > 0;
@@ -177,7 +179,7 @@ export function CardPicker(props) {
                     }
                     icon={cardsAreSelected ? buttonIcons[1] : buttonIcons[0]}
                     iconPosition="after"
-                    disabled={hasAlternativeText}
+                    disabled={hasAlternativeText || disableConfirmButton}
                 />
             </div>
             <div className="description">{description}</div>

@@ -9,9 +9,6 @@ import { Setting, CONTROL_TYPES } from "./../components/settings/setting";
 
 import "./../styles/game.scss";
 import { GAME_STATES } from "../consts/gamestates";
-import { CardPicker } from "../components/card-picker/cardpicker";
-import { getBlackCard, getWhiteCard } from "../fakedata/fakecarddata";
-import { emptyFn } from "../helpers/generalhelpers";
 import { BlackCardPickerContainer } from "../components/card-picker/blackcardpickercontainer";
 import { WhiteCardPickerContainer } from "../components/card-picker/whitecardpickercontainer";
 import { WinnerCardPickerContainer } from "../components/card-picker/winnercardpickercontainer";
@@ -55,7 +52,6 @@ export const Game = (props) => {
         });
 
         socket.on("update_players", (data) => {
-            console.log("players updated!");
             setGame((prevGame) => ({ ...prevGame, players: data.players }));
         });
 
@@ -69,18 +65,12 @@ export const Game = (props) => {
     }, []);
 
     const startGame = (gameID, playerID) => {
-        console.log({ gameID, playerID });
         if (!!gameID && !!playerID) {
             socket.emit("start_game", { gameID, playerID });
         }
     };
 
     //console.log(`Is socket still open: ${socket.connected ? "Yes" : "No"}`);
-    if (game) {
-        //console.log("game.id", game.id);
-    } else {
-        //console.log("was no game");
-    }
 
     const addProgress = () => {
         //console.log(progress);
@@ -94,8 +84,6 @@ export const Game = (props) => {
 
     const setPlayerName = (name) => {
         const cleanedName = name.trim();
-
-        //console.log('setPlayerName', {name, cleanedName}, game?.id, player?.id);
 
         if (!!player?.id && cleanedName.length > 0) {
             socket.emit("set_player_name", {
@@ -314,162 +302,11 @@ export const Game = (props) => {
                 <Timer
                     width={100}
                     percent={progress}
-                    startingPercent={0.4}
+                    startingPercent={0}
                     time={10}
                 />
             </div>
             <div className="lobby-container">{renderedContent}</div>
-        </div>
-    );
-
-    return (
-        <div>
-            <div className="info">
-                <PlayersWidget game={game} player={player} />
-                <Timer
-                    width={100}
-                    percent={progress}
-                    startingPercent={0.4}
-                    time={10}
-                />
-            </div>
-            <div className="lobby-container">
-                <div
-                    hidden={false}
-                    style={{ marginTop: "2rem", marginBottom: "2rem" }}
-                    className="info"
-                >
-                    <Button text="try the timer" callback={addProgress} />
-                </div>
-                <div
-                    className="info"
-                    hidden={game?.state !== GAME_STATES.LOBBY}
-                >
-                    <div className="game-settings-container">
-                        <div className="nick-and-start-container">
-                            <div className="nickname-selector">
-                                <Setting
-                                    text={"Nimimerkki"}
-                                    placeholderText={"nickname"}
-                                    controlType={CONTROL_TYPES.textWithConfirm}
-                                    onChangeCallback={setPlayerName}
-                                    icon={{
-                                        name: "person",
-                                        className: iconClassnames,
-                                    }}
-                                />
-                            </div>
-                            <Button
-                                icon={"play_circle_filled"}
-                                iconPosition={"after"}
-                                text={"Aloita peli"}
-                                type={BUTTON_TYPES.GREEN}
-                                additionalClassname={"big-btn"}
-                                callback={() => startGame(game?.id, player?.id)}
-                                disabled={!canStartGame}
-                            />
-                        </div>
-                    </div>
-                </div>
-                <div
-                    className="info"
-                    hidden={game?.state !== GAME_STATES.LOBBY}
-                >
-                    <GameSettingsContainer
-                        options={game ? game.options : {}}
-                        gameID={game?.id}
-                        isHost={player?.isHost}
-                        playerID={player?.id}
-                    />
-                </div>
-
-                <div
-                    hidden={
-                        game?.state !== GAME_STATES.PICKING_BLACK_CARD &&
-                        game?.state !== GAME_STATES.PLAYING_WHITE_CARDS &&
-                        game?.state !== GAME_STATES.READING_CARDS &&
-                        game?.state !== GAME_STATES.SHOWING_CARDS &&
-                        game?.state !== GAME_STATES.ROUND_END
-                    }
-                >
-                    <BlackCardPickerContainer player={player} game={game} />
-                    {false && (
-                        <CardPicker
-                            mainCard={getBlackCard()}
-                            selectableCards={[
-                                getWhiteCard(0),
-                                getWhiteCard(1),
-                                getWhiteCard(2),
-                                getWhiteCard(2),
-                                getWhiteCard(2),
-                                getWhiteCard(2),
-                            ]}
-                            selectedCards={[getWhiteCard(0)]}
-                            confirmedCards={[getWhiteCard(1)]}
-                            selectCard={emptyFn}
-                            confirmCards={emptyFn}
-                        />
-                    )}
-                </div>
-
-                {/*
-                <div hidden={true}>
-                    <h1 style={{ textTransform: "capitalize" }}>{`Game ${
-                        game === undefined ? " not found" : game.id.replace(/-/g, " ")
-                    }`}</h1>
-                    {!!game && (
-                        <div>
-                            <PlayerName gameID={game.id} playerID={player?.id} />
-                        </div>
-                    )}
-                    {!!game && (
-                        <div>
-                            {game.state === "lobby" && (
-                                <div>
-                                    <GameOptions
-                                        options={game?.options}
-                                        gameID={game?.id}
-                                        isHost={player?.isHost}
-                                        playerID={player?.id}
-                                    />
-                                </div>
-                            )}
-
-                            {!!player?.isHost && game.state === "lobby" && (
-                                <div>
-                                    <button
-                                        onClick={() => startGame(game?.id, player?.id)}
-                                    >
-                                        Aloita peli
-                                    </button>
-                                </div>
-                            )}
-
-                            {game.state === "pickingBlackCard" && (
-                                <BlackCardPicker gameID={game.id} player={player} />
-                            )}
-                            {game.state === "playingWhiteCards" && (
-                                <WhiteCardPicker
-                                    gameID={game.id}
-                                    player={player}
-                                    pickLimit={
-                                        game.rounds[game.rounds.length - 1].blackCard
-                                            .whiteCardsToPlay
-                                    }
-                                />
-                            )}
-
-                            <div style={{ display: "inline-block" }}>
-                                <pre>{JSON.stringify(game, null, 2)}</pre>
-                            </div>
-                            <div style={{ display: "inline-block" }}>
-                                <pre>{JSON.stringify(player, null, 2)}</pre>
-                            </div>
-                        </div>
-                    )}
-                </div>
-                                */}
-            </div>
         </div>
     );
 };

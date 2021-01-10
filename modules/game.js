@@ -219,6 +219,6 @@ export const startNewRound = (io, gameID, playerID) => {
     game.players = appointNextCardCzar(game, playerID);
 
     setGame(game);
-    
+
     io.in(gameID).emit("update_game", { game: newGame });
 };

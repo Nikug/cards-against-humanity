@@ -2,9 +2,7 @@ import React, { useEffect, useState } from "react";
 import { socket } from "../sockets/socket";
 
 import { CardPicker } from "./cardpicker";
-import { getBlackCard, getWhiteCard } from "../../fakedata/fakecarddata";
 import {
-    emptyFn,
     isNullOrUndefined,
     containsObjectWithMatchingFieldIndex,
 } from "../../helpers/generalhelpers";
@@ -14,6 +12,10 @@ export function BlackCardPickerContainer(props) {
     const [selectedCards, setSelectedCards] = useState([]);
     const [confirmedCards, setConfirmedCards] = useState([]);
 
+    const gameID = props?.game?.id;
+    const playerID = props?.player?.id;
+    const isCardCzar = props?.player?.isCardCzar;
+
     useEffect(() => {
         const { player, game } = props;
         if (blackCards === undefined && game && player && player.isCardCzar) {
@@ -22,12 +24,7 @@ export function BlackCardPickerContainer(props) {
                 playerID: props.player.id,
             });
         }
-    }, [
-        blackCards,
-        props.game?.id,
-        props.player?.id,
-        props.player?.isCardCzar,
-    ]);
+    }, [props, blackCards, gameID, playerID, isCardCzar]);
 
     useEffect(() => {
         socket.on("deal_black_cards", (data) => {
@@ -74,6 +71,8 @@ export function BlackCardPickerContainer(props) {
                     .filter((blackCard) => blackCard.id !== cardID)
                     .map((blackCard) => blackCard.id),
             });
+
+            setConfirmedCards(selectedCards.slice());
         } else {
             console.log("There was no black card to confirm");
         }

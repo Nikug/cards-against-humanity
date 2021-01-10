@@ -41,15 +41,12 @@ class App extends Component {
 
     startNewGame() {
         axios.post("/g").then((res) => {
-            this.setState({ url: res.data.url }, () => {
-                console.log("aaaa", this.state.url);
-            });
+            this.setState({ url: res.data.url });
             this.toggleIsInHome(false);
         });
     }
 
     joinExistingGame(gameUrl) {
-        console.log({ gameUrl });
         this.setState({ url: gameUrl });
     }
 
@@ -63,9 +60,7 @@ class App extends Component {
     }
 
     render() {
-        const { isInHome: isInHome, url } = this.state;
-        const currentUrl = window.location.pathname;
-        console.log({ url, currentUrl });
+        const { isInHome, url } = this.state;
 
         return (
             <div

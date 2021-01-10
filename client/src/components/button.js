@@ -1,5 +1,4 @@
 import React from "react";
-import { isNullOrUndefined } from "../helpers/generalhelpers";
 
 import "../styles/button.scss";
 

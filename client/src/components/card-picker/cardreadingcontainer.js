@@ -3,8 +3,6 @@ import { socket } from "../sockets/socket";
 
 import { CardPicker } from "./cardpicker";
 import { emptyFn, isNullOrUndefined } from "../../helpers/generalhelpers";
-import { BlackCardPicker } from "../views/BlackCardPicker";
-import { getWhiteCard } from "../../fakedata/fakecarddata";
 
 export function CardReadingContainer(props) {
     const { game, player } = props;
@@ -13,7 +11,6 @@ export function CardReadingContainer(props) {
 
     useEffect(() => {
         socket.on("show_white_card", (data) => {
-            console.log({ data });
             setWhiteCards(data);
         });
     }, []);
@@ -24,14 +21,6 @@ export function CardReadingContainer(props) {
             playerID: player.id,
         });
     };
-
-    /*
-    if (!isNullOrUndefined(whiteCards) && whiteCards.length === 0) {
-        showNextCard();
-    }
-    */
-
-    console.log({ whiteCardsByPlayer: whiteCards });
 
     return (
         <div className="blackcardpicker">

@@ -1,20 +1,15 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { socket } from "../sockets/socket";
 
 import { CardPicker } from "./cardpicker";
-import { getBlackCard, getWhiteCard } from "../../fakedata/fakecarddata";
-import {
-    emptyFn,
-    isNullOrUndefined,
-    containsObjectWithMatchingFieldIndex,
-} from "../../helpers/generalhelpers";
+import { containsObjectWithMatchingFieldIndex } from "../../helpers/generalhelpers";
 
 export function WhiteCardPickerContainer(props) {
-    const [whiteCards, setWhiteCards] = useState(props.player.whiteCards);
+    const { game, player } = props;
+    const whiteCards = player.whiteCards;
     const [selectedCards, setSelectedCards] = useState([]);
     const [confirmedCards, setConfirmedCards] = useState([]);
 
-    const { game, player } = props;
     const pickLimit =
         game.rounds[game.rounds.length - 1].blackCard.whiteCardsToPlay;
 

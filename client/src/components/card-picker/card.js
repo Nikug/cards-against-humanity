@@ -55,7 +55,7 @@ function formatTextWithBlanks(text, blankTexts) {
 
 export default function Card(props) {
     const card = props.card;
-    const { id, cardPackID, text, whiteCardsToPlay, whiteCardsToDraw } = card;
+    const { cardPackID, text, whiteCardsToPlay, whiteCardsToDraw } = card;
     const { blankTexts, selected, confirmed, bigCard, selectCard } = props;
     let type = CARD_TYPES.BLACK;
 
@@ -75,12 +75,9 @@ export default function Card(props) {
 
             for (let i = 0, len = text.length; i < len; i++) {
                 const temp = text[i];
-                console.log({ temp });
 
                 texts.push(<div key={i}>{temp}</div>);
             }
-
-            console.log({ texts, text });
             textToRender = <div className="text">{texts}</div>;
         }
     }
