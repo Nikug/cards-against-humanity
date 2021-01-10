@@ -79,7 +79,7 @@ export const getPlayer = (game, playerID) => {
 export const getPlayerByWhiteCards = (game, whiteCardIDs) => {
     const players = game.currentRound.whiteCardsByPlayer.filter(
         (whiteCardByPlayer) => {
-            if (whiteCardIDs.length !== whiteCardByPlayer.length) return false;
+            if (whiteCardIDs.length !== whiteCardByPlayer.whiteCards.length) return false;
 
             const ids = whiteCardByPlayer.whiteCards.map(
                 (whiteCard) => whiteCard.id

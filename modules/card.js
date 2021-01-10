@@ -54,7 +54,8 @@ export const playWhiteCards = (io, socket, gameID, playerID, whiteCardIDs) => {
     ];
 
     if (everyoneHasPlayedTurn(game)) {
-        game.client.state = "readingCards";
+        game.stateMachine.startReading();
+        game.client.state = game.stateMachine.state;
         game.currentRound.whiteCardsByPlayer = shuffleCards([
             ...game.currentRound.whiteCardsByPlayer,
         ]);
@@ -70,8 +71,6 @@ export const playWhiteCards = (io, socket, gameID, playerID, whiteCardIDs) => {
     io.to(player.socket).emit("update_player", {
         player: player,
     });
-
-    console.log("made it to end");
 };
 
 export const selectBlackCard = (
@@ -128,13 +127,13 @@ export const selectBlackCard = (
     io.in(gameID).emit("update_game", {
         game: game.client,
     });
-    changeGameStateAfterTime(
-        io,
-        gameID,
-        "startReading",
-        game.client.options.selectWhiteCardTimeLimit +
-            gameOptions.defaultGracePeriod
-    );
+    // changeGameStateAfterTime(
+    //     io,
+    //     gameID,
+    //     "startReading",
+    //     game.client.options.selectWhiteCardTimeLimit +
+    //         gameOptions.defaultGracePeriod
+    // );
 };
 
 export const dealBlackCards = (socket, gameID, playerID) => {
@@ -251,7 +250,8 @@ export const showWhiteCard = (io, gameID, playerID) => {
         game.currentRound.cardIndex ===
         game.currentRound.whiteCardsByPlayer.length
     ) {
-        game.client.state = "showingCards";
+        game.stateMachine.showCards();
+        game.client.state = game.stateMachine.state;
         setGame(game);
         io.in(gameID).emit("update_game", {
             game: {
@@ -304,7 +304,6 @@ export const selectWinner = (io, gameID, playerID, whiteCardIDs) => {
     if (!!error || !result) return;
 
     const winnerID = getPlayerByWhiteCards(game, whiteCardIDs);
-    // TODO: winnerID is undefined!!! (should not be)
     if (!winnerID) return;
     game.players = addScore(game.players, winnerID, 1);
 

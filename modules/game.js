@@ -99,12 +99,13 @@ export const createRound = (roundNumber, blackCard, cardCzarID) => {
 };
 
 export const everyoneHasPlayedTurn = (game) => {
+    console.log(game.players);
     const activePlayers = game.players.filter(
-        (player) => player.state === "waiting" || player.isCardCzar
+        (player) => player.state === "waiting" && !player.isCardCzar
     );
     return (
         activePlayers.length ===
-        game.client.rounds[game.client.rounds.length - 1].whiteCardsByPlayer
+        game.currentRound.whiteCardsByPlayer
             .length
     );
 };
