@@ -1,5 +1,10 @@
-import React, { Component } from "react";
-import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import {
+    BrowserRouter as Router,
+    Switch,
+    Route,
+    useHistory,
+} from "react-router-dom";
 import axios from "axios";
 
 import { Home } from "./layouts/Home";
@@ -10,114 +15,96 @@ import Music from "./components/music";
 import "./styles/App.scss";
 import "./styles/footer.scss";
 
-class App extends Component {
-    constructor(props) {
-        super(props);
+export default function App(props) {
+    const [isInHome, setIsInHome] = useState(true);
+    const [url, setUrl] = useState("");
 
-        this.state = {
-            isInHome: true,
-            url: window.location.pathname.slice(
-                0,
-                window.location.pathname.length - 1
-            ),
-        };
+    const history = useHistory();
 
-        this.toggleIsInHome = this.toggleIsInHome.bind(this);
-        this.startNewGame = this.startNewGame.bind(this);
-        this.joinExistingGame = this.joinExistingGame.bind(this);
-        this.resetUrl = this.resetUrl.bind(this);
-    }
-
-    toggleIsInHome(isInHome) {
-        this.setState({ isInHome });
+    function toggleIsInHome(isInHome) {
+        setIsInHome(isInHome);
         if (isInHome) {
-            this.resetUrl();
+            resetUrl();
         }
     }
 
-    resetUrl() {
-        this.setState({ url: "" });
+    function resetUrl() {
+        setUrl("");
     }
 
-    startNewGame() {
+    function startNewGame() {
         axios.post("/g").then((res) => {
-            this.setState({ url: res.data.url });
-            this.toggleIsInHome(false);
+            setUrl(res.data.url);
+            toggleIsInHome(false);
         });
     }
 
-    joinExistingGame(gameUrl) {
-        this.setState({ url: gameUrl });
+    function joinExistingGame(gameUrl) {
+        setUrl(gameUrl);
     }
 
-    componentDidMount() {
-        this.setState({
-            url: window.location.pathname.slice(
+    useEffect(() => {
+        setUrl(
+            window.location.pathname.slice(
                 0,
                 window.location.pathname.length - 1
-            ),
-        });
-    }
-
-    render() {
-        const { isInHome, url } = this.state;
-
-        return (
-            <div
-                className={`App ${
-                    url === "" ? "background-img" : "mono-background"
-                }`}
-            >
-                <Router>
-                    <div className="basic-grid">
-                        <Header
-                            isInGame={!isInHome}
-                            toggleIsInGame={this.toggleIsInHome}
-                        />
-                        <Switch>
-                            <Route
-                                exact
-                                path="/"
-                                render={(props) => (
-                                    <Home
-                                        isInGame={!isInHome}
-                                        url={url}
-                                        startNewGame={this.startNewGame}
-                                        joinExistingGame={this.joinExistingGame}
-                                    />
-                                )}
-                            />
-                            <Route
-                                exact
-                                path="/instructions"
-                                render={(props) => (
-                                    <div>Instructions under construction!</div>
-                                )}
-                            />
-                            <Route
-                                exact
-                                path="/g/:id"
-                                render={(props) => (
-                                    <Game
-                                        isInGame={!isInHome}
-                                        resetUrl={this.resetUrl}
-                                    />
-                                )}
-                            />
-                        </Switch>
-                    </div>
-                    <div className="footer">
-                        <span className="music-player">
-                            <Music />
-                        </span>
-                        <span className="copyrights">
-                            &copy; {new Date().getFullYear()}
-                        </span>
-                    </div>
-                </Router>
-            </div>
+            )
         );
-    }
-}
+    });
 
-export default App;
+    return (
+        <div
+            className={`App ${
+                url === "" ? "background-img" : "mono-background"
+            }`}
+        >
+            <Router>
+                <div className="basic-grid">
+                    <Header
+                        isInGame={!isInHome}
+                        toggleIsInGame={toggleIsInHome}
+                    />
+                    <Switch>
+                        <Route
+                            exact
+                            path="/"
+                            render={(props) => (
+                                <Home
+                                    isInGame={!isInHome}
+                                    url={url}
+                                    startNewGame={startNewGame}
+                                    joinExistingGame={joinExistingGame}
+                                />
+                            )}
+                        />
+                        <Route
+                            exact
+                            path="/instructions"
+                            render={(props) => (
+                                <div>Instructions under construction!</div>
+                            )}
+                        />
+                        <Route
+                            exact
+                            path="/g/:id"
+                            render={(props) => (
+                                <Game
+                                    isInGame={!isInHome}
+                                    resetUrl={resetUrl}
+                                />
+                            )}
+                        />
+                    </Switch>
+                </div>
+                <div className="footer">
+                    <span className="music-player">
+                        <Music />
+                    </span>
+                    <span className="copyrights">
+                        &copy; {new Date().getFullYear()}
+                    </span>
+                </div>
+            </Router>
+        </div>
+    );
+}

@@ -3,6 +3,7 @@ import React from "react";
 import Card from "./card";
 import {
     containsObjectWithMatchingField,
+    emptyFn,
     isNullOrUndefined,
 } from "../../helpers/generalhelpers";
 import Button, { BUTTON_TYPES } from "../button";
@@ -35,8 +36,12 @@ export function CardPicker(props) {
         customButtonIcons,
         noActionButton,
         topText,
+        showPopularVote,
+        noBigMainCard,
     } = props;
     const renderedCards = [];
+
+    console.log("cardpicker", { showPopularVote });
 
     const selectableCardsLength = selectableCards ? selectableCards.length : 0;
 
@@ -58,6 +63,7 @@ export function CardPicker(props) {
                     "id"
                 )}
                 selectCard={selectCard}
+                showPopularVote={showPopularVote}
             />
         );
     }
@@ -125,7 +131,7 @@ export function CardPicker(props) {
             content.push(
                 <Card
                     card={mainCard}
-                    bigCard={true}
+                    bigCard={noBigMainCard ? false : true}
                     blankTexts={blankTexts}
                     key={"mainCard"}
                 />
@@ -169,6 +175,8 @@ export function CardPicker(props) {
         buttonIcons = customButtonIcons;
     }
 
+    console.log("selectCard === emptyFn", selectCard === emptyFn);
+
     return (
         <div className="cardpicker-wrapper">
             {topText && <div className="toptext">{topText}</div>}
@@ -200,7 +208,9 @@ export function CardPicker(props) {
             <div className="description">{description}</div>
             <div
                 className={`selectable ${
-                    cardsAreSelected ? "non-selectable" : ""
+                    cardsAreSelected || selectCard === emptyFn
+                        ? "non-selectable"
+                        : ""
                 }`}
             >
                 {renderedCards}

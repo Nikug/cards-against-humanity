@@ -152,6 +152,14 @@
 
         &.non-selectable {
             cursor: default;
+
+            .card-wrapper {
+                cursor: default;
+
+                .popularvote-btn {
+                    cursor: pointer;
+                }
+            }
         }
     }
 }

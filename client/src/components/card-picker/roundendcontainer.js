@@ -18,17 +18,12 @@ export function RoundEndContainer(props) {
         });
     };
 
-    useEffect(
-        () => {
-            setStartingNewRound(true);
-            if (player?.isCardCzar) {
-                setTimeout(startNewRound, TIMEOUT);
-            }
-        },
-        [props,
-        player,
-        game]
-    );
+    useEffect(() => {
+        setStartingNewRound(true);
+        if (player?.isCardCzar) {
+            setTimeout(startNewRound, TIMEOUT);
+        }
+    }, [props, player, game]);
 
     const whiteCardsByPlayer =
         game.rounds[game.rounds.length - 1].whiteCardsByPlayer;
@@ -90,6 +85,7 @@ export function RoundEndContainer(props) {
                 */
                 noActionButton={true}
                 topText={"Voittaja kortti on tässä!"}
+                showPopularVote={true}
             />
         </div>
     );

@@ -2,6 +2,7 @@ import { nanoid } from "nanoid";
 
 import { getGame, setGame } from "./game.js";
 import { playerName } from "../consts/gameSettings.js";
+import { anonymizedGameClient } from "./card.js";
 
 export const updatePlayerName = (io, gameID, playerID, newName) => {
     const trimmedName = newName.trim();
@@ -79,7 +80,8 @@ export const getPlayer = (game, playerID) => {
 export const getPlayerByWhiteCards = (game, whiteCardIDs) => {
     const players = game.currentRound.whiteCardsByPlayer.filter(
         (whiteCardByPlayer) => {
-            if (whiteCardIDs.length !== whiteCardByPlayer.whiteCards.length) return false;
+            if (whiteCardIDs.length !== whiteCardByPlayer.whiteCards.length)
+                return false;
 
             const ids = whiteCardByPlayer.whiteCards.map(
                 (whiteCard) => whiteCard.id
@@ -110,13 +112,13 @@ export const getNextCardCzar = (players, previousCardCzarID) => {
 
 export const appointNextCardCzar = (game, previousCardCzarID) => {
     const nextCardCzarID = getNextCardCzar(game.players, previousCardCzarID);
-    const players = game.players.map(player => {
-        if(player.id === previousCardCzarID) {
-            return {...player, isCardCzar: false};
+    const players = game.players.map((player) => {
+        if (player.id === previousCardCzarID) {
+            return { ...player, isCardCzar: false };
         } else if (player.id === nextCardCzarID) {
-            return {...player, isCardCzar: true};
+            return { ...player, isCardCzar: true };
         } else {
-            return {...player};
+            return { ...player };
         }
     });
     return players;
@@ -127,5 +129,24 @@ export const addScore = (players, playerID, scoreToAdd) => {
         player.id === playerID
             ? { ...player, score: player.score + scoreToAdd }
             : player
+    );
+};
+
+export const updatePlayersIndividually = (io, game) => {
+    const anonymousClient = { ...anonymizedGameClient(game) };
+    const publicPlayers = publicPlayersObject(game.players);
+
+    game.players.map((player) => {
+        io.to(player.socket).emit("update_game_and_players", {
+            game: anonymousClient,
+            players: publicPlayers,
+            player: player,
+        });
+    });
+};
+
+export const getActivePlayers = (players) => {
+    return players.filter((player) =>
+        ["active", "playing", "waiting"].includes(player.state)
     );
 };

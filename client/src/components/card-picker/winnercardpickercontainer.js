@@ -109,6 +109,8 @@ export function WinnerCardPickerContainer(props) {
                 }
                 noActionButton={!isCardCzar}
                 selectDisabled={selectedCards.length !== 1}
+                showPopularVote={isCardCzar ? false : true}
+                noBigMainCard={!isCardCzar}
             />
         </div>
     );

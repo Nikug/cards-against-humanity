@@ -19,6 +19,7 @@ import {
     setPlayersActive,
     setPlayersPlaying,
     getPlayerByWhiteCards,
+    updatePlayersIndividually
 } from "./player.js";
 import { gameOptions } from "../consts/gameSettings.js";
 import { randomBetween } from "./util.js";
@@ -62,13 +63,8 @@ export const playWhiteCards = (io, socket, gameID, playerID, whiteCardIDs) => {
         ]);
     }
 
-    io.in(gameID).emit("update_game_and_players", {
-        game: { ...anonymizedGameClient(game.client) },
-        players: publicPlayersObject(game.players),
-    });
-    io.to(player.socket).emit("update_player", {
-        player: player,
-    });
+    setGame(game);
+    updatePlayersIndividually(io, game);
 };
 
 export const selectBlackCard = (
@@ -122,10 +118,7 @@ export const selectBlackCard = (
     game.players = setPlayersPlaying(game.players);
     setGame(game);
 
-    io.in(gameID).emit("update_game_and_players", {
-        game: { ...anonymizedGameClient(game.client) },
-        players: publicPlayersObject(game.players),
-    });
+    updatePlayersIndividually(io, game);
     // changeGameStateAfterTime(
     //     io,
     //     gameID,
@@ -149,7 +142,8 @@ export const dealBlackCards = (socket, gameID, playerID) => {
         console.log("Validated current card czar");
     } else {
         console.log("Validating last rounds card czar");
-        if (!validateRoundCardCzar(game, playerID)) return;
+        // if (!validateRoundCardCzar(game, playerID)) return;
+        if (!validateCardCzar(game, playerID)) return;
         console.log("Validated last rounds card czar");
     }
 
@@ -288,6 +282,8 @@ export const anonymizePlayedWhiteCards = (playedWhiteCards) => {
 };
 
 export const anonymizedGameClient = (game) => {
+    if (!game.client?.rounds) return { ...game.client };
+
     const roundCount = game.client.rounds.length;
     const lastRound = {
         ...game.client.rounds[roundCount - 1],
@@ -335,9 +331,5 @@ export const selectWinner = (io, gameID, playerID, whiteCardIDs) => {
     game.players = setPlayersActive(game.players);
 
     setGame(game);
-
-    io.in(gameID).emit("update_game_and_players", {
-        game: { ...anonymizedGameClient(game.client) },
-        players: publicPlayersObject(game.players),
-    });
+    updatePlayersIndividually(io, game);
 };

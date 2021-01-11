@@ -8,6 +8,8 @@ import {
     publicPlayersObject,
     setPlayersPlaying,
     appointNextCardCzar,
+    updatePlayersIndividually,
+    getActivePlayers,
 } from "./player.js";
 import {
     validateHost,
@@ -16,7 +18,7 @@ import {
     validateCardCzar,
 } from "./validate.js";
 import { randomBetween } from "./util.js";
-import { shuffleCards, dealWhiteCards } from "./card.js";
+import { shuffleCards, dealWhiteCards, anonymizedGameClient } from "./card.js";
 
 let games = [];
 
@@ -100,10 +102,10 @@ export const createRound = (roundNumber, blackCard, cardCzarID) => {
 
 export const everyoneHasPlayedTurn = (game) => {
     console.log(game.players);
-    const activePlayers = game.players.filter(
+    const waitingPlayers = game.players.filter(
         (player) => player.state === "waiting" && !player.isCardCzar
     );
-    return activePlayers.length === game.currentRound.whiteCardsByPlayer.length;
+    return waitingPlayers.length === getActivePlayers(game.players).length - 1; // Remove card czar with -1
 };
 
 export const changeGameStateAfterTime = (io, gameID, transition, time) => {
@@ -116,10 +118,7 @@ export const changeGameStateAfterTime = (io, gameID, transition, time) => {
         game.players = setPlayersActive(game.players);
 
         setGame(game);
-        io.in(gameID).emit("update_game_and_players", {
-            game: { ...anonymizedGameClient(game.client) },
-            players: publicPlayersObject(game.players),
-        });
+        updatePlayersIndividually(io, game);
     }, time * 1000);
 };
 
@@ -167,10 +166,9 @@ export const leaveFromGame = (io, gameID, playerID) => {
                 : player;
         });
         setGame(game);
-        io.in(gameID).emit("update_game_and_players", {
-            game: { ...anonymizedGameClient(game.client) },
-            players: publicPlayersObject(game.players),
-        });
+        updatePlayersIndividually(io, game);
+        // TODO: see what actually happens when someone disconnects
+        // Maybe sending socket message throws error or something
     }
 };
 
@@ -200,10 +198,7 @@ export const startGame = (io, gameID, playerID) => {
     );
     setGame(gameWithStartingHands);
 
-    io.in(gameID).emit("update_game_and_players", {
-        game: { ...anonymizedGameClient(gameWithStartingHands.client) },
-        players: publicPlayersObject(game.players),
-    });
+    updatePlayersIndividually(io, gameWithStartingHands);
 };
 
 export const startNewRound = (io, gameID, playerID) => {
@@ -218,9 +213,5 @@ export const startNewRound = (io, gameID, playerID) => {
     game.players = appointNextCardCzar(game, playerID);
 
     setGame(game);
-
-    io.in(gameID).emit("update_game_and_players", {
-        game: { ...anonymizedGameClient(game.client) },
-        players: publicPlayersObject(game.players),
-    });
+    updatePlayersIndividually(io, game);
 };

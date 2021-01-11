@@ -5,7 +5,14 @@ import { emptyFn } from "../../helpers/generalhelpers";
 import { GAME_STATES } from "../../consts/gamestates";
 
 export function WaitingCardPickerContainer(props) {
-    const { game, player, alternativeText, showMainCard, gameState } = props;
+    const {
+        game,
+        player,
+        alternativeText,
+        showMainCard,
+        gameState,
+        noBigMainCard,
+    } = props;
     const whiteCards =
         gameState === GAME_STATES.SHOWING_CARDS
             ? game.rounds[game.rounds.length - 1].whiteCardsByPlayer
@@ -28,6 +35,7 @@ export function WaitingCardPickerContainer(props) {
                 confirmCards={emptyFn}
                 description={"Valkoiset korttisi"}
                 noActionButton={true}
+                noBigMainCard={noBigMainCard}
             />
         </div>
     );
