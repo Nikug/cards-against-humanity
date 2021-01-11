@@ -9,7 +9,7 @@ export function WaitingCardPickerContainer(props) {
     const whiteCards =
         gameState === GAME_STATES.SHOWING_CARDS
             ? game.rounds[game.rounds.length - 1].whiteCardsByPlayer
-            : player.whiteCards;
+            : player?.whiteCards;
     let mainCard = null;
 
     if (showMainCard !== false) {
@@ -27,6 +27,7 @@ export function WaitingCardPickerContainer(props) {
                 selectCard={emptyFn}
                 confirmCards={emptyFn}
                 description={"Valkoiset korttisi"}
+                noActionButton={true}
             />
         </div>
     );

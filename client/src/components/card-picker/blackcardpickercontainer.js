@@ -5,6 +5,7 @@ import { CardPicker } from "./cardpicker";
 import {
     isNullOrUndefined,
     containsObjectWithMatchingFieldIndex,
+    emptyFn,
 } from "../../helpers/generalhelpers";
 
 export function BlackCardPickerContainer(props) {
@@ -27,7 +28,9 @@ export function BlackCardPickerContainer(props) {
     }, [props, blackCards, gameID, playerID, isCardCzar]);
 
     useEffect(() => {
+        console.log("use effect");
         socket.on("deal_black_cards", (data) => {
+            console.log("deal_black_cards", data);
             setBlackCards(data.blackCards);
         });
     }, []);
@@ -85,7 +88,7 @@ export function BlackCardPickerContainer(props) {
                 selectableCards={blackCards}
                 selectedCards={selectedCards}
                 confirmedCards={confirmedCards}
-                selectCard={selectCard}
+                selectCard={confirmedCards.length > 0 ? emptyFn : selectCard}
                 confirmCards={confirmCard}
                 description={"Valitse musta kortti"}
                 //alternativeText={"Korttikuningas valitsee mustaa korttia"}

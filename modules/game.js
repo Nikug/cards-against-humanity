@@ -103,11 +103,7 @@ export const everyoneHasPlayedTurn = (game) => {
     const activePlayers = game.players.filter(
         (player) => player.state === "waiting" && !player.isCardCzar
     );
-    return (
-        activePlayers.length ===
-        game.currentRound.whiteCardsByPlayer
-            .length
-    );
+    return activePlayers.length === game.currentRound.whiteCardsByPlayer.length;
 };
 
 export const changeGameStateAfterTime = (io, gameID, transition, time) => {
@@ -221,5 +217,5 @@ export const startNewRound = (io, gameID, playerID) => {
 
     setGame(game);
 
-    io.in(gameID).emit("update_game", { game: newGame });
+    io.in(gameID).emit("update_game", { game: game.client });
 };

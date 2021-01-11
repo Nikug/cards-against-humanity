@@ -14,6 +14,7 @@ import { WhiteCardPickerContainer } from "../components/card-picker/whitecardpic
 import { WinnerCardPickerContainer } from "../components/card-picker/winnercardpickercontainer";
 import { WaitingCardPickerContainer } from "../components/card-picker/waitincardpickercontainer";
 import { CardReadingContainer } from "../components/card-picker/cardreadingcontainer";
+import { RoundEndContainer } from "../components/card-picker/roundendcontainer";
 
 export const Game = (props) => {
     const [game, setGame] = useState(undefined);
@@ -125,20 +126,22 @@ export const Game = (props) => {
                                             charLimit={35}
                                         />
                                     </div>
-                                    <Button
-                                        icon={"play_circle_filled"}
-                                        iconPosition={"after"}
-                                        text={"Aloita peli"}
-                                        type={BUTTON_TYPES.GREEN}
-                                        additionalClassname={"big-btn"}
-                                        callback={() =>
-                                            startGame(game?.id, player?.id)
-                                        }
-                                        disabled={
-                                            !canStartGame ||
-                                            player?.isHost !== true
-                                        }
-                                    />
+                                    {player?.isHost && (
+                                        <Button
+                                            icon={"play_circle_filled"}
+                                            iconPosition={"after"}
+                                            text={"Aloita peli"}
+                                            type={BUTTON_TYPES.GREEN}
+                                            additionalClassname={"big-btn"}
+                                            callback={() =>
+                                                startGame(game?.id, player?.id)
+                                            }
+                                            disabled={
+                                                !canStartGame ||
+                                                player?.isHost !== true
+                                            }
+                                        />
+                                    )}
                                 </div>
                             </div>
                         </div>
@@ -184,7 +187,9 @@ export const Game = (props) => {
                 );
                 break;
             case GAME_STATES.ROUND_END:
-                renderedContent = <div>round end lol xd</div>;
+                renderedContent = (
+                    <RoundEndContainer player={player} game={game} />
+                );
                 break;
             default:
                 renderedContent = (
@@ -217,20 +222,22 @@ export const Game = (props) => {
                                             charLimit={35}
                                         />
                                     </div>
-                                    <Button
-                                        icon={"play_circle_filled"}
-                                        iconPosition={"after"}
-                                        text={"Aloita peli"}
-                                        type={BUTTON_TYPES.GREEN}
-                                        additionalClassname={"big-btn"}
-                                        callback={() =>
-                                            startGame(game?.id, player?.id)
-                                        }
-                                        disabled={
-                                            !canStartGame ||
-                                            player?.isHost !== true
-                                        }
-                                    />
+                                    {player?.isHost && (
+                                        <Button
+                                            icon={"play_circle_filled"}
+                                            iconPosition={"after"}
+                                            text={"Aloita peli"}
+                                            type={BUTTON_TYPES.GREEN}
+                                            additionalClassname={"big-btn"}
+                                            callback={() =>
+                                                startGame(game?.id, player?.id)
+                                            }
+                                            disabled={
+                                                !canStartGame ||
+                                                player?.isHost !== true
+                                            }
+                                        />
+                                    )}
                                 </div>
                             </div>
                         </div>
@@ -273,19 +280,17 @@ export const Game = (props) => {
             case GAME_STATES.SHOWING_CARDS:
                 renderedContent = (
                     <div>
-                        <WaitingCardPickerContainer
+                        <WinnerCardPickerContainer
                             player={player}
                             game={game}
-                            alternativeText={
-                                "Korttikuningas valitsee voittajaa..."
-                            }
-                            gameState={GAME_STATES.SHOWING_CARDS}
                         />
                     </div>
                 );
                 break;
             case GAME_STATES.ROUND_END:
-                renderedContent = <div>round end lol xd</div>;
+                renderedContent = (
+                    <RoundEndContainer player={player} game={game} />
+                );
                 break;
             default:
                 renderedContent = (

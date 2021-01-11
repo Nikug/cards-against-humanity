@@ -43,7 +43,7 @@ export class PlayersWidget extends Component {
 
     render() {
         const { game, player } = this.props;
-        let playersToRender = getPlayersList(); // game?.players || [];
+        let playersToRender = game?.players || [];
 
         if (playersToRender.length === 0 && player) {
             playersToRender.unshift(player);

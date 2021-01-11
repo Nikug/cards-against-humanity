@@ -8,7 +8,14 @@ export function isNullOrUndefined(obj) {
 
 export function containsObjectWithMatchingField(obj, list, fieldName) {
     for (let i = 0, len = list.length; i < len; i++) {
-        if (list[i][fieldName] === obj[fieldName]) {
+        const listField = list[i][fieldName];
+        const objField = obj[fieldName];
+        if (Array.isArray(listField) && Array.isArray(objField)) {
+            if (listField[0] === objField[0]) {
+                return true;
+            }
+        }
+        if (listField === objField) {
             return true;
         }
     }
@@ -17,8 +24,23 @@ export function containsObjectWithMatchingField(obj, list, fieldName) {
 }
 
 export function containsObjectWithMatchingFieldIndex(obj, list, fieldName) {
+    console.log("containsObjectWithMatchingFieldIndex", {
+        obj,
+        list,
+        fieldName,
+    });
+    if (list.length > 0) {
+        console.log({ objID: obj.id, listID: list[0].id });
+    }
     for (let i = 0, len = list.length; i < len; i++) {
-        if (list[i][fieldName] === obj[fieldName]) {
+        const listField = list[i][fieldName];
+        const objField = obj[fieldName];
+        if (Array.isArray(listField) && Array.isArray(objField)) {
+            if (listField[0] === objField[0]) {
+                return i;
+            }
+        }
+        if (listField === objField) {
             return i;
         }
     }

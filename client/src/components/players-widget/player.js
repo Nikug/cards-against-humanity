@@ -40,10 +40,12 @@ export class Player extends Component {
                             ? name.slice(0, 35)
                             : name}
                         &nbsp;&nbsp;&nbsp;
-                        <i
-                            className="fa fa-spinner fa-spin"
-                            style={{ fontSize: "24px" }}
-                        />
+                        {noName && (
+                            <i
+                                className="fa fa-spinner fa-spin"
+                                style={{ fontSize: "24px" }}
+                            />
+                        )}
                     </span>
                 </span>
                 <span className="player-scores">

@@ -140,7 +140,11 @@ export const dealBlackCards = (socket, gameID, playerID) => {
     const game = getGame(gameID);
     if (!game) return;
 
-    if (!validateCardCzar(game, playerID)) return;
+    console.log(
+        "!validateCardCzar(game, playerID)",
+        !validateCardCzar(game, playerID)
+    );
+    if (!validateCardCzar(game, playerID)) return; // TODO: on second round, return false on cardczar
 
     const blackCards = drawBlackCards(game, gameOptions.blackCardsToChooseFrom);
     socket.emit("deal_black_cards", {

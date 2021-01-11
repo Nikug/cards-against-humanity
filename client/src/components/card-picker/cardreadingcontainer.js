@@ -6,7 +6,7 @@ import { emptyFn, isNullOrUndefined } from "../../helpers/generalhelpers";
 
 export function CardReadingContainer(props) {
     const { game, player } = props;
-    const [whiteCards, setWhiteCards] = useState([]);
+    const [whiteCards, setWhiteCards] = useState();
     const blackCard = game.rounds[game.rounds.length - 1].blackCard;
 
     useEffect(() => {
@@ -32,8 +32,14 @@ export function CardReadingContainer(props) {
                 selectCard={emptyFn}
                 confirmCards={showNextCard}
                 description={""}
-                customButtonTexts={["Seuraava", "Ladataan..."]}
+                customButtonTexts={
+                    isNullOrUndefined(whiteCards)
+                        ? ["Aloita", "Ladataan..."]
+                        : ["Seuraava", "Ladataan..."]
+                }
                 customButtonIcons={["arrow_forward", "cached"]}
+                noActionButton={player?.isCardCzar ? false : true}
+                topText={"Luetaan kortit:"}
             />
         </div>
     );

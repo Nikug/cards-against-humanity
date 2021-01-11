@@ -2,7 +2,10 @@ import React, { useState } from "react";
 import { socket } from "../sockets/socket";
 
 import { CardPicker } from "./cardpicker";
-import { containsObjectWithMatchingFieldIndex } from "../../helpers/generalhelpers";
+import {
+    containsObjectWithMatchingFieldIndex,
+    emptyFn,
+} from "../../helpers/generalhelpers";
 
 export function WinnerCardPickerContainer(props) {
     const { game, player } = props;
@@ -47,6 +50,7 @@ export function WinnerCardPickerContainer(props) {
             newSelectedCards,
             "id"
         );
+        console.log({ i });
         if (i !== -1) {
             newSelectedCards.splice(i);
         } else if (newSelectedCards.length < pickLimit) {
@@ -55,7 +59,8 @@ export function WinnerCardPickerContainer(props) {
             newSelectedCards.pop();
             newSelectedCards.push(card);
         }
-        setSelectedCards(newSelectedCards);
+        setSelectedCards(newSelectedCards, card);
+        console.log({ newSelectedCards });
     };
 
     const confirmCard = () => {
@@ -78,6 +83,8 @@ export function WinnerCardPickerContainer(props) {
     };
 
     const blackCard = game.rounds[game.rounds.length - 1].blackCard;
+    const isCardCzar = player?.isCardCzar;
+    const hasPopularVote = game?.options?.popularVote;
 
     return (
         <div className="blackcardpicker">
@@ -86,9 +93,22 @@ export function WinnerCardPickerContainer(props) {
                 selectableCards={whiteCards}
                 selectedCards={selectedCards}
                 confirmedCards={confirmedCards}
-                selectCard={selectCard}
-                confirmCards={confirmCard}
-                description={"Valitse voittaja"}
+                selectCard={isCardCzar ? selectCard : emptyFn}
+                confirmCards={isCardCzar ? confirmCard : emptyFn}
+                description={
+                    isCardCzar
+                        ? "Valitse voittaja"
+                        : hasPopularVote
+                        ? "Anna ääni suosikeillesi"
+                        : "Valkoiset kortit"
+                }
+                alternativeText={
+                    isCardCzar
+                        ? undefined
+                        : "Korttikuningas valitsee voittajaa..."
+                }
+                noActionButton={!isCardCzar}
+                selectDisabled={selectedCards.length !== 1}
             />
         </div>
     );

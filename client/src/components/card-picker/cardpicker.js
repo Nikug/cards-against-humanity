@@ -33,6 +33,8 @@ export function CardPicker(props) {
         selectDisabled,
         customButtonTexts,
         customButtonIcons,
+        noActionButton,
+        topText,
     } = props;
     const renderedCards = [];
 
@@ -84,12 +86,18 @@ export function CardPicker(props) {
 
         if (mainCard) {
             const blankTexts = [];
-            let selectedWhiteCards = selectedCards.slice();
+            let selectedWhiteCards =
+                selectedCards.length > 0
+                    ? selectedCards.slice()
+                    : confirmedCards.length > 0
+                    ? confirmedCards.slice()
+                    : [];
 
             // If selectedCard is actually multiplse selected cards, convert to better format
             if (
-                !isNullOrUndefined(selectedCards) &&
-                (selectedCards.length > 0) & Array.isArray(selectedCards[0]?.id)
+                !isNullOrUndefined(selectedWhiteCards) &&
+                (selectedWhiteCards.length > 0) &
+                    Array.isArray(selectedWhiteCards[0]?.id)
             ) {
                 selectedWhiteCards = [];
 
@@ -163,24 +171,31 @@ export function CardPicker(props) {
 
     return (
         <div className="cardpicker-wrapper">
+            {topText && <div className="toptext">{topText}</div>}
             <div className="main">
                 <span />
                 {mainContent}
-                <Button
-                    additionalClassname={`confirm-button ${
-                        cardsAreSelected ? "non-selectable" : ""
-                    } ${selectDisabled ? "disabled" : ""}`}
-                    text={cardsAreSelected ? buttonTexts[1] : buttonTexts[0]}
-                    callback={() => confirmCards()}
-                    type={
-                        cardsAreSelected
-                            ? BUTTON_TYPES.GREEN
-                            : BUTTON_TYPES.PRIMARY
-                    }
-                    icon={cardsAreSelected ? buttonIcons[1] : buttonIcons[0]}
-                    iconPosition="after"
-                    disabled={hasAlternativeText || disableConfirmButton}
-                />
+                {noActionButton !== true && (
+                    <Button
+                        additionalClassname={`confirm-button ${
+                            cardsAreSelected ? "non-selectable" : ""
+                        } ${selectDisabled ? "disabled" : ""}`}
+                        text={
+                            cardsAreSelected ? buttonTexts[1] : buttonTexts[0]
+                        }
+                        callback={() => confirmCards()}
+                        type={
+                            cardsAreSelected
+                                ? BUTTON_TYPES.GREEN
+                                : BUTTON_TYPES.PRIMARY
+                        }
+                        icon={
+                            cardsAreSelected ? buttonIcons[1] : buttonIcons[0]
+                        }
+                        iconPosition="after"
+                        disabled={hasAlternativeText || disableConfirmButton}
+                    />
+                )}
             </div>
             <div className="description">{description}</div>
             <div
