@@ -9,10 +9,16 @@ export const validateHost = (game, playerID) => {
 };
 
 export const validateCardCzar = (game, playerID) => {
+    // console.log("Game Players:", game.players.map(player => ({id: player.id, name: player.name, isCardCzar: player.isCardCzar})));
+    // console.log("Should be card czar:", playerID);
     return game.players.find(
         (player) => player.id === playerID && player.isCardCzar
     );
 };
+
+export const validateRoundCardCzar = (game, playerID) => {
+    return game.currentRound.cardCzar === playerID;
+}
 
 export const validatePlayerPlayingWhiteCards = (
     game,
@@ -35,7 +41,9 @@ export const validatePlayerPlayingWhiteCards = (
         };
     }
 
-    // Do check for if the player is cardczar
+    if(validateCardCzar(game, playerID)) return {
+        error: "Pelaaja on card czar, eikä siksi voi pelata valkoisia kortteja"
+    };
 
     if (
         player.whiteCards.filter((whiteCard) =>

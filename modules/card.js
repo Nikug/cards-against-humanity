@@ -10,6 +10,7 @@ import {
     validateCardCzar,
     validateShowingWhiteCard,
     validatePickingWinner,
+    validateRoundCardCzar,
 } from "./validate.js";
 import {
     addScore,
@@ -61,11 +62,8 @@ export const playWhiteCards = (io, socket, gameID, playerID, whiteCardIDs) => {
         ]);
     }
 
-    setGame(game);
-    io.in(gameID).emit("update_game", {
-        game: game.client,
-    });
-    io.in(gameID).emit("update_players", {
+    io.in(gameID).emit("update_game_and_players", {
+        game: { ...anonymizedGameClient(game.client) },
         players: publicPlayersObject(game.players),
     });
     io.to(player.socket).emit("update_player", {
@@ -124,8 +122,9 @@ export const selectBlackCard = (
     game.players = setPlayersPlaying(game.players);
     setGame(game);
 
-    io.in(gameID).emit("update_game", {
-        game: game.client,
+    io.in(gameID).emit("update_game_and_players", {
+        game: { ...anonymizedGameClient(game.client) },
+        players: publicPlayersObject(game.players),
     });
     // changeGameStateAfterTime(
     //     io,
@@ -144,7 +143,15 @@ export const dealBlackCards = (socket, gameID, playerID) => {
         "!validateCardCzar(game, playerID)",
         !validateCardCzar(game, playerID)
     );
-    if (!validateCardCzar(game, playerID)) return; // TODO: on second round, return false on cardczar
+    if (game.client.rounds.length === 0) {
+        console.log("Validating current card czar");
+        if (!validateCardCzar(game, playerID)) return;
+        console.log("Validated current card czar");
+    } else {
+        console.log("Validating last rounds card czar");
+        if (!validateRoundCardCzar(game, playerID)) return;
+        console.log("Validated last rounds card czar");
+    }
 
     const blackCards = drawBlackCards(game, gameOptions.blackCardsToChooseFrom);
     socket.emit("deal_black_cards", {
@@ -329,7 +336,8 @@ export const selectWinner = (io, gameID, playerID, whiteCardIDs) => {
 
     setGame(game);
 
-    io.in(gameID).emit("update_game", {
-        game: { ...anonymizedGameClient(game) },
+    io.in(gameID).emit("update_game_and_players", {
+        game: { ...anonymizedGameClient(game.client) },
+        players: publicPlayersObject(game.players),
     });
 };

@@ -116,8 +116,8 @@ export const changeGameStateAfterTime = (io, gameID, transition, time) => {
         game.players = setPlayersActive(game.players);
 
         setGame(game);
-        io.in(gameID).emit("update_game", { game: game.client });
-        io.in(gameID).emit("update_players", {
+        io.in(gameID).emit("update_game_and_players", {
+            game: { ...anonymizedGameClient(game.client) },
             players: publicPlayersObject(game.players),
         });
     }, time * 1000);
@@ -167,7 +167,10 @@ export const leaveFromGame = (io, gameID, playerID) => {
                 : player;
         });
         setGame(game);
-        io.in(gameID).emit("update_game", { game: game.client });
+        io.in(gameID).emit("update_game_and_players", {
+            game: { ...anonymizedGameClient(game.client) },
+            players: publicPlayersObject(game.players),
+        });
     }
 };
 
@@ -187,10 +190,6 @@ export const startGame = (io, gameID, playerID) => {
     game.players[randomBetween(0, playerCount - 1)].isCardCzar = true;
     game.players = setPlayersPlaying(game.players);
 
-    io.in(gameID).emit("update_players", {
-        players: publicPlayersObject(game.players),
-    });
-
     game.cards.whiteCards = shuffleCards([...game.cards.whiteCards]);
     game.cards.blackCards = shuffleCards([...game.cards.blackCards]);
 
@@ -201,7 +200,10 @@ export const startGame = (io, gameID, playerID) => {
     );
     setGame(gameWithStartingHands);
 
-    io.in(gameID).emit("update_game", { game: gameWithStartingHands.client });
+    io.in(gameID).emit("update_game_and_players", {
+        game: { ...anonymizedGameClient(gameWithStartingHands.client) },
+        players: publicPlayersObject(game.players),
+    });
 };
 
 export const startNewRound = (io, gameID, playerID) => {
@@ -217,5 +219,8 @@ export const startNewRound = (io, gameID, playerID) => {
 
     setGame(game);
 
-    io.in(gameID).emit("update_game", { game: game.client });
+    io.in(gameID).emit("update_game_and_players", {
+        game: { ...anonymizedGameClient(game.client) },
+        players: publicPlayersObject(game.players),
+    });
 };

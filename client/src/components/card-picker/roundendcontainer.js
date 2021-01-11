@@ -25,9 +25,9 @@ export function RoundEndContainer(props) {
                 setTimeout(startNewRound, TIMEOUT);
             }
         },
-        props,
+        [props,
         player,
-        game
+        game]
     );
 
     const whiteCardsByPlayer =
