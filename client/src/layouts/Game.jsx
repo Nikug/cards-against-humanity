@@ -16,7 +16,7 @@ import { WaitingCardPickerContainer } from "../components/card-picker/waitincard
 import { CardReadingContainer } from "../components/card-picker/cardreadingcontainer";
 import { RoundEndContainer } from "../components/card-picker/roundendcontainer";
 
-export const Game = (props) => {
+export function Game(props) {
     const [game, setGame] = useState(undefined);
     const [player, setPlayer] = useState(undefined);
     const [progress, setProgress] = useState(0);
@@ -56,13 +56,17 @@ export const Game = (props) => {
             setGame((prevGame) => ({ ...prevGame, players: data.players }));
         });
 
+        socket.on("update_game_and_players", (data) => {
+            setGame((prevGame) => ({
+                ...prevGame,
+                ...data.game,
+                players: data.players,
+            }));
+        });
+
         socket.on("update_game_options", (data) => {
             setGame((prevGame) => ({ ...prevGame, options: data.options }));
         });
-
-        return () => {
-            socket.disconnect();
-        };
     }, []);
 
     const startGame = (gameID, playerID) => {
@@ -317,4 +321,4 @@ export const Game = (props) => {
             <div className="lobby-container">{renderedContent}</div>
         </div>
     );
-};
+}

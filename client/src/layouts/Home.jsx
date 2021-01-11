@@ -27,7 +27,6 @@ export function Home({ url, joinExistingGame, startNewGame }) {
     }
 
     useEffect(() => {
-        console.log({ url });
         setNewUrl(url);
     }, [url]);
 
