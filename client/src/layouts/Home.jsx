@@ -1,101 +1,92 @@
-import React, { Component } from "react";
-import { Redirect } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { Redirect, useHistory } from "react-router-dom";
 
 import "../styles/home.scss";
 
 import Button, { BUTTON_TYPES } from "../components/button";
-export class Home extends Component {
-    constructor(props) {
-        super(props);
+export function Home({ url, joinExistingGame, startNewGame }) {
+    const history = useHistory();
+    const [newUrl, setNewUrl] = useState("");
 
-        this.state = {
-            newUrl: "",
-        };
-
-        this.startNewGame = this.startNewGame.bind(this);
-        this.joinExistingGameCallback = this.joinExistingGameCallback.bind(
-            this
-        );
-    }
-
-    handleKeyDown(event) {
+    function handleKeyDown(event) {
         if (event.key === "Enter") {
-            this.props.joinExistingGame(this.state.newUrl);
+            joinExistingGame(newUrl);
         }
     }
 
-    newUrlChange(event) {
-        this.setState({ newUrl: event.target.value });
+    function newUrlChange(event) {
+        setNewUrl(event.target.value);
     }
 
-    startNewGame() {
-        this.props.startNewGame();
+    function joinExistingGameCallback() {
+        joinExistingGame(newUrl);
     }
 
-    joinExistingGameCallback() {
-        this.props.joinExistingGame(this.state.newUrl);
+    function startNewGameCallback() {
+        startNewGame();
     }
 
-    render() {
-        const { url } = this.props;
-        const urlIsEmpty = url === "";
+    useEffect(() => {
+        console.log({ url });
+        setNewUrl(url);
+    }, [url]);
 
-        if (urlIsEmpty) {
-            return (
-                <div className="home-wrapper">
-                    <h1 className="welcome-text">
-                        Tervetuloa pelaamaan kortteja ihmiskuntaa vastaan!
-                    </h1>
+    const urlIsEmpty = url === "";
 
-                    <div className="create-or-join-game-buttons">
-                        <div className="container">
-                            <div className="text">
-                                Luo uusi peli, johon voit kutsua kaverisi mukaan
-                            </div>
-                            <div className="input-and-button-container">
-                                <Button
-                                    text="Luo peli"
-                                    type={BUTTON_TYPES.PRIMARY}
-                                    callback={this.startNewGame}
-                                    icon="add_circle_outline"
-                                ></Button>
-                            </div>
+    if (urlIsEmpty) {
+        return (
+            <div className="home-wrapper">
+                <h1 className="welcome-text">
+                    Tervetuloa pelaamaan kortteja ihmiskuntaa vastaan!
+                </h1>
+
+                <div className="create-or-join-game-buttons">
+                    <div className="container">
+                        <div className="text">
+                            Luo uusi peli, johon voit kutsua kaverisi mukaan
                         </div>
-                        <div className="container border">
-                            <div className="text">
-                                Liity olemassa olevaan peliin syöttämällä pelin
-                                nimi
-                            </div>
-                            <div className="input-and-button-container">
-                                <input
-                                    type="text"
-                                    className="input"
-                                    placeholder="existing-game-69"
-                                    onChange={(e) => this.newUrlChange(e)}
-                                    value={this.state.newUrl}
-                                    onKeyDown={(e) => this.handleKeyDown(e)}
-                                />
-                                <Button
-                                    text="Liity peliin"
-                                    type={BUTTON_TYPES.PRIMARY}
-                                    callback={this.joinExistingGameCallback}
-                                    callbackParams={{}}
-                                    icon="login"
-                                ></Button>
-                            </div>
+                        <div className="input-and-button-container">
+                            <Button
+                                text="Luo peli"
+                                type={BUTTON_TYPES.PRIMARY}
+                                callback={startNewGameCallback}
+                                icon="add_circle_outline"
+                            ></Button>
+                        </div>
+                    </div>
+                    <div className="container border">
+                        <div className="text">
+                            Liity olemassa olevaan peliin syöttämällä pelin nimi
+                        </div>
+                        <div className="input-and-button-container">
+                            <input
+                                type="text"
+                                className="input"
+                                placeholder="existing-game-69"
+                                onChange={(e) => newUrlChange(e)}
+                                value={newUrl}
+                                onKeyDown={(e) => handleKeyDown(e)}
+                            />
+                            <Button
+                                text="Liity peliin"
+                                type={BUTTON_TYPES.PRIMARY}
+                                callback={joinExistingGameCallback}
+                                callbackParams={{}}
+                                icon="login"
+                            ></Button>
                         </div>
                     </div>
                 </div>
-            );
-        }
-
-        return (
-            <Redirect
-                to={{
-                    pathname: `/g/${url}`,
-                    state: url,
-                }}
-            />
+            </div>
         );
     }
+
+    return (
+        <Redirect
+            to={{
+                pathname: `/g/${url}`,
+                state: url,
+            }}
+        />
+    );
 }

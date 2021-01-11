@@ -57,6 +57,16 @@ $button-shadow-green: darken($color-green, 0%);
 $button-background-green-hover: darken($color-green, 10%);
 $button-shadow-green-hover: lighten($color-green, 10%);
 
+// Icon
+
+$icon-basic: $color-white;
+$icon-green: $color-green;
+$icon-blue: $color-blue;
+$icon-white: $color-white;
+$icon-black: $color-black;
+$icon-red: $color-red;
+$icon-grey: $color-grey;
+
 // Input
 
 $input-background: $color-dark-grey;

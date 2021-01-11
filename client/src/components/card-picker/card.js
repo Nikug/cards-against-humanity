@@ -1,6 +1,9 @@
 import React from "react";
-import { isNullOrUndefined } from "../../helpers/generalhelpers.js";
+import { emptyFn, isNullOrUndefined } from "../../helpers/generalhelpers.js";
 import "./../../styles/card.scss";
+
+import Button, { BUTTON_TYPES } from "../button";
+import Icon from "../icon";
 
 const CARD_TYPES = {
     WHITE: 1,
@@ -56,7 +59,14 @@ function formatTextWithBlanks(text, blankTexts) {
 export default function Card(props) {
     const card = props.card;
     const { cardPackID, text, whiteCardsToPlay, whiteCardsToDraw } = card;
-    const { blankTexts, selected, confirmed, bigCard, selectCard } = props;
+    const {
+        blankTexts,
+        selected,
+        confirmed,
+        bigCard,
+        selectCard,
+        showPopularVote,
+    } = props;
     let type = CARD_TYPES.BLACK;
 
     if (isNullOrUndefined(whiteCardsToPlay)) {
@@ -81,6 +91,8 @@ export default function Card(props) {
             textToRender = <div className="text">{texts}</div>;
         }
     }
+
+    console.log({ showPopularVote });
 
     return (
         <div
@@ -108,13 +120,21 @@ export default function Card(props) {
                         </span>
                     )}
                     <span>&nbsp;</span>
-                    <span className="cardpackid">
-                        {isNullOrUndefined(cardPackID)
-                            ? ""
-                            : Array.isArray(cardPackID)
-                            ? ""
-                            : cardPackID}
-                    </span>
+                    {!isNullOrUndefined(cardPackID) &&
+                        !Array.isArray(cardPackID) && (
+                            <span className="cardpackid">{cardPackID}</span>
+                        )}
+                    {showPopularVote &&
+                        !isNullOrUndefined(cardPackID) &&
+                        Array.isArray(cardPackID) && (
+                            <span className="popularvote-btn">
+                                <Icon
+                                    name="thumb_up"
+                                    color={"grey"}
+                                    onClick={emptyFn}
+                                />
+                            </span>
+                        )}
                 </div>
             </div>
         </div>

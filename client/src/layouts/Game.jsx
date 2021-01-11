@@ -173,6 +173,7 @@ export const Game = (props) => {
                             "Muut valitsevat valkoisia korttejaan..."
                         }
                         showMainCard={true}
+                        noBigMainCard={true}
                     />
                 );
                 break;
