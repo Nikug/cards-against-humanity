@@ -325,6 +325,10 @@ export const selectWinner = (io, gameID, playerID, whiteCardIDs) => {
         whiteCardsByPlayer: updatedCardsByPlayer,
     };
 
+    const rounds = game.client.rounds.length;
+    game.client.rounds[rounds - 1] = game.currentRound;
+    console.log("Latest round", game.client.rounds[rounds -1]);
+
     game.stateMachine.endRound();
     game.client.state = game.stateMachine.state;
 

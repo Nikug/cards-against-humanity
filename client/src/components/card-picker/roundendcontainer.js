@@ -29,6 +29,7 @@ export function RoundEndContainer(props) {
         game.rounds[game.rounds.length - 1].whiteCardsByPlayer;
     const whiteCardsToRender = [];
     const confirmedCards = [];
+    console.log("WhiteCards by player", whiteCardsByPlayer);
 
     for (let i = 0, len = whiteCardsByPlayer.length; i < len; i++) {
         const whiteCards = whiteCardsByPlayer[i].whiteCards;
@@ -49,7 +50,7 @@ export function RoundEndContainer(props) {
         whiteCardsToRender.push(newWhiteCard);
 
         console.log({ wonRound: whiteCardsByPlayer[i].wonRound });
-        if (true || whiteCardsByPlayer[i].wonRound) {
+        if (whiteCardsByPlayer[i].wonRound) {
             confirmedCards.push(newWhiteCard);
         }
     }
