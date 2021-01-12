@@ -10,12 +10,10 @@ import {
     validateCardCzar,
     validateShowingWhiteCard,
     validatePickingWinner,
-    validateRoundCardCzar,
 } from "./validate.js";
 import {
     addScore,
     getPlayer,
-    publicPlayersObject,
     setPlayersActive,
     setPlayersPlaying,
     getPlayerByWhiteCards,
@@ -132,20 +130,7 @@ export const dealBlackCards = (socket, gameID, playerID) => {
     const game = getGame(gameID);
     if (!game) return;
 
-    console.log(
-        "!validateCardCzar(game, playerID)",
-        !validateCardCzar(game, playerID)
-    );
-    if (game.client.rounds.length === 0) {
-        console.log("Validating current card czar");
-        if (!validateCardCzar(game, playerID)) return;
-        console.log("Validated current card czar");
-    } else {
-        console.log("Validating last rounds card czar");
-        // if (!validateRoundCardCzar(game, playerID)) return;
-        if (!validateCardCzar(game, playerID)) return;
-        console.log("Validated last rounds card czar");
-    }
+    if (!validateCardCzar(game, playerID)) return;
 
     const blackCards = drawBlackCards(game, gameOptions.blackCardsToChooseFrom);
     socket.emit("deal_black_cards", {
@@ -327,7 +312,6 @@ export const selectWinner = (io, gameID, playerID, whiteCardIDs) => {
 
     const rounds = game.client.rounds.length;
     game.client.rounds[rounds - 1] = game.currentRound;
-    console.log("Latest round", game.client.rounds[rounds -1]);
 
     game.stateMachine.endRound();
     game.client.state = game.stateMachine.state;

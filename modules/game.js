@@ -101,7 +101,6 @@ export const createRound = (roundNumber, blackCard, cardCzarID) => {
 };
 
 export const everyoneHasPlayedTurn = (game) => {
-    console.log(game.players);
     const waitingPlayers = game.players.filter(
         (player) => player.state === "waiting" && !player.isCardCzar
     );
