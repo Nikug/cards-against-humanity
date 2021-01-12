@@ -29,7 +29,6 @@ export function RoundEndContainer(props) {
         game.rounds[game.rounds.length - 1].whiteCardsByPlayer;
     const whiteCardsToRender = [];
     const confirmedCards = [];
-    console.log("WhiteCards by player", whiteCardsByPlayer);
 
     for (let i = 0, len = whiteCardsByPlayer.length; i < len; i++) {
         const whiteCards = whiteCardsByPlayer[i].whiteCards;

@@ -9,8 +9,6 @@ export const validateHost = (game, playerID) => {
 };
 
 export const validateCardCzar = (game, playerID) => {
-    // console.log("Game Players:", game.players.map(player => ({id: player.id, name: player.name, isCardCzar: player.isCardCzar})));
-    // console.log("Should be card czar:", playerID);
     return game.players.find(
         (player) => player.id === playerID && player.isCardCzar
     );
@@ -26,7 +24,6 @@ export const validatePlayerPlayingWhiteCards = (
     whiteCardIDs
 ) => {
     if (game.client.state !== "playingWhiteCards") {
-        console.log("Wrong game state to play cards");
         return {
             error: "Tällä hetkellä ei voi pelata valkoisia kortteja",
         };
@@ -50,7 +47,6 @@ export const validatePlayerPlayingWhiteCards = (
             whiteCardIDs.includes(whiteCard.id)
         ).length !== whiteCardIDs.length
     ) {
-        console.log("Player does not have the right cards");
         return {
             result: false,
             error: "Pelaajalla ei ole kortteja",

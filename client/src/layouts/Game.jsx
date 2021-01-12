@@ -60,6 +60,7 @@ export function Game(props) {
 
         socket.on("update_game_and_players", (data) => {
             console.log("socket update_game_and_players");
+
             setGame((prevGame) => ({
                 ...prevGame,
                 ...data.game,

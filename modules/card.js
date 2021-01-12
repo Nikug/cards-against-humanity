@@ -10,12 +10,10 @@ import {
     validateCardCzar,
     validateShowingWhiteCard,
     validatePickingWinner,
-    validateRoundCardCzar,
 } from "./validate.js";
 import {
     addScore,
     getPlayer,
-    publicPlayersObject,
     setPlayersActive,
     setPlayersPlaying,
     getPlayerByWhiteCards,
@@ -132,42 +130,39 @@ export const dealBlackCards = (socket, gameID, playerID) => {
     const game = getGame(gameID);
     if (!game) return;
 
-    console.log(
-        "!validateCardCzar(game, playerID)",
-        !validateCardCzar(game, playerID)
-    );
-    if (game.client.rounds.length === 0) {
-        console.log("Validating current card czar");
-        if (!validateCardCzar(game, playerID)) return;
-        console.log("Validated current card czar");
-    } else {
-        console.log("Validating last rounds card czar");
-        // if (!validateRoundCardCzar(game, playerID)) return;
-        if (!validateCardCzar(game, playerID)) return;
-        console.log("Validated last rounds card czar");
-    }
+    if (!validateCardCzar(game, playerID)) return;
 
     const blackCards = drawBlackCards(game, gameOptions.blackCardsToChooseFrom);
     socket.emit("deal_black_cards", {
         blackCards: blackCards,
     });
+    console.log("Sending following cards:", blackCards);
 };
 
-export const dealWhiteCards = (io, game, count) => {
+export const dealStartingWhiteCards = (io, game, count) => {
     const players = game.players
-        .filter((player) =>
-            ["active", "playing", "waiting"].includes(player.state)
-        )
         .map((player) => {
-            player.whiteCards = drawWhiteCards(game, count);
-            io.to(player.socket).emit("update_player", {
-                player: player,
-            });
-
+            if(["active", "playing", "waiting"].includes(player.state)) {
+                player.whiteCards = drawWhiteCards(game, count);
+                io.to(player.socket).emit("update_player", {
+                    player: player,
+                });
+            }
             return player;
         });
     game.players = players;
     return game;
+};
+
+export const dealWhiteCards = (game, count) => {
+    const playerIDs = game.currentRound.whiteCardsByPlayer.map(player => player.playerID);
+    const updatedPlayers = game.players.map(player => {
+        if(playerIDs.includes(player.id)) {
+            player.whiteCards = [...player.whiteCards, ...drawWhiteCards(game, count)];
+        }
+        return player;
+    });
+    return updatedPlayers;
 };
 
 export const drawWhiteCards = (game, count) => {
@@ -327,7 +322,6 @@ export const selectWinner = (io, gameID, playerID, whiteCardIDs) => {
 
     const rounds = game.client.rounds.length;
     game.client.rounds[rounds - 1] = game.currentRound;
-    console.log("Latest round", game.client.rounds[rounds -1]);
 
     game.stateMachine.endRound();
     game.client.state = game.stateMachine.state;
