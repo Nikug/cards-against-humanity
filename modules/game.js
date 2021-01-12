@@ -202,7 +202,6 @@ export const startGame = (io, gameID, playerID) => {
         gameOptions.startingWhiteCardCount
     );
 
-    console.log("Cardczar:", game.players[cardCzarIndex]);
     const newGame = dealBlackCards(
         io,
         game.players[cardCzarIndex].socket,

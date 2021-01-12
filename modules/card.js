@@ -199,27 +199,20 @@ export const drawBlackCards = (game, count) => {
         setGame(game);
         return blackCards;
     } else {
-        // console.log("Cards to splice from:", game.cards.blackCards);
         const blackCards = game.cards.blackCards.splice(0, count);
         game.cards.playedBlackCards = [
             ...game.cards.playedBlackCards,
             ...blackCards,
         ];
-        // console.log("Played cards:", game.cards.playedBlackCards);
-        // console.log("Sendig these cards:", blackCards)
         return { blackCards, game };
     }
 };
 
 export const shuffleCardsBackToDeck = (cards, deck) => {
     let newCards = [...deck];
-    let index = 0;
     for (const card in cards) {
-        index = randomBetween(0, newCards.length);
-        console.log(index);
-        newCards.splice(index, 0, card);
+        newCards.splice(randomBetween(0, newCards.length), 0, cards[card]);
     }
-    // console.log("New cards after shuffling:", newCards);
     return [...newCards];
 };
 
