@@ -136,23 +136,33 @@ export const dealBlackCards = (socket, gameID, playerID) => {
     socket.emit("deal_black_cards", {
         blackCards: blackCards,
     });
+    console.log("Sending following cards:", blackCards);
 };
 
-export const dealWhiteCards = (io, game, count) => {
+export const dealStartingWhiteCards = (io, game, count) => {
     const players = game.players
-        .filter((player) =>
-            ["active", "playing", "waiting"].includes(player.state)
-        )
         .map((player) => {
-            player.whiteCards = drawWhiteCards(game, count);
-            io.to(player.socket).emit("update_player", {
-                player: player,
-            });
-
+            if(["active", "playing", "waiting"].includes(player.state)) {
+                player.whiteCards = drawWhiteCards(game, count);
+                io.to(player.socket).emit("update_player", {
+                    player: player,
+                });
+            }
             return player;
         });
     game.players = players;
     return game;
+};
+
+export const dealWhiteCards = (game, count) => {
+    const playerIDs = game.currentRound.whiteCardsByPlayer.map(player => player.playerID);
+    const updatedPlayers = game.players.map(player => {
+        if(playerIDs.includes(player.id)) {
+            player.whiteCards = [...player.whiteCards, ...drawWhiteCards(game, count)];
+        }
+        return player;
+    });
+    return updatedPlayers;
 };
 
 export const drawWhiteCards = (game, count) => {

@@ -57,6 +57,7 @@ export function Game(props) {
         });
 
         socket.on("update_game_and_players", (data) => {
+            console.log("Update game and players", data);
             setGame((prevGame) => ({
                 ...prevGame,
                 ...data.game,

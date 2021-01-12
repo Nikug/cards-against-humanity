@@ -118,7 +118,7 @@ export const appointNextCardCzar = (game, previousCardCzarID) => {
         } else if (player.id === nextCardCzarID) {
             return { ...player, isCardCzar: true };
         } else {
-            return { ...player };
+            return player;
         }
     });
     return players;

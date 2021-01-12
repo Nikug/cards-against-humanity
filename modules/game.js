@@ -18,7 +18,11 @@ import {
     validateCardCzar,
 } from "./validate.js";
 import { randomBetween } from "./util.js";
-import { shuffleCards, dealWhiteCards, anonymizedGameClient } from "./card.js";
+import {
+    shuffleCards,
+    dealStartingWhiteCards,
+    dealWhiteCards,
+} from "./card.js";
 
 let games = [];
 
@@ -190,7 +194,7 @@ export const startGame = (io, gameID, playerID) => {
     game.cards.whiteCards = shuffleCards([...game.cards.whiteCards]);
     game.cards.blackCards = shuffleCards([...game.cards.blackCards]);
 
-    const gameWithStartingHands = dealWhiteCards(
+    const gameWithStartingHands = dealStartingWhiteCards(
         io,
         game,
         gameOptions.startingWhiteCardCount
@@ -209,6 +213,10 @@ export const startNewRound = (io, gameID, playerID) => {
     game.stateMachine.startRound();
     game.client.state = game.stateMachine.state;
 
+    game.players = dealWhiteCards(
+        game,
+        game.currentRound.blackCard.whiteCardsToPlay
+    );
     game.players = appointNextCardCzar(game, playerID);
 
     setGame(game);
