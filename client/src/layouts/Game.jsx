@@ -15,6 +15,7 @@ import { WinnerCardPickerContainer } from "../components/card-picker/winnercardp
 import { WaitingCardPickerContainer } from "../components/card-picker/waitincardpickercontainer";
 import { CardReadingContainer } from "../components/card-picker/cardreadingcontainer";
 import { RoundEndContainer } from "../components/card-picker/roundendcontainer";
+import { textToSpeech } from "../helpers/generalhelpers";
 
 export function Game(props) {
     const [game, setGame] = useState(undefined);
@@ -40,25 +41,27 @@ export function Game(props) {
         if (game === undefined) {
             socket.emit("join_game", { gameID: getGameIdFromURL() });
         }
-
-        return () => window.removeEventListener("beforeunload", () => {});
     }, [game, player]);
 
     useEffect(() => {
         socket.on("update_player", (data) => {
+            console.log("socket update_player");
             setPlayer(data.player);
         });
 
         socket.on("update_game", (data) => {
+            console.log("socket update_game");
             setGame((prevGame) => ({ ...prevGame, ...data.game }));
         });
 
         socket.on("update_players", (data) => {
+            console.log("socket update_players");
             setGame((prevGame) => ({ ...prevGame, players: data.players }));
         });
 
         socket.on("update_game_and_players", (data) => {
-            console.log("Update game and players", data);
+            console.log("socket update_game_and_players");
+
             setGame((prevGame) => ({
                 ...prevGame,
                 ...data.game,
@@ -68,6 +71,7 @@ export function Game(props) {
         });
 
         socket.on("update_game_options", (data) => {
+            console.log("socket update_game_options");
             setGame((prevGame) => ({ ...prevGame, options: data.options }));
         });
 
