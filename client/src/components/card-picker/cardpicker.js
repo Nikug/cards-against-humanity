@@ -73,19 +73,21 @@ export function CardPicker(props) {
 
     if (pickingBlackCard) {
         mainContent.push(
-            <Card
-                card={
-                    selectedCards.length > 0
-                        ? selectedCards[0]
-                        : confirmedCards.length > 0
-                        ? confirmedCards[0]
-                        : {
-                              text: "",
-                              whiteCardsToPlay: 0,
-                          }
-                }
-                key={"mainCard"}
-            />
+            <div className="content-wrapper">
+                <Card
+                    card={
+                        selectedCards.length > 0
+                            ? selectedCards[0]
+                            : confirmedCards.length > 0
+                            ? confirmedCards[0]
+                            : {
+                                  text: "",
+                                  whiteCardsToPlay: 0,
+                              }
+                    }
+                    key={"mainCard"}
+                />
+            </div>
         );
     } else {
         const content = [];
@@ -150,7 +152,11 @@ export function CardPicker(props) {
             );
         }
 
-        mainContent.push(<div key="content">{content}</div>);
+        mainContent.push(
+            <div key="content" className="content-wrapper">
+                {content}
+            </div>
+        );
     }
 
     const cardsAreSelected = confirmedCards.length > 0;
