@@ -126,17 +126,12 @@ export const selectBlackCard = (
     // );
 };
 
-export const dealBlackCards = (socket, gameID, playerID) => {
-    const game = getGame(gameID);
-    if (!game) return;
-
-    if (!validateCardCzar(game, playerID)) return;
-
-    const blackCards = drawBlackCards(game, gameOptions.blackCardsToChooseFrom);
-    socket.emit("deal_black_cards", {
+export const dealBlackCards = (io, socketID, game) => {
+    const { blackCards, game: newGame } = drawBlackCards(game, gameOptions.blackCardsToChooseFrom);
+    io.to(socketID).emit("deal_black_cards", {
         blackCards: blackCards,
     });
-    console.log("Sending following cards:", blackCards);
+    return newGame;
 };
 
 export const dealStartingWhiteCards = (io, game, count) => {
@@ -199,23 +194,32 @@ export const drawBlackCards = (game, count) => {
         ];
 
         game.cards.playedBlackCards = [...blackCards];
+        console.log("Mixed deck");
+        console.log("New deck:", game.cards.blackCards);
         setGame(game);
         return blackCards;
+    } else {
+        // console.log("Cards to splice from:", game.cards.blackCards);
+        const blackCards = game.cards.blackCards.splice(0, count);
+        game.cards.playedBlackCards = [
+            ...game.cards.playedBlackCards,
+            ...blackCards,
+        ];
+        // console.log("Played cards:", game.cards.playedBlackCards);
+        // console.log("Sendig these cards:", blackCards)
+        return { blackCards, game };
     }
-    const blackCards = game.cards.blackCards.splice(0, count);
-    game.cards.playedBlackCards = [
-        ...game.cards.playedBlackCards,
-        ...blackCards,
-    ];
-    setGame(game);
-    return blackCards;
 };
 
 export const shuffleCardsBackToDeck = (cards, deck) => {
     let newCards = [...deck];
+    let index = 0;
     for (const card in cards) {
-        newCards.splice(randomBetween(0, newCards.length), 0, card);
+        index = randomBetween(0, newCards.length);
+        console.log(index);
+        newCards.splice(index, 0, card);
     }
+    // console.log("New cards after shuffling:", newCards);
     return [...newCards];
 };
 

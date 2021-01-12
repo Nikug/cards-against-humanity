@@ -7,19 +7,21 @@ export const BlackCardPicker = (props) => {
     const [blackCards, setBlackCards] = useState(undefined);
 
     useEffect(() => {
-        if (blackCards === undefined && props.player.isCardCzar) {
+        console.log(`game id ${props.gameID}, player id ${props.player.id}, is card czar ${props.player.isCardCzar}`);
+        if (props.player.isCardCzar) {
+            console.log("called emit");
             socket.emit("draw_black_cards", {
                 gameID: props.gameID,
                 playerID: props.player.id,
             });
         }
-    }, [blackCards, props.gameID, props.player.id, props.player.isCardCzar]);
+    }, [props.gameID, props.player.id, props.player.isCardCzar]);
 
-    useEffect(() => {
-        socket.on("deal_black_cards", (data) => {
-            setBlackCards(data.blackCards);
-        });
-    }, []);
+    // useEffect(() => {
+    //     socket.on("deal_black_cards", (data) => {
+    //         setBlackCards(data.blackCards);
+    //     });
+    // }, []);
 
     const selectBlackCard = (cardID) => {
         socket.emit("select_black_card", {

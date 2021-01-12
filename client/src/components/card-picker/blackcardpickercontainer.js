@@ -8,32 +8,10 @@ import {
     emptyFn,
 } from "../../helpers/generalhelpers";
 
-export function BlackCardPickerContainer(props) {
-    const [blackCards, setBlackCards] = useState(undefined);
+export const BlackCardPickerContainer = (props) => {
     const [selectedCards, setSelectedCards] = useState([]);
     const [confirmedCards, setConfirmedCards] = useState([]);
-
-    const gameID = props?.game?.id;
-    const playerID = props?.player?.id;
-    const isCardCzar = props?.player?.isCardCzar;
-
-    useEffect(() => {
-        const { player, game } = props;
-        if (blackCards === undefined && game && player && player.isCardCzar) {
-            socket.emit("draw_black_cards", {
-                gameID: game.id,
-                playerID: props.player.id,
-            });
-        }
-    }, [props, blackCards, gameID, playerID, isCardCzar]);
-
-    useEffect(() => {
-        console.log("use effect");
-        socket.on("deal_black_cards", (data) => {
-            console.log("deal_black_cards", data);
-            setBlackCards(data.blackCards);
-        });
-    }, []);
+    const {blackCards} = props;
 
     const selectCard = (card) => {
         const game = props.game;

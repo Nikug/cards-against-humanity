@@ -20,6 +20,7 @@ export function Game(props) {
     const [game, setGame] = useState(undefined);
     const [player, setPlayer] = useState(undefined);
     const [progress, setProgress] = useState(0);
+    const [blackCards, setBlackCards] = useState([]);
 
     const getGameIdFromURL = () => {
         const url = window.location.pathname;
@@ -68,6 +69,10 @@ export function Game(props) {
 
         socket.on("update_game_options", (data) => {
             setGame((prevGame) => ({ ...prevGame, options: data.options }));
+        });
+
+        socket.on("deal_black_cards", (data) => {
+            setBlackCards(data.blackCards);
         });
     }, []);
 
@@ -165,9 +170,7 @@ export function Game(props) {
                 break;
             case GAME_STATES.PICKING_BLACK_CARD:
                 renderedContent = (
-                    <div>
-                        <BlackCardPickerContainer player={player} game={game} />
-                    </div>
+                    <BlackCardPickerContainer player={player} game={game} blackCards={blackCards} />
                 );
                 break;
             case GAME_STATES.PLAYING_WHITE_CARDS:

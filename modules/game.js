@@ -22,6 +22,7 @@ import {
     shuffleCards,
     dealStartingWhiteCards,
     dealWhiteCards,
+    dealBlackCards,
 } from "./card.js";
 
 let games = [];
@@ -188,7 +189,8 @@ export const startGame = (io, gameID, playerID) => {
     game.client.state = game.stateMachine.state;
 
     const playerCount = game.players.length;
-    game.players[randomBetween(0, playerCount - 1)].isCardCzar = true;
+    const cardCzarIndex = randomBetween(0, playerCount - 1);
+    game.players[cardCzarIndex].isCardCzar = true;
     game.players = setPlayersPlaying(game.players);
 
     game.cards.whiteCards = shuffleCards([...game.cards.whiteCards]);
@@ -199,7 +201,15 @@ export const startGame = (io, gameID, playerID) => {
         game,
         gameOptions.startingWhiteCardCount
     );
-    setGame(gameWithStartingHands);
+
+    console.log("Cardczar:", game.players[cardCzarIndex]);
+    const newGame = dealBlackCards(
+        io,
+        game.players[cardCzarIndex].socket,
+        gameWithStartingHands
+    );
+
+    setGame(newGame);
 
     updatePlayersIndividually(io, gameWithStartingHands);
 };
@@ -219,6 +229,9 @@ export const startNewRound = (io, gameID, playerID) => {
     );
     game.players = appointNextCardCzar(game, playerID);
 
-    setGame(game);
+    const cardCzar = game.players.find((player) => player.isCardCzar);
+    const newGame = dealBlackCards(io, cardCzar.socket, game);
+
+    setGame(newGame);
     updatePlayersIndividually(io, game);
 };
