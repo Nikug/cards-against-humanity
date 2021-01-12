@@ -56,6 +56,7 @@ export function textToSpeech(text) {
         msg.lang = "fi";
         msg.rate = 1;
         msg.text = text;
+        console.log("speak", msg);
         window.speechSynthesis.speak(msg);
     }
 }

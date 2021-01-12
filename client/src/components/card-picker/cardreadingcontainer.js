@@ -7,23 +7,27 @@ import {
     isNullOrUndefined,
     textToSpeech,
 } from "../../helpers/generalhelpers";
+import { Setting, CONTROL_TYPES } from "../settings/setting";
 
-export function CardReadingContainer(props) {
+export const CardReadingContainer = (props) => {
     const { game, player } = props;
-    const [whiteCards, setWhiteCards] = useState();
+    const [whiteCards, setWhiteCards] = useState([]);
     const [textToSpeechInUse, setTextToSpeechInUse] = useState(false);
     const blackCard = game.rounds[game.rounds.length - 1].blackCard;
-    let prevBlackCard = { text: null };
 
     useEffect(() => {
-        socket.on("show_white_card", (data) => {
+        const listener = (data) => {
+            console.log("show next card: ANSWER", { data });
             setWhiteCards(data);
 
-            // Without this check, textToSpeech is called with new whiteCards and with previous blackCard.
-            if (blackCard.text !== prevBlackCard.text && textToSpeechInUse) {
+            const blackCardToRead =
+                game.rounds[game.rounds.length - 1].blackCard;
+            console.log({ textToSpeechInUse, blackCardToRead });
+
+            if (textToSpeechInUse && !isNullOrUndefined(blackCardToRead)) {
                 const whiteCardsToRead = data;
                 const blankTexts = [];
-                const blackCardTexts = blackCard.text;
+                const blackCardTexts = blackCardToRead.text;
 
                 for (let i = 0, len = whiteCardsToRead.length; i < len; i++) {
                     const card = whiteCardsToRead[i];
@@ -38,10 +42,14 @@ export function CardReadingContainer(props) {
                 );
 
                 textToSpeech(fullText);
-                prevBlackCard = blackCard;
             }
-        });
-    }, []);
+        };
+        socket.on("show_white_card", listener);
+
+        return () => {
+            socket.off("show_white_card", listener);
+        };
+    }, [textToSpeechInUse]);
 
     function formatTextWithBlanks(text, blankTexts) {
         const splittedText = text.split("_");
@@ -67,7 +75,13 @@ export function CardReadingContainer(props) {
         return fullText;
     }
 
+    function toggleTextToSpeech() {
+        console.log("toggling", textToSpeechInUse, "to", !textToSpeechInUse);
+        setTextToSpeechInUse(!textToSpeechInUse);
+    }
+
     const showNextCard = () => {
+        console.log("show next card");
         socket.emit("show_next_white_card", {
             gameID: game.id,
             playerID: player.id,
@@ -79,13 +93,13 @@ export function CardReadingContainer(props) {
             <CardPicker
                 mainCard={blackCard}
                 selectableCards={[]}
-                selectedCards={isNullOrUndefined(whiteCards) ? [] : whiteCards}
+                selectedCards={whiteCards}
                 confirmedCards={[]}
                 selectCard={emptyFn}
                 confirmCards={showNextCard}
                 description={""}
                 customButtonTexts={
-                    isNullOrUndefined(whiteCards)
+                    whiteCards.length === 0
                         ? ["Aloita", "Ladataan..."]
                         : ["Seuraava", "Ladataan..."]
                 }
@@ -93,6 +107,20 @@ export function CardReadingContainer(props) {
                 noActionButton={player?.isCardCzar ? false : true}
                 topText={"Luetaan kortit:"}
             />
+            {player?.isCardCzar && (
+                <div className="cardreading-settings">
+                    <Setting
+                        text={"Lue kortit puolestani"}
+                        controlType={CONTROL_TYPES.toggle}
+                        onChangeCallback={() => toggleTextToSpeech()}
+                        currentValue={textToSpeechInUse}
+                        icon={{
+                            name: "record_voice_over",
+                            className: "md-36 icon-margin-right",
+                        }}
+                    />
+                </div>
+            )}
         </div>
     );
-}
+};
