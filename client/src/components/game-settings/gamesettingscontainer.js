@@ -257,24 +257,20 @@ export class GameSettingsContainer extends Component {
                                     isDisabled: isDisabled,
                                 }}
                             />
-                            {false && (
-                                <Setting
-                                    text={"Yleisöäänet käytössä"}
-                                    controlType={CONTROL_TYPES.toggle}
-                                    onChangeCallback={() =>
-                                        this.toggleValue("popularVote")
-                                    }
-                                    currentValue={
-                                        popularVote ? popularVote : false
-                                    }
-                                    isDisabled={isDisabled}
-                                    icon={{
-                                        name: "thumb_up",
-                                        className: iconClassnames,
-                                        isDisabled: isDisabled,
-                                    }}
-                                />
-                            )}
+                            <Setting
+                                text={"Yleisöäänet käytössä"}
+                                controlType={CONTROL_TYPES.toggle}
+                                onChangeCallback={() =>
+                                    this.toggleValue("popularVote")
+                                }
+                                currentValue={popularVote ? popularVote : false}
+                                isDisabled={isDisabled}
+                                icon={{
+                                    name: "thumb_up",
+                                    className: iconClassnames,
+                                    isDisabled: isDisabled,
+                                }}
+                            />
                             <Setting
                                 text={
                                     "Voittajasta tulee seuraava korttikuningas"

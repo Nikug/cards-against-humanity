@@ -49,7 +49,7 @@ export function RoundEndContainer(props) {
         whiteCardsToRender.push(newWhiteCard);
 
         console.log({ wonRound: whiteCardsByPlayer[i].wonRound });
-        if (true || whiteCardsByPlayer[i].wonRound) {
+        if (whiteCardsByPlayer[i].wonRound) {
             confirmedCards.push(newWhiteCard);
         }
     }

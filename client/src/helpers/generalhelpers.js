@@ -47,3 +47,15 @@ export function containsObjectWithMatchingFieldIndex(obj, list, fieldName) {
 
     return -1;
 }
+
+export function textToSpeech(text) {
+    console.log({ text });
+    if ("speechSynthesis" in window) {
+        const msg = new SpeechSynthesisUtterance();
+        msg.text = "";
+        msg.lang = "fi";
+        msg.rate = 1;
+        msg.text = text;
+        window.speechSynthesis.speak(msg);
+    }
+}
