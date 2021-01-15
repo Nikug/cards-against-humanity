@@ -1,6 +1,6 @@
 import { nanoid } from "nanoid";
 
-import { getGame, setGame } from "./game.js";
+import { findGameAndPlayerBySocketID, getGame, removeGame, returnToLobby, setGame, shouldGameBeDeleted, shouldReturnToLobby } from "./game.js";
 import { playerName } from "../consts/gameSettings.js";
 import { anonymizedGameClient } from "./card.js";
 
@@ -150,3 +150,32 @@ export const getActivePlayers = (players) => {
         ["active", "playing", "waiting"].includes(player.state)
     );
 };
+
+export const setPlayerDisconnected = (io, socketID) => {
+    const { game, player } = findGameAndPlayerBySocketID(socketID);
+    if(!player) return;
+
+    // If leaving player is host -> appoint new host
+    // If leaving player is cardCzar -> appoint new card czar
+
+    player.state = "disconnected"
+    game.players = game.players.map(gamePlayer => gamePlayer.id === player.id ? player : gamePlayer);
+    if(shouldGameBeDeleted(game)) {
+        removeGame(game.id);
+        return;
+    }
+    if(shouldReturnToLobby(game)) {
+        returnToLobby(io, game);
+        return;
+    }
+}
+
+export const resetPlayers = (players) => {
+    return players.map(player => ({
+        ...player,
+        score: 0,
+        isCardCzar: false,
+        popularVoteScore: 0,
+        whiteCards: []
+    }))
+}

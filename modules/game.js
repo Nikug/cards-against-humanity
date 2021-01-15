@@ -10,6 +10,7 @@ import {
     appointNextCardCzar,
     updatePlayersIndividually,
     getActivePlayers,
+    resetPlayers,
 } from "./player.js";
 import {
     validateHost,
@@ -31,6 +32,7 @@ export const createGame = () => {
     const gameURL = hri.hri.random();
     const newGame = createNewGame(gameURL);
     games = [...games, newGame];
+    console.log(`Games after creating ${newGame.id}:`, games);
     return newGame;
 };
 
@@ -44,6 +46,11 @@ export const setGame = (newGame) => {
         return game.id === newGame.id ? newGame : game;
     });
     return newGame;
+};
+
+export const removeGame = (gameID) => {
+    games = games.filter((game) => game.id !== gameID);
+    console.log(`Games after removal ${gameID}:`, games);
 };
 
 export const joinGame = (gameID, playerSocketID) => {
@@ -169,10 +176,18 @@ export const leaveFromGame = (io, gameID, playerID) => {
                 ? { ...player, state: "disconnected" }
                 : player;
         });
+
+        if (shouldGameBeDeleted(game)) {
+            removeGame(game.id);
+            return;
+        }
+        if (shouldReturnToLobby(game)) {
+            returnToLobby(io, game);
+            return;
+        }
+
         setGame(game);
         updatePlayersIndividually(io, game);
-        // TODO: see what actually happens when someone disconnects
-        // Maybe sending socket message throws error or something
     }
 };
 
@@ -188,9 +203,13 @@ export const startGame = (io, gameID, playerID) => {
     game.stateMachine.startGame();
     game.client.state = game.stateMachine.state;
 
-    const playerCount = game.players.length;
-    const cardCzarIndex = randomBetween(0, playerCount - 1);
-    game.players[cardCzarIndex].isCardCzar = true;
+    const activePlayers = getActivePlayers(game.players);
+    const cardCzarIndex = randomBetween(0, activePlayers.length - 1);
+    game.players = game.players.map((player) =>
+        player.id === activePlayers[cardCzarIndex].id
+            ? { ...player, isCardCzar: true }
+            : player
+    );
     game.players = setPlayersPlaying(game.players);
 
     game.cards.whiteCards = shuffleCards([...game.cards.whiteCards]);
@@ -204,7 +223,7 @@ export const startGame = (io, gameID, playerID) => {
 
     const newGame = dealBlackCards(
         io,
-        game.players[cardCzarIndex].socket,
+        activePlayers[cardCzarIndex].socket,
         gameWithStartingHands
     );
 
@@ -233,4 +252,84 @@ export const startNewRound = (io, gameID, playerID) => {
 
     setGame(newGame);
     updatePlayersIndividually(io, game);
+};
+
+export const findGameAndPlayerBySocketID = (socketID) => {
+    for (let i = 0, gameCount = games.length; i < gameCount; i++) {
+        for (
+            let j = 0, playerCount = games[i].players.length;
+            j < playerCount;
+            j++
+        ) {
+            if (games[i].players[j].socket === socketID) {
+                return {
+                    game: { ...games[i] },
+                    player: { ...games[i].players[j] },
+                };
+            }
+        }
+    }
+    return undefined;
+};
+
+export const shouldGameBeDeleted = (game) => {
+    if (game.stateMachine.state === "lobby") {
+        return game.players.every((player) =>
+            ["disconnected", "kicked"].includes(player.state)
+        );
+    } else {
+        return false;
+    }
+};
+
+export const shouldReturnToLobby = (game) => {
+    if (game.stateMachine.state !== "lobby") {
+        const activePlayers = getActivePlayers(game.players);
+        if (activePlayers.length <= 1) {
+            return true;
+        }
+        return game.players.every((player) =>
+            ["disconnected", "kicked", "pickingName", "spectating"].includes(
+                player.state
+            )
+        );
+    } else {
+        return false;
+    }
+};
+
+export const returnToLobby = (io, game) => {
+    game.stateMachine.returnToLobby();
+    game.client.state = game.stateMachine.state;
+
+    const initialGame = resetGame(game);
+    setGame(initialGame);
+
+    updatePlayersIndividually(io, initialGame);
+};
+
+export const resetGame = (game) => {
+    // Reset rounds
+    game.rounds = [];
+    game.currentRound = undefined;
+
+    // Reset playerStates, scores, cardczar status and player white cards
+    game.players = resetPlayers(game.players);
+
+    // Reset played cards back to deck
+    game.cards.whiteCards = [
+        ...game.cards.whiteCards,
+        ...game.cards.playedWhiteCards,
+    ];
+    game.cards.blackCards = [
+        ...game.cards.blackCards,
+        ...game.cards.playedBlackCards,
+    ];
+
+    // Reset game state if not in lobby
+    if (game.stateMachine.state !== "lobby") {
+        game.stateMachine.returnToLobby();
+    }
+
+    return game;
 };

@@ -17,7 +17,7 @@ import {
     setPlayersActive,
     setPlayersPlaying,
     getPlayerByWhiteCards,
-    updatePlayersIndividually
+    updatePlayersIndividually,
 } from "./player.js";
 import { gameOptions } from "../consts/gameSettings.js";
 import { randomBetween } from "./util.js";
@@ -127,7 +127,10 @@ export const selectBlackCard = (
 };
 
 export const dealBlackCards = (io, socketID, game) => {
-    const { blackCards, game: newGame } = drawBlackCards(game, gameOptions.blackCardsToChooseFrom);
+    const { blackCards, game: newGame } = drawBlackCards(
+        game,
+        gameOptions.blackCardsToChooseFrom
+    );
     io.to(socketID).emit("deal_black_cards", {
         blackCards: blackCards,
     });
@@ -135,25 +138,29 @@ export const dealBlackCards = (io, socketID, game) => {
 };
 
 export const dealStartingWhiteCards = (io, game, count) => {
-    const players = game.players
-        .map((player) => {
-            if(["active", "playing", "waiting"].includes(player.state)) {
-                player.whiteCards = drawWhiteCards(game, count);
-                io.to(player.socket).emit("update_player", {
-                    player: player,
-                });
-            }
-            return player;
-        });
+    const players = game.players.map((player) => {
+        if (["active", "playing", "waiting"].includes(player.state)) {
+            player.whiteCards = drawWhiteCards(game, count);
+            io.to(player.socket).emit("update_player", {
+                player: player,
+            });
+        }
+        return player;
+    });
     game.players = players;
     return game;
 };
 
 export const dealWhiteCards = (game, count) => {
-    const playerIDs = game.currentRound.whiteCardsByPlayer.map(player => player.playerID);
-    const updatedPlayers = game.players.map(player => {
-        if(playerIDs.includes(player.id)) {
-            player.whiteCards = [...player.whiteCards, ...drawWhiteCards(game, count)];
+    const playerIDs = game.currentRound.whiteCardsByPlayer.map(
+        (player) => player.playerID
+    );
+    const updatedPlayers = game.players.map((player) => {
+        if (playerIDs.includes(player.id)) {
+            player.whiteCards = [
+                ...player.whiteCards,
+                ...drawWhiteCards(game, count),
+            ];
         }
         return player;
     });
@@ -274,7 +281,7 @@ export const anonymizePlayedWhiteCards = (playedWhiteCards) => {
 };
 
 export const anonymizedGameClient = (game) => {
-    if (!game.client?.rounds) return { ...game.client };
+    if (!game.client?.rounds || !game.currentRound) return { ...game.client };
 
     const roundCount = game.client.rounds.length;
     const lastRound = {

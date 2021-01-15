@@ -5,7 +5,7 @@ import {
     startGame,
     startNewRound,
 } from "../modules/game.js";
-import { updatePlayerName } from "../modules/player.js";
+import { setPlayerDisconnected, updatePlayerName } from "../modules/player.js";
 import { addCardPack, removeCardPack } from "../modules/cardpack.js";
 import {
     dealBlackCards,
@@ -170,6 +170,7 @@ export const sockets = (io) => {
 
     io.on("disconnect", (socket) => {
         console.log(`Client left :( Socket ID: ${socket.id}`);
+        setPlayerDisconnected(io, socket.id);
     });
 };
 
