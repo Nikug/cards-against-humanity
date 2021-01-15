@@ -9,6 +9,7 @@ type Server2Client =
     | "error"                   // Send any error message to client
     | "show_white_card"         // Sends a white card to be shown
     | "update_game_and_players" // Updates game and players
+    | "upgraded_to_host"        // Receiver is now host
 
 type Client2Server =
     | "join_game"               // Player joins a game

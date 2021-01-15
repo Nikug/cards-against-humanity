@@ -11,7 +11,9 @@ export const createStateMachine = () => {
             { name: "endRound",                 from: "showingCards",       to: "roundEnd"          },
             { name: "startRound",               from: "roundEnd",           to: "pickingBlackCard"  },
             { name: "endGame",                  from: "roundEnd",           to: "gameOver"          },
+
             { name: "returnToLobby",            from: "*",                  to: "lobby"             },
+            { name: "skipRound",                from: "*",                  to: "pickingBlackCard"  }
         ],
     });
     return fsm;

@@ -1,6 +1,5 @@
 import {
     joinToGame,
-    leaveFromGame,
     updateGameOptions,
     startGame,
     startNewRound,
@@ -8,7 +7,6 @@ import {
 import { setPlayerDisconnected, updatePlayerName } from "../modules/player.js";
 import { addCardPack, removeCardPack } from "../modules/cardpack.js";
 import {
-    dealBlackCards,
     selectBlackCard,
     playWhiteCards,
     showWhiteCard,
@@ -34,8 +32,8 @@ export const sockets = (io) => {
                 sendError(socket, "Invalid data");
             } else {
                 console.log("Some dude just left");
+                setPlayerDisconnected(io, socket.id);
                 socket.disconnect(true);
-                leaveFromGame(io, data.gameID, data.playerID);
             }
         });
 

@@ -1,6 +1,16 @@
 import { nanoid } from "nanoid";
 
-import { findGameAndPlayerBySocketID, getGame, removeGame, returnToLobby, setGame, shouldGameBeDeleted, shouldReturnToLobby } from "./game.js";
+import {
+    findGameAndPlayerBySocketID,
+    getGame,
+    removeGame,
+    returnToLobby,
+    setGame,
+    shouldGameBeDeleted,
+    shouldReturnToLobby,
+    skipRound,
+    startNewRound,
+} from "./game.js";
 import { playerName } from "../consts/gameSettings.js";
 import { anonymizedGameClient } from "./card.js";
 
@@ -96,17 +106,26 @@ export const getPlayerByWhiteCards = (game, whiteCardIDs) => {
 };
 
 export const getNextCardCzar = (players, previousCardCzarID) => {
-    const activePlayers = players.filter((player) => player.state === "active");
-    const cardCzarIndex = activePlayers.findIndex(
+    const activePlayerIndexes = players
+        .map((player, index) =>
+            ["active", "playing", "waiting"].includes(player.state)
+                ? index
+                : undefined
+        )
+        .filter((index) => index !== undefined);
+
+    
+    const cardCzarIndex = players.findIndex(
         (player) => player.id === previousCardCzarID
     );
-    const playerCount = activePlayers.length;
+    
+    const nextCardCzars = activePlayerIndexes.filter(index => index > cardCzarIndex);
 
     // TODO: add support for the winner becoming next card czar
-    if (cardCzarIndex === playerCount - 1) {
-        return players[0].id;
+    if (nextCardCzars.length > 0) {
+        return players[nextCardCzars[0]].id;
     } else {
-        return players[cardCzarIndex + 1].id;
+        return players[activePlayerIndexes[0]].id;
     }
 };
 
@@ -153,29 +172,77 @@ export const getActivePlayers = (players) => {
 
 export const setPlayerDisconnected = (io, socketID) => {
     const { game, player } = findGameAndPlayerBySocketID(socketID);
-    if(!player) return;
+    if (!player) return;
 
-    // If leaving player is host -> appoint new host
-    // If leaving player is cardCzar -> appoint new card czar
-
-    player.state = "disconnected"
-    game.players = game.players.map(gamePlayer => gamePlayer.id === player.id ? player : gamePlayer);
-    if(shouldGameBeDeleted(game)) {
+    player.state = "disconnected";
+    game.players = game.players.map((gamePlayer) =>
+        gamePlayer.id === player.id ? player : gamePlayer
+    );
+    if (shouldGameBeDeleted(game)) {
         removeGame(game.id);
         return;
     }
-    if(shouldReturnToLobby(game)) {
+
+    if (player.isHost) {
+        game.players = handleHostLeaving(game, player);
+        if (!game.players) return;
+
+        const newHost = game.players.find((player) => player.isHost);
+        io.to(newHost.socket).emit("upgraded_to_host");
+    }
+
+    if (shouldReturnToLobby(game)) {
         returnToLobby(io, game);
         return;
     }
-}
+
+    if (player.isCardCzar) {
+        handleCardCzarLeaving(io, game, player);
+        return;
+    }
+
+    console.log("Nothing weird happened");
+
+    setGame(game);
+    updatePlayersIndividually(io, game);
+};
 
 export const resetPlayers = (players) => {
-    return players.map(player => ({
+    return players.map((player) => ({
         ...player,
         score: 0,
         isCardCzar: false,
         popularVoteScore: 0,
-        whiteCards: []
-    }))
-}
+        whiteCards: [],
+    }));
+};
+
+const handleCardCzarLeaving = (io, game, cardCzar) => {
+    game.players = appointNextCardCzar(game, cardCzar.id);
+    skipRound(
+        io,
+        game,
+        game.players.find((player) => player.isCardCzar)
+    );
+};
+
+const handleHostLeaving = (game, host) => {
+    const hostIndex = game.players.findIndex((player) => player.id === host.id);
+    game.players[hostIndex].isHost = false;
+
+    const activePlayers = getActivePlayers(game.players).filter(
+        (player) => player.id !== host.id
+    );
+    if (activePlayers.length > 0) {
+        game.players = game.players.map((player) =>
+            player.id === activePlayers[0].id
+                ? { ...player, isHost: true }
+                : player
+        );
+    } else {
+        console.log("Host left and no one to make new host, removing game...");
+        removeGame(game.id);
+        return undefined;
+    }
+    return [...game.players];
+};

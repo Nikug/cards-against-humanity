@@ -24,6 +24,7 @@ import {
     dealStartingWhiteCards,
     dealWhiteCards,
     dealBlackCards,
+    replenishWhiteCards,
 } from "./card.js";
 
 let games = [];
@@ -32,7 +33,7 @@ export const createGame = () => {
     const gameURL = hri.hri.random();
     const newGame = createNewGame(gameURL);
     games = [...games, newGame];
-    console.log(`Games after creating ${newGame.id}:`, games);
+    console.log(`Games after creating ${newGame.id}:`, games.map(game => game.id));
     return newGame;
 };
 
@@ -50,7 +51,7 @@ export const setGame = (newGame) => {
 
 export const removeGame = (gameID) => {
     games = games.filter((game) => game.id !== gameID);
-    console.log(`Games after removal ${gameID}:`, games);
+    console.log(`Games after removal ${gameID}:`, games.map(game => game.id));
 };
 
 export const joinGame = (gameID, playerSocketID) => {
@@ -168,29 +169,6 @@ export const updateGameOptions = (io, gameID, playerID, newOptions) => {
     });
 };
 
-export const leaveFromGame = (io, gameID, playerID) => {
-    const game = getGame(gameID);
-    if (!!game && !!playerID) {
-        game.players = game.players.map((player) => {
-            return player.id === playerID
-                ? { ...player, state: "disconnected" }
-                : player;
-        });
-
-        if (shouldGameBeDeleted(game)) {
-            removeGame(game.id);
-            return;
-        }
-        if (shouldReturnToLobby(game)) {
-            returnToLobby(io, game);
-            return;
-        }
-
-        setGame(game);
-        updatePlayersIndividually(io, game);
-    }
-};
-
 export const startGame = (io, gameID, playerID) => {
     const game = getGame(gameID);
     if (!game) return undefined;
@@ -251,7 +229,30 @@ export const startNewRound = (io, gameID, playerID) => {
     const newGame = dealBlackCards(io, cardCzar.socket, game);
 
     setGame(newGame);
-    updatePlayersIndividually(io, game);
+    updatePlayersIndividually(io, newGame);
+};
+
+export const skipRound = (io, game, newCardCzar) => {
+    if (game.stateMachine.state === "pickingBlackCard") {
+    } else if (game.stateMachine.state === "endRound") {
+    } else if (game.stateMachine.state === "playingWhiteCards") {
+        const playerCards = game.currentRound.whiteCardsByPlayer.map(
+            (player) => ({ id: player.playerID, whiteCards: player.whiteCards })
+        );
+        game.players = replenishWhiteCards(game, playerCards);
+    } else {
+        game.players = dealWhiteCards(
+            game,
+            game.currentRound.blackCard.whiteCardsToPlay
+        );
+    }
+
+    game.stateMachine.skipRound();
+    game.client.state = game.stateMachine.state;
+
+    const newGame = dealBlackCards(io, newCardCzar.socket, game);
+    setGame(newGame);
+    updatePlayersIndividually(io, newGame);
 };
 
 export const findGameAndPlayerBySocketID = (socketID) => {

@@ -167,6 +167,21 @@ export const dealWhiteCards = (game, count) => {
     return updatedPlayers;
 };
 
+export const replenishWhiteCards = (game, playersToUpdate) => {
+    const idsToUpdate = playersToUpdate.map(player => player.id);
+     const updatedPlayers = game.players.map(player => {
+         const index = idsToUpdate.indexOf(player.id);
+         if(index >= 0) {
+             player.whiteCards = [
+                 ...player.whiteCards,
+                 ...drawWhiteCards(game, playersToUpdate[index].whiteCards.length)
+             ]
+         }
+         return player;
+     });
+     return updatedPlayers;
+}
+
 export const drawWhiteCards = (game, count) => {
     if (game.cards.whiteCards.length < count) {
         let cards = [...game.cards.whiteCards];
