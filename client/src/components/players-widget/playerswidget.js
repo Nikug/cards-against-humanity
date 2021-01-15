@@ -21,6 +21,7 @@ export class PlayersWidget extends Component {
                 score,
                 popularVoteScore,
                 isCardCzar,
+                isHost,
             } = player;
 
             renderedPlayers.push(
@@ -34,6 +35,7 @@ export class PlayersWidget extends Component {
                         options?.popularVote ? popularVoteScore : undefined
                     }
                     isCardCzar={isCardCzar}
+                    isHost={isHost}
                 />
             );
         }

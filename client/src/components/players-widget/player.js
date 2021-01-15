@@ -21,25 +21,36 @@ interface Player {
 
 export class Player extends Component {
     render() {
-        const { name, state, score, isCardCzar, popularVoteScore } = this.props;
+        const {
+            name,
+            state,
+            score,
+            isCardCzar,
+            isHost,
+            popularVoteScore,
+        } = this.props;
         const noName = name === null || name === undefined;
 
         return (
             <div className="player">
-                <span className="player-name-and-status">
+                <span
+                    className={`player-name-and-status  ${
+                        isHost && false ? "host" : ""
+                    }`}
+                >
                     <Icon
-                        name={isCardCzar ? "star" : "radio_button_unchecked"}
-                        className={`player-status md-18 status-${state} ${
-                            isCardCzar ? "icon-with-border" : ""
+                        name={
+                            isCardCzar
+                                ? "radio_button_checked"
+                                : "radio_button_unchecked"
+                        }
+                        className={`player-status md-18 status-${state}
                         }`}
                     />
                     <span className={`player-name ${noName ? "no-name" : ""}`}>
-                        {noName
-                            ? "valitsee nimimerkkiä"
-                            : name.length > 35
-                            ? name.slice(0, 35)
-                            : name}
-                        &nbsp;&nbsp;&nbsp;
+                        {`${noName ? "valitsee nimimerkkiä" : name}${
+                            isHost ? " (isäntä)" : ""
+                        }`}
                         {noName && (
                             <i
                                 className="fa fa-spinner fa-spin"
