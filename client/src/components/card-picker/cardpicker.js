@@ -127,7 +127,16 @@ export function CardPicker(props) {
             for (let i = 0, len = selectedWhiteCards.length; i < len; i++) {
                 const card = selectedWhiteCards[i];
 
-                blankTexts.push(card.text.slice(0, card.text.length - 1)); // Cut the extra dot.
+                const lastChar = card.text.slice(
+                    card.text.length - 1,
+                    card.text.length
+                );
+
+                if (lastChar === ".") {
+                    blankTexts.push(card.text.slice(0, card.text.length - 1)); // Cut the extra dot.
+                } else {
+                    blankTexts.push(card.text);
+                }
             }
 
             content.push(
