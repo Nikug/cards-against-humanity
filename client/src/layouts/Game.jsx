@@ -18,8 +18,8 @@ import { RoundEndContainer } from "../components/card-picker/roundendcontainer";
 import { textToSpeech } from "../helpers/generalhelpers";
 
 export function Game(props) {
-    const [game, setGame] = useState(undefined);
-    const [player, setPlayer] = useState(undefined);
+    const [game, setGame] = useState(props.game);
+    const [player, setPlayer] = useState(props.player);
     const [progress, setProgress] = useState(0);
     const [blackCards, setBlackCards] = useState([]);
 
@@ -174,7 +174,11 @@ export function Game(props) {
                 break;
             case GAME_STATES.PICKING_BLACK_CARD:
                 renderedContent = (
-                    <BlackCardPickerContainer player={player} game={game} blackCards={blackCards} />
+                    <BlackCardPickerContainer
+                        player={player}
+                        game={game}
+                        blackCards={blackCards}
+                    />
                 );
                 break;
             case GAME_STATES.PLAYING_WHITE_CARDS:

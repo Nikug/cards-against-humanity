@@ -1,16 +1,50 @@
-export function setCookie(cookieText) {
-    document.cookie = cookieText;
+import { isNullOrUndefined } from "./generalhelpers";
+
+export function setCookie(cookie, expireTimeInHours = 1) {
+    Date.prototype.addHours = function (h) {
+        this.setTime(this.getTime() + h * 60 * 60 * 1000);
+        return this;
+    };
+
+    const expireDate = new Date().addHours(expireTimeInHours).toUTCString();
+    document.cookie = `${cookie.field}=${cookie.value}; expires=${expireDate}; path=/;`;
 }
 
 export function getAllCookies() {
-    return document.cookie;
+    const documentCookie = document.cookie;
+    const cookieFields = documentCookie.split(";");
+    let cookiesToReturn = {};
+
+    for (let i = 0, len = cookieFields.length; i < len; i++) {
+        const field = cookieFields[i];
+        const values = field.split("=");
+
+        if (values.length === 2) {
+            cookiesToReturn[values[0]] = values[1];
+        }
+    }
+
+    return cookiesToReturn;
 }
 
 export function getCookie(cookieName) {
-    return document.cookie;
+    const documentCookie = document.cookie;
+    const cookieFields = documentCookie.split(";");
+
+    for (let i = 0, len = cookieFields.length; i < len; i++) {
+        const field = cookieFields[i];
+        const values = field.split("=");
+
+        if (values.length === 2 && values[0] === cookieName) {
+            const cookieToReturn = {};
+
+            return (cookieToReturn[cookieName] = values[1]);
+        }
+    }
+
+    return null;
 }
 
-export function deleteCookie() {
-    document.cookie =
-        "username=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+export function deleteCookie(cookieName = "username") {
+    document.cookie = `${cookieName}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
 }

@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { socket } from "./components/sockets/socket";
 import {
     BrowserRouter as Router,
     Switch,
@@ -14,10 +15,14 @@ import Music from "./components/music";
 
 import "./styles/App.scss";
 import "./styles/footer.scss";
+import { deleteCookie, getCookie, setCookie } from "./helpers/cookies";
+import { isNullOrUndefined } from "./helpers/generalhelpers";
 
 export default function App(props) {
     const [isInHome, setIsInHome] = useState(true);
     const [url, setUrl] = useState("");
+    const [game, setGame] = useState(undefined);
+    const [player, setPlayer] = useState(undefined);
 
     const history = useHistory();
 
@@ -50,7 +55,25 @@ export default function App(props) {
                 window.location.pathname.length - 1
             )
         );
-    });
+
+        socket.on("initial_data", (data) => {
+            console.log("got initial data", data);
+            //setUrl(data.game.id);
+        });
+
+        const cookie = getCookie("playerID");
+
+        if (!isNullOrUndefined(cookie)) {
+            console.log("cookie is", cookie);
+            socket.emit("get_initial_data", {
+                playerID: cookie.playerID,
+            });
+            //deleteCookie("playerID");
+        } else {
+            //console.log("there was no cookie, lets set one");
+            //setCookie({ field: "playerID", value: "random-id-123" });
+        }
+    }, []);
 
     return (
         <div
@@ -91,6 +114,8 @@ export default function App(props) {
                                 <Game
                                     isInGame={!isInHome}
                                     resetUrl={resetUrl}
+                                    game={game}
+                                    player={player}
                                 />
                             )}
                         />
