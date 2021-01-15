@@ -58,7 +58,8 @@ export default function App(props) {
 
         socket.on("initial_data", (data) => {
             console.log("got initial data", data);
-            //setUrl(data.game.id);
+            setGame(data.game);
+            setPlayer(data.player);
         });
 
         const cookie = getCookie("playerID");
@@ -70,7 +71,7 @@ export default function App(props) {
             });
             //deleteCookie("playerID");
         } else {
-            //console.log("there was no cookie, lets set one");
+            console.log("there was no cookie");
             //setCookie({ field: "playerID", value: "random-id-123" });
         }
     }, []);
