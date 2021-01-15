@@ -8,13 +8,15 @@
     min-height: 10rem;
     text-align: left;
     border-radius: 6px;
-    padding: 0.25rem;
+    padding: 0.3rem;
     justify-content: center;
     align-content: center;
     display: flex;
     line-height: 1.6em;
+    box-sizing: border-box;
 
     .card {
+        box-sizing: border-box;
         width: 20rem;
         height: fit-content;
         min-height: 10rem;
@@ -43,6 +45,7 @@
 
         > .text {
             margin: auto 0;
+            overflow-wrap: break-word;
 
             .blank {
                 //text-decoration: underline;

@@ -4,6 +4,7 @@ $color-black: #000000;
 $color-white: #ffffff;
 $color-very-dark-grey: #111111;
 $color-dark-grey: #222222;
+$color-darkening-grey: #303030;
 $color-darkish-grey: #363636;
 $color-grey: #727272;
 $color-light-grey: #bdbdbd;
@@ -29,7 +30,7 @@ $header-button-hover: darken($color-blue, 15%);
 
 // App general
 
-$app-background: $color-dark-grey;
+$app-background: $color-darkening-grey;
 $app-text: $color-white;
 
 // Buttons
@@ -102,7 +103,7 @@ $icon-border: $color-white;
 
 // Timer
 
-$timer-background: $color-darkish-grey;
+$timer-background: lighten($color-darkish-grey, 10%);
 $timer-progress: $color-blue;
 
 // Settings

@@ -2,12 +2,15 @@
 
 .players-widget {
     font-size: 1.5rem;
+    /*
     background: linear-gradient(
             180deg,
             $players-background-shadow,
             $players-background
         )
         $players-background;
+    */
+    background-color: $players-background-shadow;
     border-radius: 2px 2px 0 0;
 
     cursor: default;
@@ -59,6 +62,16 @@
     &.no-name {
         font-style: italic;
         padding-right: 0.2rem;
+    }
+
+    i {
+        margin-left: 0.6rem;
+    }
+}
+
+.host {
+    .player-name {
+        text-decoration: underline;
     }
 }
 
