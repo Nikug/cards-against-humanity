@@ -25,6 +25,7 @@ import {
     dealWhiteCards,
     dealBlackCards,
     replenishWhiteCards,
+    anonymizedGameClient,
 } from "./card.js";
 
 let games = [];
@@ -33,7 +34,6 @@ export const createGame = () => {
     const gameURL = hri.hri.random();
     const newGame = createNewGame(gameURL);
     games = [...games, newGame];
-    console.log(`Games after creating ${newGame.id}:`, games.map(game => game.id));
     return newGame;
 };
 
@@ -51,7 +51,6 @@ export const setGame = (newGame) => {
 
 export const removeGame = (gameID) => {
     games = games.filter((game) => game.id !== gameID);
-    console.log(`Games after removal ${gameID}:`, games.map(game => game.id));
 };
 
 export const joinGame = (gameID, playerSocketID) => {
@@ -271,6 +270,34 @@ export const findGameAndPlayerBySocketID = (socketID) => {
         }
     }
     return undefined;
+};
+
+export const findGameByPlayerID = (playerID) => {
+    for (let i = 0, gameCount = games.length; i < gameCount; i++) {
+        for (
+            let j = 0, playerCount = games[i].players.length;
+            j < playerCount;
+            j++
+        ) {
+            if (games[i].players[j].id === playerID) {
+                return { ...games[i] };
+            }
+        }
+    }
+    return undefined;
+};
+
+export const sendGameInfo = (io, playerID, socketID) => {
+    const game = findGameByPlayerID(playerID);
+    if(!game) return;
+
+    const player = game.players.find((player) => player.id === playerID);
+
+    io.to(socketID).emit("initial_data", {
+        game: { ...anonymizedGameClient(game) },
+        players: publicPlayersObject(game.players),
+        player: player,
+    });
 };
 
 export const shouldGameBeDeleted = (game) => {

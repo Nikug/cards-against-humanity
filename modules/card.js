@@ -216,8 +216,6 @@ export const drawBlackCards = (game, count) => {
         ];
 
         game.cards.playedBlackCards = [...blackCards];
-        console.log("Mixed deck");
-        console.log("New deck:", game.cards.blackCards);
         setGame(game);
         return blackCards;
     } else {

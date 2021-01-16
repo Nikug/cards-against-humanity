@@ -44,7 +44,7 @@ export const createNewPlayer = (socketID, isHost) => {
 };
 
 export const publicPlayersObject = (players) => {
-    return players.map((player) => ({
+    return players?.map((player) => ({
         name: player.name,
         state: player.state,
         score: player.score,
@@ -171,7 +171,10 @@ export const getActivePlayers = (players) => {
 };
 
 export const setPlayerDisconnected = (io, socketID) => {
-    const { game, player } = findGameAndPlayerBySocketID(socketID);
+    const result = findGameAndPlayerBySocketID(socketID);
+    if(!result) return;
+
+    const { game, player } = result;
     if (!player) return;
 
     player.state = "disconnected";
@@ -200,8 +203,6 @@ export const setPlayerDisconnected = (io, socketID) => {
         handleCardCzarLeaving(io, game, player);
         return;
     }
-
-    console.log("Nothing weird happened");
 
     setGame(game);
     updatePlayersIndividually(io, game);

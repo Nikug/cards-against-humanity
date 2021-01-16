@@ -3,6 +3,7 @@ import {
     updateGameOptions,
     startGame,
     startNewRound,
+    sendGameInfo,
 } from "../modules/game.js";
 import { setPlayerDisconnected, updatePlayerName } from "../modules/player.js";
 import { addCardPack, removeCardPack } from "../modules/cardpack.js";
@@ -164,6 +165,16 @@ export const sockets = (io) => {
                 startNewRound(io, data.gameID, data.playerID);
             }
         });
+
+        socket.on("get_initial_data", (data) => {
+            const missingFields = validateFields(["playerID"], data);
+            if (missingFields.length > 0) {
+                sendError(socket, "Invalid data");
+            } else {
+                sendGameInfo(io, data.playerID, socket.id);
+            }
+        });
+
     });
 
     io.on("disconnect", (socket) => {
