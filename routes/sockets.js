@@ -4,6 +4,7 @@ import {
     startGame,
     startNewRound,
     sendGameInfo,
+    validateHostAndReturnToLobby,
 } from "../modules/game.js";
 import { setPlayerDisconnected, updatePlayerName } from "../modules/player.js";
 import { addCardPack, removeCardPack } from "../modules/cardpack.js";
@@ -174,6 +175,15 @@ export const sockets = (io) => {
                 sendGameInfo(io, data.playerID, socket.id);
             }
         });
+
+        socket.on("return_to_lobby", (data) => {
+            const missingFields = validateFields(["gameID", "playerID"], data);
+            if (missingFields.length > 0) {
+                sendError(socket, "Invalid data");
+            } else {
+                validateHostAndReturnToLobby(io, data.gameID, data.playerID);
+            }
+        })
 
     });
 

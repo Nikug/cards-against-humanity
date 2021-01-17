@@ -336,6 +336,15 @@ export const returnToLobby = (io, game) => {
     updatePlayersIndividually(io, initialGame);
 };
 
+export const validateHostAndReturnToLobby = (io, gameID, playerID) => {
+    const game = getGame(gameID);
+    if(!game) return;
+
+    if(!validateHost(playerID)) return;
+
+    returnToLobby(io, game);
+}
+
 export const resetGame = (game) => {
     // Reset rounds
     game.rounds = [];
