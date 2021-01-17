@@ -31,9 +31,10 @@ export const playWhiteCards = (io, socket, gameID, playerID, whiteCardIDs) => {
     const player = getPlayer(game, playerID);
     if (!player) return;
 
-    const whiteCards = player.whiteCards.filter((whiteCard) =>
-        whiteCardIDs.includes(whiteCard.id)
+    const whiteCards = whiteCardIDs.map((id) =>
+        player.whiteCards.find((whiteCard) => whiteCard.id === id)
     );
+
     player.whiteCards = player.whiteCards.filter(
         (whiteCard) => !whiteCardIDs.includes(whiteCard.id)
     );
@@ -168,19 +169,22 @@ export const dealWhiteCards = (game, count) => {
 };
 
 export const replenishWhiteCards = (game, playersToUpdate) => {
-    const idsToUpdate = playersToUpdate.map(player => player.id);
-     const updatedPlayers = game.players.map(player => {
-         const index = idsToUpdate.indexOf(player.id);
-         if(index >= 0) {
-             player.whiteCards = [
-                 ...player.whiteCards,
-                 ...drawWhiteCards(game, playersToUpdate[index].whiteCards.length)
-             ]
-         }
-         return player;
-     });
-     return updatedPlayers;
-}
+    const idsToUpdate = playersToUpdate.map((player) => player.id);
+    const updatedPlayers = game.players.map((player) => {
+        const index = idsToUpdate.indexOf(player.id);
+        if (index >= 0) {
+            player.whiteCards = [
+                ...player.whiteCards,
+                ...drawWhiteCards(
+                    game,
+                    playersToUpdate[index].whiteCards.length
+                ),
+            ];
+        }
+        return player;
+    });
+    return updatedPlayers;
+};
 
 export const drawWhiteCards = (game, count) => {
     if (game.cards.whiteCards.length < count) {
