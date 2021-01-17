@@ -28,6 +28,22 @@ export const updatePlayerName = (io, gameID, playerID, newName) => {
     });
 };
 
+export const changePlayerTextToSpeech = (io, gameID, playerID, useTTS) => {
+    const game = getGame(gameID);
+    if (!game) return;
+
+    const player = getPlayer(game, playerID);
+    if (!player) return;
+
+    player.useTextToSpeech = !!useTTS;
+    game.players = game.players.map((gamePlayer) =>
+        gamePlayer.id === player.id ? player : gamePlayer
+    );
+    setGame(game);
+
+    updatePlayersIndividually(io, game);
+};
+
 export const createNewPlayer = (socketID, isHost) => {
     const player = {
         id: nanoid(),
@@ -39,19 +55,16 @@ export const createNewPlayer = (socketID, isHost) => {
         isHost: isHost,
         popularVoteScore: 0,
         whiteCards: [],
+        useTextToSpeech: false,
     };
     return player;
 };
 
 export const publicPlayersObject = (players) => {
-    return players?.map((player) => ({
-        name: player.name,
-        state: player.state,
-        score: player.score,
-        isCardCzar: player.isCardCzar,
-        isHost: player.isHost,
-        popularVoteScore: player.popularVoteScore,
-    }));
+    return players?.map((player) => {
+        const { id, socket, whiteCards, ...rest } = player;
+        return rest;
+    });
 };
 
 export const setPlayersPlaying = (players) => {
@@ -114,12 +127,13 @@ export const getNextCardCzar = (players, previousCardCzarID) => {
         )
         .filter((index) => index !== undefined);
 
-    
     const cardCzarIndex = players.findIndex(
         (player) => player.id === previousCardCzarID
     );
-    
-    const nextCardCzars = activePlayerIndexes.filter(index => index > cardCzarIndex);
+
+    const nextCardCzars = activePlayerIndexes.filter(
+        (index) => index > cardCzarIndex
+    );
 
     // TODO: add support for the winner becoming next card czar
     if (nextCardCzars.length > 0) {
@@ -172,7 +186,7 @@ export const getActivePlayers = (players) => {
 
 export const setPlayerDisconnected = (io, socketID) => {
     const result = findGameAndPlayerBySocketID(socketID);
-    if(!result) return;
+    if (!result) return;
 
     const { game, player } = result;
     if (!player) return;

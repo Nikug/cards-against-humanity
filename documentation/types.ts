@@ -28,9 +28,11 @@ interface Player {
     isHost: boolean;
     popularVoteScore: number;
     whiteCards: WhiteCard[];
+    useTextToSpeech: boolean;
 }
 
 // This information about a player is shown to other players
+// It is a subset of the playerObject
 interface PlayerPublic {
     name: string;
     state: PlayerState;
@@ -38,6 +40,7 @@ interface PlayerPublic {
     isCardCzar: boolean;
     isHost: boolean;
     popularVoteScore: number;
+    useTextToSpeech: boolean;
 }
 
 interface Cards {

@@ -289,7 +289,7 @@ export const findGameByPlayerID = (playerID) => {
 
 export const sendGameInfo = (io, playerID, socketID) => {
     const game = findGameByPlayerID(playerID);
-    if(!game) return;
+    if (!game) return;
 
     const player = game.players.find((player) => player.id === playerID);
 
@@ -338,12 +338,12 @@ export const returnToLobby = (io, game) => {
 
 export const validateHostAndReturnToLobby = (io, gameID, playerID) => {
     const game = getGame(gameID);
-    if(!game) return;
+    if (!game) return;
 
-    if(!validateHost(playerID)) return;
+    if (!validateHost(playerID)) return;
 
     returnToLobby(io, game);
-}
+};
 
 export const resetGame = (game) => {
     // Reset rounds

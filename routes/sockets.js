@@ -68,6 +68,23 @@ export const sockets = (io) => {
             }
         });
 
+        socket.on("change_text_to_speech", (data) => {
+            const missingFields = validateFields(
+                ["gameID", "playerID", "useTextToSpeech"],
+                data
+            );
+            if (missingFields.length > 0) {
+                sendError(socket, "Invalid data");
+            } else {
+                updatePlayerName(
+                    io,
+                    data.gameID,
+                    data.playerID,
+                    data.playerName
+                );
+            }
+        });
+
         socket.on("add_card_pack", (data) => {
             const missingFields = validateFields(
                 ["gameID", "cardPackID", "playerID"],
@@ -183,8 +200,7 @@ export const sockets = (io) => {
             } else {
                 validateHostAndReturnToLobby(io, data.gameID, data.playerID);
             }
-        })
-
+        });
     });
 
     io.on("disconnect", (socket) => {
@@ -203,7 +219,7 @@ const sendError = (socket, id, message) => {
 const validateFields = (fields, data) => {
     return fields
         .map((field) => {
-            return !data[field] ? field : null;
+            return data[field] != null ? field : null;
         })
         .filter((error) => error !== null);
 };
