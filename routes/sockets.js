@@ -22,7 +22,7 @@ export const sockets = (io) => {
         socket.on("join_game", (data) => {
             const missingFields = validateFields(["gameID"], data);
             if (missingFields.length > 0) {
-                sendError(socket, "Invalid data");
+                sendError(socket, "Invalid data", missingFields);
             } else {
                 joinToGame(socket, io, data.gameID);
             }
@@ -31,7 +31,7 @@ export const sockets = (io) => {
         socket.on("leave_game", (data) => {
             const missingFields = validateFields(["gameID", "playerID"], data);
             if (missingFields.length > 0) {
-                sendError(socket, "Invalid data");
+                sendError(socket, "Invalid data", missingFields);
             } else {
                 console.log("Some dude just left");
                 setPlayerDisconnected(io, socket.id);
@@ -45,7 +45,7 @@ export const sockets = (io) => {
                 data
             );
             if (missingFields.length > 0) {
-                sendError(socket, "Invalid data");
+                sendError(socket, "Invalid data", missingFields);
             } else {
                 updateGameOptions(io, data.gameID, data.playerID, data.options);
             }
@@ -57,7 +57,7 @@ export const sockets = (io) => {
                 data
             );
             if (missingFields.length > 0) {
-                sendError(socket, "Invalid data");
+                sendError(socket, "Invalid data", missingFields);
             } else {
                 updatePlayerName(
                     io,
@@ -74,7 +74,7 @@ export const sockets = (io) => {
                 data
             );
             if (missingFields.length > 0) {
-                sendError(socket, "Invalid data");
+                sendError(socket, "Invalid data", missingFields);
             } else {
                 updatePlayerName(
                     io,
@@ -91,7 +91,7 @@ export const sockets = (io) => {
                 data
             );
             if (missingFields.length > 0) {
-                sendError(socket, "Invalid data");
+                sendError(socket, "Invalid data", missingFields);
             } else {
                 addCardPack(io, data.gameID, data.cardPackID, data.playerID);
             }
@@ -103,7 +103,7 @@ export const sockets = (io) => {
                 data
             );
             if (missingFields.length > 0) {
-                sendError(socket, "Invalid data");
+                sendError(socket, "Invalid data", missingFields);
             } else {
                 removeCardPack(io, data.gameID, data.cardPackID, data.playerID);
             }
@@ -112,7 +112,7 @@ export const sockets = (io) => {
         socket.on("start_game", (data) => {
             const missingFields = validateFields(["gameID", "playerID"], data);
             if (missingFields.length > 0) {
-                sendError(socket, "Invalid data");
+                sendError(socket, "Invalid data", missingFields);
             } else {
                 startGame(io, data.gameID, data.playerID);
             }
@@ -124,7 +124,7 @@ export const sockets = (io) => {
                 data
             );
             if (missingFields.length > 0) {
-                sendError(socket, "Invalid data");
+                sendError(socket, "Invalid data", missingFields);
             } else {
                 selectBlackCard(
                     io,
@@ -142,7 +142,7 @@ export const sockets = (io) => {
                 data
             );
             if (missingFields.length > 0) {
-                sendError(socket, "Invalid data");
+                sendError(socket, "Invalid data", missingFields);
             } else {
                 playWhiteCards(
                     io,
@@ -157,7 +157,7 @@ export const sockets = (io) => {
         socket.on("show_next_white_card", (data) => {
             const missingFields = validateFields(["gameID", "playerID"], data);
             if (missingFields.length > 0) {
-                sendError(socket, "Invalid data");
+                sendError(socket, "Invalid data", missingFields);
             } else {
                 showWhiteCard(io, data.gameID, data.playerID);
             }
@@ -169,7 +169,7 @@ export const sockets = (io) => {
                 data
             );
             if (missingFields.length > 0) {
-                sendError(socket, "Invalid data");
+                sendError(socket, "Invalid data", missingFields);
             } else {
                 selectWinner(io, data.gameID, data.playerID, data.whiteCardIDs);
             }
@@ -178,7 +178,7 @@ export const sockets = (io) => {
         socket.on("start_round", (data) => {
             const missingFields = validateFields(["gameID", "playerID"], data);
             if (missingFields.length > 0) {
-                sendError(socket, "Invalid data");
+                sendError(socket, "Invalid data", missingFields);
             } else {
                 startNewRound(io, data.gameID, data.playerID);
             }
@@ -187,7 +187,7 @@ export const sockets = (io) => {
         socket.on("get_initial_data", (data) => {
             const missingFields = validateFields(["playerID"], data);
             if (missingFields.length > 0) {
-                sendError(socket, "Invalid data");
+                sendError(socket, "Invalid data", missingFields);
             } else {
                 sendGameInfo(io, data.playerID, socket.id);
             }
@@ -196,7 +196,7 @@ export const sockets = (io) => {
         socket.on("return_to_lobby", (data) => {
             const missingFields = validateFields(["gameID", "playerID"], data);
             if (missingFields.length > 0) {
-                sendError(socket, "Invalid data");
+                sendError(socket, "Invalid data", missingFields);
             } else {
                 validateHostAndReturnToLobby(io, data.gameID, data.playerID);
             }
@@ -219,7 +219,7 @@ const sendError = (socket, id, message) => {
 const validateFields = (fields, data) => {
     return fields
         .map((field) => {
-            return data[field] != null ? field : null;
+            return data[field] == null ? field : null;
         })
         .filter((error) => error !== null);
 };
