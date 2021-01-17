@@ -29,9 +29,6 @@ export function containsObjectWithMatchingFieldIndex(obj, list, fieldName) {
         list,
         fieldName,
     });
-    if (list.length > 0) {
-        console.log({ objID: obj.id, listID: list[0].id });
-    }
     for (let i = 0, len = list.length; i < len; i++) {
         const listField = list[i][fieldName];
         const objField = obj[fieldName];

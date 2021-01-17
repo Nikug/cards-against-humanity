@@ -1,5 +1,5 @@
 import React from "react";
-import { isNullOrUndefined } from "../helpers/generalhelpers";
+import { emptyFn, isNullOrUndefined } from "../helpers/generalhelpers";
 import "./../styles/icons.scss";
 
 export default function Icon(props) {
@@ -12,7 +12,10 @@ export default function Icon(props) {
             : "" + (isNullOrUndefined(onClick) ? "" : "clickable"));
 
     return (
-        <span className={classNames} onClick={onClick}>
+        <span
+            className={classNames}
+            onClick={isNullOrUndefined(onClick) ? emptyFn : onClick}
+        >
             {name}
         </span>
     );

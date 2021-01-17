@@ -6,6 +6,7 @@ import { GameSettingsContainer } from "../components/game-settings/gamesettingsc
 import { Timer } from "../components/timer";
 import Button, { BUTTON_TYPES } from "../components/button";
 import { Setting, CONTROL_TYPES } from "./../components/settings/setting";
+import { setCookie } from "./../helpers/cookies";
 
 import "./../styles/game.scss";
 import { GAME_STATES } from "../consts/gamestates";
@@ -16,12 +17,15 @@ import { WaitingCardPickerContainer } from "../components/card-picker/waitincard
 import { CardReadingContainer } from "../components/card-picker/cardreadingcontainer";
 import { RoundEndContainer } from "../components/card-picker/roundendcontainer";
 import { textToSpeech } from "../helpers/generalhelpers";
+import { NOTIFICATION_TYPES } from "../components/notification/notification";
 
 export function Game(props) {
     const [game, setGame] = useState(props.game);
     const [player, setPlayer] = useState(props.player);
     const [progress, setProgress] = useState(0);
     const [blackCards, setBlackCards] = useState([]);
+
+    const { fireNotification } = props;
 
     const getGameIdFromURL = () => {
         const url = window.location.pathname;
@@ -47,6 +51,8 @@ export function Game(props) {
         socket.on("update_player", (data) => {
             console.log("socket update_player");
             setPlayer(data.player);
+
+            setCookie({ field: "playerID", value: data.player.id });
         });
 
         socket.on("update_game", (data) => {
@@ -68,6 +74,8 @@ export function Game(props) {
                 players: data.players,
             }));
             setPlayer(data.player);
+
+            setCookie({ field: "playerID", value: data.player.id });
         });
 
         socket.on("update_game_options", (data) => {
@@ -77,6 +85,21 @@ export function Game(props) {
 
         socket.on("deal_black_cards", (data) => {
             setBlackCards(data.blackCards);
+        });
+
+        socket.on("upgrade_to_host", (data) => {
+            const notification = {
+                text:
+                    "Pelin edellinen isäntä lähti, joten sinä olet nyt uusi isäntä!",
+                type: NOTIFICATION_TYPES.DEFAULT,
+                icon: {
+                    name: "info",
+                    color: "blue",
+                    className: "type-icon",
+                },
+            };
+
+            fireNotification(notification, 5);
         });
     }, []);
 

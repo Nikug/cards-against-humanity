@@ -15,14 +15,20 @@ import Music from "./components/music";
 
 import "./styles/App.scss";
 import "./styles/footer.scss";
+import "./styles/notification.scss";
 import { deleteCookie, getCookie, setCookie } from "./helpers/cookies";
-import { isNullOrUndefined } from "./helpers/generalhelpers";
+import {
+    isNullOrUndefined,
+    containsObjectWithMatchingFieldIndex,
+} from "./helpers/generalhelpers";
+import { Notification } from "./components/notification/notification";
 
 export default function App(props) {
     const [isInHome, setIsInHome] = useState(true);
     const [url, setUrl] = useState("");
     const [game, setGame] = useState(undefined);
     const [player, setPlayer] = useState(undefined);
+    const [notification, setNotification] = useState([]);
 
     const history = useHistory();
 
@@ -47,6 +53,22 @@ export default function App(props) {
     function joinExistingGame(gameUrl) {
         setUrl(gameUrl);
     }
+
+    const fireNotification = (newNotification, timeInSeconds = 3) => {
+        console.log("fire notification", newNotification);
+        const newList = notification.slice();
+        newList.push(newNotification);
+        setNotification(newList);
+
+        setTimeout(() => {
+            hideNotification();
+        }, timeInSeconds * 1000);
+    };
+
+    // TODO: Deal with deleting the correct notification, not all.
+    const hideNotification = () => {
+        setNotification([]);
+    };
 
     useEffect(() => {
         setUrl(
@@ -76,61 +98,84 @@ export default function App(props) {
         }
     }, []);
 
+    const notificationsToRender = [];
+
+    for (let i = 0, len = notification.length; i < len; i++) {
+        const singleNotification = notification[i];
+
+        notificationsToRender.push(
+            <Notification
+                key={i}
+                text={singleNotification.text}
+                type={singleNotification.type}
+                icon={singleNotification.icon}
+            />
+        );
+    }
+
     return (
-        <div
-            className={`App ${
-                url === "" ? "background-img" : "mono-background"
-            }`}
-        >
-            <Router>
-                <div className="basic-grid">
-                    <Header
-                        isInGame={!isInHome}
-                        toggleIsInGame={toggleIsInHome}
-                    />
-                    <Switch>
-                        <Route
-                            exact
-                            path="/"
-                            render={(props) => (
-                                <Home
-                                    isInGame={!isInHome}
-                                    url={url}
-                                    startNewGame={startNewGame}
-                                    joinExistingGame={joinExistingGame}
-                                />
-                            )}
-                        />
-                        <Route
-                            exact
-                            path="/instructions"
-                            render={(props) => (
-                                <div>Instructions under construction!</div>
-                            )}
-                        />
-                        <Route
-                            exact
-                            path="/g/:id"
-                            render={(props) => (
-                                <Game
-                                    isInGame={!isInHome}
-                                    resetUrl={resetUrl}
-                                    game={game}
-                                    player={player}
-                                />
-                            )}
-                        />
-                    </Switch>
+        <>
+            {!isNullOrUndefined(notification) && notification.length > 0 && (
+                <div className="notification-wrapper">
+                    {notificationsToRender}
                 </div>
-                <div className="footer">
-                    <span className="music-player">
-                        <Music />
-                    </span>
-                    <span className="copyrights">
-                        &copy; {new Date().getFullYear()}
-                    </span>
-                </div>
-            </Router>
-        </div>
+            )}
+            <div
+                className={`App ${
+                    url === "" ? "background-img" : "mono-background"
+                }`}
+            >
+                <Router>
+                    <div className="basic-grid">
+                        <Header
+                            isInGame={!isInHome}
+                            toggleIsInGame={toggleIsInHome}
+                        />
+                        <Switch>
+                            <Route
+                                exact
+                                path="/"
+                                render={(props) => (
+                                    <Home
+                                        isInGame={!isInHome}
+                                        url={url}
+                                        startNewGame={startNewGame}
+                                        joinExistingGame={joinExistingGame}
+                                    />
+                                )}
+                            />
+                            <Route
+                                exact
+                                path="/instructions"
+                                render={(props) => (
+                                    <div>Instructions under construction!</div>
+                                )}
+                            />
+                            <Route
+                                exact
+                                path="/g/:id"
+                                render={(props) => (
+                                    <Game
+                                        isInGame={!isInHome}
+                                        resetUrl={resetUrl}
+                                        game={game}
+                                        player={player}
+                                        fireNotification={fireNotification}
+                                    />
+                                )}
+                            />
+                        </Switch>
+                    </div>
+                    <div className="footer">
+                        <span className="music-player">
+                            <Music />
+                        </span>
+                        <span className="copyrights">
+                            &copy; {new Date().getFullYear()}
+                        </span>
+                    </div>
+                </Router>
+            </div>
+        </>
     );
 }
