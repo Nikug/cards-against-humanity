@@ -1,6 +1,16 @@
 import { nanoid } from "nanoid";
 
-import { getGame, setGame } from "./game.js";
+import {
+    findGameAndPlayerBySocketID,
+    getGame,
+    removeGame,
+    returnToLobby,
+    setGame,
+    shouldGameBeDeleted,
+    shouldReturnToLobby,
+    skipRound,
+    startNewRound,
+} from "./game.js";
 import { playerName } from "../consts/gameSettings.js";
 import { anonymizedGameClient } from "./card.js";
 
@@ -18,6 +28,22 @@ export const updatePlayerName = (io, gameID, playerID, newName) => {
     });
 };
 
+export const changePlayerTextToSpeech = (io, gameID, playerID, useTTS) => {
+    const game = getGame(gameID);
+    if (!game) return;
+
+    const player = getPlayer(game, playerID);
+    if (!player) return;
+
+    player.useTextToSpeech = !!useTTS;
+    game.players = game.players.map((gamePlayer) =>
+        gamePlayer.id === player.id ? player : gamePlayer
+    );
+    setGame(game);
+
+    updatePlayersIndividually(io, game);
+};
+
 export const createNewPlayer = (socketID, isHost) => {
     const player = {
         id: nanoid(),
@@ -29,19 +55,16 @@ export const createNewPlayer = (socketID, isHost) => {
         isHost: isHost,
         popularVoteScore: 0,
         whiteCards: [],
+        useTextToSpeech: false,
     };
     return player;
 };
 
 export const publicPlayersObject = (players) => {
-    return players.map((player) => ({
-        name: player.name,
-        state: player.state,
-        score: player.score,
-        isCardCzar: player.isCardCzar,
-        isHost: player.isHost,
-        popularVoteScore: player.popularVoteScore,
-    }));
+    return players?.map((player) => {
+        const { id, socket, whiteCards, ...rest } = player;
+        return rest;
+    });
 };
 
 export const setPlayersPlaying = (players) => {
@@ -96,17 +119,27 @@ export const getPlayerByWhiteCards = (game, whiteCardIDs) => {
 };
 
 export const getNextCardCzar = (players, previousCardCzarID) => {
-    const activePlayers = players.filter((player) => player.state === "active");
-    const cardCzarIndex = activePlayers.findIndex(
+    const activePlayerIndexes = players
+        .map((player, index) =>
+            ["active", "playing", "waiting"].includes(player.state)
+                ? index
+                : undefined
+        )
+        .filter((index) => index !== undefined);
+
+    const cardCzarIndex = players.findIndex(
         (player) => player.id === previousCardCzarID
     );
-    const playerCount = activePlayers.length;
+
+    const nextCardCzars = activePlayerIndexes.filter(
+        (index) => index > cardCzarIndex
+    );
 
     // TODO: add support for the winner becoming next card czar
-    if (cardCzarIndex === playerCount - 1) {
-        return players[0].id;
+    if (nextCardCzars.length > 0) {
+        return players[nextCardCzars[0]].id;
     } else {
-        return players[cardCzarIndex + 1].id;
+        return players[activePlayerIndexes[0]].id;
     }
 };
 
@@ -149,4 +182,82 @@ export const getActivePlayers = (players) => {
     return players.filter((player) =>
         ["active", "playing", "waiting"].includes(player.state)
     );
+};
+
+export const setPlayerDisconnected = (io, socketID) => {
+    const result = findGameAndPlayerBySocketID(socketID);
+    if (!result) return;
+
+    const { game, player } = result;
+    if (!player) return;
+
+    player.state = "disconnected";
+    game.players = game.players.map((gamePlayer) =>
+        gamePlayer.id === player.id ? player : gamePlayer
+    );
+    if (shouldGameBeDeleted(game)) {
+        removeGame(game.id);
+        return;
+    }
+
+    if (player.isHost) {
+        game.players = handleHostLeaving(game, player);
+        if (!game.players) return;
+
+        const newHost = game.players.find((player) => player.isHost);
+        io.to(newHost.socket).emit("upgraded_to_host");
+    }
+
+    if (shouldReturnToLobby(game)) {
+        returnToLobby(io, game);
+        return;
+    }
+
+    if (player.isCardCzar) {
+        handleCardCzarLeaving(io, game, player);
+        return;
+    }
+
+    setGame(game);
+    updatePlayersIndividually(io, game);
+};
+
+export const resetPlayers = (players) => {
+    return players.map((player) => ({
+        ...player,
+        score: 0,
+        isCardCzar: false,
+        popularVoteScore: 0,
+        whiteCards: [],
+    }));
+};
+
+const handleCardCzarLeaving = (io, game, cardCzar) => {
+    game.players = appointNextCardCzar(game, cardCzar.id);
+    skipRound(
+        io,
+        game,
+        game.players.find((player) => player.isCardCzar)
+    );
+};
+
+const handleHostLeaving = (game, host) => {
+    const hostIndex = game.players.findIndex((player) => player.id === host.id);
+    game.players[hostIndex].isHost = false;
+
+    const activePlayers = getActivePlayers(game.players).filter(
+        (player) => player.id !== host.id
+    );
+    if (activePlayers.length > 0) {
+        game.players = game.players.map((player) =>
+            player.id === activePlayers[0].id
+                ? { ...player, isHost: true }
+                : player
+        );
+    } else {
+        console.log("Host left and no one to make new host, removing game...");
+        removeGame(game.id);
+        return undefined;
+    }
+    return [...game.players];
 };

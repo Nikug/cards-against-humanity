@@ -17,7 +17,7 @@ import {
     setPlayersActive,
     setPlayersPlaying,
     getPlayerByWhiteCards,
-    updatePlayersIndividually
+    updatePlayersIndividually,
 } from "./player.js";
 import { gameOptions } from "../consts/gameSettings.js";
 import { randomBetween } from "./util.js";
@@ -31,9 +31,10 @@ export const playWhiteCards = (io, socket, gameID, playerID, whiteCardIDs) => {
     const player = getPlayer(game, playerID);
     if (!player) return;
 
-    const whiteCards = player.whiteCards.filter((whiteCard) =>
-        whiteCardIDs.includes(whiteCard.id)
+    const whiteCards = whiteCardIDs.map((id) =>
+        player.whiteCards.find((whiteCard) => whiteCard.id === id)
     );
+
     player.whiteCards = player.whiteCards.filter(
         (whiteCard) => !whiteCardIDs.includes(whiteCard.id)
     );
@@ -127,7 +128,10 @@ export const selectBlackCard = (
 };
 
 export const dealBlackCards = (io, socketID, game) => {
-    const { blackCards, game: newGame } = drawBlackCards(game, gameOptions.blackCardsToChooseFrom);
+    const { blackCards, game: newGame } = drawBlackCards(
+        game,
+        gameOptions.blackCardsToChooseFrom
+    );
     io.to(socketID).emit("deal_black_cards", {
         blackCards: blackCards,
     });
@@ -135,25 +139,47 @@ export const dealBlackCards = (io, socketID, game) => {
 };
 
 export const dealStartingWhiteCards = (io, game, count) => {
-    const players = game.players
-        .map((player) => {
-            if(["active", "playing", "waiting"].includes(player.state)) {
-                player.whiteCards = drawWhiteCards(game, count);
-                io.to(player.socket).emit("update_player", {
-                    player: player,
-                });
-            }
-            return player;
-        });
+    const players = game.players.map((player) => {
+        if (["active", "playing", "waiting"].includes(player.state)) {
+            player.whiteCards = drawWhiteCards(game, count);
+            io.to(player.socket).emit("update_player", {
+                player: player,
+            });
+        }
+        return player;
+    });
     game.players = players;
     return game;
 };
 
 export const dealWhiteCards = (game, count) => {
-    const playerIDs = game.currentRound.whiteCardsByPlayer.map(player => player.playerID);
-    const updatedPlayers = game.players.map(player => {
-        if(playerIDs.includes(player.id)) {
-            player.whiteCards = [...player.whiteCards, ...drawWhiteCards(game, count)];
+    const playerIDs = game.currentRound.whiteCardsByPlayer.map(
+        (player) => player.playerID
+    );
+    const updatedPlayers = game.players.map((player) => {
+        if (playerIDs.includes(player.id)) {
+            player.whiteCards = [
+                ...player.whiteCards,
+                ...drawWhiteCards(game, count),
+            ];
+        }
+        return player;
+    });
+    return updatedPlayers;
+};
+
+export const replenishWhiteCards = (game, playersToUpdate) => {
+    const idsToUpdate = playersToUpdate.map((player) => player.id);
+    const updatedPlayers = game.players.map((player) => {
+        const index = idsToUpdate.indexOf(player.id);
+        if (index >= 0) {
+            player.whiteCards = [
+                ...player.whiteCards,
+                ...drawWhiteCards(
+                    game,
+                    playersToUpdate[index].whiteCards.length
+                ),
+            ];
         }
         return player;
     });
@@ -194,8 +220,6 @@ export const drawBlackCards = (game, count) => {
         ];
 
         game.cards.playedBlackCards = [...blackCards];
-        console.log("Mixed deck");
-        console.log("New deck:", game.cards.blackCards);
         setGame(game);
         return blackCards;
     } else {
@@ -274,7 +298,7 @@ export const anonymizePlayedWhiteCards = (playedWhiteCards) => {
 };
 
 export const anonymizedGameClient = (game) => {
-    if (!game.client?.rounds) return { ...game.client };
+    if (!game.client?.rounds || !game.currentRound) return { ...game.client };
 
     const roundCount = game.client.rounds.length;
     const lastRound = {

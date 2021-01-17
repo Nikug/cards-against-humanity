@@ -9,6 +9,7 @@ type Server2Client =
     | "error"                   // Send any error message to client
     | "show_white_card"         // Sends a white card to be shown
     | "update_game_and_players" // Updates game and players
+    | "upgraded_to_host"        // Receiver is now host
 
 type Client2Server =
     | "join_game"               // Player joins a game
@@ -22,4 +23,5 @@ type Client2Server =
     | "show_next_white_card"    // In the reading phase returns the cards played by one player
     | "pick_winning_card"       // Card Czar picks the winner and sends the winning card IDs back
     | "start_round"             // Start new round after earlier round has ended
+    | "return_to_lobby"         // Returns back to lobby and resets game
     
