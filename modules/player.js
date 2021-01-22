@@ -62,7 +62,7 @@ export const createNewPlayer = (socketID, isHost) => {
 
 export const publicPlayersObject = (players) => {
     return players?.map((player) => {
-        const { id, socket, whiteCards, ...rest } = player;
+        const { id, socket, whiteCards, popularVoteScore, ...rest } = player;
         return rest;
     });
 };

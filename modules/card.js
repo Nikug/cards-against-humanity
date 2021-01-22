@@ -291,10 +291,12 @@ export const showWhiteCard = (io, gameID, playerID) => {
 };
 
 export const anonymizePlayedWhiteCards = (playedWhiteCards) => {
-    return playedWhiteCards.map((card) => ({
-        ...card,
+    return playedWhiteCards.map((card) => {
+        const { popularVotes, ...rest } = card;
+        return {
+        ...rest,
         playerID: card.wonRound ? card.playerID : null,
-    }));
+    }});
 };
 
 export const anonymizedGameClient = (game) => {

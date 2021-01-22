@@ -14,6 +14,7 @@ import {
     showWhiteCard,
     selectWinner,
 } from "../modules/card.js";
+import { popularVote } from "../modules/popularVote.js";
 
 export const sockets = (io) => {
     io.on("connection", (socket) => {
@@ -202,6 +203,15 @@ export const sockets = (io) => {
                 validateHostAndReturnToLobby(io, data.gameID, data.playerID);
             }
         });
+
+        socket.on("give_popular_vote", (data) => {
+            const missingFields = validateFields(["gameID", "playerID", "whiteCardIDs"]);
+            if (missingFields.length > 0) {
+                sendError(socket, "Invalid data", missingFields);
+            } else {
+                popularVote(io, socket, gameID, playerID, whiteCardIDs);
+            }
+        })
     });
 
     io.on("disconnect", (socket) => {

@@ -16,7 +16,7 @@ export const validateCardCzar = (game, playerID) => {
 
 export const validateRoundCardCzar = (game, playerID) => {
     return game.currentRound.cardCzar === playerID;
-}
+};
 
 export const validatePlayerPlayingWhiteCards = (
     game,
@@ -38,9 +38,11 @@ export const validatePlayerPlayingWhiteCards = (
         };
     }
 
-    if(validateCardCzar(game, playerID)) return {
-        error: "Pelaaja on card czar, eikä siksi voi pelata valkoisia kortteja"
-    };
+    if (validateCardCzar(game, playerID))
+        return {
+            error:
+                "Pelaaja on card czar, eikä siksi voi pelata valkoisia kortteja",
+        };
 
     if (
         player.whiteCards.filter((whiteCard) =>
@@ -151,4 +153,19 @@ export const validatePickingWinner = (game, playerID, whiteCardIDs) => {
     } else {
         return { result: true };
     }
+};
+
+export const validatePopularVote = (game, playerID) => {
+    if (!game.options.allowCardCzarPopularVote) {
+        if (validateCardCzar(game, playerID))
+            return { error: "Cardczar ei saa äänestää " };
+    }
+    if (
+        !["readingCards", "showingCards", "roundEnd"].includes(
+            game.stateMachine.state
+        )
+    ) {
+        return { error: "Tässä pelinvaiheessa ei voi äänestää" };
+    }
+    return { result: true };
 };

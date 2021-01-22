@@ -27,6 +27,7 @@ import {
     replenishWhiteCards,
     anonymizedGameClient,
 } from "./card.js";
+import { setPopularVoteLeader } from "./popularVote.js";
 
 let games = [];
 
@@ -77,6 +78,8 @@ const createNewGame = (url) => {
                 scoreLimit: gameOptions.defaultScoreLimit,
                 winnerBecomesCardCzar: gameOptions.defaultWinnerBecomesCardCzar,
                 allowKickedPlayerJoin: gameOptions.defaultAllowKickedPlayerJoin,
+                allowCardCzarPopularVote:
+                    gameOptions.defaultAllowCardCzarPopularVote,
                 cardPacks: [],
                 selectWhiteCardTimeLimit: gameOptions.selectWhiteCardTimeLimit,
                 selectBlackCardTimeLimit: gameOptions.selectBlackCardTimeLimit,
@@ -223,6 +226,7 @@ export const startNewRound = (io, gameID, playerID) => {
         game.currentRound.blackCard.whiteCardsToPlay
     );
     game.players = appointNextCardCzar(game, playerID);
+    game.players = setPopularVoteLeader(game.players);
 
     const cardCzar = game.players.find((player) => player.isCardCzar);
     const newGame = dealBlackCards(io, cardCzar.socket, game);
@@ -289,6 +293,7 @@ export const findGameByPlayerID = (playerID) => {
 
 export const sendGameInfo = (io, playerID, socketID) => {
     const game = findGameByPlayerID(playerID);
+
     if (!game) {
         io.to(socketID).emit("initial_data", {
             game: undefined,
@@ -297,6 +302,11 @@ export const sendGameInfo = (io, playerID, socketID) => {
         });
     } else {
         const player = game.players.find((player) => player.id === playerID);
+        player.socket = socketID;
+        game.players = game.players.map((oldPlayer) =>
+            oldPlayer.id === playerID ? player : oldPlayer
+        );
+        setGame(game);
 
         io.to(socketID).emit("initial_data", {
             game: { ...anonymizedGameClient(game) },
