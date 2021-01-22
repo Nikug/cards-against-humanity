@@ -106,11 +106,12 @@ type GameState =
     | "gameOver";
 
 type PlayerState =
-    // Active states
+    // Playing states
     | "active" // Default active state
     | "playing" // Picking a white card
     | "waiting" // Has played white cards, waiting for pick phase to end
-    // Inactive states
+    // Other states
+    | "joining"
     | "pickingName"
     | "disconnected"
     | "spectating"

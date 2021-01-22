@@ -292,6 +292,9 @@ export const sendGameInfo = (io, playerID, socketID) => {
     if (!game) return;
 
     const player = game.players.find((player) => player.id === playerID);
+    player.socket = socketID;
+    game.players = game.players.map(oldPlayer => oldPlayer.id === playerID ? player : oldPlayer);
+    setGame(game);
 
     io.to(socketID).emit("initial_data", {
         game: { ...anonymizedGameClient(game) },
