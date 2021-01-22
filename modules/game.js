@@ -289,15 +289,21 @@ export const findGameByPlayerID = (playerID) => {
 
 export const sendGameInfo = (io, playerID, socketID) => {
     const game = findGameByPlayerID(playerID);
-    if (!game) return;
+    if (!game) {
+        io.to(socketID).emit("initial_data", {
+            game: undefined,
+            players: undefined,
+            player: undefined,
+        });
+    } else {
+        const player = game.players.find((player) => player.id === playerID);
 
-    const player = game.players.find((player) => player.id === playerID);
-
-    io.to(socketID).emit("initial_data", {
-        game: { ...anonymizedGameClient(game) },
-        players: publicPlayersObject(game.players),
-        player: player,
-    });
+        io.to(socketID).emit("initial_data", {
+            game: { ...anonymizedGameClient(game) },
+            players: publicPlayersObject(game.players),
+            player: player,
+        });
+    }
 };
 
 export const shouldGameBeDeleted = (game) => {

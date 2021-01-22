@@ -23,35 +23,22 @@ import {
 } from "./helpers/generalhelpers";
 import { Notification } from "./components/notification/notification";
 
-export default function App(props) {
-    const [isInHome, setIsInHome] = useState(true);
-    const [url, setUrl] = useState("");
+export const App = (props) => {
     const [game, setGame] = useState(undefined);
     const [player, setPlayer] = useState(undefined);
     const [notification, setNotification] = useState([]);
+    const [loading, setLoading] = useState(true);
 
     const history = useHistory();
 
-    function toggleIsInHome(isInHome) {
-        setIsInHome(isInHome);
-        if (isInHome) {
-            resetUrl();
-        }
-    }
-
-    function resetUrl() {
-        setUrl("");
-    }
-
     function startNewGame() {
         axios.post("/g").then((res) => {
-            setUrl(res.data.url);
-            toggleIsInHome(false);
+            history.push(`/g/${res.data.url}`);
         });
     }
 
     function joinExistingGame(gameUrl) {
-        setUrl(gameUrl);
+        history.push(`/g/${gameUrl}`);
     }
 
     const fireNotification = (newNotification, timeInSeconds = 3) => {
@@ -71,17 +58,16 @@ export default function App(props) {
     };
 
     useEffect(() => {
-        setUrl(
-            window.location.pathname.slice(
-                0,
-                window.location.pathname.length - 1
-            )
-        );
-
         socket.on("initial_data", (data) => {
             console.log("got initial data", data);
-            setGame(data.game);
-            setPlayer(data.player);
+
+            if (isNullOrUndefined(data.game)) {
+                deleteCookie("playerID");
+            } else {
+                setGame({ ...data.game, players: data.players });
+                setPlayer(data.player);
+            }
+            setLoading(false);
         });
 
         const cookie = getCookie("playerID");
@@ -89,14 +75,27 @@ export default function App(props) {
         if (!isNullOrUndefined(cookie)) {
             console.log("cookie is", cookie);
             socket.emit("get_initial_data", {
-                playerID: cookie.playerID,
+                playerID: cookie,
             });
             //deleteCookie("playerID");
         } else {
             console.log("there was no cookie");
             //setCookie({ field: "playerID", value: "random-id-123" });
+            setLoading(false);
         }
     }, []);
+
+    const updateData = (data) => {
+        if (data.player) {
+            setPlayer(data.player);
+        }
+        if (data.game) {
+            setGame(data.game);
+        }
+        if (data.players) {
+            setGame((prevGame) => ({ ...prevGame, players: data.players }));
+        }
+    };
 
     const notificationsToRender = [];
 
@@ -113,69 +112,78 @@ export default function App(props) {
         );
     }
 
-    return (
-        <>
-            {!isNullOrUndefined(notification) && notification.length > 0 && (
-                <div className="notification-wrapper">
-                    {notificationsToRender}
+    let content;
+
+    if (loading) {
+        content = <div>loading...</div>;
+    } else {
+        content = (
+            <>
+                {!isNullOrUndefined(notification) &&
+                    notification.length > 0 && (
+                        <div className="notification-wrapper">
+                            {notificationsToRender}
+                        </div>
+                    )}
+                <div
+                    className={`App ${
+                        isNullOrUndefined(game)
+                            ? "background-img"
+                            : "mono-background"
+                    }`}
+                >
+                    <div>
+                        <div className="basic-grid">
+                            <Header game={game} player={player} />
+                            <Switch>
+                                <Route
+                                    exact
+                                    path="/"
+                                    render={(props) => (
+                                        <Home
+                                            startNewGame={startNewGame}
+                                            joinExistingGame={joinExistingGame}
+                                            history={history}
+                                        />
+                                    )}
+                                />
+                                <Route
+                                    exact
+                                    path="/instructions"
+                                    render={(props) => (
+                                        <div>
+                                            Ohjeita rakennetaan... Tässä voi
+                                            mennä hetki!
+                                        </div>
+                                    )}
+                                />
+                                <Route
+                                    exact
+                                    path="/g/:id"
+                                    render={(props) => (
+                                        <Game
+                                            game={game}
+                                            player={player}
+                                            fireNotification={fireNotification}
+                                            updateData={updateData}
+                                        />
+                                    )}
+                                />
+                            </Switch>
+                        </div>
+                        <div className="footer">
+                            <span className="music-player">
+                                <Music />
+                            </span>
+                            <span className="copyrights">
+                                &copy; {new Date().getFullYear()}
+                            </span>
+                        </div>
+                    </div>
                 </div>
-            )}
-            <div
-                className={`App ${
-                    url === "" ? "background-img" : "mono-background"
-                }`}
-            >
-                <Router>
-                    <div className="basic-grid">
-                        <Header
-                            isInGame={!isInHome}
-                            toggleIsInGame={toggleIsInHome}
-                        />
-                        <Switch>
-                            <Route
-                                exact
-                                path="/"
-                                render={(props) => (
-                                    <Home
-                                        isInGame={!isInHome}
-                                        url={url}
-                                        startNewGame={startNewGame}
-                                        joinExistingGame={joinExistingGame}
-                                    />
-                                )}
-                            />
-                            <Route
-                                exact
-                                path="/instructions"
-                                render={(props) => (
-                                    <div>Instructions under construction!</div>
-                                )}
-                            />
-                            <Route
-                                exact
-                                path="/g/:id"
-                                render={(props) => (
-                                    <Game
-                                        isInGame={!isInHome}
-                                        resetUrl={resetUrl}
-                                        game={game}
-                                        player={player}
-                                        fireNotification={fireNotification}
-                                    />
-                                )}
-                            />
-                        </Switch>
-                    </div>
-                    <div className="footer">
-                        <span className="music-player">
-                            <Music />
-                        </span>
-                        <span className="copyrights">
-                            &copy; {new Date().getFullYear()}
-                        </span>
-                    </div>
-                </Router>
-            </div>
-        </>
-    );
-}
+            </>
+        );
+    }
+
+    return content;
+};

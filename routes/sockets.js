@@ -185,6 +185,7 @@ export const sockets = (io) => {
         });
 
         socket.on("get_initial_data", (data) => {
+            console.log("get_initial_data", data);
             const missingFields = validateFields(["playerID"], data);
             if (missingFields.length > 0) {
                 sendError(socket, "Invalid data", missingFields);
