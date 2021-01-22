@@ -12,7 +12,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
 const port = process.env.PORT || 4000;
-const PRODUCTION = false;
+const PRODUCTION = process.env.PRODUCTION;
 
 const app = express();
 const server = http.createServer(app);
@@ -25,6 +25,7 @@ sockets(io);
 
 
 if(PRODUCTION) {
+    console.log("Running production environment!");
     app.get("*", (req, res) => {
         res.sendFile(path.join(__dirname + "/client/build/index.html"));
     })

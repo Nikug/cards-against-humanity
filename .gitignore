@@ -1,1 +1,5 @@
+# Node modules
 /node_modules
+
+# Built files
+/client/build
