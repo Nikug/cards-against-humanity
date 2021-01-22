@@ -27,6 +27,9 @@ import {
     replenishWhiteCards,
     anonymizedGameClient,
 } from "./card.js";
+import {
+    setPopularVoteLeader
+} from "./popularVote.js";
 
 let games = [];
 
@@ -77,6 +80,7 @@ const createNewGame = (url) => {
                 scoreLimit: gameOptions.defaultScoreLimit,
                 winnerBecomesCardCzar: gameOptions.defaultWinnerBecomesCardCzar,
                 allowKickedPlayerJoin: gameOptions.defaultAllowKickedPlayerJoin,
+                allowCardCzarPopularVote: gameOptions.defaultAllowCardCzarPopularVote,
                 cardPacks: [],
                 selectWhiteCardTimeLimit: gameOptions.selectWhiteCardTimeLimit,
                 selectBlackCardTimeLimit: gameOptions.selectBlackCardTimeLimit,
@@ -223,6 +227,7 @@ export const startNewRound = (io, gameID, playerID) => {
         game.currentRound.blackCard.whiteCardsToPlay
     );
     game.players = appointNextCardCzar(game, playerID);
+    game.players = setPopularVoteLeader(game.players);
 
     const cardCzar = game.players.find((player) => player.isCardCzar);
     const newGame = dealBlackCards(io, cardCzar.socket, game);

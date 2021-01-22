@@ -26,6 +26,7 @@ interface Player {
     score: number;
     isCardCzar: boolean;
     isHost: boolean;
+    isPopularVoteKing: boolean;
     popularVoteScore: number;
     whiteCards: WhiteCard[];
     useTextToSpeech: boolean;
@@ -39,7 +40,7 @@ interface PlayerPublic {
     score: number;
     isCardCzar: boolean;
     isHost: boolean;
-    popularVoteScore: number;
+    isPopularVoteKing: boolean;
     useTextToSpeech: boolean;
 }
 
@@ -72,7 +73,8 @@ interface Round {
     whiteCardsByPlayer: {
         wonRound: boolean;
         playerID: string | null; // Always null unless is winner in client
-        popularVote: number;
+        popularVote: number; 
+        popularVotes: string[]; // List of player ids who voted for this player
         whiteCards: WhiteCard[];
     }[];
 }
@@ -82,6 +84,7 @@ interface Options {
     scoreLimit: number;
     winnerBecomesCardCzar: boolean;
     allowKickedPlayerJoin: boolean;
+    allowCardCzarPopularVote: boolean;
     popularVote: boolean;
     cardPacks: CardPack[];
     selectWhiteCardTimeLimit: number;
