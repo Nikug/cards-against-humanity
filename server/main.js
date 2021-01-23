@@ -18,7 +18,7 @@ const app = express();
 const server = http.createServer(app);
 const io = socketIo(server);
 
-app.use(express.static(path.join(__dirname, "client/build")));
+app.use(express.static(path.join(__dirname, "../client/build")));
 
 app.use(router());
 sockets(io);
@@ -27,7 +27,7 @@ sockets(io);
 if(PRODUCTION) {
     console.log("Running production environment!");
     app.get("*", (req, res) => {
-        res.sendFile(path.join(__dirname + "/client/build/index.html"));
+        res.sendFile(path.join(__dirname + "../client/build/index.html"));
     })
 }
 
