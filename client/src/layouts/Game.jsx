@@ -37,8 +37,8 @@ export function Game(props) {
         window.addEventListener("beforeunload", () => {
             if (!!game && !!player) {
                 socket.emit("leave_game", {
-                    gameID: game.id,
-                    playerID: player.id,
+                    gameID: game?.id,
+                    playerID: player?.id,
                 });
             }
         });

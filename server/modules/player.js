@@ -40,6 +40,7 @@ export const changePlayerTextToSpeech = (io, gameID, playerID, useTTS) => {
     game.players = game.players.map((gamePlayer) =>
         gamePlayer.id === player.id ? player : gamePlayer
     );
+    console.log("game.players", game.players, "useTTS", useTTS);
     setGame(game);
 
     updatePlayersIndividually(io, game);
@@ -263,11 +264,10 @@ const handleHostLeaving = (game, host) => {
     return [...game.players];
 };
 
-
 export const getJoiningPlayerState = (gameState, hasName) => {
-    if(gameState === "lobby" && hasName) {
+    if (gameState === "lobby" && hasName) {
         return "active";
     } else {
         return joiningPlayerStates[gameState];
     }
-}
+};

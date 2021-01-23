@@ -6,7 +6,11 @@ import {
     sendGameInfo,
     validateHostAndReturnToLobby,
 } from "../modules/game.js";
-import { setPlayerDisconnected, updatePlayerName } from "../modules/player.js";
+import {
+    setPlayerDisconnected,
+    updatePlayerName,
+    changePlayerTextToSpeech,
+} from "../modules/player.js";
 import { addCardPack, removeCardPack } from "../modules/cardpack.js";
 import {
     selectBlackCard,
@@ -77,11 +81,11 @@ export const sockets = (io) => {
             if (missingFields.length > 0) {
                 sendError(socket, "Invalid data", missingFields);
             } else {
-                updatePlayerName(
+                changePlayerTextToSpeech(
                     io,
                     data.gameID,
                     data.playerID,
-                    data.playerName
+                    data.useTextToSpeech
                 );
             }
         });
