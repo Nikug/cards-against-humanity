@@ -20,7 +20,6 @@ import { textToSpeech } from "../helpers/generalhelpers";
 import { NOTIFICATION_TYPES } from "../components/notification/notification";
 
 export function Game(props) {
-    console.log("game props", props);
     const [game, setGame] = useState(props.game);
     const [player, setPlayer] = useState(props.player);
     const [progress, setProgress] = useState(0);
@@ -43,15 +42,17 @@ export function Game(props) {
             }
         });
 
-        console.log({ game, gameIdUrl: getGameIdFromURL() });
         if (game === undefined) {
-            socket.emit("join_game", { gameID: getGameIdFromURL() });
+            socket.emit("join_game", {
+                gameID: getGameIdFromURL(),
+                playerID: player?.id,
+            });
         }
     }, [game, player]);
 
     useEffect(() => {
         socket.on("update_player", (data) => {
-            console.log("socket update_player");
+            console.log("socket update_player", data);
             setPlayer(data.player);
 
             setCookie({ field: "playerID", value: data.player.id });
@@ -59,19 +60,19 @@ export function Game(props) {
         });
 
         socket.on("update_game", (data) => {
-            console.log("socket update_game");
+            console.log("socket update_game", data);
             setGame((prevGame) => ({ ...prevGame, ...data.game }));
             updateData({ game: data.game });
         });
 
         socket.on("update_players", (data) => {
-            console.log("socket update_players");
+            console.log("socket update_players", data);
             setGame((prevGame) => ({ ...prevGame, players: data.players }));
             updateData({ players: data.players });
         });
 
         socket.on("update_game_and_players", (data) => {
-            console.log("socket update_game_and_players");
+            console.log("socket update_game_and_players", data);
 
             setGame((prevGame) => ({
                 ...prevGame,
@@ -89,7 +90,7 @@ export function Game(props) {
         });
 
         socket.on("update_game_options", (data) => {
-            console.log("socket update_game_options");
+            console.log("socket update_game_options", data);
             setGame((prevGame) => ({ ...prevGame, options: data.options }));
 
             updateData({ game: { ...game, options: data.options } });
