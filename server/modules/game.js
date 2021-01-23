@@ -161,14 +161,13 @@ export const joinToGame = (socket, io, gameID, playerID) => {
     console.log(`Join game id ${gameID}`);
 
     const game = getGame(gameID);
-    if (game !== null) {
+    if (game != null) {
         socket.join(gameID);
         console.log(`Client joined room ${gameID}`);
 
         const player = joinGame(gameID, socket.id, playerID);
 
-        io.in(gameID).emit("update_game", { game: game.client });
-        socket.emit("update_player", { player: player });
+        updatePlayersIndividually(io, game);
     } else {
         socket.disconnect(true);
         console.log(`Client disconnected :( ${gameID}`);
