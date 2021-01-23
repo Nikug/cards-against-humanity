@@ -3,7 +3,7 @@
     "node": ">= 14.0.0"
   },
   "scripts": {
-      "start": "cd server && npm run deploy",
+      "start": "cd server && node main.js",
       "heroku-postbuild": "cd client && npm install & npm run build"
   }
 }
