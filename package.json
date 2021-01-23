@@ -1,0 +1,14 @@
+{
+  "engines": {
+    "node": ">= 14.0.0"
+  },
+  "scripts": {
+    "start": "cd server && npm run start",
+    "install": "cd server && npm install && cd ../client && npm install",
+    "build": "cd client && npm run build",
+    "heroku-postbuild": "npm run install && npm run build"
+  },
+  "dependencies": {
+    "cross-env": "^7.0.3"
+  }
+}

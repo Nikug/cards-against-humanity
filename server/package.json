@@ -1,34 +1,36 @@
 {
-    "name": "cards-against-humanity",
-    "version": "0.1.0",
-    "description": "",
-    "main": "main.js",
-    "type": "module",
-    "engines": {
-        "node": ">= 14.0.0"
-    },
-    "scripts": {
-        "client": "cd ../client && npm start",
-        "server": "nodemon main.js",
-        "dev": "concurrently --kill-others-on-fail \"npm run server\" \"npm run client\"",
-        "deploy": "cd ../client && npm run build && cross-env PRODUCTION=true node main.js"
-    },
-    "author": "Niku Grönberg",
-    "license": "ISC",
-    "dependencies": {
-        "body-parser": "^1.19.0",
-        "cors": "^2.8.5",
-        "express": "^4.17.1",
-        "human-readable-ids": "^1.0.4",
-        "javascript-state-machine": "^3.1.0",
-        "nanoid": "^3.1.12",
-        "node-fetch": "^2.6.1",
-        "node-sass": "^4.14.1",
-        "socket.io": "^2.3.0"
-    },
-    "devDependencies": {
-        "concurrently": "^5.3.0",
-        "cross-env": "^7.0.3",
-        "nodemon": "^2.0.4"
-    }
+  "name": "cards-against-humanity",
+  "version": "0.1.0",
+  "description": "",
+  "main": "main.js",
+  "type": "module",
+  "engines": {
+    "node": ">= 14.0.0"
+  },
+  "scripts": {
+    "start": "cross-env PRODUCTION=true node main.js",
+    "client": "cd ../client && npm start",
+    "server": "nodemon main.js",
+    "dev": "concurrently --kill-others-on-fail \"npm run server\" \"npm run client\"",
+    "build": "cd ../client && npm run build",
+    "deploy": "npm run build && npm run start"
+  },
+  "author": "Niku Grönberg",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.19.0",
+    "cors": "^2.8.5",
+    "express": "^4.17.1",
+    "human-readable-ids": "^1.0.4",
+    "javascript-state-machine": "^3.1.0",
+    "nanoid": "^3.1.12",
+    "node-fetch": "^2.6.1",
+    "node-sass": "^4.14.1",
+    "socket.io": "^2.3.0"
+  },
+  "devDependencies": {
+    "concurrently": "^5.3.0",
+    "cross-env": "^7.0.3",
+    "nodemon": "^2.0.4"
+  }
 }
