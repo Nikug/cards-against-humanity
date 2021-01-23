@@ -1,5 +1,9 @@
 {
   "engines": {
     "node": ">= 14.0.0"
+  },
+  "scripts": {
+      "start": "cd server && npm run deploy",
+      "heroku-postbuild": "cd client && npm install & npm run build"
   }
 }

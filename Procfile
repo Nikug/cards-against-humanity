@@ -1,1 +1,1 @@
-web: cd client && npm install --only=dev && cd ../server && npm run deploy
+web: npm run start
