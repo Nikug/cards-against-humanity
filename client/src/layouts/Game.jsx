@@ -1,26 +1,25 @@
-import React, { useState, useEffect } from "react";
-import { socket } from "../components/sockets/socket";
+import React, { useState, useEffect } from 'react';
+import { socket } from '../components/sockets/socket';
 
-import { PlayersWidget } from "../components/players-widget/playerswidget";
-import { GameSettingsContainer } from "../components/game-settings/gamesettingscontainer";
-import { Timer } from "../components/timer";
-import Button, { BUTTON_TYPES } from "../components/button";
-import { Setting, CONTROL_TYPES } from "./../components/settings/setting";
-import { setCookie } from "./../helpers/cookies";
+import { PlayersWidget } from '../components/players-widget/playerswidget';
+import { GameSettingsContainer } from '../components/game-settings/gamesettingscontainer';
+import { Timer } from '../components/timer';
+import Button, { BUTTON_TYPES } from '../components/button';
+import { Setting, CONTROL_TYPES } from './../components/settings/setting';
+import { setCookie } from './../helpers/cookies';
 
-import "./../styles/game.scss";
-import { GAME_STATES } from "../consts/gamestates";
-import { BlackCardPickerContainer } from "../components/card-picker/blackcardpickercontainer";
-import { WhiteCardPickerContainer } from "../components/card-picker/whitecardpickercontainer";
-import { WinnerCardPickerContainer } from "../components/card-picker/winnercardpickercontainer";
-import { WaitingCardPickerContainer } from "../components/card-picker/waitincardpickercontainer";
-import { CardReadingContainer } from "../components/card-picker/cardreadingcontainer";
-import { RoundEndContainer } from "../components/card-picker/roundendcontainer";
-import { textToSpeech } from "../helpers/generalhelpers";
-import { NOTIFICATION_TYPES } from "../components/notification/notification";
+import './../styles/game.scss';
+import { GAME_STATES } from '../consts/gamestates';
+import { BlackCardPickerContainer } from '../components/card-picker/blackcardpickercontainer';
+import { WhiteCardPickerContainer } from '../components/card-picker/whitecardpickercontainer';
+import { WinnerCardPickerContainer } from '../components/card-picker/winnercardpickercontainer';
+import { WaitingCardPickerContainer } from '../components/card-picker/waitincardpickercontainer';
+import { CardReadingContainer } from '../components/card-picker/cardreadingcontainer';
+import { RoundEndContainer } from '../components/card-picker/roundendcontainer';
+import { textToSpeech } from '../helpers/generalhelpers';
+import { NOTIFICATION_TYPES } from '../components/notification/notification';
 
 export function Game(props) {
-    console.log("game props", props);
     const [game, setGame] = useState(props.game);
     const [player, setPlayer] = useState(props.player);
     const [progress, setProgress] = useState(0);
@@ -30,48 +29,50 @@ export function Game(props) {
 
     const getGameIdFromURL = () => {
         const url = window.location.pathname;
-        return url.replace("/g/", "");
+        return url.replace('/g/', '');
     };
 
     useEffect(() => {
-        window.addEventListener("beforeunload", () => {
+        window.addEventListener('beforeunload', () => {
             if (!!game && !!player) {
-                socket.emit("leave_game", {
+                socket.emit('leave_game', {
                     gameID: game.id,
                     playerID: player.id,
                 });
             }
         });
 
-        console.log({ game, gameIdUrl: getGameIdFromURL() });
         if (game === undefined) {
-            socket.emit("join_game", { gameID: getGameIdFromURL() });
+            socket.emit('join_game', {
+                gameID: getGameIdFromURL(),
+                playerID: player?.id,
+            });
         }
     }, [game, player]);
 
     useEffect(() => {
-        socket.on("update_player", (data) => {
-            console.log("socket update_player");
+        socket.on('update_player', (data) => {
+            console.log('socket update_player', data);
             setPlayer(data.player);
 
-            setCookie({ field: "playerID", value: data.player.id });
+            setCookie({ field: 'playerID', value: data.player.id });
             updateData({ player: data.player });
         });
 
-        socket.on("update_game", (data) => {
-            console.log("socket update_game");
+        socket.on('update_game', (data) => {
+            console.log('socket update_game', data);
             setGame((prevGame) => ({ ...prevGame, ...data.game }));
             updateData({ game: data.game });
         });
 
-        socket.on("update_players", (data) => {
-            console.log("socket update_players");
+        socket.on('update_players', (data) => {
+            console.log('socket update_players', data);
             setGame((prevGame) => ({ ...prevGame, players: data.players }));
             updateData({ players: data.players });
         });
 
-        socket.on("update_game_and_players", (data) => {
-            console.log("socket update_game_and_players");
+        socket.on('update_game_and_players', (data) => {
+            console.log('socket update_game_and_players', data);
 
             setGame((prevGame) => ({
                 ...prevGame,
@@ -80,7 +81,7 @@ export function Game(props) {
             }));
             setPlayer(data.player);
 
-            setCookie({ field: "playerID", value: data.player.id });
+            setCookie({ field: 'playerID', value: data.player.id });
             updateData({
                 game: data.game,
                 player: data.player,
@@ -88,26 +89,25 @@ export function Game(props) {
             });
         });
 
-        socket.on("update_game_options", (data) => {
-            console.log("socket update_game_options");
+        socket.on('update_game_options', (data) => {
+            console.log('socket update_game_options', data);
             setGame((prevGame) => ({ ...prevGame, options: data.options }));
 
             updateData({ game: { ...game, options: data.options } });
         });
 
-        socket.on("deal_black_cards", (data) => {
+        socket.on('deal_black_cards', (data) => {
             setBlackCards(data.blackCards);
         });
 
-        socket.on("upgrade_to_host", (data) => {
+        socket.on('upgrade_to_host', (data) => {
             const notification = {
-                text:
-                    "Pelin edellinen isäntä lähti, joten sinä olet nyt uusi isäntä!",
+                text: 'Pelin edellinen isäntä lähti, joten sinä olet nyt uusi isäntä!',
                 type: NOTIFICATION_TYPES.DEFAULT,
                 icon: {
-                    name: "info",
-                    color: "blue",
-                    className: "type-icon",
+                    name: 'info',
+                    color: 'blue',
+                    className: 'type-icon',
                 },
             };
 
@@ -117,7 +117,7 @@ export function Game(props) {
 
     const startGame = (gameID, playerID) => {
         if (!!gameID && !!playerID) {
-            socket.emit("start_game", { gameID, playerID });
+            socket.emit('start_game', { gameID, playerID });
         }
     };
 
@@ -137,7 +137,7 @@ export function Game(props) {
         const cleanedName = name.trim();
 
         if (!!player?.id && cleanedName.length > 0) {
-            socket.emit("set_player_name", {
+            socket.emit('set_player_name', {
                 gameID: game?.id,
                 playerID: player?.id,
                 playerName: cleanedName,
@@ -145,10 +145,9 @@ export function Game(props) {
         }
     };
 
-    const iconClassnames = "md-36 icon-margin-right";
-    const canStartGame =
-        game?.players?.length > 0 && game?.options?.cardPacks?.length > 0; // TODO: Why is player name not there? Player is not updated by back-end
-    console.log("game.state", game?.state);
+    const iconClassnames = 'md-36 icon-margin-right';
+    const canStartGame = game?.players?.length > 0 && game?.options?.cardPacks?.length > 0; // TODO: Why is player name not there? Player is not updated by back-end
+    console.log('game.state', game?.state);
 
     const gameState = game?.state;
     let renderedContent;
@@ -158,19 +157,17 @@ export function Game(props) {
             case GAME_STATES.LOBBY:
                 renderedContent = (
                     <>
-                        <div className="info">
-                            <div className="game-settings-container">
-                                <div className="nick-and-start-container">
-                                    <div className="nickname-selector">
+                        <div className='info'>
+                            <div className='game-settings-container'>
+                                <div className='nick-and-start-container'>
+                                    <div className='nickname-selector'>
                                         <Setting
-                                            text={"Nimimerkki"}
-                                            placeholderText={"nickname"}
-                                            controlType={
-                                                CONTROL_TYPES.textWithConfirm
-                                            }
+                                            text={'Nimimerkki'}
+                                            placeholderText={'nickname'}
+                                            controlType={CONTROL_TYPES.textWithConfirm}
                                             onChangeCallback={setPlayerName}
                                             icon={{
-                                                name: "person",
+                                                name: 'person',
                                                 className: iconClassnames,
                                             }}
                                             charLimit={35}
@@ -178,24 +175,19 @@ export function Game(props) {
                                     </div>
                                     {player?.isHost && (
                                         <Button
-                                            icon={"play_circle_filled"}
-                                            iconPosition={"after"}
-                                            text={"Aloita peli"}
+                                            icon={'play_circle_filled'}
+                                            iconPosition={'after'}
+                                            text={'Aloita peli'}
                                             type={BUTTON_TYPES.GREEN}
-                                            additionalClassname={"big-btn"}
-                                            callback={() =>
-                                                startGame(game?.id, player?.id)
-                                            }
-                                            disabled={
-                                                !canStartGame ||
-                                                player?.isHost !== true
-                                            }
+                                            additionalClassname={'big-btn'}
+                                            callback={() => startGame(game?.id, player?.id)}
+                                            disabled={!canStartGame || player?.isHost !== true}
                                         />
                                     )}
                                 </div>
                             </div>
                         </div>
-                        <div className="info">
+                        <div className='info'>
                             <GameSettingsContainer
                                 options={game ? game.options : {}}
                                 gameID={game?.id}
@@ -208,48 +200,30 @@ export function Game(props) {
                 );
                 break;
             case GAME_STATES.PICKING_BLACK_CARD:
-                renderedContent = (
-                    <BlackCardPickerContainer
-                        player={player}
-                        game={game}
-                        blackCards={blackCards}
-                    />
-                );
+                renderedContent = <BlackCardPickerContainer player={player} game={game} blackCards={blackCards} />;
                 break;
             case GAME_STATES.PLAYING_WHITE_CARDS:
                 renderedContent = (
                     <WaitingCardPickerContainer
                         player={player}
                         game={game}
-                        alternativeText={
-                            "Muut valitsevat valkoisia korttejaan..."
-                        }
+                        alternativeText={'Muut valitsevat valkoisia korttejaan...'}
                         showMainCard={true}
                         noBigMainCard={true}
                     />
                 );
                 break;
             case GAME_STATES.READING_CARDS:
-                renderedContent = (
-                    <CardReadingContainer player={player} game={game} />
-                );
+                renderedContent = <CardReadingContainer player={player} game={game} />;
                 break;
             case GAME_STATES.SHOWING_CARDS:
-                renderedContent = (
-                    <WinnerCardPickerContainer player={player} game={game} />
-                );
+                renderedContent = <WinnerCardPickerContainer player={player} game={game} />;
                 break;
             case GAME_STATES.ROUND_END:
-                renderedContent = (
-                    <RoundEndContainer player={player} game={game} />
-                );
+                renderedContent = <RoundEndContainer player={player} game={game} />;
                 break;
             default:
-                renderedContent = (
-                    <div className="error-info">
-                        Something went wrong. Try to reload the page.
-                    </div>
-                );
+                renderedContent = <div className='error-info'>Something went wrong. Try to reload the page.</div>;
                 break;
         }
     } else {
@@ -257,19 +231,17 @@ export function Game(props) {
             case GAME_STATES.LOBBY:
                 renderedContent = (
                     <>
-                        <div className="info">
-                            <div className="game-settings-container">
-                                <div className="nick-and-start-container">
-                                    <div className="nickname-selector">
+                        <div className='info'>
+                            <div className='game-settings-container'>
+                                <div className='nick-and-start-container'>
+                                    <div className='nickname-selector'>
                                         <Setting
-                                            text={"Nimimerkki"}
-                                            placeholderText={"nickname"}
-                                            controlType={
-                                                CONTROL_TYPES.textWithConfirm
-                                            }
+                                            text={'Nimimerkki'}
+                                            placeholderText={'nickname'}
+                                            controlType={CONTROL_TYPES.textWithConfirm}
                                             onChangeCallback={setPlayerName}
                                             icon={{
-                                                name: "person",
+                                                name: 'person',
                                                 className: iconClassnames,
                                             }}
                                             charLimit={35}
@@ -277,24 +249,19 @@ export function Game(props) {
                                     </div>
                                     {player?.isHost && (
                                         <Button
-                                            icon={"play_circle_filled"}
-                                            iconPosition={"after"}
-                                            text={"Aloita peli"}
+                                            icon={'play_circle_filled'}
+                                            iconPosition={'after'}
+                                            text={'Aloita peli'}
                                             type={BUTTON_TYPES.GREEN}
-                                            additionalClassname={"big-btn"}
-                                            callback={() =>
-                                                startGame(game?.id, player?.id)
-                                            }
-                                            disabled={
-                                                !canStartGame ||
-                                                player?.isHost !== true
-                                            }
+                                            additionalClassname={'big-btn'}
+                                            callback={() => startGame(game?.id, player?.id)}
+                                            disabled={!canStartGame || player?.isHost !== true}
                                         />
                                     )}
                                 </div>
                             </div>
                         </div>
-                        <div className="info">
+                        <div className='info'>
                             <GameSettingsContainer
                                 options={game ? game.options : {}}
                                 gameID={game?.id}
@@ -312,61 +279,41 @@ export function Game(props) {
                         <WaitingCardPickerContainer
                             player={player}
                             game={game}
-                            alternativeText={
-                                "Korttikuningas valitsee korttia..."
-                            }
+                            alternativeText={'Korttikuningas valitsee korttia...'}
                             showMainCard={false}
                         />
                     </div>
                 );
                 break;
             case GAME_STATES.PLAYING_WHITE_CARDS:
-                renderedContent = (
-                    <WhiteCardPickerContainer player={player} game={game} />
-                );
+                renderedContent = <WhiteCardPickerContainer player={player} game={game} />;
                 break;
             case GAME_STATES.READING_CARDS:
-                renderedContent = (
-                    <CardReadingContainer player={player} game={game} />
-                );
+                renderedContent = <CardReadingContainer player={player} game={game} />;
                 break;
             case GAME_STATES.SHOWING_CARDS:
                 renderedContent = (
                     <div>
-                        <WinnerCardPickerContainer
-                            player={player}
-                            game={game}
-                        />
+                        <WinnerCardPickerContainer player={player} game={game} />
                     </div>
                 );
                 break;
             case GAME_STATES.ROUND_END:
-                renderedContent = (
-                    <RoundEndContainer player={player} game={game} />
-                );
+                renderedContent = <RoundEndContainer player={player} game={game} />;
                 break;
             default:
-                renderedContent = (
-                    <div className="error-info">
-                        Something went wrong. Try to reload the page.
-                    </div>
-                );
+                renderedContent = <div className='error-info'>Something went wrong. Try to reload the page.</div>;
                 break;
         }
     }
 
     return (
         <div>
-            <div className="info">
+            <div className='info'>
                 <PlayersWidget game={game} player={player} />
-                <Timer
-                    width={100}
-                    percent={progress}
-                    startingPercent={0}
-                    time={10}
-                />
+                <Timer width={100} percent={progress} startingPercent={0} time={10} />
             </div>
-            <div className="lobby-container">{renderedContent}</div>
+            <div className='lobby-container'>{renderedContent}</div>
         </div>
     );
 }

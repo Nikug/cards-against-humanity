@@ -1,28 +1,19 @@
-import React, { Component } from "react";
-import { PLAYER_STATES } from "../../consts/playerstates";
-import { getPlayersList } from "../../fakedata/fakeplayerdata";
+import React, { Component } from 'react';
+import { PLAYER_STATES } from '../../consts/playerstates';
+import { getPlayersList } from '../../fakedata/fakeplayerdata';
 
-import "./../../styles/playerswidget.scss";
+import './../../styles/playerswidget.scss';
 
-import { Player } from "./player";
+import { Player } from './player';
 
 export class PlayersWidget extends Component {
     renderPlayers(players) {
         const renderedPlayers = [];
         const game = this.props.game;
-        const options = game?.options;
 
         for (let i = 0, len = players.length; i < len; i++) {
             const player = players[i];
-            const {
-                id,
-                name,
-                state,
-                score,
-                popularVoteScore,
-                isCardCzar,
-                isHost,
-            } = player;
+            const { id, name, state, score, isCardCzar, isHost, isPopularVoteKing } = player;
 
             renderedPlayers.push(
                 <Player
@@ -31,11 +22,9 @@ export class PlayersWidget extends Component {
                     name={state === PLAYER_STATES.PICKING_NAME ? null : name}
                     state={state}
                     score={score}
-                    popularVoteScore={
-                        options?.popularVote ? popularVoteScore : undefined
-                    }
                     isCardCzar={isCardCzar}
                     isHost={isHost}
+                    isPopularVoteKing={isPopularVoteKing}
                 />
             );
         }
@@ -53,6 +42,6 @@ export class PlayersWidget extends Component {
 
         const renderedPlayers = this.renderPlayers(playersToRender);
 
-        return <div className="players-widget">{renderedPlayers}</div>;
+        return <div className='players-widget'>{renderedPlayers}</div>;
     }
 }

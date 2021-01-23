@@ -1,27 +1,19 @@
-import React, { useEffect, useState } from "react";
-import { socket } from "./components/sockets/socket";
-import {
-    BrowserRouter as Router,
-    Switch,
-    Route,
-    useHistory,
-} from "react-router-dom";
-import axios from "axios";
+import React, { useEffect, useState } from 'react';
+import { socket } from './components/sockets/socket';
+import { BrowserRouter as Router, Switch, Route, useHistory, useLocation } from 'react-router-dom';
+import axios from 'axios';
 
-import { Home } from "./layouts/Home";
-import { Game } from "./layouts/Game";
-import { Header } from "./components/header";
-import Music from "./components/music";
+import { Home } from './layouts/Home';
+import { Game } from './layouts/Game';
+import { Header } from './components/header';
+import Music from './components/music';
 
-import "./styles/App.scss";
-import "./styles/footer.scss";
-import "./styles/notification.scss";
-import { deleteCookie, getCookie, setCookie } from "./helpers/cookies";
-import {
-    isNullOrUndefined,
-    containsObjectWithMatchingFieldIndex,
-} from "./helpers/generalhelpers";
-import { Notification } from "./components/notification/notification";
+import './styles/App.scss';
+import './styles/footer.scss';
+import './styles/notification.scss';
+import { deleteCookie, getCookie, setCookie } from './helpers/cookies';
+import { isNullOrUndefined, containsObjectWithMatchingFieldIndex } from './helpers/generalhelpers';
+import { Notification } from './components/notification/notification';
 
 export const App = (props) => {
     const [game, setGame] = useState(undefined);
@@ -32,7 +24,7 @@ export const App = (props) => {
     const history = useHistory();
 
     function startNewGame() {
-        axios.post("/g").then((res) => {
+        axios.post('/g').then((res) => {
             history.push(`/g/${res.data.url}`);
         });
     }
@@ -42,7 +34,6 @@ export const App = (props) => {
     }
 
     const fireNotification = (newNotification, timeInSeconds = 3) => {
-        console.log("fire notification", newNotification);
         const newList = notification.slice();
         newList.push(newNotification);
         setNotification(newList);
@@ -58,11 +49,9 @@ export const App = (props) => {
     };
 
     useEffect(() => {
-        socket.on("initial_data", (data) => {
-            console.log("got initial data", data);
-
+        socket.on('initial_data', (data) => {
             if (isNullOrUndefined(data.game)) {
-                deleteCookie("playerID");
+                deleteCookie('playerID');
             } else {
                 setGame({ ...data.game, players: data.players });
                 setPlayer(data.player);
@@ -70,16 +59,14 @@ export const App = (props) => {
             setLoading(false);
         });
 
-        const cookie = getCookie("playerID");
+        const cookie = getCookie('playerID');
 
         if (!isNullOrUndefined(cookie)) {
-            console.log("cookie is", cookie);
-            socket.emit("get_initial_data", {
+            socket.emit('get_initial_data', {
                 playerID: cookie,
             });
             //deleteCookie("playerID");
         } else {
-            console.log("there was no cookie");
             //setCookie({ field: "playerID", value: "random-id-123" });
             setLoading(false);
         }
@@ -113,32 +100,24 @@ export const App = (props) => {
     }
 
     let content;
+    const pathName = useLocation().pathname;
 
     if (loading) {
         content = <div>loading...</div>;
     } else {
         content = (
             <>
-                {!isNullOrUndefined(notification) &&
-                    notification.length > 0 && (
-                        <div className="notification-wrapper">
-                            {notificationsToRender}
-                        </div>
-                    )}
-                <div
-                    className={`App ${
-                        isNullOrUndefined(game)
-                            ? "background-img"
-                            : "mono-background"
-                    }`}
-                >
+                {!isNullOrUndefined(notification) && notification.length > 0 && (
+                    <div className='notification-wrapper'>{notificationsToRender}</div>
+                )}
+                <div className={`App ${pathName === '/' ? 'background-img' : 'mono-background'}`}>
                     <div>
-                        <div className="basic-grid">
+                        <div className='basic-grid'>
                             <Header game={game} player={player} />
                             <Switch>
                                 <Route
                                     exact
-                                    path="/"
+                                    path='/'
                                     render={(props) => (
                                         <Home
                                             startNewGame={startNewGame}
@@ -149,17 +128,12 @@ export const App = (props) => {
                                 />
                                 <Route
                                     exact
-                                    path="/instructions"
-                                    render={(props) => (
-                                        <div>
-                                            Ohjeita rakennetaan... Tässä voi
-                                            mennä hetki!
-                                        </div>
-                                    )}
+                                    path='/instructions'
+                                    render={(props) => <div>Ohjeita rakennetaan... Tässä voi mennä hetki!</div>}
                                 />
                                 <Route
                                     exact
-                                    path="/g/:id"
+                                    path='/g/:id'
                                     render={(props) => (
                                         <Game
                                             game={game}
@@ -171,13 +145,11 @@ export const App = (props) => {
                                 />
                             </Switch>
                         </div>
-                        <div className="footer">
-                            <span className="music-player">
+                        <div className='footer'>
+                            <span className='music-player'>
                                 <Music />
                             </span>
-                            <span className="copyrights">
-                                &copy; {new Date().getFullYear()}
-                            </span>
+                            <span className='copyrights'>&copy; {new Date().getFullYear()}</span>
                         </div>
                     </div>
                 </div>
