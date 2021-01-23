@@ -35,7 +35,7 @@ export const popularVote = (io, socket, gameID, playerID, whiteCardIDs) => {
     updatePlayersIndividually(io, newGame);
 
     const votedCardIDs = getAllVotedCardsForPlayer(
-        game.currentRound.whiteCardByPlayer,
+        game.currentRound.whiteCardsByPlayer,
         playerID
     );
     socket.emit("send_popular_voted_cards", {
@@ -82,8 +82,7 @@ export const setPopularVoteLeader = (players) => {
         const isKing = highestScoringPlayers.some(
             (highScorePlayer) => highScorePlayer.id === oldPlayer.id
         );
-        return { ...oldPlayer, isPopularVoteKing: isKing }
-
+        return { ...oldPlayer, isPopularVoteKing: isKing };
     });
 };
 

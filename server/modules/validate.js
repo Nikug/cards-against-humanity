@@ -156,7 +156,7 @@ export const validatePickingWinner = (game, playerID, whiteCardIDs) => {
 };
 
 export const validatePopularVote = (game, playerID) => {
-    if (!game.options.allowCardCzarPopularVote) {
+    if (!game.client.options.allowCardCzarPopularVote) {
         if (validateCardCzar(game, playerID))
             return { error: "Cardczar ei saa äänestää " };
     }

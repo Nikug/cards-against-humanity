@@ -24,6 +24,7 @@ export function Game(props) {
     const [player, setPlayer] = useState(props.player);
     const [progress, setProgress] = useState(0);
     const [blackCards, setBlackCards] = useState([]);
+    const [popularVotedCardsIDs, setPopularVotedCardsIDs] = useState([]);
 
     const { fireNotification, updateData } = props;
 
@@ -49,6 +50,17 @@ export function Game(props) {
             });
         }
     }, [game, player]);
+
+    useEffect(() => {
+        socket.on('send_popular_voted_cards', (data) => {
+            console.log('socket send_popular_voted_cards', data);
+            setPopularVotedCardsIDs(data.whiteCardIDs);
+        });
+
+        return () => {
+            socket.off('send_popular_voted_cards');
+        };
+    }, []);
 
     useEffect(() => {
         socket.on('update_player', (data) => {
@@ -145,6 +157,15 @@ export function Game(props) {
         }
     };
 
+    const givePopularVote = (cardIDs) => {
+        console.log('POPULAR VOTE', cardIDs);
+        socket.emit('give_popular_vote', {
+            gameID: game?.id,
+            playerID: player?.id,
+            whiteCardIDs: cardIDs,
+        });
+    };
+
     const iconClassnames = 'md-36 icon-margin-right';
     const canStartGame = game?.players?.length > 0 && game?.options?.cardPacks?.length > 0; // TODO: Why is player name not there? Player is not updated by back-end
     console.log('game.state', game?.state);
@@ -217,10 +238,24 @@ export function Game(props) {
                 renderedContent = <CardReadingContainer player={player} game={game} />;
                 break;
             case GAME_STATES.SHOWING_CARDS:
-                renderedContent = <WinnerCardPickerContainer player={player} game={game} />;
+                renderedContent = (
+                    <WinnerCardPickerContainer
+                        player={player}
+                        game={game}
+                        givePopularVote={givePopularVote}
+                        popularVotedCardsIDs={popularVotedCardsIDs}
+                    />
+                );
                 break;
             case GAME_STATES.ROUND_END:
-                renderedContent = <RoundEndContainer player={player} game={game} />;
+                renderedContent = (
+                    <RoundEndContainer
+                        player={player}
+                        game={game}
+                        givePopularVote={givePopularVote}
+                        popularVotedCardsIDs={popularVotedCardsIDs}
+                    />
+                );
                 break;
             default:
                 renderedContent = <div className='error-info'>Something went wrong. Try to reload the page.</div>;
@@ -294,12 +329,24 @@ export function Game(props) {
             case GAME_STATES.SHOWING_CARDS:
                 renderedContent = (
                     <div>
-                        <WinnerCardPickerContainer player={player} game={game} />
+                        <WinnerCardPickerContainer
+                            player={player}
+                            game={game}
+                            givePopularVote={givePopularVote}
+                            popularVotedCardsIDs={popularVotedCardsIDs}
+                        />
                     </div>
                 );
                 break;
             case GAME_STATES.ROUND_END:
-                renderedContent = <RoundEndContainer player={player} game={game} />;
+                renderedContent = (
+                    <RoundEndContainer
+                        player={player}
+                        game={game}
+                        givePopularVote={givePopularVote}
+                        popularVotedCardsIDs={popularVotedCardsIDs}
+                    />
+                );
                 break;
             default:
                 renderedContent = <div className='error-info'>Something went wrong. Try to reload the page.</div>;

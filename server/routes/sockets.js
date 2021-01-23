@@ -205,13 +205,22 @@ export const sockets = (io) => {
         });
 
         socket.on("give_popular_vote", (data) => {
-            const missingFields = validateFields(["gameID", "playerID", "whiteCardIDs"]);
+            const missingFields = validateFields(
+                ["gameID", "playerID", "whiteCardIDs"],
+                data
+            );
             if (missingFields.length > 0) {
                 sendError(socket, "Invalid data", missingFields);
             } else {
-                popularVote(io, socket, gameID, playerID, whiteCardIDs);
+                popularVote(
+                    io,
+                    socket,
+                    data.gameID,
+                    data.playerID,
+                    data.whiteCardIDs
+                );
             }
-        })
+        });
     });
 
     io.on("disconnect", (socket) => {

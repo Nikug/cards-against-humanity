@@ -54,8 +54,17 @@ function formatTextWithBlanks(text, blankTexts) {
 
 export default function Card(props) {
     const card = props.card;
-    const { cardPackID, text, whiteCardsToPlay, whiteCardsToDraw } = card;
-    const { blankTexts, selected, confirmed, bigCard, selectCard, showPopularVote } = props;
+    const { cardPackID, text, whiteCardsToPlay, whiteCardsToDraw, id } = card;
+    const {
+        blankTexts,
+        selected,
+        confirmed,
+        bigCard,
+        selectCard,
+        showPopularVote,
+        givePopularVote,
+        hasBeenPopularVoted,
+    } = props;
     let type = CARD_TYPES.BLACK;
 
     if (isNullOrUndefined(whiteCardsToPlay)) {
@@ -108,7 +117,15 @@ export default function Card(props) {
                     )}
                     {showPopularVote && !isNullOrUndefined(cardPackID) && Array.isArray(cardPackID) && (
                         <span className='popularvote-btn'>
-                            <Icon name='thumb_up' color={'grey'} onClick={emptyFn} />
+                            <Icon
+                                name='thumb_up'
+                                color={hasBeenPopularVoted ? 'blue' : 'grey'}
+                                onClick={
+                                    isNullOrUndefined(givePopularVote) || hasBeenPopularVoted
+                                        ? emptyFn
+                                        : () => givePopularVote(id)
+                                }
+                            />
                         </span>
                     )}
                 </div>

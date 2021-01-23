@@ -7,8 +7,7 @@ import { emptyFn } from '../../helpers/generalhelpers';
 const TIMEOUT = 5000;
 
 export function RoundEndContainer(props) {
-    const { game, player } = props;
-
+    const { game, player, popularVotedCardsIDs, givePopularVote } = props;
     const [startingNewRound, setStartingNewRound] = useState(false);
 
     const startNewRound = () => {
@@ -23,7 +22,7 @@ export function RoundEndContainer(props) {
         if (player?.isCardCzar) {
             setTimeout(startNewRound, TIMEOUT);
         }
-    }, [props, player, game]);
+    }, []);
 
     const whiteCardsByPlayer = game.rounds[game.rounds.length - 1].whiteCardsByPlayer;
     const whiteCardsToRender = [];
@@ -55,7 +54,6 @@ export function RoundEndContainer(props) {
     const whiteCards = whiteCardsToRender;
 
     const blackCard = game.rounds[game.rounds.length - 1].blackCard;
-    const isCardCzar = player?.isCardCzar;
     const showPopularVote = game?.options?.popularVote;
 
     return (
@@ -76,6 +74,8 @@ export function RoundEndContainer(props) {
                 noActionButton={true}
                 topText={'Voittaja kortti on tässä!'}
                 showPopularVote={showPopularVote}
+                givePopularVote={givePopularVote}
+                popularVotedCardsIDs={popularVotedCardsIDs}
             />
         </div>
     );

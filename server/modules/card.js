@@ -245,6 +245,7 @@ export const createWhiteCardsByPlayer = (whiteCards, playerID) => {
         wonRound: false,
         playerID: playerID,
         popularVote: 0,
+        popularVotes: [],
         whiteCards: whiteCards,
     };
 };
@@ -294,9 +295,10 @@ export const anonymizePlayedWhiteCards = (playedWhiteCards) => {
     return playedWhiteCards.map((card) => {
         const { popularVotes, ...rest } = card;
         return {
-        ...rest,
-        playerID: card.wonRound ? card.playerID : null,
-    }});
+            ...rest,
+            playerID: card.wonRound ? card.playerID : null,
+        };
+    });
 };
 
 export const anonymizedGameClient = (game) => {

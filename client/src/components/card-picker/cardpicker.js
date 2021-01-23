@@ -35,12 +35,25 @@ export function CardPicker(props) {
         showPopularVote,
         noBigMainCard,
         givePopularVote,
+        popularVotedCardsIDs,
     } = props;
     const renderedCards = [];
     const selectableCardsLength = selectableCards ? selectableCards.length : 0;
 
     for (let i = 0; i < selectableCardsLength; i++) {
         const card = selectableCards[i];
+        let hasBeenPopularVoted = false;
+
+        if (popularVotedCardsIDs?.length > 0) {
+            for (let i = 0, len = popularVotedCardsIDs.length; i < len; i++) {
+                const votedIDs = popularVotedCardsIDs[i];
+
+                if (votedIDs[0] === card.id[0]) {
+                    hasBeenPopularVoted = true;
+                    break;
+                }
+            }
+        }
 
         renderedCards.push(
             <Card
@@ -51,6 +64,7 @@ export function CardPicker(props) {
                 selectCard={selectCard}
                 showPopularVote={showPopularVote}
                 givePopularVote={givePopularVote}
+                hasBeenPopularVoted={hasBeenPopularVoted}
             />
         );
     }

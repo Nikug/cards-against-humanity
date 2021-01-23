@@ -1,11 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { socket } from '../sockets/socket';
 
 import { CardPicker } from './cardpicker';
 import { containsObjectWithMatchingFieldIndex, emptyFn } from '../../helpers/generalhelpers';
 
 export function WinnerCardPickerContainer(props) {
-    const { game, player } = props;
+    const { game, player, givePopularVote, popularVotedCardsIDs } = props;
 
     const whiteCardsByPlayer = game.rounds[game.rounds.length - 1].whiteCardsByPlayer;
     const whiteCardsToRender = [];
@@ -91,8 +91,10 @@ export function WinnerCardPickerContainer(props) {
                 alternativeText={isCardCzar ? undefined : 'Korttikuningas valitsee voittajaa...'}
                 noActionButton={!isCardCzar}
                 selectDisabled={selectedCards.length !== 1}
-                showPopularVote={isCardCzar ? false : true}
+                showPopularVote={hasPopularVote && !isCardCzar}
                 noBigMainCard={!isCardCzar}
+                givePopularVote={givePopularVote}
+                popularVotedCardsIDs={popularVotedCardsIDs}
             />
         </div>
     );
