@@ -8,11 +8,12 @@
     "node": ">= 14.0.0"
   },
   "scripts": {
+    "start": "cross-env PRODUCTION=true node main.js",
     "client": "cd ../client && npm start",
     "server": "nodemon main.js",
     "dev": "concurrently --kill-others-on-fail \"npm run server\" \"npm run client\"",
     "build": "cd ../client && npm run build",
-    "deploy": "npm run build && cross-env PRODUCTION=true node main.js"
+    "deploy": "npm run build && npm run start"
   },
   "author": "Niku Grönberg",
   "license": "ISC",
