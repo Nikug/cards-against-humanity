@@ -171,8 +171,10 @@ export const validatePopularVote = (game, playerID) => {
 };
 
 export const validateGameEnding = (game) => {
-    const highestScore = game.players.reduce((prev, current) =>
-        prev.score > current.score ? prev.score : current.score
+    const highestScore = game.players.reduce(
+        (prev, current) =>
+            prev.score > current.score ? prev : current,
+        0
     );
-    return highestScore >= game.client.options.scoreLimit;
+    return highestScore.score >= game.client.options.scoreLimit;
 };
