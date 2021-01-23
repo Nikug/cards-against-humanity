@@ -6,6 +6,7 @@
     "start": "cd server && npm run start",
     "install": "cd server && npm install && cd ../client && npm install",
     "build": "cd client && npm run build",
+    "dev": "cd server && npm run dev",
     "heroku-postbuild": "npm run install && npm run build"
   },
   "dependencies": {

@@ -13,6 +13,7 @@ import {
 } from "./game.js";
 import { playerName } from "../consts/gameSettings.js";
 import { anonymizedGameClient } from "./card.js";
+import { joiningPlayerStates } from "../consts/states.js";
 
 export const updatePlayerName = (io, gameID, playerID, newName) => {
     const trimmedName = newName.trim();
@@ -261,3 +262,12 @@ const handleHostLeaving = (game, host) => {
     }
     return [...game.players];
 };
+
+
+export const getJoiningPlayerState = (gameState, hasName) => {
+    if(gameState === "lobby" && hasName) {
+        return "active";
+    } else {
+        return joiningPlayerStates[gameState];
+    }
+}
