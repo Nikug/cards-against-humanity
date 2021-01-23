@@ -25,7 +25,7 @@ export const sockets = (io) => {
             if (missingFields.length > 0) {
                 sendError(socket, "Invalid data", missingFields);
             } else {
-                joinToGame(socket, io, data.gameID);
+                joinToGame(socket, io, data.gameID, data.playerID);
             }
         });
 

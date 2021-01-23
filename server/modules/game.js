@@ -11,6 +11,7 @@ import {
     updatePlayersIndividually,
     getActivePlayers,
     resetPlayers,
+    getJoiningPlayerState,
 } from "./player.js";
 import {
     validateHost,
@@ -54,12 +55,31 @@ export const removeGame = (gameID) => {
     games = games.filter((game) => game.id !== gameID);
 };
 
-export const joinGame = (gameID, playerSocketID) => {
+export const joinGame = (gameID, playerSocketID, playerID) => {
+    console.log("join game called");
     const game = getGame(gameID);
     if (!!game) {
         const isHost = game.players.length === 0;
-        const player = createNewPlayer(playerSocketID, isHost);
-        game.players.push(player);
+        let player;
+        if (playerID != undefined) {
+            console.log("Player id was sent!", playerID);
+            player = game.players.find(
+                (oldPlayer) => oldPlayer.id === playerID
+            );
+            if (!!player) {
+                player.state = getJoiningPlayerState(
+                    game.stateMachine.state,
+                    !!player.name
+                );
+                player.socket = playerSocketID;
+                game.players = game.players.map((oldPlayer) =>
+                    player.id === oldPlayer.id ? player : oldPlayer
+                );
+            }
+        } else {
+            player = createNewPlayer(playerSocketID, isHost);
+            game.players.push(player);
+        }
         setGame(game);
         return player;
     }
@@ -136,7 +156,7 @@ export const changeGameStateAfterTime = (io, gameID, transition, time) => {
     }, time * 1000);
 };
 
-export const joinToGame = (socket, io, gameID) => {
+export const joinToGame = (socket, io, gameID, playerID) => {
     console.log(`Join game id ${gameID}`);
 
     const game = getGame(gameID);
@@ -144,7 +164,7 @@ export const joinToGame = (socket, io, gameID) => {
         socket.join(gameID);
         console.log(`Client joined room ${gameID}`);
 
-        const player = joinGame(gameID, socket.id);
+        const player = joinGame(gameID, socket.id, playerID);
 
         io.in(gameID).emit("update_game", { game: game.client });
         socket.emit("update_player", { player: player });
