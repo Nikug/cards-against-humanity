@@ -18,6 +18,7 @@ import {
     validateOptions,
     validateGameStartRequirements,
     validateCardCzar,
+    validateGameEnding,
 } from "./validate.js";
 import { randomBetween } from "./util.js";
 import {
@@ -238,6 +239,11 @@ export const startNewRound = (io, gameID, playerID) => {
 
     if (!validateCardCzar(game, playerID)) return;
 
+    if(validateGameEnding(game)) {
+        endGame(io, game);
+        return;
+    }
+
     game.stateMachine.startRound();
     game.client.state = game.stateMachine.state;
 
@@ -254,6 +260,15 @@ export const startNewRound = (io, gameID, playerID) => {
     setGame(newGame);
     updatePlayersIndividually(io, newGame);
 };
+
+export const endGame = (io, game) => {
+    if(game.stateMachine.can("endGame")) {
+        game.stateMachine.endGame();
+        game.client.state = game.stateMachine.state;
+        setGame(game);
+        updatePlayersIndividually(io, game);
+    }
+}
 
 export const skipRound = (io, game, newCardCzar) => {
     if (game.stateMachine.state === "pickingBlackCard") {
