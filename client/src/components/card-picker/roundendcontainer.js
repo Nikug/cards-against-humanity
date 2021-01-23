@@ -1,17 +1,17 @@
-import React, { useState, useEffect } from 'react';
-import { socket } from '../sockets/socket';
+import React, { useState, useEffect } from "react";
+import { socket } from "../sockets/socket";
 
-import { CardPicker } from './cardpicker';
-import { emptyFn } from '../../helpers/generalhelpers';
+import { CardPicker } from "./cardpicker";
+import { emptyFn } from "../../helpers/generalhelpers";
 
-const TIMEOUT = 5000;
+const TIMEOUT = 10000;
 
 export function RoundEndContainer(props) {
     const { game, player, popularVotedCardsIDs, givePopularVote } = props;
     const [startingNewRound, setStartingNewRound] = useState(false);
 
     const startNewRound = () => {
-        socket.emit('start_round', {
+        socket.emit("start_round", {
             gameID: game.id,
             playerID: player.id,
         });
@@ -24,7 +24,8 @@ export function RoundEndContainer(props) {
         }
     }, []);
 
-    const whiteCardsByPlayer = game.rounds[game.rounds.length - 1].whiteCardsByPlayer;
+    const whiteCardsByPlayer =
+        game.rounds[game.rounds.length - 1].whiteCardsByPlayer;
     const whiteCardsToRender = [];
     const confirmedCards = [];
 
@@ -57,7 +58,7 @@ export function RoundEndContainer(props) {
     const showPopularVote = game?.options?.popularVote;
 
     return (
-        <div className='blackcardpicker'>
+        <div className="blackcardpicker">
             <CardPicker
                 mainCard={blackCard}
                 selectableCards={whiteCards}
@@ -65,14 +66,22 @@ export function RoundEndContainer(props) {
                 confirmedCards={confirmedCards}
                 selectCard={emptyFn}
                 confirmCards={emptyFn}
-                description={showPopularVote ? 'Anna ääni suosikeillesi' : 'Valkoiset kortit'}
-                alternativeText={startingNewRound ? 'Käynnistetään uutta kierrosta...' : undefined}
+                description={
+                    showPopularVote
+                        ? "Anna ääni suosikeillesi"
+                        : "Valkoiset kortit"
+                }
+                alternativeText={
+                    startingNewRound
+                        ? "Käynnistetään uutta kierrosta..."
+                        : undefined
+                }
                 /*
                 customButtonTexts={["Seuraava kierros", "Ladataan"]}
                 customButtonIcons={["arrow_forward", "cached"]}
                 */
                 noActionButton={true}
-                topText={'Voittaja kortti on tässä!'}
+                topText={"Voittajakortti on tässä!"}
                 showPopularVote={showPopularVote}
                 givePopularVote={givePopularVote}
                 popularVotedCardsIDs={popularVotedCardsIDs}
