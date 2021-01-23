@@ -24,11 +24,6 @@ export function containsObjectWithMatchingField(obj, list, fieldName) {
 }
 
 export function containsObjectWithMatchingFieldIndex(obj, list, fieldName) {
-    console.log("containsObjectWithMatchingFieldIndex", {
-        obj,
-        list,
-        fieldName,
-    });
     for (let i = 0, len = list.length; i < len; i++) {
         const listField = list[i][fieldName];
         const objField = obj[fieldName];
@@ -46,13 +41,11 @@ export function containsObjectWithMatchingFieldIndex(obj, list, fieldName) {
 }
 
 export function textToSpeech(text) {
-    console.log({ text });
-    if ("speechSynthesis" in window) {
+    if ('speechSynthesis' in window) {
         const msg = new SpeechSynthesisUtterance();
-        msg.lang = "fi";
+        msg.lang = 'fi';
         msg.rate = 1;
         msg.text = text;
-        console.log("speak", msg);
         window.speechSynthesis.speak(msg);
     }
 }

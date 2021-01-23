@@ -1,9 +1,9 @@
-import React from "react";
-import { emptyFn, isNullOrUndefined } from "../../helpers/generalhelpers.js";
-import "./../../styles/card.scss";
+import React from 'react';
+import { emptyFn, isNullOrUndefined } from '../../helpers/generalhelpers.js';
+import './../../styles/card.scss';
 
-import Button, { BUTTON_TYPES } from "../button";
-import Icon from "../icon";
+import Button, { BUTTON_TYPES } from '../button';
+import Icon from '../icon';
 
 const CARD_TYPES = {
     WHITE: 1,
@@ -11,17 +11,13 @@ const CARD_TYPES = {
 };
 
 function formatTextWithBlanks(text, blankTexts) {
-    const splittedText = text.split("_");
+    const splittedText = text.split('_');
     const piecesToRender = [];
 
-    for (
-        let i = 0, blankIterator = 0, len = splittedText.length;
-        i < len;
-        i++
-    ) {
+    for (let i = 0, blankIterator = 0, len = splittedText.length; i < len; i++) {
         const piece = splittedText[i];
         piecesToRender.push(
-            <span key={`t-${i}`} className="text">
+            <span key={`t-${i}`} className='text'>
                 {piece}
             </span>
         );
@@ -30,21 +26,21 @@ function formatTextWithBlanks(text, blankTexts) {
         }
         if (blankTexts && blankTexts[blankIterator]) {
             piecesToRender.push(
-                <span key={`b-${i}`} className="blank">
+                <span key={`b-${i}`} className='blank'>
                     {blankTexts[blankIterator]}
                 </span>
             );
             blankIterator++;
         } else {
             piecesToRender.push(
-                <span key={`b-${i}`} className="blank">
+                <span key={`b-${i}`} className='blank'>
                     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                 </span>
             );
         }
     }
 
-    return <div className="text">{piecesToRender}</div>;
+    return <div className='text'>{piecesToRender}</div>;
 }
 
 /**
@@ -59,14 +55,7 @@ function formatTextWithBlanks(text, blankTexts) {
 export default function Card(props) {
     const card = props.card;
     const { cardPackID, text, whiteCardsToPlay, whiteCardsToDraw } = card;
-    const {
-        blankTexts,
-        selected,
-        confirmed,
-        bigCard,
-        selectCard,
-        showPopularVote,
-    } = props;
+    const { blankTexts, selected, confirmed, bigCard, selectCard, showPopularVote } = props;
     let type = CARD_TYPES.BLACK;
 
     if (isNullOrUndefined(whiteCardsToPlay)) {
@@ -78,8 +67,8 @@ export default function Card(props) {
     if (type === CARD_TYPES.BLACK) {
         textToRender = formatTextWithBlanks(text, blankTexts);
     } else {
-        if (typeof text === "string") {
-            textToRender = <div className="text">{text}</div>;
+        if (typeof text === 'string') {
+            textToRender = <div className='text'>{text}</div>;
         } else if (Array.isArray(text)) {
             const texts = [];
 
@@ -88,53 +77,40 @@ export default function Card(props) {
 
                 texts.push(<div key={i}>{temp}</div>);
             }
-            textToRender = <div className="text">{texts}</div>;
+            textToRender = <div className='text'>{texts}</div>;
         }
     }
 
-    console.log({ showPopularVote });
-
     return (
         <div
-            className={`card-wrapper ${bigCard ? "big-card" : ""} ${
-                confirmed ? "confirmed" : selected ? "selected" : ""
-            } ${type === CARD_TYPES.BLACK ? "black" : "white"}`}
+            className={`card-wrapper ${bigCard ? 'big-card' : ''} ${
+                confirmed ? 'confirmed' : selected ? 'selected' : ''
+            } ${type === CARD_TYPES.BLACK ? 'black' : 'white'}`}
             onClick={() => {
                 if (!isNullOrUndefined(selectCard)) {
                     selectCard(card);
                 }
             }}
         >
-            <div
-                className={`card ${
-                    type === CARD_TYPES.BLACK ? "black" : "white"
-                }`}
-            >
+            <div className={`card ${type === CARD_TYPES.BLACK ? 'black' : 'white'}`}>
                 {textToRender}
-                <div className="footer">
+                <div className='footer'>
                     {type === CARD_TYPES.BLACK && (
-                        <span className="draw-and-play">
+                        <span className='draw-and-play'>
                             {isNullOrUndefined(cardPackID)
-                                ? ""
+                                ? ''
                                 : `Nosta ${whiteCardsToDraw}, Pelaa ${whiteCardsToPlay}`}
                         </span>
                     )}
                     <span>&nbsp;</span>
-                    {!isNullOrUndefined(cardPackID) &&
-                        !Array.isArray(cardPackID) && (
-                            <span className="cardpackid">{cardPackID}</span>
-                        )}
-                    {showPopularVote &&
-                        !isNullOrUndefined(cardPackID) &&
-                        Array.isArray(cardPackID) && (
-                            <span className="popularvote-btn">
-                                <Icon
-                                    name="thumb_up"
-                                    color={"grey"}
-                                    onClick={emptyFn}
-                                />
-                            </span>
-                        )}
+                    {!isNullOrUndefined(cardPackID) && !Array.isArray(cardPackID) && (
+                        <span className='cardpackid'>{cardPackID}</span>
+                    )}
+                    {showPopularVote && !isNullOrUndefined(cardPackID) && Array.isArray(cardPackID) && (
+                        <span className='popularvote-btn'>
+                            <Icon name='thumb_up' color={'grey'} onClick={emptyFn} />
+                        </span>
+                    )}
                 </div>
             </div>
         </div>

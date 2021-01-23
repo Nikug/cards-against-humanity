@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from "react";
-import { socket } from "../sockets/socket";
+import React, { useState, useEffect } from 'react';
+import { socket } from '../sockets/socket';
 
-import { CardPicker } from "./cardpicker";
-import { emptyFn } from "../../helpers/generalhelpers";
+import { CardPicker } from './cardpicker';
+import { emptyFn } from '../../helpers/generalhelpers';
 
 const TIMEOUT = 5000;
 
@@ -12,7 +12,7 @@ export function RoundEndContainer(props) {
     const [startingNewRound, setStartingNewRound] = useState(false);
 
     const startNewRound = () => {
-        socket.emit("start_round", {
+        socket.emit('start_round', {
             gameID: game.id,
             playerID: player.id,
         });
@@ -25,8 +25,7 @@ export function RoundEndContainer(props) {
         }
     }, [props, player, game]);
 
-    const whiteCardsByPlayer =
-        game.rounds[game.rounds.length - 1].whiteCardsByPlayer;
+    const whiteCardsByPlayer = game.rounds[game.rounds.length - 1].whiteCardsByPlayer;
     const whiteCardsToRender = [];
     const confirmedCards = [];
 
@@ -48,7 +47,6 @@ export function RoundEndContainer(props) {
 
         whiteCardsToRender.push(newWhiteCard);
 
-        console.log({ wonRound: whiteCardsByPlayer[i].wonRound });
         if (whiteCardsByPlayer[i].wonRound) {
             confirmedCards.push(newWhiteCard);
         }
@@ -58,10 +56,10 @@ export function RoundEndContainer(props) {
 
     const blackCard = game.rounds[game.rounds.length - 1].blackCard;
     const isCardCzar = player?.isCardCzar;
-    const hasPopularVote = game?.options?.popularVote;
+    const showPopularVote = game?.options?.popularVote;
 
     return (
-        <div className="blackcardpicker">
+        <div className='blackcardpicker'>
             <CardPicker
                 mainCard={blackCard}
                 selectableCards={whiteCards}
@@ -69,23 +67,15 @@ export function RoundEndContainer(props) {
                 confirmedCards={confirmedCards}
                 selectCard={emptyFn}
                 confirmCards={emptyFn}
-                description={
-                    hasPopularVote
-                        ? "Anna ääni suosikeillesi"
-                        : "Valkoiset kortit"
-                }
-                alternativeText={
-                    startingNewRound
-                        ? "Käynnistetään uutta kierrosta..."
-                        : undefined
-                }
+                description={showPopularVote ? 'Anna ääni suosikeillesi' : 'Valkoiset kortit'}
+                alternativeText={startingNewRound ? 'Käynnistetään uutta kierrosta...' : undefined}
                 /*
                 customButtonTexts={["Seuraava kierros", "Ladataan"]}
                 customButtonIcons={["arrow_forward", "cached"]}
                 */
                 noActionButton={true}
-                topText={"Voittaja kortti on tässä!"}
-                showPopularVote={true}
+                topText={'Voittaja kortti on tässä!'}
+                showPopularVote={showPopularVote}
             />
         </div>
     );

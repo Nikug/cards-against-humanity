@@ -1,17 +1,13 @@
-import React, { useState } from "react";
-import { socket } from "../sockets/socket";
+import React, { useState } from 'react';
+import { socket } from '../sockets/socket';
 
-import { CardPicker } from "./cardpicker";
-import {
-    containsObjectWithMatchingFieldIndex,
-    emptyFn,
-} from "../../helpers/generalhelpers";
+import { CardPicker } from './cardpicker';
+import { containsObjectWithMatchingFieldIndex, emptyFn } from '../../helpers/generalhelpers';
 
 export function WinnerCardPickerContainer(props) {
     const { game, player } = props;
 
-    const whiteCardsByPlayer =
-        game.rounds[game.rounds.length - 1].whiteCardsByPlayer;
+    const whiteCardsByPlayer = game.rounds[game.rounds.length - 1].whiteCardsByPlayer;
     const whiteCardsToRender = [];
 
     for (let i = 0, len = whiteCardsByPlayer.length; i < len; i++) {
@@ -45,12 +41,7 @@ export function WinnerCardPickerContainer(props) {
 
         const pickLimit = 1;
 
-        const i = containsObjectWithMatchingFieldIndex(
-            card,
-            newSelectedCards,
-            "id"
-        );
-        console.log({ i });
+        const i = containsObjectWithMatchingFieldIndex(card, newSelectedCards, 'id');
         if (i !== -1) {
             newSelectedCards.splice(i);
         } else if (newSelectedCards.length < pickLimit) {
@@ -60,7 +51,6 @@ export function WinnerCardPickerContainer(props) {
             newSelectedCards.push(card);
         }
         setSelectedCards(newSelectedCards, card);
-        console.log({ newSelectedCards });
     };
 
     const confirmCard = () => {
@@ -70,7 +60,7 @@ export function WinnerCardPickerContainer(props) {
             const gameID = game.id;
             const playerID = player.id;
 
-            socket.emit("pick_winning_card", {
+            socket.emit('pick_winning_card', {
                 gameID: gameID,
                 playerID: playerID,
                 whiteCardIDs: selectedCards[0].id,
@@ -78,7 +68,7 @@ export function WinnerCardPickerContainer(props) {
 
             setConfirmedCards(selectedCards);
         } else {
-            console.log("There was not enough white cards to confirm");
+            console.log('There was not enough white cards to confirm');
         }
     };
 
@@ -87,7 +77,7 @@ export function WinnerCardPickerContainer(props) {
     const hasPopularVote = game?.options?.popularVote;
 
     return (
-        <div className="blackcardpicker">
+        <div className='blackcardpicker'>
             <CardPicker
                 mainCard={blackCard}
                 selectableCards={whiteCards}
@@ -96,17 +86,9 @@ export function WinnerCardPickerContainer(props) {
                 selectCard={isCardCzar ? selectCard : emptyFn}
                 confirmCards={isCardCzar ? confirmCard : emptyFn}
                 description={
-                    isCardCzar
-                        ? "Valitse voittaja"
-                        : hasPopularVote
-                        ? "Anna ääni suosikeillesi"
-                        : "Valkoiset kortit"
+                    isCardCzar ? 'Valitse voittaja' : hasPopularVote ? 'Anna ääni suosikeillesi' : 'Valkoiset kortit'
                 }
-                alternativeText={
-                    isCardCzar
-                        ? undefined
-                        : "Korttikuningas valitsee voittajaa..."
-                }
+                alternativeText={isCardCzar ? undefined : 'Korttikuningas valitsee voittajaa...'}
                 noActionButton={!isCardCzar}
                 selectDisabled={selectedCards.length !== 1}
                 showPopularVote={isCardCzar ? false : true}
