@@ -1,32 +1,56 @@
 import { nanoid } from "nanoid";
+import sanitize from "sanitize";
+const sanitizer = sanitize();
 
 import {
     findGameAndPlayerBySocketID,
     getGame,
     removeGame,
+    removeGameIfNoActivePlayers,
     returnToLobby,
     setGame,
     shouldGameBeDeleted,
     shouldReturnToLobby,
     skipRound,
-    startNewRound,
 } from "./game.js";
-import { playerName } from "../consts/gameSettings.js";
-import { anonymizedGameClient } from "./card.js";
+import {
+    INACTIVE_GAME_DELETE_TIME,
+    playerName,
+} from "../consts/gameSettings.js";
+import { anonymizedGameClient, drawWhiteCards } from "./card.js";
 import { joiningPlayerStates } from "../consts/states.js";
 
 export const updatePlayerName = (io, gameID, playerID, newName) => {
+    const game = getGame(game);
+    if (!game) return;
+
     const trimmedName = newName.trim();
     if (trimmedName.length < playerName.minimumLength) return;
 
-    const validatedName = trimmedName.substr(0, playerName.maximumLength);
+    const shortenedName = trimmedName.substr(0, playerName.maximumLength);
+    const cleanName = sanitizer.value(shortenedName, "string");
 
-    // TODO: add sanitatization to the player names for obvious reasons
-    const players = setPlayerName(gameID, playerID, validatedName);
+    const player = getPlayer(game, playerID);
 
-    io.in(gameID).emit("update_players", {
-        players: publicPlayersObject(players),
-    });
+    if (player.state === "pickingName") {
+        player.state =
+            game.stateMachine.state === "lobby" ? "active" : "joining";
+    }
+    const newGame = setPlayerName(game, player, cleanName);
+    setGame(newGame);
+
+    updatePlayersIndividually(io, newGame);
+};
+
+export const setPlayerName = (game, newPlayer, newName) => {
+    if (game) {
+        game.players = game.players.map((player) => {
+            return player.id === newPlayer.id
+                ? { ...newPlayer, name: newName }
+                : player;
+        });
+        return game;
+    }
 };
 
 export const changePlayerTextToSpeech = (io, gameID, playerID, useTTS) => {
@@ -46,12 +70,12 @@ export const changePlayerTextToSpeech = (io, gameID, playerID, useTTS) => {
     updatePlayersIndividually(io, game);
 };
 
-export const createNewPlayer = (socketID, isHost) => {
+export const createNewPlayer = (socketID, isHost, state = "pickingName") => {
     const player = {
         id: nanoid(),
         socket: socketID,
         name: "",
-        state: "pickingName",
+        state: state,
         score: 0,
         isCardCzar: false,
         isHost: isHost,
@@ -81,19 +105,6 @@ export const setPlayersActive = (players) => {
             ? { ...player, state: "active" }
             : player
     );
-};
-
-export const setPlayerName = (gameID, playerID, newName) => {
-    const game = getGame(gameID);
-    if (game) {
-        game.players = game.players.map((player) => {
-            return player.id === playerID
-                ? { ...player, name: newName, state: "active" }
-                : player;
-        });
-        setGame(game);
-        return game.players;
-    }
 };
 
 export const getPlayer = (game, playerID) => {
@@ -186,20 +197,35 @@ export const getActivePlayers = (players) => {
     );
 };
 
-export const setPlayerDisconnected = (io, socketID) => {
+export const setPlayerDisconnected = (io, socketID, removePlayer) => {
     const result = findGameAndPlayerBySocketID(socketID);
     if (!result) return;
 
     const { game, player } = result;
     if (!player) return;
 
-    player.state = "disconnected";
-    game.players = game.players.map((gamePlayer) =>
-        gamePlayer.id === player.id ? player : gamePlayer
-    );
+    if (removePlayer) {
+        game.players = game.players.map(
+            (gamePlayer) => gamePlayer.id !== player.id
+        );
+    } else {
+        player.state = "disconnected";
+        game.players = game.players.map((gamePlayer) =>
+            gamePlayer.id === player.id ? player : gamePlayer
+        );
+    }
+
     if (shouldGameBeDeleted(game)) {
-        removeGame(game.id);
-        return;
+        if (removePlayer) {
+            removeGame(game.id);
+            return;
+        } else {
+            setTimeout(
+                removeGameIfNoActivePlayers(game.id),
+                INACTIVE_GAME_DELETE_TIME
+            );
+            return;
+        }
     }
 
     if (player.isHost) {
@@ -270,4 +296,21 @@ export const getJoiningPlayerState = (gameState, hasName) => {
     } else {
         return joiningPlayerStates[gameState];
     }
+};
+
+export const handleJoiningPlayers = (game) => {
+    return game.players.map((player) => {
+        if (player.state !== "joining") return player;
+
+        player.state = "active";
+        const numberOfMissingCards =
+            gameOptions.startingWhiteCardCount - player.whiteCards.length;
+        if (numberOfMissingCards > 0) {
+            player.whiteCards = [
+                ...player.whiteCards,
+                drawWhiteCards(game, numberOfMissingCards),
+            ];
+        }
+        return player;
+    });
 };

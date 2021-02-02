@@ -1,9 +1,7 @@
 import {
-    joinToGame,
     updateGameOptions,
     startGame,
     startNewRound,
-    sendGameInfo,
     validateHostAndReturnToLobby,
 } from "../modules/game.js";
 import {
@@ -19,6 +17,7 @@ import {
     selectWinner,
 } from "../modules/card.js";
 import { popularVote } from "../modules/popularVote.js";
+import { joinGame } from "../modules/join.js";
 
 export const sockets = (io) => {
     io.on("connection", (socket) => {
@@ -29,7 +28,7 @@ export const sockets = (io) => {
             if (missingFields.length > 0) {
                 sendError(socket, "Invalid data", missingFields);
             } else {
-                joinToGame(socket, io, data.gameID, data.playerID);
+                joinGame(socket, io, data.gameID, data.playerID);
             }
         });
 
@@ -38,8 +37,7 @@ export const sockets = (io) => {
             if (missingFields.length > 0) {
                 sendError(socket, "Invalid data", missingFields);
             } else {
-                console.log("Some dude just left");
-                setPlayerDisconnected(io, socket.id);
+                setPlayerDisconnected(io, socket.id, true);
                 socket.disconnect(true);
             }
         });
@@ -189,14 +187,11 @@ export const sockets = (io) => {
             }
         });
 
-        socket.on("get_initial_data", (data) => {
-            console.log("get_initial_data", data);
-            const missingFields = validateFields(["playerID"], data);
-            if (missingFields.length > 0) {
-                sendError(socket, "Invalid data", missingFields);
-            } else {
-                sendGameInfo(io, data.playerID, socket.id);
-            }
+        socket.on("get_initial_data", () => {
+            socket.emit(
+                "initial_data",
+                "Get initial data is no longer used, use join_game instead"
+            );
         });
 
         socket.on("return_to_lobby", (data) => {
@@ -229,7 +224,7 @@ export const sockets = (io) => {
 
     io.on("disconnect", (socket) => {
         console.log(`Client left :( Socket ID: ${socket.id}`);
-        setPlayerDisconnected(io, socket.id);
+        setPlayerDisconnected(io, socket.id, false);
     });
 };
 

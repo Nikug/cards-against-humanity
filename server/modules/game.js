@@ -12,6 +12,7 @@ import {
     getActivePlayers,
     resetPlayers,
     getJoiningPlayerState,
+    handleJoiningPlayers,
 } from "./player.js";
 import {
     validateHost,
@@ -52,40 +53,48 @@ export const setGame = (newGame) => {
     return newGame;
 };
 
+export const removeGameIfNoActivePlayers = (gameID) => {
+    const game = getGame(gameID);
+    if (getActivePlayers(game.players).length === 0) {
+        removeGame(gameID);
+    }
+};
+
 export const removeGame = (gameID) => {
     games = games.filter((game) => game.id !== gameID);
 };
 
-export const joinGame = (gameID, playerSocketID, playerID) => {
-    console.log("join game called");
-    const game = getGame(gameID);
-    if (!!game) {
-        const isHost = game.players.length === 0;
-        let player;
-        if (playerID != undefined) {
-            console.log("Player id was sent!", playerID);
-            player = game.players.find(
-                (oldPlayer) => oldPlayer.id === playerID
-            );
-            if (!!player) {
-                player.state = getJoiningPlayerState(
-                    game.stateMachine.state,
-                    !!player.name
-                );
-                player.socket = playerSocketID;
-                game.players = game.players.map((oldPlayer) =>
-                    player.id === oldPlayer.id ? player : oldPlayer
-                );
-            }
-        } else {
-            player = createNewPlayer(playerSocketID, isHost);
-            game.players.push(player);
-        }
-        setGame(game);
-        return player;
-    }
-    return null;
-};
+// TODO: Remove once new join works
+// export const joinGame = (gameID, playerSocketID, playerID) => {
+//     console.log("join game called");
+//     const game = getGame(gameID);
+//     if (!!game) {
+//         const isHost = game.players.length === 0;
+//         let player;
+//         if (playerID != undefined) {
+//             console.log("Player id was sent!", playerID);
+//             player = game.players.find(
+//                 (oldPlayer) => oldPlayer.id === playerID
+//             );
+//             if (!!player) {
+//                 player.state = getJoiningPlayerState(
+//                     game.stateMachine.state,
+//                     !!player.name
+//                 );
+//                 player.socket = playerSocketID;
+//                 game.players = game.players.map((oldPlayer) =>
+//                     player.id === oldPlayer.id ? player : oldPlayer
+//                 );
+//             }
+//         } else {
+//             player = createNewPlayer(playerSocketID, isHost);
+//             game.players.push(player);
+//         }
+//         setGame(game);
+//         return player;
+//     }
+//     return null;
+// };
 
 const createNewGame = (url) => {
     const fsm = createStateMachine();
@@ -157,22 +166,23 @@ export const changeGameStateAfterTime = (io, gameID, transition, time) => {
     }, time * 1000);
 };
 
-export const joinToGame = (socket, io, gameID, playerID) => {
-    console.log(`Join game id ${gameID}`);
+// TODO: remove once new join is functional
+// export const joinToGame = (socket, io, gameID, playerID) => {
+//     console.log(`Join game id ${gameID}`);
 
-    const game = getGame(gameID);
-    if (game != null) {
-        socket.join(gameID);
-        console.log(`Client joined room ${gameID}`);
+//     const game = getGame(gameID);
+//     if (game != null) {
+//         socket.join(gameID);
+//         console.log(`Client joined room ${gameID}`);
 
-        const player = joinGame(gameID, socket.id, playerID);
+//         const player = joinGame(gameID, socket.id, playerID);
 
-        updatePlayersIndividually(io, game);
-    } else {
-        socket.disconnect(true);
-        console.log(`Client disconnected :( ${gameID}`);
-    }
-};
+//         updatePlayersIndividually(io, game);
+//     } else {
+//         socket.disconnect(true);
+//         console.log(`Client disconnected :( ${gameID}`);
+//     }
+// };
 
 export const updateGameOptions = (io, gameID, playerID, newOptions) => {
     const game = getGame(gameID);
@@ -238,10 +248,12 @@ export const startNewRound = (io, gameID, playerID) => {
 
     if (!validateCardCzar(game, playerID)) return;
 
-    if(validateGameEnding(game)) {
+    if (validateGameEnding(game)) {
         endGame(io, game);
         return;
     }
+
+    if (game.stateMachine.cannot("startRound")) return;
 
     game.stateMachine.startRound();
     game.client.state = game.stateMachine.state;
@@ -250,6 +262,9 @@ export const startNewRound = (io, gameID, playerID) => {
         game,
         game.currentRound.blackCard.whiteCardsToPlay
     );
+
+    game.players = handleJoiningPlayers(game);
+
     game.players = appointNextCardCzar(game, playerID);
     game.players = setPopularVoteLeader(game.players);
 
@@ -261,13 +276,13 @@ export const startNewRound = (io, gameID, playerID) => {
 };
 
 export const endGame = (io, game) => {
-    if(game.stateMachine.can("endGame")) {
+    if (game.stateMachine.can("endGame")) {
         game.stateMachine.endGame();
         game.client.state = game.stateMachine.state;
         setGame(game);
         updatePlayersIndividually(io, game);
     }
-}
+};
 
 export const skipRound = (io, game, newCardCzar) => {
     if (game.stateMachine.state === "pickingBlackCard") {
@@ -325,30 +340,31 @@ export const findGameByPlayerID = (playerID) => {
     return undefined;
 };
 
-export const sendGameInfo = (io, playerID, socketID) => {
-    const game = findGameByPlayerID(playerID);
+// TODO: remove once join_game works
+// export const sendGameInfo = (io, playerID, socketID) => {
+//     const game = findGameByPlayerID(playerID);
 
-    if (!game) {
-        io.to(socketID).emit("initial_data", {
-            game: undefined,
-            players: undefined,
-            player: undefined,
-        });
-    } else {
-        const player = game.players.find((player) => player.id === playerID);
-        player.socket = socketID;
-        game.players = game.players.map((oldPlayer) =>
-            oldPlayer.id === playerID ? player : oldPlayer
-        );
-        setGame(game);
+//     if (!game) {
+//         io.to(socketID).emit("initial_data", {
+//             game: undefined,
+//             players: undefined,
+//             player: undefined,
+//         });
+//     } else {
+//         const player = game.players.find((player) => player.id === playerID);
+//         player.socket = socketID;
+//         game.players = game.players.map((oldPlayer) =>
+//             oldPlayer.id === playerID ? player : oldPlayer
+//         );
+//         setGame(game);
 
-        io.to(socketID).emit("initial_data", {
-            game: { ...anonymizedGameClient(game) },
-            players: publicPlayersObject(game.players),
-            player: player,
-        });
-    }
-};
+//         io.to(socketID).emit("initial_data", {
+//             game: { ...anonymizedGameClient(game) },
+//             players: publicPlayersObject(game.players),
+//             player: player,
+//         });
+//     }
+// };
 
 export const shouldGameBeDeleted = (game) => {
     if (game.stateMachine.state === "lobby") {

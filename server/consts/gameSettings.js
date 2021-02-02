@@ -28,3 +28,5 @@ export const playerName = {
     minimumLength: 1,
     maximumLength: 50,
 };
+
+export const INACTIVE_GAME_DELETE_TIME = 10 * 60 * 1000; // 10 mins

@@ -174,7 +174,7 @@ export const validateGameEnding = (game) => {
     const highestScore = game.players.reduce(
         (prev, current) =>
             prev.score > current.score ? prev : current,
-        0
+        { score: 0 }
     );
     return highestScore.score >= game.client.options.scoreLimit;
 };

@@ -26,6 +26,7 @@
     "nanoid": "^3.1.12",
     "node-fetch": "^2.6.1",
     "node-sass": "^4.14.1",
+    "sanitize": "^2.1.0",
     "socket.io": "^2.3.0"
   },
   "devDependencies": {
