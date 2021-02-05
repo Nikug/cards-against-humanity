@@ -72,53 +72,21 @@ export function Game(props) {
         socket.on("update_player", (data) => {
             console.log("socket update_player", data);
 
-            // setPlayer(data.player);
-
             setCookie({ field: "playerID", value: data.player.id });
             updateData({ player: data.player });
         });
 
         socket.on("update_game", (data) => {
             console.log("socket update_game", data);
-            // setGame((prevGame) => ({ ...prevGame, ...data.game }));
             updateData({ game: data.game });
         });
 
         socket.on("update_players", (data) => {
             console.log("socket update_players", data);
-            // setGame((prevGame) => ({ ...prevGame, players: data.players }));
             updateData({ players: data.players });
         });
 
-        // socket.on("update_game_and_players", (data) => {
-        //     console.log("socket update_game_and_players", data);
-        //     if (data.error) {
-        //         console.log("Received error", data.error);
-        //         return;
-        //     }
-
-        //     // setGame((prevGame) => ({
-        //     //     ...prevGame,
-        //     //     ...data.game,
-        //     //     players: data.players,
-        //     // }));
-        //     // setPlayer(data.player);
-
-        //     console.log("Setting cookie to", data.player.id);
-        //     setCookie({ field: "playerID", value: data.player.id });
-        //     updateData({
-        //         game: data.game,
-        //         player: data.player,
-        //         players: data.players,
-        //     });
-        // });
-
         socket.on("update_game_options", (data) => {
-            // TODO: figure out why options are not updated
-
-            console.log("socket update_game_options", data);
-            // setGame((prevGame) => ({ ...prevGame, options: data.options }));
-
             updateData({ options: data.options });
         });
 

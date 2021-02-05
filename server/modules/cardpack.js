@@ -85,6 +85,7 @@ export const removeCardPackFromGame = (gameID, cardPackID, playerID) => {
     const game = getGame(gameID);
     if (!game) return undefined;
 
+    if (validateState(game, "lobby")) return undefined;
     if (!validateHost(game, playerID)) return undefined;
 
     game.client.options.cardPacks = game.client.options.cardPacks.filter(

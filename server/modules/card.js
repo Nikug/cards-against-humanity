@@ -10,6 +10,7 @@ import {
     validateCardCzar,
     validateShowingWhiteCard,
     validatePickingWinner,
+    validateState,
 } from "./validate.js";
 import {
     addScore,
@@ -76,6 +77,7 @@ export const selectBlackCard = (
     const game = getGame(gameID);
     if (!game) return;
 
+    if (!validateState(game, "pickingBlackCard")) return;
     if (!validateCardCzar(game, playerID)) return;
 
     if (

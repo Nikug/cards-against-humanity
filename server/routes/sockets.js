@@ -27,6 +27,11 @@ export const sockets = (io) => {
             joinGame(io, socket, data?.gameID, data?.playerID);
         });
 
+        socket.on("disconnect", (reason) => {
+            console.log(`Client left: ${reason}, Socket ID: ${socket.id}`);
+            setPlayerDisconnected(io, socket.id, false);
+        });
+
         socket.on("leave_game", (data) => {
             const missingFields = validateFields(["gameID", "playerID"], data);
             if (missingFields.length > 0) {
@@ -182,13 +187,6 @@ export const sockets = (io) => {
             }
         });
 
-        socket.on("get_initial_data", () => {
-            socket.emit(
-                "initial_data",
-                "Get initial data is no longer used, use join_game instead"
-            );
-        });
-
         socket.on("return_to_lobby", (data) => {
             const missingFields = validateFields(["gameID", "playerID"], data);
             if (missingFields.length > 0) {
@@ -215,16 +213,11 @@ export const sockets = (io) => {
                 );
             }
         });
-
-        socket.on("disconnect", (reason) => {
-            console.log(`Client left: ${reason}, Socket ID: ${socket.id}`);
-            setPlayerDisconnected(io, socket.id, false);
-        });
     });
 };
 
 const sendError = (socket, id, message) => {
-    socket.emit("error", {
+    socket?.emit("notification", {
         id: id,
         message: message,
     });
