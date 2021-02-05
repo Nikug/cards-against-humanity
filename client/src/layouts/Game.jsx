@@ -18,11 +18,10 @@ import { CardReadingContainer } from "../components/card-picker/cardreadingconta
 import { RoundEndContainer } from "../components/card-picker/roundendcontainer";
 import { textToSpeech } from "../helpers/generalhelpers";
 import { NOTIFICATION_TYPES } from "../components/notification/notification";
+import { PlayerName } from "../components/options/PlayerName";
 
 export function Game(props) {
     const { game, player } = props;
-    // const [game, setGame] = useState(props.game);
-    // const [player, setPlayer] = useState(props.player);
     const [progress, setProgress] = useState(0);
     const [blackCards, setBlackCards] = useState([]);
     const [popularVotedCardsIDs, setPopularVotedCardsIDs] = useState([]);
@@ -35,15 +34,6 @@ export function Game(props) {
     };
 
     useEffect(() => {
-        // window.addEventListener("beforeunload", () => {
-        //     if (!!game && !!player) {
-        //         socket.emit("leave_game", {
-        //             gameID: game?.id,
-        //             playerID: player?.id,
-        //         });
-        //     }
-        // });
-
         if (game === undefined) {
             const cookie = getCookie("playerID");
             if (socket.disconnected) {
@@ -267,112 +257,121 @@ export function Game(props) {
                 break;
         }
     } else {
-        switch (gameState) {
-            case GAME_STATES.LOBBY:
-                renderedContent = (
-                    <>
-                        <div className="info">
-                            <div className="game-settings-container">
-                                <div className="nick-and-start-container">
-                                    <div className="nickname-selector">
-                                        <Setting
-                                            text={"Nimimerkki"}
-                                            placeholderText={"nickname"}
-                                            controlType={
-                                                CONTROL_TYPES.textWithConfirm
-                                            }
-                                            onChangeCallback={setPlayerName}
-                                            icon={{
-                                                name: "person",
-                                                className: iconClassnames,
-                                            }}
-                                            charLimit={35}
-                                        />
+        if (gameState !== "lobby" && player?.state === "pickingName") {
+            renderedContent = (
+                <PlayerName gameID={game?.id} playerID={player?.id} />
+            );
+        } else {
+            switch (gameState) {
+                case GAME_STATES.LOBBY:
+                    renderedContent = (
+                        <>
+                            <div className="info">
+                                <div className="game-settings-container">
+                                    <div className="nick-and-start-container">
+                                        <div className="nickname-selector">
+                                            <Setting
+                                                text={"Nimimerkki"}
+                                                placeholderText={"nickname"}
+                                                controlType={
+                                                    CONTROL_TYPES.textWithConfirm
+                                                }
+                                                onChangeCallback={setPlayerName}
+                                                icon={{
+                                                    name: "person",
+                                                    className: iconClassnames,
+                                                }}
+                                                charLimit={35}
+                                            />
+                                        </div>
+                                        {player?.isHost && (
+                                            <Button
+                                                icon={"play_circle_filled"}
+                                                iconPosition={"after"}
+                                                text={"Aloita peli"}
+                                                type={BUTTON_TYPES.GREEN}
+                                                additionalClassname={"big-btn"}
+                                                callback={() =>
+                                                    startGame(
+                                                        game?.id,
+                                                        player?.id
+                                                    )
+                                                }
+                                                disabled={
+                                                    !canStartGame ||
+                                                    player?.isHost !== true
+                                                }
+                                            />
+                                        )}
                                     </div>
-                                    {player?.isHost && (
-                                        <Button
-                                            icon={"play_circle_filled"}
-                                            iconPosition={"after"}
-                                            text={"Aloita peli"}
-                                            type={BUTTON_TYPES.GREEN}
-                                            additionalClassname={"big-btn"}
-                                            callback={() =>
-                                                startGame(game?.id, player?.id)
-                                            }
-                                            disabled={
-                                                !canStartGame ||
-                                                player?.isHost !== true
-                                            }
-                                        />
-                                    )}
                                 </div>
                             </div>
-                        </div>
-                        <div className="info">
-                            <GameSettingsContainer
-                                options={game ? game.options : {}}
-                                gameID={game?.id}
-                                isHost={player?.isHost}
-                                isDisabled={player?.isHost !== true}
-                                playerID={player?.id}
+                            <div className="info">
+                                <GameSettingsContainer
+                                    options={game ? game.options : {}}
+                                    gameID={game?.id}
+                                    isHost={player?.isHost}
+                                    isDisabled={player?.isHost !== true}
+                                    playerID={player?.id}
+                                />
+                            </div>
+                        </>
+                    );
+                    break;
+                case GAME_STATES.PICKING_BLACK_CARD:
+                    renderedContent = (
+                        <div>
+                            <WaitingCardPickerContainer
+                                player={player}
+                                game={game}
+                                alternativeText={
+                                    "Korttikuningas valitsee korttia..."
+                                }
+                                showMainCard={false}
                             />
                         </div>
-                    </>
-                );
-                break;
-            case GAME_STATES.PICKING_BLACK_CARD:
-                renderedContent = (
-                    <div>
-                        <WaitingCardPickerContainer
-                            player={player}
-                            game={game}
-                            alternativeText={
-                                "Korttikuningas valitsee korttia..."
-                            }
-                            showMainCard={false}
-                        />
-                    </div>
-                );
-                break;
-            case GAME_STATES.PLAYING_WHITE_CARDS:
-                renderedContent = (
-                    <WhiteCardPickerContainer player={player} game={game} />
-                );
-                break;
-            case GAME_STATES.READING_CARDS:
-                renderedContent = (
-                    <CardReadingContainer player={player} game={game} />
-                );
-                break;
-            case GAME_STATES.SHOWING_CARDS:
-                renderedContent = (
-                    <div>
-                        <WinnerCardPickerContainer
+                    );
+                    break;
+                case GAME_STATES.PLAYING_WHITE_CARDS:
+                    renderedContent = (
+                        <WhiteCardPickerContainer player={player} game={game} />
+                    );
+                    break;
+                case GAME_STATES.READING_CARDS:
+                    renderedContent = (
+                        <CardReadingContainer player={player} game={game} />
+                    );
+                    break;
+                case GAME_STATES.SHOWING_CARDS:
+                    renderedContent = (
+                        <div>
+                            <WinnerCardPickerContainer
+                                player={player}
+                                game={game}
+                                givePopularVote={givePopularVote}
+                                popularVotedCardsIDs={popularVotedCardsIDs}
+                            />
+                        </div>
+                    );
+                    break;
+                case GAME_STATES.ROUND_END:
+                    renderedContent = (
+                        <RoundEndContainer
                             player={player}
                             game={game}
                             givePopularVote={givePopularVote}
                             popularVotedCardsIDs={popularVotedCardsIDs}
                         />
-                    </div>
-                );
-                break;
-            case GAME_STATES.ROUND_END:
-                renderedContent = (
-                    <RoundEndContainer
-                        player={player}
-                        game={game}
-                        givePopularVote={givePopularVote}
-                        popularVotedCardsIDs={popularVotedCardsIDs}
-                    />
-                );
-                break;
-            default:
-                renderedContent = (
-                    <div className="error-info">
-                        Something went wrong. Try to reload the page.
-                    </div>
-                );
-                break;
+                    );
+                    break;
+                default:
+                    renderedContent = (
+                        <div className="error-info">
+                            Something went wrong. Try to reload the page.
+                        </div>
+                    );
+                    break;
+            }
         }
     }
 
