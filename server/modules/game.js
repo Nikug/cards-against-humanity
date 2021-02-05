@@ -64,38 +64,6 @@ export const removeGame = (gameID) => {
     games = games.filter((game) => game.id !== gameID);
 };
 
-// TODO: Remove once new join works
-// export const joinGame = (gameID, playerSocketID, playerID) => {
-//     console.log("join game called");
-//     const game = getGame(gameID);
-//     if (!!game) {
-//         const isHost = game.players.length === 0;
-//         let player;
-//         if (playerID != undefined) {
-//             console.log("Player id was sent!", playerID);
-//             player = game.players.find(
-//                 (oldPlayer) => oldPlayer.id === playerID
-//             );
-//             if (!!player) {
-//                 player.state = getJoiningPlayerState(
-//                     game.stateMachine.state,
-//                     !!player.name
-//                 );
-//                 player.socket = playerSocketID;
-//                 game.players = game.players.map((oldPlayer) =>
-//                     player.id === oldPlayer.id ? player : oldPlayer
-//                 );
-//             }
-//         } else {
-//             player = createNewPlayer(playerSocketID, isHost);
-//             game.players.push(player);
-//         }
-//         setGame(game);
-//         return player;
-//     }
-//     return null;
-// };
-
 const createNewGame = (url) => {
     const fsm = createStateMachine();
     const game = {
@@ -166,24 +134,6 @@ export const changeGameStateAfterTime = (io, gameID, transition, time) => {
     }, time * 1000);
 };
 
-// TODO: remove once new join is functional
-// export const joinToGame = (socket, io, gameID, playerID) => {
-//     console.log(`Join game id ${gameID}`);
-
-//     const game = getGame(gameID);
-//     if (game != null) {
-//         socket.join(gameID);
-//         console.log(`Client joined room ${gameID}`);
-
-//         const player = joinGame(gameID, socket.id, playerID);
-
-//         updatePlayersIndividually(io, game);
-//     } else {
-//         socket.disconnect(true);
-//         console.log(`Client disconnected :( ${gameID}`);
-//     }
-// };
-
 export const updateGameOptions = (io, gameID, playerID, newOptions) => {
     const game = getGame(gameID);
 
@@ -196,7 +146,7 @@ export const updateGameOptions = (io, gameID, playerID, newOptions) => {
     });
     const updatedGame = setGame(game);
 
-    io.in(game.id).emit("update_game_options", {
+    io.in(gameID).emit("update_game_options", {
         options: updatedGame.client.options,
     });
 };

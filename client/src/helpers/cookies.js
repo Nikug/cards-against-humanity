@@ -32,13 +32,15 @@ export function getCookie(cookieName) {
     const cookieFields = documentCookie.split(";");
 
     for (let i = 0, len = cookieFields.length; i < len; i++) {
-        const field = cookieFields[i];
+        const field = cookieFields[i].trim();
         const values = field.split("=");
+        console.log("Cookie values", values);
 
         if (values.length === 2 && values[0] === cookieName) {
             const cookieToReturn = {};
-
-            return (cookieToReturn[cookieName] = values[1]);
+            cookieToReturn[cookieName] = values[1];
+            console.log("returning cookie", cookieToReturn);
+            return values[1];
         }
     }
 

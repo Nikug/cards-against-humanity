@@ -21,15 +21,10 @@ import { joinGame } from "../modules/join.js";
 
 export const sockets = (io) => {
     io.on("connection", (socket) => {
-        console.log(`Client joined! ID: ${socket.id}`);
+        console.log(`Client joined! socket ID: ${socket.id}`);
 
         socket.on("join_game", (data) => {
-            const missingFields = validateFields(["gameID"], data);
-            if (missingFields.length > 0) {
-                sendError(socket, "Invalid data", missingFields);
-            } else {
-                joinGame(socket, io, data.gameID, data.playerID);
-            }
+            joinGame(io, socket, data?.gameID, data?.playerID);
         });
 
         socket.on("leave_game", (data) => {
@@ -220,11 +215,11 @@ export const sockets = (io) => {
                 );
             }
         });
-    });
 
-    io.on("disconnect", (socket) => {
-        console.log(`Client left :( Socket ID: ${socket.id}`);
-        setPlayerDisconnected(io, socket.id, false);
+        socket.on("disconnect", (reason) => {
+            console.log(`Client left: ${reason}, Socket ID: ${socket.id}`);
+            setPlayerDisconnected(io, socket.id, false);
+        });
     });
 };
 

@@ -16,19 +16,20 @@ import {
 import {
     INACTIVE_GAME_DELETE_TIME,
     playerName,
+    gameOptions,
 } from "../consts/gameSettings.js";
 import { anonymizedGameClient, drawWhiteCards } from "./card.js";
 import { joiningPlayerStates } from "../consts/states.js";
 
 export const updatePlayerName = (io, gameID, playerID, newName) => {
-    const game = getGame(game);
+    const game = getGame(gameID);
     if (!game) return;
 
     const trimmedName = newName.trim();
     if (trimmedName.length < playerName.minimumLength) return;
 
     const shortenedName = trimmedName.substr(0, playerName.maximumLength);
-    const cleanName = sanitizer.value(shortenedName, "string");
+    const cleanName = sanitizer.value(shortenedName, "str");
 
     const player = getPlayer(game, playerID);
 
@@ -64,7 +65,6 @@ export const changePlayerTextToSpeech = (io, gameID, playerID, useTTS) => {
     game.players = game.players.map((gamePlayer) =>
         gamePlayer.id === player.id ? player : gamePlayer
     );
-    console.log("game.players", game.players, "useTTS", useTTS);
     setGame(game);
 
     updatePlayersIndividually(io, game);
@@ -205,7 +205,7 @@ export const setPlayerDisconnected = (io, socketID, removePlayer) => {
     if (!player) return;
 
     if (removePlayer) {
-        game.players = game.players.map(
+        game.players = game.players.filter(
             (gamePlayer) => gamePlayer.id !== player.id
         );
     } else {
@@ -271,11 +271,19 @@ const handleCardCzarLeaving = (io, game, cardCzar) => {
 
 const handleHostLeaving = (game, host) => {
     const hostIndex = game.players.findIndex((player) => player.id === host.id);
-    game.players[hostIndex].isHost = false;
+    if (hostIndex !== -1) {
+        game.players[hostIndex].isHost = false;
+    }
 
-    const activePlayers = getActivePlayers(game.players).filter(
-        (player) => player.id !== host.id
-    );
+    let players = [];
+    if (game.stateMachine.state === "lobby") {
+        players = [...game.players];
+    } else {
+        players = getActivePlayers(game.players);
+    }
+
+    const activePlayers = players.filter((player) => player.id !== host.id);
+
     if (activePlayers.length > 0) {
         game.players = game.players.map((player) =>
             player.id === activePlayers[0].id

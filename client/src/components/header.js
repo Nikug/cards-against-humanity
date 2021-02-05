@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { Link, useHistory, useLocation } from "react-router-dom";
 import { isNullOrUndefined } from "../helpers/generalhelpers";
 import { socket } from "./sockets/socket";
+import { deleteCookie } from "../helpers/cookies";
 import "./../styles/header.scss";
 
 import Icon from "./icon";
@@ -14,10 +15,13 @@ export const Header = (props) => {
     const pathName = useLocation().pathname;
 
     const leaveGame = () => {
+        deleteCookie("playerID");
         socket.emit("leave_game", {
             gameID: game?.id,
             playerID: player?.id,
         });
+        socket.close();
+        props.reset();
         history.push("/");
     };
 

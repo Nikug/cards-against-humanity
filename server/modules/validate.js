@@ -31,7 +31,6 @@ export const validatePlayerPlayingWhiteCards = (
 
     const player = getPlayer(game, playerID);
     if (player === undefined) {
-        console.log("Player was not found");
         return {
             result: false,
             error: "Pelaajaa ei löytynyt",
@@ -172,8 +171,7 @@ export const validatePopularVote = (game, playerID) => {
 
 export const validateGameEnding = (game) => {
     const highestScore = game.players.reduce(
-        (prev, current) =>
-            prev.score > current.score ? prev : current,
+        (prev, current) => (prev.score > current.score ? prev : current),
         { score: 0 }
     );
     return highestScore.score >= game.client.options.scoreLimit;

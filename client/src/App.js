@@ -1,19 +1,28 @@
-import React, { useEffect, useState } from 'react';
-import { socket } from './components/sockets/socket';
-import { BrowserRouter as Router, Switch, Route, useHistory, useLocation } from 'react-router-dom';
-import axios from 'axios';
+import React, { useEffect, useState } from "react";
+import { socket } from "./components/sockets/socket";
+import {
+    BrowserRouter as Router,
+    Switch,
+    Route,
+    useHistory,
+    useLocation,
+} from "react-router-dom";
+import axios from "axios";
 
-import { Home } from './layouts/Home';
-import { Game } from './layouts/Game';
-import { Header } from './components/header';
-import Music from './components/music';
+import { Home } from "./layouts/Home";
+import { Game } from "./layouts/Game";
+import { Header } from "./components/header";
+import Music from "./components/music";
 
-import './styles/App.scss';
-import './styles/footer.scss';
-import './styles/notification.scss';
-import { deleteCookie, getCookie, setCookie } from './helpers/cookies';
-import { isNullOrUndefined, containsObjectWithMatchingFieldIndex } from './helpers/generalhelpers';
-import { Notification } from './components/notification/notification';
+import "./styles/App.scss";
+import "./styles/footer.scss";
+import "./styles/notification.scss";
+import { deleteCookie, getCookie, setCookie } from "./helpers/cookies";
+import {
+    isNullOrUndefined,
+    containsObjectWithMatchingFieldIndex,
+} from "./helpers/generalhelpers";
+import { Notification } from "./components/notification/notification";
 
 export const App = (props) => {
     const [game, setGame] = useState(undefined);
@@ -24,7 +33,7 @@ export const App = (props) => {
     const history = useHistory();
 
     function startNewGame() {
-        axios.post('/g').then((res) => {
+        axios.post("/g").then((res) => {
             history.push(`/g/${res.data.url}`);
         });
     }
@@ -49,24 +58,38 @@ export const App = (props) => {
     };
 
     useEffect(() => {
-        socket.on('initial_data', (data) => {
+        socket.on("update_game_and_players", (data) => {
+            if (data.error) {
+                console.log("Received error from server:", data.error);
+                setLoading(false);
+                return;
+            }
             if (isNullOrUndefined(data.game)) {
-                deleteCookie('playerID');
+                deleteCookie("playerID");
             } else {
-                setGame({ ...data.game, players: data.players });
-                setPlayer(data.player);
+                setGame((prevGame) => ({
+                    ...prevGame,
+                    ...data.game,
+                    players: data.players,
+                }));
+                setPlayer((prevPlayer) => ({ ...prevPlayer, ...data.player }));
+                setCookie({ field: "playerID", value: data.player.id });
+                history.push(`/g/${data.game.id}`);
             }
             setLoading(false);
         });
+    }, []);
 
-        const cookie = getCookie('playerID');
+    useEffect(() => {
+        const cookie = getCookie("playerID");
 
         if (!isNullOrUndefined(cookie)) {
-            socket.emit('get_initial_data', {
+            socket.emit("join_game", {
                 playerID: cookie,
             });
-            //deleteCookie("playerID");
+            // setPlayer({ player: { id: cookie } });
         } else {
+            deleteCookie("playerID");
             //setCookie({ field: "playerID", value: "random-id-123" });
             setLoading(false);
         }
@@ -74,14 +97,22 @@ export const App = (props) => {
 
     const updateData = (data) => {
         if (data.player) {
-            setPlayer(data.player);
+            setPlayer((prevPlayer) => ({ ...prevPlayer, ...data.player }));
         }
         if (data.game) {
-            setGame(data.game);
+            setGame((prevGame) => ({ ...prevGame, ...data.game }));
+        }
+        if (data.options) {
+            setGame((prevGame) => ({ ...prevGame, options: data.options }));
         }
         if (data.players) {
             setGame((prevGame) => ({ ...prevGame, players: data.players }));
         }
+    };
+
+    const resetData = () => {
+        setPlayer(undefined);
+        setGame(undefined);
     };
 
     const notificationsToRender = [];
@@ -107,17 +138,28 @@ export const App = (props) => {
     } else {
         content = (
             <>
-                {!isNullOrUndefined(notification) && notification.length > 0 && (
-                    <div className='notification-wrapper'>{notificationsToRender}</div>
-                )}
-                <div className={`App ${pathName === '/' ? 'background-img' : 'mono-background'}`}>
+                {!isNullOrUndefined(notification) &&
+                    notification.length > 0 && (
+                        <div className="notification-wrapper">
+                            {notificationsToRender}
+                        </div>
+                    )}
+                <div
+                    className={`App ${
+                        pathName === "/" ? "background-img" : "mono-background"
+                    }`}
+                >
                     <div>
-                        <div className='basic-grid'>
-                            <Header game={game} player={player} />
+                        <div className="basic-grid">
+                            <Header
+                                game={game}
+                                player={player}
+                                reset={resetData}
+                            />
                             <Switch>
                                 <Route
                                     exact
-                                    path='/'
+                                    path="/"
                                     render={(props) => (
                                         <Home
                                             startNewGame={startNewGame}
@@ -128,12 +170,17 @@ export const App = (props) => {
                                 />
                                 <Route
                                     exact
-                                    path='/instructions'
-                                    render={(props) => <div>Ohjeita rakennetaan... Tässä voi mennä hetki!</div>}
+                                    path="/instructions"
+                                    render={(props) => (
+                                        <div>
+                                            Ohjeita rakennetaan... Tässä voi
+                                            mennä hetki!
+                                        </div>
+                                    )}
                                 />
                                 <Route
                                     exact
-                                    path='/g/:id'
+                                    path="/g/:id"
                                     render={(props) => (
                                         <Game
                                             game={game}
@@ -145,11 +192,13 @@ export const App = (props) => {
                                 />
                             </Switch>
                         </div>
-                        <div className='footer'>
-                            <span className='music-player'>
+                        <div className="footer">
+                            <span className="music-player">
                                 <Music />
                             </span>
-                            <span className='copyrights'>&copy; {new Date().getFullYear()}</span>
+                            <span className="copyrights">
+                                &copy; {new Date().getFullYear()}
+                            </span>
                         </div>
                     </div>
                 </div>

@@ -6,7 +6,7 @@ import { GameSettingsContainer } from "../components/game-settings/gamesettingsc
 import { Timer } from "../components/timer";
 import Button, { BUTTON_TYPES } from "../components/button";
 import { Setting, CONTROL_TYPES } from "./../components/settings/setting";
-import { setCookie } from "./../helpers/cookies";
+import { setCookie, getCookie } from "./../helpers/cookies";
 
 import "./../styles/game.scss";
 import { GAME_STATES } from "../consts/gamestates";
@@ -20,8 +20,9 @@ import { textToSpeech } from "../helpers/generalhelpers";
 import { NOTIFICATION_TYPES } from "../components/notification/notification";
 
 export function Game(props) {
-    const [game, setGame] = useState(props.game);
-    const [player, setPlayer] = useState(props.player);
+    const { game, player } = props;
+    // const [game, setGame] = useState(props.game);
+    // const [player, setPlayer] = useState(props.player);
     const [progress, setProgress] = useState(0);
     const [blackCards, setBlackCards] = useState([]);
     const [popularVotedCardsIDs, setPopularVotedCardsIDs] = useState([]);
@@ -34,19 +35,24 @@ export function Game(props) {
     };
 
     useEffect(() => {
-        window.addEventListener("beforeunload", () => {
-            if (!!game && !!player) {
-                socket.emit("leave_game", {
-                    gameID: game?.id,
-                    playerID: player?.id,
-                });
-            }
-        });
+        // window.addEventListener("beforeunload", () => {
+        //     if (!!game && !!player) {
+        //         socket.emit("leave_game", {
+        //             gameID: game?.id,
+        //             playerID: player?.id,
+        //         });
+        //     }
+        // });
 
         if (game === undefined) {
+            const cookie = getCookie("playerID");
+            if (socket.disconnected) {
+                socket.open();
+            }
+            console.log("joining game!", cookie);
             socket.emit("join_game", {
                 gameID: getGameIdFromURL(),
-                playerID: player?.id,
+                playerID: cookie,
             });
         }
     }, [game, player]);
@@ -66,7 +72,7 @@ export function Game(props) {
         socket.on("update_player", (data) => {
             console.log("socket update_player", data);
 
-            setPlayer(data.player);
+            // setPlayer(data.player);
 
             setCookie({ field: "playerID", value: data.player.id });
             updateData({ player: data.player });
@@ -74,39 +80,46 @@ export function Game(props) {
 
         socket.on("update_game", (data) => {
             console.log("socket update_game", data);
-            setGame((prevGame) => ({ ...prevGame, ...data.game }));
+            // setGame((prevGame) => ({ ...prevGame, ...data.game }));
             updateData({ game: data.game });
         });
 
         socket.on("update_players", (data) => {
             console.log("socket update_players", data);
-            setGame((prevGame) => ({ ...prevGame, players: data.players }));
+            // setGame((prevGame) => ({ ...prevGame, players: data.players }));
             updateData({ players: data.players });
         });
 
-        socket.on("update_game_and_players", (data) => {
-            console.log("socket update_game_and_players", data);
+        // socket.on("update_game_and_players", (data) => {
+        //     console.log("socket update_game_and_players", data);
+        //     if (data.error) {
+        //         console.log("Received error", data.error);
+        //         return;
+        //     }
 
-            setGame((prevGame) => ({
-                ...prevGame,
-                ...data.game,
-                players: data.players,
-            }));
-            setPlayer(data.player);
+        //     // setGame((prevGame) => ({
+        //     //     ...prevGame,
+        //     //     ...data.game,
+        //     //     players: data.players,
+        //     // }));
+        //     // setPlayer(data.player);
 
-            setCookie({ field: "playerID", value: data.player.id });
-            updateData({
-                game: data.game,
-                player: data.player,
-                players: data.players,
-            });
-        });
+        //     console.log("Setting cookie to", data.player.id);
+        //     setCookie({ field: "playerID", value: data.player.id });
+        //     updateData({
+        //         game: data.game,
+        //         player: data.player,
+        //         players: data.players,
+        //     });
+        // });
 
         socket.on("update_game_options", (data) => {
-            console.log("socket update_game_options", data);
-            setGame((prevGame) => ({ ...prevGame, options: data.options }));
+            // TODO: figure out why options are not updated
 
-            updateData({ game: { ...game, options: data.options } });
+            console.log("socket update_game_options", data);
+            // setGame((prevGame) => ({ ...prevGame, options: data.options }));
+
+            updateData({ options: data.options });
         });
 
         socket.on("deal_black_cards", (data) => {
