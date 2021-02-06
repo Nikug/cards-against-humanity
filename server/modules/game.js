@@ -213,7 +213,7 @@ export const startNewRound = (io, gameID, playerID) => {
         game.currentRound.blackCard.whiteCardsToPlay
     );
 
-    game.players = handleJoiningPlayers(game);
+    game.players = handleJoiningPlayers(io, game);
 
     game.players = appointNextCardCzar(game, playerID);
     game.players = setPopularVoteLeader(game.players);

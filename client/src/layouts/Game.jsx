@@ -144,6 +144,12 @@ export function Game(props) {
         game?.players?.length > 0 && game?.options?.cardPacks?.length > 0; // TODO: Why is player name not there? Player is not updated by back-end
     console.log("game.state", game?.state);
 
+    const defaultContent = (
+        <div className="error-info">
+            Something went wrong. Try to reload the page.
+        </div>
+    );
+
     const gameState = game?.state;
     let renderedContent;
 
@@ -249,11 +255,7 @@ export function Game(props) {
                 );
                 break;
             default:
-                renderedContent = (
-                    <div className="error-info">
-                        Something went wrong. Try to reload the page.
-                    </div>
-                );
+                renderedContent = defaultContent;
                 break;
         }
     } else {
@@ -333,9 +335,16 @@ export function Game(props) {
                     );
                     break;
                 case GAME_STATES.PLAYING_WHITE_CARDS:
-                    renderedContent = (
-                        <WhiteCardPickerContainer player={player} game={game} />
-                    );
+                    if (!player) {
+                        renderedContent = defaultContent;
+                    } else {
+                        renderedContent = (
+                            <WhiteCardPickerContainer
+                                player={player}
+                                game={game}
+                            />
+                        );
+                    }
                     break;
                 case GAME_STATES.READING_CARDS:
                     renderedContent = (
@@ -365,11 +374,7 @@ export function Game(props) {
                     );
                     break;
                 default:
-                    renderedContent = (
-                        <div className="error-info">
-                            Something went wrong. Try to reload the page.
-                        </div>
-                    );
+                    renderedContent = defaultContent;
                     break;
             }
         }

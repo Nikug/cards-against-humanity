@@ -250,10 +250,18 @@ export const setPlayerDisconnected = (io, socketID, removePlayer) => {
     updatePlayersIndividually(io, game);
 };
 
+const resetPlayerState = (state) => {
+    if (state === "disconnected") return state;
+    return player.name.length > playerName.minimumLength
+        ? "active"
+        : "pickingName";
+};
+
 export const resetPlayers = (players) => {
     return players.map((player) => ({
         ...player,
         score: 0,
+        state: resetPlayerState(player.state),
         isCardCzar: false,
         popularVoteScore: 0,
         whiteCards: [],
@@ -306,7 +314,7 @@ export const getJoiningPlayerState = (gameState, hasName) => {
     }
 };
 
-export const handleJoiningPlayers = (game) => {
+export const handleJoiningPlayers = (io, game) => {
     return game.players.map((player) => {
         if (player.state !== "joining") return player;
 
@@ -316,9 +324,12 @@ export const handleJoiningPlayers = (game) => {
         if (numberOfMissingCards > 0) {
             player.whiteCards = [
                 ...player.whiteCards,
-                drawWhiteCards(game, numberOfMissingCards),
+                ...drawWhiteCards(game, numberOfMissingCards),
             ];
         }
+        io.to(player.socket).emit("update_player", {
+            player: player,
+        });
         return player;
     });
 };
