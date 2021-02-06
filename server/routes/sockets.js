@@ -15,6 +15,7 @@ import {
     playWhiteCards,
     showWhiteCard,
     selectWinner,
+    sendBlackCards,
 } from "../modules/card.js";
 import { popularVote } from "../modules/popularVote.js";
 import { joinGame } from "../modules/join.js";
@@ -121,6 +122,15 @@ export const sockets = (io) => {
             }
         });
 
+        socket.on("draw_black_cards", (data) => {
+            const missingFields = validateFields(["gameID", "playerID"], data);
+            if (missingFields.length > 0) {
+                sendError(socket, "Invalid data", missingFields);
+            } else {
+                sendBlackCards(socket, data.gameID, data.playerID);
+            }
+        });
+
         socket.on("select_black_card", (data) => {
             const missingFields = validateFields(
                 ["gameID", "playerID", "selectedCardID", "discardedCardIDs"],
@@ -149,7 +159,6 @@ export const sockets = (io) => {
             } else {
                 playWhiteCards(
                     io,
-                    socket,
                     data.gameID,
                     data.playerID,
                     data.whiteCardIDs

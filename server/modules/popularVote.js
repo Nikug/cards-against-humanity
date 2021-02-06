@@ -1,6 +1,10 @@
 import { gameOptions } from "../consts/gameSettings.js";
 import { getGame, setGame } from "./game.js";
-import { getPlayer, updatePlayersIndividually } from "./player.js";
+import {
+    emitToAllPlayerSockets,
+    getPlayer,
+    updatePlayersIndividually,
+} from "./player.js";
 import { validatePopularVote } from "./validate.js";
 
 export const popularVote = (io, socket, gameID, playerID, whiteCardIDs) => {
@@ -38,7 +42,9 @@ export const popularVote = (io, socket, gameID, playerID, whiteCardIDs) => {
         game.currentRound.whiteCardsByPlayer,
         playerID
     );
-    socket.emit("send_popular_voted_cards", {
+
+    const player = getPlayer(newGame, playerID);
+    emitToAllPlayerSockets(io, player, "send_popular_voted_cards", {
         whiteCardIDs: votedCardIDs || [],
     });
 };

@@ -20,7 +20,7 @@ interface ClientGame {
 // This information is only shown to each player separately
 interface Player {
     id: string;
-    socket: string;
+    sockets: string;
     name: string;
     state: PlayerState;
     score: number;
@@ -47,6 +47,7 @@ interface PlayerPublic {
 interface Cards {
     whiteCards: WhiteCard[];
     blackCards: BlackCard[];
+    sentBlackCards: BlackCard[];
     playedWhiteCards: WhiteCard[];
     playedBlackCards: BlackCard[];
 }

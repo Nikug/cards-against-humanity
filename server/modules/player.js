@@ -20,6 +20,14 @@ import {
 } from "../consts/gameSettings.js";
 import { anonymizedGameClient, drawWhiteCards } from "./card.js";
 import { joiningPlayerStates } from "../consts/states.js";
+import { setPlayer } from "./join.js";
+import { closeSocketWithID } from "./socket.js";
+
+export const emitToAllPlayerSockets = (io, player, message, data) => {
+    player.sockets.map((socket) => {
+        io.to(socket).emit(message, data);
+    });
+};
 
 export const updatePlayerName = (io, gameID, playerID, newName) => {
     const game = getGame(gameID);
@@ -73,7 +81,7 @@ export const changePlayerTextToSpeech = (io, gameID, playerID, useTTS) => {
 export const createNewPlayer = (socketID, isHost, state = "pickingName") => {
     const player = {
         id: nanoid(),
-        socket: socketID,
+        sockets: [socketID],
         name: "",
         state: state,
         score: 0,
@@ -88,7 +96,7 @@ export const createNewPlayer = (socketID, isHost, state = "pickingName") => {
 
 export const publicPlayersObject = (players) => {
     return players?.map((player) => {
-        const { id, socket, whiteCards, popularVoteScore, ...rest } = player;
+        const { id, sockets, whiteCards, popularVoteScore, ...rest } = player;
         return rest;
     });
 };
@@ -183,7 +191,7 @@ export const updatePlayersIndividually = (io, game) => {
     const publicPlayers = publicPlayersObject(game.players);
 
     game.players.map((player) => {
-        io.to(player.socket).emit("update_game_and_players", {
+        emitToAllPlayerSockets(io, player, "update_game_and_players", {
             game: anonymousClient,
             players: publicPlayers,
             player: player,
@@ -204,15 +212,27 @@ export const setPlayerDisconnected = (io, socketID, removePlayer) => {
     const { game, player } = result;
     if (!player) return;
 
+    const remainingSockets = player.sockets.filter(
+        (socket) => socket !== socketID
+    );
+    if (remainingSockets.length > 0 && !removePlayer) {
+        player.sockets = remainingSockets;
+        game.players = setPlayer(game.players, player);
+        setGame(game);
+        return;
+    }
+
     if (removePlayer) {
         game.players = game.players.filter(
             (gamePlayer) => gamePlayer.id !== player.id
         );
+        player.sockets.map((socket) => {
+            closeSocketWithID(io, socket);
+        });
     } else {
         player.state = "disconnected";
-        game.players = game.players.map((gamePlayer) =>
-            gamePlayer.id === player.id ? player : gamePlayer
-        );
+        player.sockets = remainingSockets;
+        game.players = setPlayer(game.players, player);
     }
 
     if (shouldGameBeDeleted(game)) {
@@ -233,7 +253,7 @@ export const setPlayerDisconnected = (io, socketID, removePlayer) => {
         if (!game.players) return;
 
         const newHost = game.players.find((player) => player.isHost);
-        io.to(newHost.socket).emit("upgraded_to_host");
+        emitToAllPlayerSockets(io, newHost, "upgraded_to_host", {});
     }
 
     if (shouldReturnToLobby(game)) {
@@ -250,8 +270,8 @@ export const setPlayerDisconnected = (io, socketID, removePlayer) => {
     updatePlayersIndividually(io, game);
 };
 
-const resetPlayerState = (state) => {
-    if (state === "disconnected") return state;
+const resetPlayerState = (player) => {
+    if (player.state === "disconnected") return player.state;
     return player.name.length > playerName.minimumLength
         ? "active"
         : "pickingName";
@@ -261,7 +281,7 @@ export const resetPlayers = (players) => {
     return players.map((player) => ({
         ...player,
         score: 0,
-        state: resetPlayerState(player.state),
+        state: resetPlayerState(player),
         isCardCzar: false,
         popularVoteScore: 0,
         whiteCards: [],
@@ -327,7 +347,7 @@ export const handleJoiningPlayers = (io, game) => {
                 ...drawWhiteCards(game, numberOfMissingCards),
             ];
         }
-        io.to(player.socket).emit("update_player", {
+        emitToAllPlayerSockets(io, player, "update_player", {
             player: player,
         });
         return player;

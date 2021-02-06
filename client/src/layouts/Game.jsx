@@ -81,6 +81,7 @@ export function Game(props) {
         });
 
         socket.on("deal_black_cards", (data) => {
+            console.log("Received black cards from socket", data.blackCards);
             setBlackCards(data.blackCards);
         });
 
@@ -98,6 +99,20 @@ export function Game(props) {
 
             fireNotification(notification, 5);
         });
+    }, []);
+
+    // New window is opened for the same user in an existing game
+    // Ask for black cards
+    useEffect(() => {
+        if (
+            game?.state === GAME_STATES.PICKING_BLACK_CARD &&
+            player?.isCardCzar
+        ) {
+            socket.emit("draw_black_cards", {
+                gameID: game.id,
+                playerID: player.id,
+            });
+        }
     }, []);
 
     const startGame = (gameID, playerID) => {

@@ -55,6 +55,8 @@ export const setGame = (newGame) => {
 
 export const removeGameIfNoActivePlayers = (gameID) => {
     const game = getGame(gameID);
+    if (!game.players) removeGame(gameID);
+
     if (getActivePlayers(game.players).length === 0) {
         removeGame(gameID);
     }
@@ -183,7 +185,7 @@ export const startGame = (io, gameID, playerID) => {
 
     const newGame = dealBlackCards(
         io,
-        activePlayers[cardCzarIndex].socket,
+        activePlayers[cardCzarIndex].sockets,
         gameWithStartingHands
     );
 
@@ -219,7 +221,7 @@ export const startNewRound = (io, gameID, playerID) => {
     game.players = setPopularVoteLeader(game.players);
 
     const cardCzar = game.players.find((player) => player.isCardCzar);
-    const newGame = dealBlackCards(io, cardCzar.socket, game);
+    const newGame = dealBlackCards(io, cardCzar.sockets, game);
 
     setGame(newGame);
     updatePlayersIndividually(io, newGame);
@@ -243,16 +245,18 @@ export const skipRound = (io, game, newCardCzar) => {
         );
         game.players = replenishWhiteCards(game, playerCards);
     } else {
-        game.players = dealWhiteCards(
-            game,
-            game.currentRound.blackCard.whiteCardsToPlay
-        );
+        if (game.currentRound.blackCard) {
+            game.players = dealWhiteCards(
+                game,
+                game.currentRound.blackCard.whiteCardsToPlay
+            );
+        }
     }
 
     game.stateMachine.skipRound();
     game.client.state = game.stateMachine.state;
 
-    const newGame = dealBlackCards(io, newCardCzar.socket, game);
+    const newGame = dealBlackCards(io, newCardCzar.sockets, game);
     setGame(newGame);
     updatePlayersIndividually(io, newGame);
 };
@@ -264,7 +268,7 @@ export const findGameAndPlayerBySocketID = (socketID) => {
             j < playerCount;
             j++
         ) {
-            if (games[i].players[j].socket === socketID) {
+            if (games[i].players[j].sockets.includes(socketID)) {
                 return {
                     game: { ...games[i] },
                     player: { ...games[i].players[j] },
@@ -289,32 +293,6 @@ export const findGameByPlayerID = (playerID) => {
     }
     return undefined;
 };
-
-// TODO: remove once join_game works
-// export const sendGameInfo = (io, playerID, socketID) => {
-//     const game = findGameByPlayerID(playerID);
-
-//     if (!game) {
-//         io.to(socketID).emit("initial_data", {
-//             game: undefined,
-//             players: undefined,
-//             player: undefined,
-//         });
-//     } else {
-//         const player = game.players.find((player) => player.id === playerID);
-//         player.socket = socketID;
-//         game.players = game.players.map((oldPlayer) =>
-//             oldPlayer.id === playerID ? player : oldPlayer
-//         );
-//         setGame(game);
-
-//         io.to(socketID).emit("initial_data", {
-//             game: { ...anonymizedGameClient(game) },
-//             players: publicPlayersObject(game.players),
-//             player: player,
-//         });
-//     }
-// };
 
 export const shouldGameBeDeleted = (game) => {
     if (game.stateMachine.state === "lobby") {

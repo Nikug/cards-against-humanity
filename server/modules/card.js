@@ -19,11 +19,12 @@ import {
     setPlayersPlaying,
     getPlayerByWhiteCards,
     updatePlayersIndividually,
+    emitToAllPlayerSockets,
 } from "./player.js";
 import { gameOptions } from "../consts/gameSettings.js";
 import { randomBetween } from "./util.js";
 
-export const playWhiteCards = (io, socket, gameID, playerID, whiteCardIDs) => {
+export const playWhiteCards = (io, gameID, playerID, whiteCardIDs) => {
     let game = getGame(gameID);
     if (!game) return;
     if (!validatePlayerPlayingWhiteCards(game, playerID, whiteCardIDs).result)
@@ -81,7 +82,7 @@ export const selectBlackCard = (
     if (!validateCardCzar(game, playerID)) return;
 
     if (
-        !game.cards.playedBlackCards.some(
+        !game.cards.sentBlackCards.some(
             (blackCard) => blackCard.id === selectedCardID
         )
     )
@@ -89,18 +90,21 @@ export const selectBlackCard = (
 
     if (discardedCardIDs.length !== gameOptions.blackCardsToChooseFrom - 1)
         return;
-    const discardedCards = game.cards.playedBlackCards.filter((blackCard) =>
+    const discardedCards = game.cards.sentBlackCards.filter((blackCard) =>
         discardedCardIDs.includes(blackCard.id)
     );
     if (discardedCards.length !== discardedCardIDs.length) return;
 
-    game.cards.playedBlackCards = game.cards.playedBlackCards.filter(
-        (blackCard) => !discardedCardIDs.includes(blackCard.id)
-    );
-    const selectedCard = game.cards.playedBlackCards.filter(
+    const selectedCard = game.cards.sentBlackCards.find(
         (blackCard) => blackCard.id === selectedCardID
     );
-    if (selectedCard.length !== 1) return;
+    game.cards.sentBlackCards = [];
+
+    game.cards.playedBlackCards = [
+        ...game.cards.playedBlackCards,
+        selectedCard,
+    ];
+    if (!selectedCard) return;
 
     game.cards.blackCards = shuffleCardsBackToDeck(
         discardedCards,
@@ -109,7 +113,7 @@ export const selectBlackCard = (
 
     game.currentRound = createRound(
         game.client.rounds.length + 1,
-        selectedCard[0],
+        selectedCard,
         playerID
     );
     game.client.rounds = [...game.client.rounds, game.currentRound];
@@ -129,13 +133,27 @@ export const selectBlackCard = (
     // );
 };
 
-export const dealBlackCards = (io, socketID, game) => {
+export const sendBlackCards = (socket, gameID, playerID) => {
+    const game = getGame(gameID);
+    if (!game) return;
+
+    if (!validateCardCzar(game, playerID)) return;
+    if (game.stateMachine.state !== "pickingBlackCard") return;
+
+    socket.emit("deal_black_cards", {
+        blackCards: game.cards.sentBlackCards,
+    });
+};
+
+export const dealBlackCards = (io, socketIDs, game) => {
     const { blackCards, game: newGame } = drawBlackCards(
         game,
         gameOptions.blackCardsToChooseFrom
     );
-    io.to(socketID).emit("deal_black_cards", {
-        blackCards: blackCards,
+    socketIDs.map((socket) => {
+        io.to(socket).emit("deal_black_cards", {
+            blackCards: blackCards,
+        });
     });
     return newGame;
 };
@@ -144,7 +162,7 @@ export const dealStartingWhiteCards = (io, game, count) => {
     const players = game.players.map((player) => {
         if (["active", "playing", "waiting"].includes(player.state)) {
             player.whiteCards = drawWhiteCards(game, count);
-            io.to(player.socket).emit("update_player", {
+            emitToAllPlayerSockets(io, player, "update_player", {
                 player: player,
             });
         }
@@ -221,15 +239,11 @@ export const drawBlackCards = (game, count) => {
             game.cards.blackCards.splice(0, count - blackCards.length),
         ];
 
-        game.cards.playedBlackCards = [...blackCards];
-        setGame(game);
-        return blackCards;
+        game.cards.sentBlackCards = [...blackCards];
+        return { blackCards, game };
     } else {
         const blackCards = game.cards.blackCards.splice(0, count);
-        game.cards.playedBlackCards = [
-            ...game.cards.playedBlackCards,
-            ...blackCards,
-        ];
+        game.cards.sentBlackCards = [...blackCards];
         return { blackCards, game };
     }
 };

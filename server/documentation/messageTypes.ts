@@ -17,7 +17,7 @@ type Client2Server =
     | "add_card_pack" // Send the id of card pack to the server
     | "remove_card_pack" // Remove a card pack from the game
     | "start_game" // Starts the game from lobby
-    | "draw_black_cards" // Card Czar draws a black card
+    | "draw_black_cards" // New socket calls for black cards
     | "select_black_card" // Returns the selected black card and the other not selected blackcards
     | "play_white_cards" // Client sends white cards it wants to play that turn
     | "show_next_white_card" // In the reading phase returns the cards played by one player

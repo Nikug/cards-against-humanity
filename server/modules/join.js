@@ -62,13 +62,16 @@ const addPlayerToGame = (io, socket, gameID, playerID) => {
         const newPlayer = createNewPlayer(socket.id, isHost);
         game.players = addPlayer(game.players, newPlayer);
     } else {
-        if (player.name.length >= playerName.minimumLength) {
-            player.state =
-                game.stateMachine.state === "lobby" ? "active" : "joining";
-        } else {
-            player.state = "pickingName";
+        if (player.sockets.length === 0) {
+            if (player.name.length >= playerName.minimumLength) {
+                player.state =
+                    game.stateMachine.state === "lobby" ? "active" : "joining";
+            } else {
+                player.state = "pickingName";
+            }
         }
-        player.socket = socket.id;
+
+        player.sockets = [...player.sockets, socket.id];
         game.players = setPlayer(game.players, player);
     }
     setGame(game);
@@ -83,7 +86,7 @@ const addPlayer = (players, player) => {
     return [...players, player];
 };
 
-const setPlayer = (players, newPlayer) => {
+export const setPlayer = (players, newPlayer) => {
     return players.map((player) =>
         player.id === newPlayer.id ? newPlayer : player
     );

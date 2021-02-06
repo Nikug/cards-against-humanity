@@ -78,6 +78,12 @@ export const App = (props) => {
             }
             setLoading(false);
         });
+
+        socket.on("disconnect", () => {
+            socket.close();
+            resetData();
+            history.push("/");
+        });
     }, []);
 
     useEffect(() => {
