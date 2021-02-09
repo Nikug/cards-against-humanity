@@ -304,7 +304,11 @@ export const showWhiteCard = (io, gameID, playerID) => {
         game.currentRound.cardIndex = game.currentRound.cardIndex + 1;
         setGame(game);
 
-        io.in(gameID).emit("show_white_card", whiteCards);
+        io.in(gameID).emit("show_white_card", {
+            whiteCards: whiteCards,
+            index: game.currentRound.cardIndex,
+            outOf: game.currentRound.whiteCardsByPlayer.length,
+        });
     }
 };
 

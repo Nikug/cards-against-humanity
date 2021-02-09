@@ -12,6 +12,8 @@ import { Setting, CONTROL_TYPES } from "../settings/setting";
 export const CardReadingContainer = (props) => {
     const { game, player } = props;
     const [whiteCards, setWhiteCards] = useState([]);
+    const [whiteCardIndex, setWhiteCardIndex] = useState(0);
+    const [outOf, setOutOf] = useState(0);
     const textToSpeechInUse = game.players.filter(
         (player) => player.isCardCzar
     )[0].useTextToSpeech;
@@ -20,7 +22,9 @@ export const CardReadingContainer = (props) => {
 
     useEffect(() => {
         const listener = (data) => {
-            setWhiteCards(data);
+            setWhiteCards(data.whiteCards);
+            setWhiteCardIndex(data.index);
+            setOutOf(data.outOf);
 
             const blackCardToRead =
                 game.rounds[game.rounds.length - 1].blackCard;
@@ -91,6 +95,11 @@ export const CardReadingContainer = (props) => {
         });
     };
 
+    const topText =
+        outOf !== 0
+            ? `Luetaan kortit (${whiteCardIndex}/${outOf}):`
+            : "Luetaan kortit:";
+
     return (
         <div className="blackcardpicker">
             <CardPicker
@@ -108,7 +117,7 @@ export const CardReadingContainer = (props) => {
                 }
                 customButtonIcons={["arrow_forward", "cached"]}
                 noActionButton={player?.isCardCzar ? false : true}
-                topText={"Luetaan kortit:"}
+                topText={topText}
             />
             {player?.isCardCzar && (
                 <div className="cardreading-settings">
