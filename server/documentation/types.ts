@@ -69,12 +69,12 @@ interface BlackCard {
 interface Round {
     round: number;
     blackCard: BlackCard;
-    cardCzar: string;
+    cardCzar: string; // Not shown in client
     cardIndex: number; // Used to show cards one by one
     whiteCardsByPlayer: {
         wonRound: boolean;
-        // TODO: change to be playerName
-        playerID: string | null; // Always null unless is winner in client
+        playerID: string; // Not shown in client
+        playerName: String | null; // Always null unless is winner in client
         popularVote: number;
         popularVotes: string[]; // List of player ids who voted for this player
         whiteCards: WhiteCard[];

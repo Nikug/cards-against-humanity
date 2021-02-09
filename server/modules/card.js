@@ -21,7 +21,7 @@ import {
     updatePlayersIndividually,
     emitToAllPlayerSockets,
 } from "./player.js";
-import { gameOptions } from "../consts/gameSettings.js";
+import { gameOptions, playerName } from "../consts/gameSettings.js";
 import { randomBetween } from "./util.js";
 
 export const playWhiteCards = (io, gameID, playerID, whiteCardIDs) => {
@@ -53,7 +53,7 @@ export const playWhiteCards = (io, gameID, playerID, whiteCardIDs) => {
 
     game.currentRound.whiteCardsByPlayer = [
         ...game.currentRound.whiteCardsByPlayer,
-        createWhiteCardsByPlayer(whiteCards, playerID),
+        createWhiteCardsByPlayer(whiteCards, playerID, player.name),
     ];
 
     if (everyoneHasPlayedTurn(game)) {
@@ -256,10 +256,11 @@ export const shuffleCardsBackToDeck = (cards, deck) => {
     return [...newCards];
 };
 
-export const createWhiteCardsByPlayer = (whiteCards, playerID) => {
+export const createWhiteCardsByPlayer = (whiteCards, playerID, playerName) => {
     return {
         wonRound: false,
         playerID: playerID,
+        playerName: playerName,
         popularVote: 0,
         popularVotes: [],
         whiteCards: whiteCards,
@@ -309,30 +310,30 @@ export const showWhiteCard = (io, gameID, playerID) => {
 
 export const anonymizePlayedWhiteCards = (playedWhiteCards) => {
     return playedWhiteCards.map((card) => {
-        const { popularVotes, ...rest } = card;
+        const { popularVotes, playerID, ...rest } = card;
         return {
             ...rest,
-            playerID: card.wonRound ? card.playerID : null,
+            playerName: card.wonRound ? card.playerName : null,
         };
+    });
+};
+
+export const anonymizeRounds = (rounds) => {
+    return rounds.map((round) => {
+        const { cardCzar, ...rest } = round;
+        rest.whiteCardsByPlayer = anonymizePlayedWhiteCards(
+            rest.whiteCardsByPlayer
+        );
+        return rest;
     });
 };
 
 export const anonymizedGameClient = (game) => {
     if (!game.client?.rounds || !game.currentRound) return { ...game.client };
 
-    const roundCount = game.client.rounds.length;
-    const lastRound = {
-        ...game.client.rounds[roundCount - 1],
-    };
-
-    const cards = anonymizePlayedWhiteCards(
-        game.currentRound.whiteCardsByPlayer
-    );
-    lastRound.whiteCardsByPlayer = cards;
-
     return {
         ...game.client,
-        rounds: [...game.client.rounds].splice(-1, 1, lastRound),
+        rounds: anonymizeRounds(game.client.rounds),
     };
 };
 

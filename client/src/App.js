@@ -64,6 +64,7 @@ export const App = (props) => {
                 setLoading(false);
                 return;
             }
+            console.log("Current game:", data.game);
             if (isNullOrUndefined(data.game)) {
                 deleteCookie("playerID");
             } else {
