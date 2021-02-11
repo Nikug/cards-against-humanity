@@ -28,6 +28,9 @@ export function RoundEndContainer(props) {
         game.rounds[game.rounds.length - 1].whiteCardsByPlayer;
     const whiteCardsToRender = [];
     const confirmedCards = [];
+    const winningWhiteCardsByPlayer = whiteCardsByPlayer.find(
+        (card) => card.playerName != null
+    );
 
     for (let i = 0, len = whiteCardsByPlayer.length; i < len; i++) {
         const whiteCards = whiteCardsByPlayer[i].whiteCards;
@@ -81,7 +84,9 @@ export function RoundEndContainer(props) {
                 customButtonIcons={["arrow_forward", "cached"]}
                 */
                 noActionButton={true}
-                topText={"Voittajakortti on tässä!"}
+                topText={`${
+                    winningWhiteCardsByPlayer?.playerName ?? "Joku"
+                } voitti kierroksen!`}
                 showPopularVote={showPopularVote}
                 givePopularVote={givePopularVote}
                 popularVotedCardsIDs={popularVotedCardsIDs}
