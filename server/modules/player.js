@@ -244,6 +244,7 @@ export const setPlayerDisconnected = (io, socketID, removePlayer) => {
                 () => removeGameIfNoActivePlayers(game.id),
                 INACTIVE_GAME_DELETE_TIME
             );
+            setGame(game);
             return;
         }
     }

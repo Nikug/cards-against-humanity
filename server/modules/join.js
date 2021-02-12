@@ -40,12 +40,14 @@ const handleGameID = (io, socket, gameID) => {
             // Can't find a game with the id, return error
             console.log("Tried to join with just a gameID that was incorrect");
             returnError(socket);
+            socket.disconnect();
             return;
         }
     } else {
         // No game id, return error about bad query
         console.log("No gameID, no playerID, returning");
         returnError(socket);
+        socket.disconnect();
         return;
     }
 };

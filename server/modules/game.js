@@ -55,14 +55,18 @@ export const setGame = (newGame) => {
 
 export const removeGameIfNoActivePlayers = (gameID) => {
     const game = getGame(gameID);
+    if (!game) return;
+
     if (!game.players) removeGame(gameID);
 
     if (getActivePlayers(game.players).length === 0) {
+        console.log("Removed inactive game", gameID);
         removeGame(gameID);
     }
 };
 
 export const removeGame = (gameID) => {
+    console.log("Game was removed");
     games = games.filter((game) => game.id !== gameID);
 };
 
