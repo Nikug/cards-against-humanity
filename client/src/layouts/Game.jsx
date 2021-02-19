@@ -1,24 +1,24 @@
-import React, { useState, useEffect } from "react";
-import { socket } from "../components/sockets/socket";
-
-import { PlayersWidget } from "../components/players-widget/playerswidget";
-import { GameSettingsContainer } from "../components/game-settings/gamesettingscontainer";
-import { Timer } from "../components/timer";
-import Button, { BUTTON_TYPES } from "../components/button";
-import { Setting, CONTROL_TYPES } from "./../components/settings/setting";
-import { setCookie, getCookie } from "./../helpers/cookies";
-
 import "./../styles/game.scss";
-import { GAME_STATES } from "../consts/gamestates";
+
+import Button, { BUTTON_TYPES } from "../components/button";
+import { CONTROL_TYPES, Setting } from "./../components/settings/setting";
+import React, { useEffect, useState } from "react";
+import { getCookie, setCookie } from "./../helpers/cookies";
+
 import { BlackCardPickerContainer } from "../components/card-picker/blackcardpickercontainer";
-import { WhiteCardPickerContainer } from "../components/card-picker/whitecardpickercontainer";
-import { WinnerCardPickerContainer } from "../components/card-picker/winnercardpickercontainer";
-import { WaitingCardPickerContainer } from "../components/card-picker/waitincardpickercontainer";
 import { CardReadingContainer } from "../components/card-picker/cardreadingcontainer";
-import { RoundEndContainer } from "../components/card-picker/roundendcontainer";
-import { textToSpeech } from "../helpers/generalhelpers";
+import { GAME_STATES } from "../consts/gamestates";
+import { GameSettingsContainer } from "../components/game-settings/gamesettingscontainer";
 import { NOTIFICATION_TYPES } from "../components/notification/notification";
 import { PlayerName } from "../components/options/PlayerName";
+import { PlayersWidget } from "../components/players-widget/playerswidget";
+import { RoundEndContainer } from "../components/card-picker/roundendcontainer";
+import { Timer } from "../components/timer";
+import { WaitingCardPickerContainer } from "../components/card-picker/waitincardpickercontainer";
+import { WhiteCardPickerContainer } from "../components/card-picker/whitecardpickercontainer";
+import { WinnerCardPickerContainer } from "../components/card-picker/winnercardpickercontainer";
+import { socket } from "../components/sockets/socket";
+import { textToSpeech } from "../helpers/generalhelpers";
 
 export function Game(props) {
     const { game, player } = props;
@@ -126,7 +126,7 @@ export function Game(props) {
     const addProgress = () => {
         //console.log(progress);
         if (progress < 0.95) {
-            setProgress(progress + 1);
+            setProgress(progress + 0.5);
             return;
         }
 
@@ -405,6 +405,7 @@ export function Game(props) {
                     startingPercent={0}
                     time={10}
                 />
+                <button onClick={addProgress}></button>
             </div>
             <div className="lobby-container">{renderedContent}</div>
         </div>

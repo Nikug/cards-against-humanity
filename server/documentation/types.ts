@@ -1,4 +1,5 @@
 // Documentation for different types used
+
 import StateMachine from "javascript-state-machine";
 
 interface Game {
@@ -8,6 +9,7 @@ interface Game {
     stateMachine: typeof StateMachine;
     client: ClientGame;
     currentRound: Round;
+    timeout: TimeoutObject;
 }
 
 interface ClientGame {
@@ -91,6 +93,16 @@ interface Options {
     cardPacks: CardPack[];
     selectWhiteCardTimeLimit: number;
     selectBlackCardTimeLimit: number;
+    timers: Timers;
+}
+
+// Values in seconds
+interface Timers {
+    selectBlackCard: number | null;
+    selectWhiteCards: number | null;
+    readBlackCard: number | null;
+    selectWinner: number | null;
+    roundEnd: number | null;
 }
 
 interface CardPack {

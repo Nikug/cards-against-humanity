@@ -1,35 +1,31 @@
-import hri from "human-readable-ids";
-
-import { gameOptions } from "../consts/gameSettings.js";
-import { createStateMachine } from "./finiteStateMachine.js";
 import {
-    createNewPlayer,
-    setPlayersActive,
-    publicPlayersObject,
-    setPlayersPlaying,
     appointNextCardCzar,
-    updatePlayersIndividually,
     getActivePlayers,
-    resetPlayers,
-    getJoiningPlayerState,
     handleJoiningPlayers,
+    resetPlayers,
+    setPlayersPlaying,
+    updatePlayersIndividually,
 } from "./player.js";
 import {
-    validateHost,
-    validateOptions,
-    validateGameStartRequirements,
-    validateCardCzar,
-    validateGameEnding,
-} from "./validate.js";
-import { randomBetween } from "./util.js";
-import {
-    shuffleCards,
+    dealBlackCards,
     dealStartingWhiteCards,
     dealWhiteCards,
-    dealBlackCards,
     replenishWhiteCards,
-    anonymizedGameClient,
+    shuffleCards,
 } from "./card.js";
+import {
+    validateCardCzar,
+    validateGameEnding,
+    validateGameStartRequirements,
+    validateHost,
+    validateOptions,
+} from "./validate.js";
+
+import { changeGameStateAfterTime } from "./delayedStateChange.js";
+import { createStateMachine } from "./finiteStateMachine.js";
+import { gameOptions } from "../consts/gameSettings.js";
+import hri from "human-readable-ids";
+import { randomBetween } from "./util.js";
 import { setPopularVoteLeader } from "./popularVote.js";
 
 let games = [];
@@ -85,8 +81,14 @@ const createNewGame = (url) => {
                 allowCardCzarPopularVote:
                     gameOptions.defaultAllowCardCzarPopularVote,
                 cardPacks: [],
-                selectWhiteCardTimeLimit: gameOptions.selectWhiteCardTimeLimit,
-                selectBlackCardTimeLimit: gameOptions.selectBlackCardTimeLimit,
+                timers: {
+                    selectBlackCard: gameOptions.timers.selectBlackCard.default,
+                    selectWhiteCards:
+                        gameOptions.timers.selectWhiteCards.default,
+                    readBlackCard: gameOptions.timers.readBlackCard.default,
+                    selectWinner: gameOptions.timers.selectWinner.default,
+                    roundEnd: gameOptions.timers.roundEnd.default,
+                },
             },
             rounds: [],
         },
@@ -124,20 +126,6 @@ export const everyoneHasPlayedTurn = (game) => {
         (player) => player.state === "waiting" && !player.isCardCzar
     );
     return waitingPlayers.length === getActivePlayers(game.players).length - 1; // Remove card czar with -1
-};
-
-export const changeGameStateAfterTime = (io, gameID, transition, time) => {
-    setTimeout(() => {
-        const game = getGame(gameID);
-        if (!game) return;
-
-        game.stateMachine[transition]();
-        game.client.state = game.stateMachine.state;
-        game.players = setPlayersActive(game.players);
-
-        setGame(game);
-        updatePlayersIndividually(io, game);
-    }, time * 1000);
 };
 
 export const updateGameOptions = (io, gameID, playerID, newOptions) => {
@@ -196,6 +184,7 @@ export const startGame = (io, gameID, playerID) => {
     setGame(newGame);
 
     updatePlayersIndividually(io, gameWithStartingHands);
+    changeGameStateAfterTime(io, gameID, "startPlayingWhiteCards");
 };
 
 export const startNewRound = (io, gameID, playerID) => {
@@ -229,6 +218,7 @@ export const startNewRound = (io, gameID, playerID) => {
 
     setGame(newGame);
     updatePlayersIndividually(io, newGame);
+    changeGameStateAfterTime(io, gameID, "startPlayingWhiteCards");
 };
 
 export const endGame = (io, game) => {
@@ -263,6 +253,7 @@ export const skipRound = (io, game, newCardCzar) => {
     const newGame = dealBlackCards(io, newCardCzar.sockets, game);
     setGame(newGame);
     updatePlayersIndividually(io, newGame);
+    changeGameStateAfterTime(io, game.id, "startPlayingWhiteCards");
 };
 
 export const findGameAndPlayerBySocketID = (socketID) => {
