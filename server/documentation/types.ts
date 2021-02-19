@@ -9,7 +9,7 @@ interface Game {
     stateMachine: typeof StateMachine;
     client: ClientGame;
     currentRound: Round;
-    timeout: TimeoutObject;
+    timeout: NodeJS.Timeout;
 }
 
 interface ClientGame {
@@ -17,6 +17,12 @@ interface ClientGame {
     state: GameState;
     options: Options;
     rounds: Round[];
+    timers: ClientTimers;
+}
+
+interface ClientTimers {
+    duration: number | undefined; // Seconds
+    passedTime: number | undefined; // Seconds
 }
 
 // This information is only shown to each player separately

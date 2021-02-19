@@ -91,6 +91,10 @@ const createNewGame = (url) => {
                 },
             },
             rounds: [],
+            timers: {
+                duration: undefined,
+                passedTime: undefined,
+            },
         },
         players: [],
         cards: {
@@ -181,10 +185,13 @@ export const startGame = (io, gameID, playerID) => {
         gameWithStartingHands
     );
 
-    setGame(newGame);
-
-    updatePlayersIndividually(io, gameWithStartingHands);
-    changeGameStateAfterTime(io, gameID, "startPlayingWhiteCards");
+    const updatedGame = changeGameStateAfterTime(
+        io,
+        newGame,
+        "startPlayingWhiteCards"
+    );
+    setGame(updatedGame);
+    updatePlayersIndividually(io, updatedGame);
 };
 
 export const startNewRound = (io, gameID, playerID) => {
@@ -216,9 +223,13 @@ export const startNewRound = (io, gameID, playerID) => {
     const cardCzar = game.players.find((player) => player.isCardCzar);
     const newGame = dealBlackCards(io, cardCzar.sockets, game);
 
-    setGame(newGame);
-    updatePlayersIndividually(io, newGame);
-    changeGameStateAfterTime(io, gameID, "startPlayingWhiteCards");
+    const updatedGame = changeGameStateAfterTime(
+        io,
+        game,
+        "startPlayingWhiteCards"
+    );
+    setGame(updatedGame);
+    updatePlayersIndividually(io, updatedGame);
 };
 
 export const endGame = (io, game) => {
@@ -251,9 +262,14 @@ export const skipRound = (io, game, newCardCzar) => {
     game.client.state = game.stateMachine.state;
 
     const newGame = dealBlackCards(io, newCardCzar.sockets, game);
-    setGame(newGame);
-    updatePlayersIndividually(io, newGame);
-    changeGameStateAfterTime(io, game.id, "startPlayingWhiteCards");
+
+    const updatedGame = changeGameStateAfterTime(
+        io,
+        newGame,
+        "startPlayingWhiteCards"
+    );
+    setGame(updatedGame);
+    updatePlayersIndividually(io, updatedGame);
 };
 
 export const findGameAndPlayerBySocketID = (socketID) => {
@@ -351,6 +367,10 @@ export const resetGame = (game) => {
         ...game.cards.blackCards,
         ...game.cards.playedBlackCards,
     ];
+
+    // Reset timers
+    game.client.options.timers.duration = undefined;
+    game.client.options.timers.passedTime = undefined;
 
     // Reset game state if not in lobby
     if (game.stateMachine.state !== "lobby") {

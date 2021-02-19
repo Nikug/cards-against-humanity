@@ -63,11 +63,13 @@ export const playWhiteCards = (io, gameID, playerID, whiteCardIDs) => {
         game.currentRound.whiteCardsByPlayer = shuffleCards([
             ...game.currentRound.whiteCardsByPlayer,
         ]);
-        changeGameStateAfterTime(io, gameID, "showCards");
+        const updatedGame = changeGameStateAfterTime(io, game, "showCards");
+        setGame(updatedGame);
+        updatePlayersIndividually(io, updatedGame);
+    } else {
+        setGame(game);
+        updatePlayersIndividually(io, game);
     }
-
-    setGame(game);
-    updatePlayersIndividually(io, game);
 };
 
 export const selectBlackCard = (
@@ -123,10 +125,10 @@ export const selectBlackCard = (
     game.stateMachine.startPlayingWhiteCards();
     game.client.state = game.stateMachine.state;
     game.players = setPlayersPlaying(game.players);
-    setGame(game);
 
-    updatePlayersIndividually(io, game);
-    changeGameStateAfterTime(io, gameID, "startReading");
+    const updatedGame = changeGameStateAfterTime(io, game, "startReading");
+    setGame(updatedGame);
+    updatePlayersIndividually(io, updatedGame);
 };
 
 export const sendBlackCards = (socket, gameID, playerID) => {
@@ -287,26 +289,27 @@ export const showWhiteCard = (io, gameID, playerID) => {
     ) {
         game.stateMachine.showCards();
         game.client.state = game.stateMachine.state;
-        setGame(game);
+        const updatedGame = changeGameStateAfterTime(io, game, "endRound");
+        setGame(updatedGame);
+
         io.in(gameID).emit("update_game", {
             game: {
-                ...anonymizedGameClient(game),
+                ...anonymizedGameClient(updatedGame),
             },
         });
-        changeGameStateAfterTime(io, gameID, "endRound");
     } else {
         const whiteCards =
             game.currentRound.whiteCardsByPlayer[game.currentRound.cardIndex]
                 .whiteCards;
         game.currentRound.cardIndex = game.currentRound.cardIndex + 1;
-        setGame(game);
+        const updatedGame = changeGameStateAfterTime(io, game, "showCards");
+        setGame(updatedGame);
 
         io.in(gameID).emit("show_white_card", {
             whiteCards: whiteCards,
-            index: game.currentRound.cardIndex,
-            outOf: game.currentRound.whiteCardsByPlayer.length,
+            index: updatedGame.currentRound.cardIndex,
+            outOf: updatedGame.currentRound.whiteCardsByPlayer.length,
         });
-        changeGameStateAfterTime(io, gameID, "showCards");
     }
 };
 
@@ -373,7 +376,7 @@ export const selectWinner = (io, gameID, playerID, whiteCardIDs) => {
 
     game.players = setPlayersActive(game.players);
 
-    setGame(game);
-    updatePlayersIndividually(io, game);
-    changeGameStateAfterTime(io, gameID, "startRound");
+    const updatedGame = changeGameStateAfterTime(io, game, "startRound");
+    setGame(updatedGame);
+    updatePlayersIndividually(io, updatedGame);
 };

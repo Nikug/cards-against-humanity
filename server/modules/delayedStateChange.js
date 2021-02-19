@@ -8,23 +8,23 @@ import { showWhiteCard, shuffleCardsBackToDeck } from "./card.js";
 
 import { gameOptions } from "../consts/gameSettings.js";
 
-export const changeGameStateAfterTime = (io, gameID, transition) => {
-    const game = getGame(gameID);
-    if (!game) return;
-
+export const changeGameStateAfterTime = (io, game, transition) => {
     clearTimeout(game.timeout);
 
-    const delay = getTimeoutTime(game) + gameOptions.defaultGracePeriod;
+    const delay = getTimeoutTime(game);
     console.log(`Setting timeout for: ${transition}, delay: ${delay}`);
+
+    game.client.timers.duration = delay;
+    game.client.timers.passedtime = 0;
 
     game.timeout = setTimeout(
         gameStateChange,
-        delay * 1000,
+        (delay + gameOptions.defaultGracePeriod) * 1000,
         io,
-        gameID,
+        game.id,
         transition
     );
-    setGame(game);
+    return game;
 };
 
 const gameStateChange = (io, gameID, transition) => {
@@ -36,6 +36,8 @@ const gameStateChange = (io, gameID, transition) => {
     if (game.stateMachine.cannot(transition)) return;
 
     console.log("Change was legal", transition);
+
+    let setNewTimeout = "";
 
     if (transition === "startRound") {
         const cardCzar = currentCardCzar(game.players);
@@ -58,7 +60,7 @@ const gameStateChange = (io, gameID, transition) => {
             skipRound(io, game, nextCardCzar);
             return;
         }
-        changeGameStateAfterTime(io, gameID, "showCards");
+        setNewTimeout = "showCards";
     } else if (transition === "showCards") {
         // Check if all whitecards have been showed, otherwise show next whitecards
         const cardCzar = currentCardCzar(game.players);
@@ -74,8 +76,14 @@ const gameStateChange = (io, gameID, transition) => {
     game.client.state = game.stateMachine.state;
     game.players = setPlayersActive(game.players);
 
-    setGame(game);
-    updatePlayersIndividually(io, game);
+    if (setNewTimeout != "") {
+        const updatedGame = changeGameStateAfterTime(io, game, setNewTimeout);
+        setGame(updatedGame);
+        updatePlayersIndividually(io, updatedGame);
+    } else {
+        updatePlayersIndividually(io, game);
+        setGame(game);
+    }
 };
 
 const currentCardCzar = (players) => {
