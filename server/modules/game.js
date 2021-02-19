@@ -24,6 +24,7 @@ import {
 import { changeGameStateAfterTime } from "./delayedStateChange.js";
 import { createStateMachine } from "./finiteStateMachine.js";
 import { gameOptions } from "../consts/gameSettings.js";
+import { getPassedTime } from "./delayedStateChange.js";
 import hri from "human-readable-ids";
 import { randomBetween } from "./util.js";
 import { setPopularVoteLeader } from "./popularVote.js";

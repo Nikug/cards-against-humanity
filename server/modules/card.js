@@ -8,6 +8,10 @@ import {
     updatePlayersIndividually,
 } from "./player.js";
 import {
+    changeGameStateAfterTime,
+    getPassedTime,
+} from "./delayedStateChange.js";
+import {
     createRound,
     everyoneHasPlayedTurn,
     getGame,
@@ -21,7 +25,6 @@ import {
     validateState,
 } from "./validate.js";
 
-import { changeGameStateAfterTime } from "./delayedStateChange.js";
 import { gameOptions } from "../consts/gameSettings.js";
 import { randomBetween } from "./util.js";
 
@@ -339,6 +342,10 @@ export const anonymizedGameClient = (game) => {
     return {
         ...game.client,
         rounds: anonymizeRounds(game.client.rounds),
+        timers: {
+            ...game.client.timers,
+            passedTime: getPassedTime(game.timeout),
+        },
     };
 };
 

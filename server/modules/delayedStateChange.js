@@ -15,7 +15,7 @@ export const changeGameStateAfterTime = (io, game, transition) => {
     console.log(`Setting timeout for: ${transition}, delay: ${delay}`);
 
     game.client.timers.duration = delay;
-    game.client.timers.passedtime = 0;
+    game.client.timers.passedTime = 0;
 
     game.timeout = setTimeout(
         gameStateChange,
@@ -131,4 +131,9 @@ const getTimeoutTime = (game) => {
         default:
             return timers.selectBlackCard;
     }
+};
+
+export const getPassedTime = (timeout) => {
+    if (!timeout) return undefined;
+    return process.uptime() - timeout._idleStart / 1000;
 };
