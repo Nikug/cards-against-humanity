@@ -41,11 +41,12 @@ export function containsObjectWithMatchingFieldIndex(obj, list, fieldName) {
 }
 
 export function textToSpeech(text) {
-    if ('speechSynthesis' in window) {
+    if ("speechSynthesis" in window) {
         const msg = new SpeechSynthesisUtterance();
-        msg.lang = 'fi';
+        msg.lang = "fi";
         msg.rate = 1;
         msg.text = text;
+        msg.volume = 0.3;
         window.speechSynthesis.speak(msg);
     }
 }

@@ -124,14 +124,14 @@ export function Game(props) {
 
         setTimeout(() => {
             setTimerIsOn(true);
-        }, 1);
+        }, 100);
     };
 
     useEffect(() => {
         if (game?.timers.passedTime && game?.timers.duration) {
             const { passedTime, duration } = game.timers;
-            let currentProgress = passedTime / duration;
-            currentProgress = currentProgress == 0 ? 1 : currentProgress;
+            let currentProgress = passedTime + 0.1 / duration;
+            currentProgress = currentProgress < 0.01 ? 0 : currentProgress;
 
             setStartingProgress(currentProgress);
             console.log("Set progress to", currentProgress);
