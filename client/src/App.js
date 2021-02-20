@@ -203,7 +203,7 @@ export const App = (props) => {
                                 />
                             </Switch>
                         </div>
-                        <div className="footer">
+                        <div className="main-footer">
                             <span className="music-player">
                                 <Music />
                             </span>

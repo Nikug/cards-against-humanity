@@ -1,20 +1,23 @@
 @import "./colors.scss";
 
 .copyrights {
-    position: fixed;
-    bottom: 0;
-    right: 10px;
     color: $copyright-text;
     font-size: 0.6em;
-    margin-right: 0.5rem;
 }
 
 .music-player {
     color: $music-player;
-
-    position: fixed;
-    bottom: 0;
-    left: 0px;
     color: $copyright-text;
     font-size: 0.6em;
+}
+
+.main-footer {
+    position: fixed;
+    box-sizing: border-box;
+    width: 100%;
+    padding: 0 1.6rem 0 0;
+    bottom: 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: end;
 }
