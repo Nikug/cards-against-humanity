@@ -35,32 +35,25 @@ export function Game(props) {
     };
 
     useEffect(() => {
-        const listener = () => {
-            if (!!game && !!player) {
-                socket.emit("leave_game", {
-                    gameID: game?.id,
-                    playerID: player?.id,
-                });
-            }
-        };
-
-        window.addEventListener("beforeunload", listener);
-
         if (game === undefined) {
             const cookie = getCookie("playerID");
             if (socket.disconnected) {
+                console.log("opening socket");
                 socket.open();
             }
-            console.log("joining game!", cookie);
             socket.emit("join_game", {
                 gameID: getGameIdFromURL(),
                 playerID: cookie,
             });
+            console.log(
+                "joining game!",
+                cookie,
+                "socket",
+                socket,
+                "game",
+                game
+            );
         }
-
-        return () => {
-            window.removeEventListener("beforeunload", listener);
-        };
     }, [game, player]);
 
     useEffect(() => {
@@ -120,7 +113,6 @@ export function Game(props) {
             socket.off("update_player");
             socket.off("update_game");
             socket.off("update_players");
-            socket.off("update_game_and_players");
             socket.off("update_game_options");
             socket.off("deal_black_cards");
             socket.off("upgrade_to_host");

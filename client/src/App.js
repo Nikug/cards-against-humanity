@@ -1,28 +1,28 @@
-import React, { useEffect, useState } from "react";
-import { socket } from "./components/sockets/socket";
-import {
-    BrowserRouter as Router,
-    Switch,
-    Route,
-    useHistory,
-    useLocation,
-} from "react-router-dom";
-import axios from "axios";
-
-import { Home } from "./layouts/Home";
-import { Game } from "./layouts/Game";
-import { Header } from "./components/header";
-import Music from "./components/music";
-
 import "./styles/App.scss";
 import "./styles/footer.scss";
 import "./styles/notification.scss";
-import { deleteCookie, getCookie, setCookie } from "./helpers/cookies";
+
+import React, { useEffect, useState } from "react";
 import {
-    isNullOrUndefined,
+    Route,
+    BrowserRouter as Router,
+    Switch,
+    useHistory,
+    useLocation,
+} from "react-router-dom";
+import {
     containsObjectWithMatchingFieldIndex,
+    isNullOrUndefined,
 } from "./helpers/generalhelpers";
+import { deleteCookie, getCookie, setCookie } from "./helpers/cookies";
+
+import { Game } from "./layouts/Game";
+import { Header } from "./components/header";
+import { Home } from "./layouts/Home";
+import Music from "./components/music";
 import { Notification } from "./components/notification/notification";
+import axios from "axios";
+import { socket } from "./components/sockets/socket";
 
 export const App = (props) => {
     const [game, setGame] = useState(undefined);
@@ -78,10 +78,6 @@ export const App = (props) => {
                 history.push(`/g/${data.game.id}`);
             }
             setLoading(false);
-
-            return () => {
-                socket.off("initial_data");
-            };
         });
 
         socket.on("disconnect", () => {
@@ -89,6 +85,10 @@ export const App = (props) => {
             resetData();
             history.push("/");
         });
+
+        return () => {
+            socket.off("update_game_and_players");
+        };
     }, []);
 
     useEffect(() => {
