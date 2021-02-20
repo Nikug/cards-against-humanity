@@ -1,32 +1,65 @@
 import { nanoid } from "nanoid";
+import sanitize from "sanitize";
+const sanitizer = sanitize();
 
 import {
     findGameAndPlayerBySocketID,
     getGame,
     removeGame,
+    removeGameIfNoActivePlayers,
     returnToLobby,
     setGame,
     shouldGameBeDeleted,
     shouldReturnToLobby,
     skipRound,
-    startNewRound,
 } from "./game.js";
-import { playerName } from "../consts/gameSettings.js";
-import { anonymizedGameClient } from "./card.js";
+import {
+    INACTIVE_GAME_DELETE_TIME,
+    playerName,
+    gameOptions,
+} from "../consts/gameSettings.js";
+import { anonymizedGameClient, drawWhiteCards } from "./card.js";
 import { joiningPlayerStates } from "../consts/states.js";
+import { setPlayer } from "./join.js";
+import { closeSocketWithID } from "./socket.js";
+
+export const emitToAllPlayerSockets = (io, player, message, data) => {
+    player.sockets.map((socket) => {
+        io.to(socket).emit(message, data);
+    });
+};
 
 export const updatePlayerName = (io, gameID, playerID, newName) => {
+    const game = getGame(gameID);
+    if (!game) return;
+
     const trimmedName = newName.trim();
     if (trimmedName.length < playerName.minimumLength) return;
 
-    const validatedName = trimmedName.substr(0, playerName.maximumLength);
+    const shortenedName = trimmedName.substr(0, playerName.maximumLength);
+    const cleanName = sanitizer.value(shortenedName, "str");
 
-    // TODO: add sanitatization to the player names for obvious reasons
-    const players = setPlayerName(gameID, playerID, validatedName);
+    const player = getPlayer(game, playerID);
 
-    io.in(gameID).emit("update_players", {
-        players: publicPlayersObject(players),
-    });
+    if (player.state === "pickingName") {
+        player.state =
+            game.stateMachine.state === "lobby" ? "active" : "joining";
+    }
+    const newGame = setPlayerName(game, player, cleanName);
+    setGame(newGame);
+
+    updatePlayersIndividually(io, newGame);
+};
+
+export const setPlayerName = (game, newPlayer, newName) => {
+    if (game) {
+        game.players = game.players.map((player) => {
+            return player.id === newPlayer.id
+                ? { ...newPlayer, name: newName }
+                : player;
+        });
+        return game;
+    }
 };
 
 export const changePlayerTextToSpeech = (io, gameID, playerID, useTTS) => {
@@ -40,18 +73,17 @@ export const changePlayerTextToSpeech = (io, gameID, playerID, useTTS) => {
     game.players = game.players.map((gamePlayer) =>
         gamePlayer.id === player.id ? player : gamePlayer
     );
-    console.log("game.players", game.players, "useTTS", useTTS);
     setGame(game);
 
     updatePlayersIndividually(io, game);
 };
 
-export const createNewPlayer = (socketID, isHost) => {
+export const createNewPlayer = (socketID, isHost, state = "pickingName") => {
     const player = {
         id: nanoid(),
-        socket: socketID,
+        sockets: [socketID],
         name: "",
-        state: "pickingName",
+        state: state,
         score: 0,
         isCardCzar: false,
         isHost: isHost,
@@ -64,7 +96,7 @@ export const createNewPlayer = (socketID, isHost) => {
 
 export const publicPlayersObject = (players) => {
     return players?.map((player) => {
-        const { id, socket, whiteCards, popularVoteScore, ...rest } = player;
+        const { id, sockets, whiteCards, popularVoteScore, ...rest } = player;
         return rest;
     });
 };
@@ -81,19 +113,6 @@ export const setPlayersActive = (players) => {
             ? { ...player, state: "active" }
             : player
     );
-};
-
-export const setPlayerName = (gameID, playerID, newName) => {
-    const game = getGame(gameID);
-    if (game) {
-        game.players = game.players.map((player) => {
-            return player.id === playerID
-                ? { ...player, name: newName, state: "active" }
-                : player;
-        });
-        setGame(game);
-        return game.players;
-    }
 };
 
 export const getPlayer = (game, playerID) => {
@@ -172,7 +191,7 @@ export const updatePlayersIndividually = (io, game) => {
     const publicPlayers = publicPlayersObject(game.players);
 
     game.players.map((player) => {
-        io.to(player.socket).emit("update_game_and_players", {
+        emitToAllPlayerSockets(io, player, "update_game_and_players", {
             game: anonymousClient,
             players: publicPlayers,
             player: player,
@@ -186,20 +205,48 @@ export const getActivePlayers = (players) => {
     );
 };
 
-export const setPlayerDisconnected = (io, socketID) => {
+export const setPlayerDisconnected = (io, socketID, removePlayer) => {
     const result = findGameAndPlayerBySocketID(socketID);
     if (!result) return;
 
     const { game, player } = result;
     if (!player) return;
 
-    player.state = "disconnected";
-    game.players = game.players.map((gamePlayer) =>
-        gamePlayer.id === player.id ? player : gamePlayer
+    const remainingSockets = player.sockets.filter(
+        (socket) => socket !== socketID
     );
-    if (shouldGameBeDeleted(game)) {
-        removeGame(game.id);
+    if (remainingSockets.length > 0 && !removePlayer) {
+        player.sockets = remainingSockets;
+        game.players = setPlayer(game.players, player);
+        setGame(game);
         return;
+    }
+
+    if (removePlayer) {
+        game.players = game.players.filter(
+            (gamePlayer) => gamePlayer.id !== player.id
+        );
+        player.sockets.map((socket) => {
+            closeSocketWithID(io, socket);
+        });
+    } else {
+        player.state = "disconnected";
+        player.sockets = remainingSockets;
+        game.players = setPlayer(game.players, player);
+    }
+
+    if (shouldGameBeDeleted(game)) {
+        if (removePlayer) {
+            removeGame(game.id);
+            return;
+        } else {
+            setTimeout(
+                () => removeGameIfNoActivePlayers(game.id),
+                INACTIVE_GAME_DELETE_TIME
+            );
+            setGame(game);
+            return;
+        }
     }
 
     if (player.isHost) {
@@ -207,7 +254,7 @@ export const setPlayerDisconnected = (io, socketID) => {
         if (!game.players) return;
 
         const newHost = game.players.find((player) => player.isHost);
-        io.to(newHost.socket).emit("upgraded_to_host");
+        emitToAllPlayerSockets(io, newHost, "upgraded_to_host", {});
     }
 
     if (shouldReturnToLobby(game)) {
@@ -224,10 +271,18 @@ export const setPlayerDisconnected = (io, socketID) => {
     updatePlayersIndividually(io, game);
 };
 
+const resetPlayerState = (player) => {
+    if (player.state === "disconnected") return player.state;
+    return player.name.length > playerName.minimumLength
+        ? "active"
+        : "pickingName";
+};
+
 export const resetPlayers = (players) => {
     return players.map((player) => ({
         ...player,
         score: 0,
+        state: resetPlayerState(player),
         isCardCzar: false,
         popularVoteScore: 0,
         whiteCards: [],
@@ -245,11 +300,19 @@ const handleCardCzarLeaving = (io, game, cardCzar) => {
 
 const handleHostLeaving = (game, host) => {
     const hostIndex = game.players.findIndex((player) => player.id === host.id);
-    game.players[hostIndex].isHost = false;
+    if (hostIndex !== -1) {
+        game.players[hostIndex].isHost = false;
+    }
 
-    const activePlayers = getActivePlayers(game.players).filter(
-        (player) => player.id !== host.id
-    );
+    let players = [];
+    if (game.stateMachine.state === "lobby") {
+        players = [...game.players];
+    } else {
+        players = getActivePlayers(game.players);
+    }
+
+    const activePlayers = players.filter((player) => player.id !== host.id);
+
     if (activePlayers.length > 0) {
         game.players = game.players.map((player) =>
             player.id === activePlayers[0].id
@@ -270,4 +333,24 @@ export const getJoiningPlayerState = (gameState, hasName) => {
     } else {
         return joiningPlayerStates[gameState];
     }
+};
+
+export const handleJoiningPlayers = (io, game) => {
+    return game.players.map((player) => {
+        if (player.state !== "joining") return player;
+
+        player.state = "active";
+        const numberOfMissingCards =
+            gameOptions.startingWhiteCardCount - player.whiteCards.length;
+        if (numberOfMissingCards > 0) {
+            player.whiteCards = [
+                ...player.whiteCards,
+                ...drawWhiteCards(game, numberOfMissingCards),
+            ];
+        }
+        emitToAllPlayerSockets(io, player, "update_player", {
+            player: player,
+        });
+        return player;
+    });
 };

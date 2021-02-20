@@ -4,7 +4,7 @@ import { getGame, setGame } from "./game.js";
 import { validateHost } from "./validate.js";
 
 export const addCardPack = async (io, gameID, cardPackID, playerID) => {
-    const url = `https://allbad.cards/api/abc/pack/get?pack=${cardPackID}`;
+    const url = `https://allbad.cards/api/pack/get?pack=${cardPackID}`;
     const res = await fetch(url);
     const json = await res.json();
 
@@ -85,6 +85,7 @@ export const removeCardPackFromGame = (gameID, cardPackID, playerID) => {
     const game = getGame(gameID);
     if (!game) return undefined;
 
+    if (validateState(game, "lobby")) return undefined;
     if (!validateHost(game, playerID)) return undefined;
 
     game.client.options.cardPacks = game.client.options.cardPacks.filter(

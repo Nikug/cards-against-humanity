@@ -1,9 +1,7 @@
 import {
-    joinToGame,
     updateGameOptions,
     startGame,
     startNewRound,
-    sendGameInfo,
     validateHostAndReturnToLobby,
 } from "../modules/game.js";
 import {
@@ -17,20 +15,22 @@ import {
     playWhiteCards,
     showWhiteCard,
     selectWinner,
+    sendBlackCards,
 } from "../modules/card.js";
 import { popularVote } from "../modules/popularVote.js";
+import { joinGame } from "../modules/join.js";
 
 export const sockets = (io) => {
     io.on("connection", (socket) => {
-        console.log(`Client joined! ID: ${socket.id}`);
+        console.log(`Client joined! socket ID: ${socket.id}`);
 
         socket.on("join_game", (data) => {
-            const missingFields = validateFields(["gameID"], data);
-            if (missingFields.length > 0) {
-                sendError(socket, "Invalid data", missingFields);
-            } else {
-                joinToGame(socket, io, data.gameID, data.playerID);
-            }
+            joinGame(io, socket, data?.gameID, data?.playerID);
+        });
+
+        socket.on("disconnect", (reason) => {
+            console.log(`Client left: ${reason}, Socket ID: ${socket.id}`);
+            setPlayerDisconnected(io, socket.id, false);
         });
 
         socket.on("leave_game", (data) => {
@@ -38,8 +38,7 @@ export const sockets = (io) => {
             if (missingFields.length > 0) {
                 sendError(socket, "Invalid data", missingFields);
             } else {
-                console.log("Some dude just left");
-                setPlayerDisconnected(io, socket.id);
+                setPlayerDisconnected(io, socket.id, true);
                 socket.disconnect(true);
             }
         });
@@ -123,6 +122,15 @@ export const sockets = (io) => {
             }
         });
 
+        socket.on("draw_black_cards", (data) => {
+            const missingFields = validateFields(["gameID", "playerID"], data);
+            if (missingFields.length > 0) {
+                sendError(socket, "Invalid data", missingFields);
+            } else {
+                sendBlackCards(socket, data.gameID, data.playerID);
+            }
+        });
+
         socket.on("select_black_card", (data) => {
             const missingFields = validateFields(
                 ["gameID", "playerID", "selectedCardID", "discardedCardIDs"],
@@ -151,7 +159,6 @@ export const sockets = (io) => {
             } else {
                 playWhiteCards(
                     io,
-                    socket,
                     data.gameID,
                     data.playerID,
                     data.whiteCardIDs
@@ -189,16 +196,6 @@ export const sockets = (io) => {
             }
         });
 
-        socket.on("get_initial_data", (data) => {
-            console.log("get_initial_data", data);
-            const missingFields = validateFields(["playerID"], data);
-            if (missingFields.length > 0) {
-                sendError(socket, "Invalid data", missingFields);
-            } else {
-                sendGameInfo(io, data.playerID, socket.id);
-            }
-        });
-
         socket.on("return_to_lobby", (data) => {
             const missingFields = validateFields(["gameID", "playerID"], data);
             if (missingFields.length > 0) {
@@ -226,15 +223,10 @@ export const sockets = (io) => {
             }
         });
     });
-
-    io.on("disconnect", (socket) => {
-        console.log(`Client left :( Socket ID: ${socket.id}`);
-        setPlayerDisconnected(io, socket.id);
-    });
 };
 
 const sendError = (socket, id, message) => {
-    socket.emit("error", {
+    socket?.emit("notification", {
         id: id,
         message: message,
     });

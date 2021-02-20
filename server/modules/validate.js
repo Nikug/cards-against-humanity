@@ -23,7 +23,7 @@ export const validatePlayerPlayingWhiteCards = (
     playerID,
     whiteCardIDs
 ) => {
-    if (game.client.state !== "playingWhiteCards") {
+    if (!validateState(game, "playingWhiteCards")) {
         return {
             error: "Tällä hetkellä ei voi pelata valkoisia kortteja",
         };
@@ -31,10 +31,15 @@ export const validatePlayerPlayingWhiteCards = (
 
     const player = getPlayer(game, playerID);
     if (player === undefined) {
-        console.log("Player was not found");
         return {
             result: false,
             error: "Pelaajaa ei löytynyt",
+        };
+    }
+    if (!validatePlayerState(player, "playing")) {
+        return {
+            result: false,
+            error: "Player is in wrong state",
         };
     }
 
@@ -80,6 +85,12 @@ export const validateOptions = (newOptions) => {
 };
 
 export const validateGameStartRequirements = (game) => {
+    if (!validateState(game, "lobby")) {
+        return {
+            result: false,
+            error: "Not in lobby",
+        };
+    }
     const activePlayerCount = game.players.filter(
         (player) => player.state === "active"
     ).length;
@@ -136,7 +147,7 @@ export const validateShowingWhiteCard = (game, playerID) => {
         return {
             error: "Pelaaja ei ole Card Czar",
         };
-    if (game.client.state !== "readingCards")
+    if (!validateState(game, "readingCards"))
         return {
             error: "Väärä pelinvaihe",
         };
@@ -148,7 +159,7 @@ export const validateShowingWhiteCard = (game, playerID) => {
 export const validatePickingWinner = (game, playerID, whiteCardIDs) => {
     if (!validateCardCzar(game, playerID)) {
         return { error: "Ei ole cardczar" };
-    } else if (game.client.state !== "showingCards") {
+    } else if (!validateState(game, "showingCards")) {
         return { error: "Väärä pelinvaihe" };
     } else {
         return { result: true };
@@ -160,11 +171,7 @@ export const validatePopularVote = (game, playerID) => {
         if (validateCardCzar(game, playerID))
             return { error: "Cardczar ei saa äänestää " };
     }
-    if (
-        !["readingCards", "showingCards", "roundEnd"].includes(
-            game.stateMachine.state
-        )
-    ) {
+    if (!validateState(game, ["readingCards", "showingCards", "roundEnd"])) {
         return { error: "Tässä pelinvaiheessa ei voi äänestää" };
     }
     return { result: true };
@@ -172,9 +179,24 @@ export const validatePopularVote = (game, playerID) => {
 
 export const validateGameEnding = (game) => {
     const highestScore = game.players.reduce(
-        (prev, current) =>
-            prev.score > current.score ? prev : current,
-        0
+        (prev, current) => (prev.score > current.score ? prev : current),
+        { score: 0 }
     );
     return highestScore.score >= game.client.options.scoreLimit;
+};
+
+export const validateState = (game, states) => {
+    if (Array.isArray(states)) {
+        return states.includes(game.stateMachine.state);
+    } else {
+        return game.stateMachine?.state === states;
+    }
+};
+
+export const validatePlayerState = (player, states) => {
+    if (Array.isArray(states)) {
+        return states.includes(player.state);
+    } else {
+        return player.state === states;
+    }
 };

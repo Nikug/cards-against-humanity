@@ -1,34 +1,32 @@
-import hri from "human-readable-ids";
-
-import { gameOptions } from "../consts/gameSettings.js";
-import { createStateMachine } from "./finiteStateMachine.js";
 import {
-    createNewPlayer,
-    setPlayersActive,
-    publicPlayersObject,
-    setPlayersPlaying,
     appointNextCardCzar,
-    updatePlayersIndividually,
     getActivePlayers,
+    handleJoiningPlayers,
     resetPlayers,
-    getJoiningPlayerState,
+    setPlayersPlaying,
+    updatePlayersIndividually,
 } from "./player.js";
 import {
-    validateHost,
-    validateOptions,
-    validateGameStartRequirements,
-    validateCardCzar,
-    validateGameEnding,
-} from "./validate.js";
-import { randomBetween } from "./util.js";
-import {
-    shuffleCards,
+    dealBlackCards,
     dealStartingWhiteCards,
     dealWhiteCards,
-    dealBlackCards,
     replenishWhiteCards,
-    anonymizedGameClient,
+    shuffleCards,
 } from "./card.js";
+import {
+    validateCardCzar,
+    validateGameEnding,
+    validateGameStartRequirements,
+    validateHost,
+    validateOptions,
+} from "./validate.js";
+
+import { changeGameStateAfterTime } from "./delayedStateChange.js";
+import { createStateMachine } from "./finiteStateMachine.js";
+import { gameOptions } from "../consts/gameSettings.js";
+import { getPassedTime } from "./delayedStateChange.js";
+import hri from "human-readable-ids";
+import { randomBetween } from "./util.js";
 import { setPopularVoteLeader } from "./popularVote.js";
 
 let games = [];
@@ -52,39 +50,21 @@ export const setGame = (newGame) => {
     return newGame;
 };
 
-export const removeGame = (gameID) => {
-    games = games.filter((game) => game.id !== gameID);
+export const removeGameIfNoActivePlayers = (gameID) => {
+    const game = getGame(gameID);
+    if (!game) return;
+
+    if (!game.players) removeGame(gameID);
+
+    if (getActivePlayers(game.players).length === 0) {
+        console.log("Removed inactive game", gameID);
+        removeGame(gameID);
+    }
 };
 
-export const joinGame = (gameID, playerSocketID, playerID) => {
-    console.log("join game called");
-    const game = getGame(gameID);
-    if (!!game) {
-        const isHost = game.players.length === 0;
-        let player;
-        if (playerID != undefined) {
-            console.log("Player id was sent!", playerID);
-            player = game.players.find(
-                (oldPlayer) => oldPlayer.id === playerID
-            );
-            if (!!player) {
-                player.state = getJoiningPlayerState(
-                    game.stateMachine.state,
-                    !!player.name
-                );
-                player.socket = playerSocketID;
-                game.players = game.players.map((oldPlayer) =>
-                    player.id === oldPlayer.id ? player : oldPlayer
-                );
-            }
-        } else {
-            player = createNewPlayer(playerSocketID, isHost);
-            game.players.push(player);
-        }
-        setGame(game);
-        return player;
-    }
-    return null;
+export const removeGame = (gameID) => {
+    console.log("Game was removed");
+    games = games.filter((game) => game.id !== gameID);
 };
 
 const createNewGame = (url) => {
@@ -102,10 +82,20 @@ const createNewGame = (url) => {
                 allowCardCzarPopularVote:
                     gameOptions.defaultAllowCardCzarPopularVote,
                 cardPacks: [],
-                selectWhiteCardTimeLimit: gameOptions.selectWhiteCardTimeLimit,
-                selectBlackCardTimeLimit: gameOptions.selectBlackCardTimeLimit,
+                timers: {
+                    selectBlackCard: gameOptions.timers.selectBlackCard.default,
+                    selectWhiteCards:
+                        gameOptions.timers.selectWhiteCards.default,
+                    readBlackCard: gameOptions.timers.readBlackCard.default,
+                    selectWinner: gameOptions.timers.selectWinner.default,
+                    roundEnd: gameOptions.timers.roundEnd.default,
+                },
             },
             rounds: [],
+            timers: {
+                duration: undefined,
+                passedTime: undefined,
+            },
         },
         players: [],
         cards: {
@@ -143,37 +133,6 @@ export const everyoneHasPlayedTurn = (game) => {
     return waitingPlayers.length === getActivePlayers(game.players).length - 1; // Remove card czar with -1
 };
 
-export const changeGameStateAfterTime = (io, gameID, transition, time) => {
-    setTimeout(() => {
-        const game = getGame(gameID);
-        if (!game) return;
-
-        game.stateMachine[transition]();
-        game.client.state = game.stateMachine.state;
-        game.players = setPlayersActive(game.players);
-
-        setGame(game);
-        updatePlayersIndividually(io, game);
-    }, time * 1000);
-};
-
-export const joinToGame = (socket, io, gameID, playerID) => {
-    console.log(`Join game id ${gameID}`);
-
-    const game = getGame(gameID);
-    if (game != null) {
-        socket.join(gameID);
-        console.log(`Client joined room ${gameID}`);
-
-        const player = joinGame(gameID, socket.id, playerID);
-
-        updatePlayersIndividually(io, game);
-    } else {
-        socket.disconnect(true);
-        console.log(`Client disconnected :( ${gameID}`);
-    }
-};
-
 export const updateGameOptions = (io, gameID, playerID, newOptions) => {
     const game = getGame(gameID);
 
@@ -186,7 +145,7 @@ export const updateGameOptions = (io, gameID, playerID, newOptions) => {
     });
     const updatedGame = setGame(game);
 
-    io.in(game.id).emit("update_game_options", {
+    io.in(gameID).emit("update_game_options", {
         options: updatedGame.client.options,
     });
 };
@@ -223,13 +182,17 @@ export const startGame = (io, gameID, playerID) => {
 
     const newGame = dealBlackCards(
         io,
-        activePlayers[cardCzarIndex].socket,
+        activePlayers[cardCzarIndex].sockets,
         gameWithStartingHands
     );
 
-    setGame(newGame);
-
-    updatePlayersIndividually(io, gameWithStartingHands);
+    const updatedGame = changeGameStateAfterTime(
+        io,
+        newGame,
+        "startPlayingWhiteCards"
+    );
+    setGame(updatedGame);
+    updatePlayersIndividually(io, updatedGame);
 };
 
 export const startNewRound = (io, gameID, playerID) => {
@@ -238,10 +201,12 @@ export const startNewRound = (io, gameID, playerID) => {
 
     if (!validateCardCzar(game, playerID)) return;
 
-    if(validateGameEnding(game)) {
+    if (validateGameEnding(game)) {
         endGame(io, game);
         return;
     }
+
+    if (game.stateMachine.cannot("startRound")) return;
 
     game.stateMachine.startRound();
     game.client.state = game.stateMachine.state;
@@ -250,24 +215,32 @@ export const startNewRound = (io, gameID, playerID) => {
         game,
         game.currentRound.blackCard.whiteCardsToPlay
     );
+
+    game.players = handleJoiningPlayers(io, game);
+
     game.players = appointNextCardCzar(game, playerID);
     game.players = setPopularVoteLeader(game.players);
 
     const cardCzar = game.players.find((player) => player.isCardCzar);
-    const newGame = dealBlackCards(io, cardCzar.socket, game);
+    const newGame = dealBlackCards(io, cardCzar.sockets, game);
 
-    setGame(newGame);
-    updatePlayersIndividually(io, newGame);
+    const updatedGame = changeGameStateAfterTime(
+        io,
+        game,
+        "startPlayingWhiteCards"
+    );
+    setGame(updatedGame);
+    updatePlayersIndividually(io, updatedGame);
 };
 
 export const endGame = (io, game) => {
-    if(game.stateMachine.can("endGame")) {
+    if (game.stateMachine.can("endGame")) {
         game.stateMachine.endGame();
         game.client.state = game.stateMachine.state;
         setGame(game);
         updatePlayersIndividually(io, game);
     }
-}
+};
 
 export const skipRound = (io, game, newCardCzar) => {
     if (game.stateMachine.state === "pickingBlackCard") {
@@ -278,18 +251,26 @@ export const skipRound = (io, game, newCardCzar) => {
         );
         game.players = replenishWhiteCards(game, playerCards);
     } else {
-        game.players = dealWhiteCards(
-            game,
-            game.currentRound.blackCard.whiteCardsToPlay
-        );
+        if (game.currentRound.blackCard) {
+            game.players = dealWhiteCards(
+                game,
+                game.currentRound.blackCard.whiteCardsToPlay
+            );
+        }
     }
 
     game.stateMachine.skipRound();
     game.client.state = game.stateMachine.state;
 
-    const newGame = dealBlackCards(io, newCardCzar.socket, game);
-    setGame(newGame);
-    updatePlayersIndividually(io, newGame);
+    const newGame = dealBlackCards(io, newCardCzar.sockets, game);
+
+    const updatedGame = changeGameStateAfterTime(
+        io,
+        newGame,
+        "startPlayingWhiteCards"
+    );
+    setGame(updatedGame);
+    updatePlayersIndividually(io, updatedGame);
 };
 
 export const findGameAndPlayerBySocketID = (socketID) => {
@@ -299,7 +280,7 @@ export const findGameAndPlayerBySocketID = (socketID) => {
             j < playerCount;
             j++
         ) {
-            if (games[i].players[j].socket === socketID) {
+            if (games[i].players[j].sockets.includes(socketID)) {
                 return {
                     game: { ...games[i] },
                     player: { ...games[i].players[j] },
@@ -323,31 +304,6 @@ export const findGameByPlayerID = (playerID) => {
         }
     }
     return undefined;
-};
-
-export const sendGameInfo = (io, playerID, socketID) => {
-    const game = findGameByPlayerID(playerID);
-
-    if (!game) {
-        io.to(socketID).emit("initial_data", {
-            game: undefined,
-            players: undefined,
-            player: undefined,
-        });
-    } else {
-        const player = game.players.find((player) => player.id === playerID);
-        player.socket = socketID;
-        game.players = game.players.map((oldPlayer) =>
-            oldPlayer.id === playerID ? player : oldPlayer
-        );
-        setGame(game);
-
-        io.to(socketID).emit("initial_data", {
-            game: { ...anonymizedGameClient(game) },
-            players: publicPlayersObject(game.players),
-            player: player,
-        });
-    }
 };
 
 export const shouldGameBeDeleted = (game) => {
@@ -412,6 +368,10 @@ export const resetGame = (game) => {
         ...game.cards.blackCards,
         ...game.cards.playedBlackCards,
     ];
+
+    // Reset timers
+    game.client.options.timers.duration = undefined;
+    game.client.options.timers.passedTime = undefined;
 
     // Reset game state if not in lobby
     if (game.stateMachine.state !== "lobby") {

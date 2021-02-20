@@ -1,17 +1,19 @@
+import { CONTROL_TYPES, Setting } from "../settings/setting";
 import React, { useEffect, useState } from "react";
-import { socket } from "../sockets/socket";
-
-import { CardPicker } from "./cardpicker";
 import {
     emptyFn,
     isNullOrUndefined,
     textToSpeech,
 } from "../../helpers/generalhelpers";
-import { Setting, CONTROL_TYPES } from "../settings/setting";
+
+import { CardPicker } from "./cardpicker";
+import { socket } from "../sockets/socket";
 
 export const CardReadingContainer = (props) => {
     const { game, player } = props;
     const [whiteCards, setWhiteCards] = useState([]);
+    const [whiteCardIndex, setWhiteCardIndex] = useState(0);
+    const [outOf, setOutOf] = useState(0);
     const textToSpeechInUse = game.players.filter(
         (player) => player.isCardCzar
     )[0].useTextToSpeech;
@@ -20,13 +22,15 @@ export const CardReadingContainer = (props) => {
 
     useEffect(() => {
         const listener = (data) => {
-            setWhiteCards(data);
+            setWhiteCards(data.whiteCards);
+            setWhiteCardIndex(data.index);
+            setOutOf(data.outOf);
 
             const blackCardToRead =
                 game.rounds[game.rounds.length - 1].blackCard;
 
             if (textToSpeechInUse && !isNullOrUndefined(blackCardToRead)) {
-                const whiteCardsToRead = data;
+                const whiteCardsToRead = data.whiteCards;
                 const blankTexts = [];
                 const blackCardTexts = blackCardToRead.text;
 
@@ -91,6 +95,11 @@ export const CardReadingContainer = (props) => {
         });
     };
 
+    const topText =
+        outOf !== 0
+            ? `Luetaan kortit (${whiteCardIndex}/${outOf}):`
+            : "Luetaan kortit:";
+
     return (
         <div className="blackcardpicker">
             <CardPicker
@@ -108,7 +117,7 @@ export const CardReadingContainer = (props) => {
                 }
                 customButtonIcons={["arrow_forward", "cached"]}
                 noActionButton={player?.isCardCzar ? false : true}
-                topText={"Luetaan kortit:"}
+                topText={topText}
             />
             {player?.isCardCzar && (
                 <div className="cardreading-settings">

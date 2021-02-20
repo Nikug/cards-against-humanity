@@ -1,4 +1,5 @@
 // Documentation for different types used
+
 import StateMachine from "javascript-state-machine";
 
 interface Game {
@@ -8,6 +9,7 @@ interface Game {
     stateMachine: typeof StateMachine;
     client: ClientGame;
     currentRound: Round;
+    timeout: NodeJS.Timeout;
 }
 
 interface ClientGame {
@@ -15,12 +17,18 @@ interface ClientGame {
     state: GameState;
     options: Options;
     rounds: Round[];
+    timers: ClientTimers;
+}
+
+interface ClientTimers {
+    duration: number | undefined; // Seconds
+    passedTime: number | undefined; // Seconds
 }
 
 // This information is only shown to each player separately
 interface Player {
     id: string;
-    socket: string;
+    sockets: string;
     name: string;
     state: PlayerState;
     score: number;
@@ -47,6 +55,7 @@ interface PlayerPublic {
 interface Cards {
     whiteCards: WhiteCard[];
     blackCards: BlackCard[];
+    sentBlackCards: BlackCard[];
     playedWhiteCards: WhiteCard[];
     playedBlackCards: BlackCard[];
 }
@@ -68,12 +77,12 @@ interface BlackCard {
 interface Round {
     round: number;
     blackCard: BlackCard;
-    cardCzar: string;
+    cardCzar: string; // Not shown in client
     cardIndex: number; // Used to show cards one by one
     whiteCardsByPlayer: {
         wonRound: boolean;
-        // TODO: change to be playerName
-        playerID: string | null; // Always null unless is winner in client
+        playerID: string; // Not shown in client
+        playerName: String | null; // Always null unless is winner in client
         popularVote: number;
         popularVotes: string[]; // List of player ids who voted for this player
         whiteCards: WhiteCard[];
@@ -90,6 +99,16 @@ interface Options {
     cardPacks: CardPack[];
     selectWhiteCardTimeLimit: number;
     selectBlackCardTimeLimit: number;
+    timers: Timers;
+}
+
+// Values in seconds
+interface Timers {
+    selectBlackCard: number | null;
+    selectWhiteCards: number | null;
+    readBlackCard: number | null;
+    selectWinner: number | null;
+    roundEnd: number | null;
 }
 
 interface CardPack {

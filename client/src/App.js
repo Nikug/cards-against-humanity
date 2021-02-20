@@ -58,12 +58,24 @@ export const App = (props) => {
     };
 
     useEffect(() => {
-        socket.on("initial_data", (data) => {
+        socket.on("update_game_and_players", (data) => {
+            if (data.error) {
+                console.log("Received error from server:", data.error);
+                setLoading(false);
+                return;
+            }
+            console.log("Current game:", data.game);
             if (isNullOrUndefined(data.game)) {
                 deleteCookie("playerID");
             } else {
-                setGame({ ...data.game, players: data.players });
-                setPlayer(data.player);
+                setGame((prevGame) => ({
+                    ...prevGame,
+                    ...data.game,
+                    players: data.players,
+                }));
+                setPlayer((prevPlayer) => ({ ...prevPlayer, ...data.player }));
+                setCookie({ field: "playerID", value: data.player.id });
+                history.push(`/g/${data.game.id}`);
             }
             setLoading(false);
 
@@ -72,14 +84,23 @@ export const App = (props) => {
             };
         });
 
+        socket.on("disconnect", () => {
+            socket.close();
+            resetData();
+            history.push("/");
+        });
+    }, []);
+
+    useEffect(() => {
         const cookie = getCookie("playerID");
 
         if (!isNullOrUndefined(cookie)) {
-            socket.emit("get_initial_data", {
+            socket.emit("join_game", {
                 playerID: cookie,
             });
-            //deleteCookie("playerID");
+            // setPlayer({ player: { id: cookie } });
         } else {
+            deleteCookie("playerID");
             //setCookie({ field: "playerID", value: "random-id-123" });
             setLoading(false);
         }
@@ -87,14 +108,22 @@ export const App = (props) => {
 
     const updateData = (data) => {
         if (data.player) {
-            setPlayer(data.player);
+            setPlayer((prevPlayer) => ({ ...prevPlayer, ...data.player }));
         }
         if (data.game) {
-            setGame(data.game);
+            setGame((prevGame) => ({ ...prevGame, ...data.game }));
+        }
+        if (data.options) {
+            setGame((prevGame) => ({ ...prevGame, options: data.options }));
         }
         if (data.players) {
             setGame((prevGame) => ({ ...prevGame, players: data.players }));
         }
+    };
+
+    const resetData = () => {
+        setPlayer(undefined);
+        setGame(undefined);
     };
 
     const notificationsToRender = [];
@@ -133,7 +162,11 @@ export const App = (props) => {
                 >
                     <div>
                         <div className="basic-grid">
-                            <Header game={game} player={player} />
+                            <Header
+                                game={game}
+                                player={player}
+                                reset={resetData}
+                            />
                             <Switch>
                                 <Route
                                     exact

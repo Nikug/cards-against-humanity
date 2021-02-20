@@ -1,28 +1,34 @@
 import {
-    getGame,
-    setGame,
-    everyoneHasPlayedTurn,
-    createRound,
-    changeGameStateAfterTime,
-} from "./game.js";
-import {
-    validatePlayerPlayingWhiteCards,
-    validateCardCzar,
-    validateShowingWhiteCard,
-    validatePickingWinner,
-} from "./validate.js";
-import {
     addScore,
+    emitToAllPlayerSockets,
     getPlayer,
+    getPlayerByWhiteCards,
     setPlayersActive,
     setPlayersPlaying,
-    getPlayerByWhiteCards,
     updatePlayersIndividually,
 } from "./player.js";
+import {
+    changeGameStateAfterTime,
+    getPassedTime,
+} from "./delayedStateChange.js";
+import {
+    createRound,
+    everyoneHasPlayedTurn,
+    getGame,
+    setGame,
+} from "./game.js";
+import {
+    validateCardCzar,
+    validatePickingWinner,
+    validatePlayerPlayingWhiteCards,
+    validateShowingWhiteCard,
+    validateState,
+} from "./validate.js";
+
 import { gameOptions } from "../consts/gameSettings.js";
 import { randomBetween } from "./util.js";
 
-export const playWhiteCards = (io, socket, gameID, playerID, whiteCardIDs) => {
+export const playWhiteCards = (io, gameID, playerID, whiteCardIDs) => {
     let game = getGame(gameID);
     if (!game) return;
     if (!validatePlayerPlayingWhiteCards(game, playerID, whiteCardIDs).result)
@@ -51,7 +57,7 @@ export const playWhiteCards = (io, socket, gameID, playerID, whiteCardIDs) => {
 
     game.currentRound.whiteCardsByPlayer = [
         ...game.currentRound.whiteCardsByPlayer,
-        createWhiteCardsByPlayer(whiteCards, playerID),
+        createWhiteCardsByPlayer(whiteCards, playerID, player.name),
     ];
 
     if (everyoneHasPlayedTurn(game)) {
@@ -60,10 +66,13 @@ export const playWhiteCards = (io, socket, gameID, playerID, whiteCardIDs) => {
         game.currentRound.whiteCardsByPlayer = shuffleCards([
             ...game.currentRound.whiteCardsByPlayer,
         ]);
+        const updatedGame = changeGameStateAfterTime(io, game, "showCards");
+        setGame(updatedGame);
+        updatePlayersIndividually(io, updatedGame);
+    } else {
+        setGame(game);
+        updatePlayersIndividually(io, game);
     }
-
-    setGame(game);
-    updatePlayersIndividually(io, game);
 };
 
 export const selectBlackCard = (
@@ -76,10 +85,11 @@ export const selectBlackCard = (
     const game = getGame(gameID);
     if (!game) return;
 
+    if (!validateState(game, "pickingBlackCard")) return;
     if (!validateCardCzar(game, playerID)) return;
 
     if (
-        !game.cards.playedBlackCards.some(
+        !game.cards.sentBlackCards.some(
             (blackCard) => blackCard.id === selectedCardID
         )
     )
@@ -87,18 +97,21 @@ export const selectBlackCard = (
 
     if (discardedCardIDs.length !== gameOptions.blackCardsToChooseFrom - 1)
         return;
-    const discardedCards = game.cards.playedBlackCards.filter((blackCard) =>
+    const discardedCards = game.cards.sentBlackCards.filter((blackCard) =>
         discardedCardIDs.includes(blackCard.id)
     );
     if (discardedCards.length !== discardedCardIDs.length) return;
 
-    game.cards.playedBlackCards = game.cards.playedBlackCards.filter(
-        (blackCard) => !discardedCardIDs.includes(blackCard.id)
-    );
-    const selectedCard = game.cards.playedBlackCards.filter(
+    const selectedCard = game.cards.sentBlackCards.find(
         (blackCard) => blackCard.id === selectedCardID
     );
-    if (selectedCard.length !== 1) return;
+    game.cards.sentBlackCards = [];
+
+    game.cards.playedBlackCards = [
+        ...game.cards.playedBlackCards,
+        selectedCard,
+    ];
+    if (!selectedCard) return;
 
     game.cards.blackCards = shuffleCardsBackToDeck(
         discardedCards,
@@ -107,7 +120,7 @@ export const selectBlackCard = (
 
     game.currentRound = createRound(
         game.client.rounds.length + 1,
-        selectedCard[0],
+        selectedCard,
         playerID
     );
     game.client.rounds = [...game.client.rounds, game.currentRound];
@@ -115,25 +128,33 @@ export const selectBlackCard = (
     game.stateMachine.startPlayingWhiteCards();
     game.client.state = game.stateMachine.state;
     game.players = setPlayersPlaying(game.players);
-    setGame(game);
 
-    updatePlayersIndividually(io, game);
-    // changeGameStateAfterTime(
-    //     io,
-    //     gameID,
-    //     "startReading",
-    //     game.client.options.selectWhiteCardTimeLimit +
-    //         gameOptions.defaultGracePeriod
-    // );
+    const updatedGame = changeGameStateAfterTime(io, game, "startReading");
+    setGame(updatedGame);
+    updatePlayersIndividually(io, updatedGame);
 };
 
-export const dealBlackCards = (io, socketID, game) => {
+export const sendBlackCards = (socket, gameID, playerID) => {
+    const game = getGame(gameID);
+    if (!game) return;
+
+    if (!validateCardCzar(game, playerID)) return;
+    if (game.stateMachine.state !== "pickingBlackCard") return;
+
+    socket.emit("deal_black_cards", {
+        blackCards: game.cards.sentBlackCards,
+    });
+};
+
+export const dealBlackCards = (io, socketIDs, game) => {
     const { blackCards, game: newGame } = drawBlackCards(
         game,
         gameOptions.blackCardsToChooseFrom
     );
-    io.to(socketID).emit("deal_black_cards", {
-        blackCards: blackCards,
+    socketIDs.map((socket) => {
+        io.to(socket).emit("deal_black_cards", {
+            blackCards: blackCards,
+        });
     });
     return newGame;
 };
@@ -142,7 +163,7 @@ export const dealStartingWhiteCards = (io, game, count) => {
     const players = game.players.map((player) => {
         if (["active", "playing", "waiting"].includes(player.state)) {
             player.whiteCards = drawWhiteCards(game, count);
-            io.to(player.socket).emit("update_player", {
+            emitToAllPlayerSockets(io, player, "update_player", {
                 player: player,
             });
         }
@@ -219,15 +240,11 @@ export const drawBlackCards = (game, count) => {
             game.cards.blackCards.splice(0, count - blackCards.length),
         ];
 
-        game.cards.playedBlackCards = [...blackCards];
-        setGame(game);
-        return blackCards;
+        game.cards.sentBlackCards = [...blackCards];
+        return { blackCards, game };
     } else {
         const blackCards = game.cards.blackCards.splice(0, count);
-        game.cards.playedBlackCards = [
-            ...game.cards.playedBlackCards,
-            ...blackCards,
-        ];
+        game.cards.sentBlackCards = [...blackCards];
         return { blackCards, game };
     }
 };
@@ -240,10 +257,11 @@ export const shuffleCardsBackToDeck = (cards, deck) => {
     return [...newCards];
 };
 
-export const createWhiteCardsByPlayer = (whiteCards, playerID) => {
+export const createWhiteCardsByPlayer = (whiteCards, playerID, playerName) => {
     return {
         wonRound: false,
         playerID: playerID,
+        playerName: playerName,
         popularVote: 0,
         popularVotes: [],
         whiteCards: whiteCards,
@@ -274,10 +292,12 @@ export const showWhiteCard = (io, gameID, playerID) => {
     ) {
         game.stateMachine.showCards();
         game.client.state = game.stateMachine.state;
-        setGame(game);
+        const updatedGame = changeGameStateAfterTime(io, game, "endRound");
+        setGame(updatedGame);
+
         io.in(gameID).emit("update_game", {
             game: {
-                ...anonymizedGameClient(game),
+                ...anonymizedGameClient(updatedGame),
             },
         });
     } else {
@@ -285,44 +305,54 @@ export const showWhiteCard = (io, gameID, playerID) => {
             game.currentRound.whiteCardsByPlayer[game.currentRound.cardIndex]
                 .whiteCards;
         game.currentRound.cardIndex = game.currentRound.cardIndex + 1;
-        setGame(game);
+        const updatedGame = changeGameStateAfterTime(io, game, "showCards");
+        setGame(updatedGame);
 
-        io.in(gameID).emit("show_white_card", whiteCards);
+        io.in(gameID).emit("show_white_card", {
+            whiteCards: whiteCards,
+            index: updatedGame.currentRound.cardIndex,
+            outOf: updatedGame.currentRound.whiteCardsByPlayer.length,
+        });
     }
 };
 
 export const anonymizePlayedWhiteCards = (playedWhiteCards) => {
     return playedWhiteCards.map((card) => {
-        const { popularVotes, ...rest } = card;
+        const { popularVotes, playerID, ...rest } = card;
         return {
             ...rest,
-            playerID: card.wonRound ? card.playerID : null,
+            playerName: card.wonRound ? card.playerName : null,
         };
+    });
+};
+
+export const anonymizeRounds = (rounds) => {
+    return rounds.map((round) => {
+        const { cardCzar, ...rest } = round;
+        rest.whiteCardsByPlayer = anonymizePlayedWhiteCards(
+            rest.whiteCardsByPlayer
+        );
+        return rest;
     });
 };
 
 export const anonymizedGameClient = (game) => {
     if (!game.client?.rounds || !game.currentRound) return { ...game.client };
 
-    const roundCount = game.client.rounds.length;
-    const lastRound = {
-        ...game.client.rounds[roundCount - 1],
-    };
-
-    const cards = anonymizePlayedWhiteCards(
-        game.currentRound.whiteCardsByPlayer
-    );
-    lastRound.whiteCardsByPlayer = cards;
-
     return {
         ...game.client,
-        rounds: [...game.client.rounds].splice(-1, 1, lastRound),
+        rounds: anonymizeRounds(game.client.rounds),
+        timers: {
+            ...game.client.timers,
+            passedTime: getPassedTime(game.timeout),
+        },
     };
 };
 
 export const selectWinner = (io, gameID, playerID, whiteCardIDs) => {
     const game = getGame(gameID);
     if (!game) return;
+
     const { result, error } = validatePickingWinner(
         game,
         playerID,
@@ -353,6 +383,7 @@ export const selectWinner = (io, gameID, playerID, whiteCardIDs) => {
 
     game.players = setPlayersActive(game.players);
 
-    setGame(game);
-    updatePlayersIndividually(io, game);
+    const updatedGame = changeGameStateAfterTime(io, game, "startRound");
+    setGame(updatedGame);
+    updatePlayersIndividually(io, updatedGame);
 };

@@ -1,10 +1,10 @@
 // https://medium.com/swlh/creating-an-animated-progress-bar-in-react-5e85e8f6ec16
 
-import React from "react";
-
 import "./../styles/timer.scss";
 
-export function Timer({ width, percent, startingPercent, time }) {
+import React from "react";
+
+export function Timer({ width, percent = 1, startingPercent, time }) {
     const [value, setValue] = React.useState(0);
     const [startingValue, setStartingValue] = React.useState(0);
     const [timeLeft, setTimeLeft] = React.useState(0);
