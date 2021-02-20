@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+
 import { socket } from "../sockets/socket";
 
 export const PlayerName = (props) => {
@@ -13,7 +14,7 @@ export const PlayerName = (props) => {
             socket.emit("set_player_name", {
                 gameID: props.gameID,
                 playerID: props.playerID,
-                playerName: cleanedName
+                playerName: cleanedName,
             });
         }
     };
@@ -29,9 +30,9 @@ export const PlayerName = (props) => {
                     placeholder="Nimi"
                     value={name}
                     maxLength="50"
-                    onChange={e => setName(e.target.value)}
+                    onChange={(e) => setName(e.target.value)}
                 />
-                <input type="submit" value="OK"/>
+                <input type="submit" value="OK" />
             </form>
         </div>
     );
