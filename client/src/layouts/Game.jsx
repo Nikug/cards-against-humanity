@@ -101,6 +101,18 @@ export function Game(props) {
         });
     }, []);
 
+    useEffect(() => {
+        if (game?.timers.passedTime && game?.timers.duration) {
+            const currentProgress =
+                game.timers.passedTime / game.timers.duration;
+            setProgress(currentProgress == 0 ? 1 : currentProgress);
+            console.log(
+                "Set progress to",
+                currentProgress == 0 ? 1 : currentProgress
+            );
+        }
+    }, [game?.state, game?.timers]);
+
     // New window is opened for the same user in an existing game
     // Ask for black cards
     useEffect(() => {
@@ -403,7 +415,7 @@ export function Game(props) {
                     width={100}
                     percent={progress}
                     startingPercent={0}
-                    time={10}
+                    time={game?.timers.duration ?? 0}
                 />
                 <button onClick={addProgress}></button>
             </div>
