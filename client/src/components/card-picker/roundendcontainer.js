@@ -19,6 +19,8 @@ export function RoundEndContainer(props) {
 
     useEffect(() => {
         setStartingNewRound(true);
+
+        const timeout = game?.options?.timers?.roundEnd * 1000 || TIMEOUT;
         if (player?.isCardCzar) {
             setTimeout(startNewRound, TIMEOUT);
         }
@@ -59,6 +61,9 @@ export function RoundEndContainer(props) {
 
     const blackCard = game.rounds[game.rounds.length - 1].blackCard;
     const showPopularVote = game?.options?.popularVote;
+    const cardCzarName = game.players.filter(
+        (player) => player.isCardCzar === true
+    )[0].name;
 
     return (
         <div className="blackcardpicker">
@@ -84,12 +89,15 @@ export function RoundEndContainer(props) {
                 customButtonIcons={["arrow_forward", "cached"]}
                 */
                 noActionButton={true}
-                topText={`${
-                    winningWhiteCardsByPlayer?.playerName ?? "Joku"
-                } voitti kierroksen!`}
+                topText={
+                    winningWhiteCardsByPlayer?.playerName
+                        ? `🎉 ${winningWhiteCardsByPlayer?.playerName} voitti kierroksen! 🎉`
+                        : `${cardCzarName} ei valinnut voittajaa ja menetti pisteen...`
+                }
                 showPopularVote={showPopularVote}
                 givePopularVote={givePopularVote}
                 popularVotedCardsIDs={popularVotedCardsIDs}
+                noBigMainCard={false}
             />
         </div>
     );

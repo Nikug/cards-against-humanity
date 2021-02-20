@@ -67,6 +67,7 @@ export function WhiteCardPickerContainer(props) {
                 confirmCards={confirmCard}
                 description={"Valitse valkoinen kortti"}
                 selectDisabled={selectedCards.length !== pickLimit}
+                noBigMainCard={false}
             />
         </div>
     );

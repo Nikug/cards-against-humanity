@@ -118,6 +118,7 @@ export const CardReadingContainer = (props) => {
                 customButtonIcons={["arrow_forward", "cached"]}
                 noActionButton={player?.isCardCzar ? false : true}
                 topText={topText}
+                noBigMainCard={whiteCards?.length === 0}
             />
             {player?.isCardCzar && (
                 <div className="cardreading-settings">

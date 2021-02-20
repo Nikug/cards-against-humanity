@@ -5,7 +5,6 @@ import "./../styles/timer.scss";
 import React from "react";
 
 export function Timer({ width, percent = 1, startingPercent, time }) {
-    console.log({ percent, startingPercent, time });
     const [value, setValue] = React.useState(0);
     const [startingValue, setStartingValue] = React.useState(0);
     const [timeLeft, setTimeLeft] = React.useState(0);

@@ -18,7 +18,7 @@ import { WaitingCardPickerContainer } from "../components/card-picker/waitincard
 import { WhiteCardPickerContainer } from "../components/card-picker/whitecardpickercontainer";
 import { WinnerCardPickerContainer } from "../components/card-picker/winnercardpickercontainer";
 import { socket } from "../components/sockets/socket";
-import { textToSpeech } from "../helpers/generalhelpers";
+import { GameEndContainer } from "../components/card-picker/gameendcontainer";
 
 export function Game(props) {
     const { game, player } = props;
@@ -187,6 +187,7 @@ export function Game(props) {
     const canStartGame =
         game?.players?.length > 0 && game?.options?.cardPacks?.length > 0; // TODO: Why is player name not there? Player is not updated by back-end
     console.log("game.state", game?.state);
+    //console.log("game.client.options", game?.client?.options);
 
     const defaultContent = (
         <div className="error-info">
@@ -298,6 +299,11 @@ export function Game(props) {
                     />
                 );
                 break;
+            case GAME_STATES.GAME_OVER:
+                renderedContent = (
+                    <GameEndContainer player={player} game={game} />
+                );
+                break;
             default:
                 renderedContent = defaultContent;
                 break;
@@ -365,14 +371,15 @@ export function Game(props) {
                     );
                     break;
                 case GAME_STATES.PICKING_BLACK_CARD:
+                    const cardCzarName = game.players.filter(
+                        (player) => player.isCardCzar === true
+                    )[0].name;
                     renderedContent = (
                         <div>
                             <WaitingCardPickerContainer
                                 player={player}
                                 game={game}
-                                alternativeText={
-                                    "Korttikuningas valitsee korttia..."
-                                }
+                                alternativeText={`${cardCzarName} valitsee mustaa korttia...`}
                                 showMainCard={false}
                             />
                         </div>
@@ -415,6 +422,11 @@ export function Game(props) {
                             givePopularVote={givePopularVote}
                             popularVotedCardsIDs={popularVotedCardsIDs}
                         />
+                    );
+                    break;
+                case GAME_STATES.GAME_OVER:
+                    renderedContent = (
+                        <GameEndContainer player={player} game={game} />
                     );
                     break;
                 default:

@@ -70,7 +70,10 @@ export const BlackCardPickerContainer = (props) => {
                 confirmCards={confirmCard}
                 description={"Valitse musta kortti"}
                 //alternativeText={"Korttikuningas valitsee mustaa korttia"}
-                disableConfirmButton={confirmedCards.length > 0}
+                disableConfirmButton={
+                    confirmedCards.length > 0 || selectedCards.length !== 1
+                }
+                noBigMainCard={true}
             />
         </div>
     );

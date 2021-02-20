@@ -5,7 +5,7 @@ export const gameOptions = {
 
     minimumScoreLimit: 1,
     maximumScoreLimit: 100,
-    defaultScoreLimit: 5,
+    defaultScoreLimit: 1,
 
     // If no one has votes, no point in making anyone king
     // Required minimum score is thus at least 1

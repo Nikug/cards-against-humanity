@@ -167,6 +167,23 @@
 
                 .popularvote-btn {
                     cursor: pointer;
+
+                    &.no-action {
+                        cursor: default;
+                    }
+
+                    &.popular-vote-score {
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        flex-direction: row;
+                        flex-wrap: nowrap;
+
+                        > .popular-vote-score {
+                            font-size: 1.2rem;
+                            margin-left: 0.5rem;
+                        }
+                    }
                 }
             }
         }
