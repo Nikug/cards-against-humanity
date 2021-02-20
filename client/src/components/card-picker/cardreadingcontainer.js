@@ -1,13 +1,13 @@
+import { CONTROL_TYPES, Setting } from "../settings/setting";
 import React, { useEffect, useState } from "react";
-import { socket } from "../sockets/socket";
-
-import { CardPicker } from "./cardpicker";
 import {
     emptyFn,
     isNullOrUndefined,
     textToSpeech,
 } from "../../helpers/generalhelpers";
-import { Setting, CONTROL_TYPES } from "../settings/setting";
+
+import { CardPicker } from "./cardpicker";
+import { socket } from "../sockets/socket";
 
 export const CardReadingContainer = (props) => {
     const { game, player } = props;
@@ -30,7 +30,7 @@ export const CardReadingContainer = (props) => {
                 game.rounds[game.rounds.length - 1].blackCard;
 
             if (textToSpeechInUse && !isNullOrUndefined(blackCardToRead)) {
-                const whiteCardsToRead = data;
+                const whiteCardsToRead = data.whiteCards;
                 const blankTexts = [];
                 const blackCardTexts = blackCardToRead.text;
 
