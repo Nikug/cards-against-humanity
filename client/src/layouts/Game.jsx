@@ -22,7 +22,8 @@ import { textToSpeech } from "../helpers/generalhelpers";
 
 export function Game(props) {
     const { game, player } = props;
-    const [progress, setProgress] = useState(0);
+    const [startingProgress, setStartingProgress] = useState(0);
+    const [timerIsOn, setTimerIsOn] = useState(false);
     const [blackCards, setBlackCards] = useState([]);
     const [popularVotedCardsIDs, setPopularVotedCardsIDs] = useState([]);
 
@@ -126,15 +127,24 @@ export function Game(props) {
         };
     }, []);
 
+    const resetTimer = () => {
+        setTimerIsOn(false);
+
+        setTimeout(() => {
+            setTimerIsOn(true);
+        }, 1);
+    };
+
     useEffect(() => {
         if (game?.timers.passedTime && game?.timers.duration) {
-            const currentProgress =
-                game.timers.passedTime / game.timers.duration;
-            setProgress(currentProgress == 0 ? 1 : currentProgress);
-            console.log(
-                "Set progress to",
-                currentProgress == 0 ? 1 : currentProgress
-            );
+            const { passedTime, duration } = game.timers;
+            let currentProgress = passedTime / duration;
+            currentProgress = currentProgress == 0 ? 1 : currentProgress;
+
+            setStartingProgress(currentProgress);
+            console.log("Set progress to", currentProgress);
+
+            resetTimer();
         }
     }, [game?.state, game?.timers]);
 
@@ -159,16 +169,6 @@ export function Game(props) {
     };
 
     //console.log(`Is socket still open: ${socket.connected ? "Yes" : "No"}`);
-
-    const addProgress = () => {
-        //console.log(progress);
-        if (progress < 0.95) {
-            setProgress(progress + 0.5);
-            return;
-        }
-
-        setProgress(0);
-    };
 
     const setPlayerName = (name) => {
         const cleanedName = name.trim();
@@ -438,11 +438,10 @@ export function Game(props) {
                 <PlayersWidget game={game} player={player} />
                 <Timer
                     width={100}
-                    percent={progress}
-                    startingPercent={0}
+                    percent={timerIsOn ? 1 : 0}
+                    startingPercent={startingProgress}
                     time={game?.timers.duration ?? 0}
                 />
-                <button onClick={addProgress}></button>
             </div>
             <div className="lobby-container">{renderedContent}</div>
         </div>

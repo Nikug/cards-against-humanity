@@ -5,12 +5,14 @@ import "./../styles/timer.scss";
 import React from "react";
 
 export function Timer({ width, percent = 1, startingPercent, time }) {
+    console.log({ percent, startingPercent, time });
     const [value, setValue] = React.useState(0);
     const [startingValue, setStartingValue] = React.useState(0);
     const [timeLeft, setTimeLeft] = React.useState(0);
 
     React.useEffect(() => {
-        setValue(percent * width - startingPercent * width);
+        const newValue = percent * width - startingPercent * width;
+        setValue(newValue < 0 ? 0 : newValue);
         setStartingValue(startingPercent * width);
         setTimeLeft(time - startingPercent * time);
     }, [percent, width, startingPercent, time]);
@@ -25,7 +27,7 @@ export function Timer({ width, percent = 1, startingPercent, time }) {
                 <div
                     style={{
                         width: `${value}%`,
-                        transitionDuration: `${timeLeft}s`,
+                        transitionDuration: `${percent === 0 ? 0 : timeLeft}s`,
                     }}
                     className={`progress ${
                         startingValue > 0 ? "continuing" : ""
