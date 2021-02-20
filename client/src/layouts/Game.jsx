@@ -34,14 +34,16 @@ export function Game(props) {
     };
 
     useEffect(() => {
-        window.addEventListener("beforeunload", () => {
+        const listener = () => {
             if (!!game && !!player) {
                 socket.emit("leave_game", {
                     gameID: game?.id,
                     playerID: player?.id,
                 });
             }
-        });
+        };
+
+        window.addEventListener("beforeunload", listener);
 
         if (game === undefined) {
             socket.emit("join_game", {
@@ -49,6 +51,10 @@ export function Game(props) {
                 playerID: player?.id,
             });
         }
+
+        return () => {
+            window.removeEventListener("beforeunload", listener);
+        };
     }, [game, player]);
 
     useEffect(() => {
@@ -127,6 +133,16 @@ export function Game(props) {
 
             fireNotification(notification, 5);
         });
+
+        return () => {
+            socket.off("update_player");
+            socket.off("update_game");
+            socket.off("update_players");
+            socket.off("update_game_and_players");
+            socket.off("update_game_options");
+            socket.off("deal_black_cards");
+            socket.off("upgrade_to_host");
+        };
     }, []);
 
     const startGame = (gameID, playerID) => {

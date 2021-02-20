@@ -11,7 +11,7 @@ import {
 export const BlackCardPickerContainer = (props) => {
     const [selectedCards, setSelectedCards] = useState([]);
     const [confirmedCards, setConfirmedCards] = useState([]);
-    const {blackCards} = props;
+    const { blackCards } = props;
 
     const selectCard = (card) => {
         const game = props.game;
@@ -74,4 +74,4 @@ export const BlackCardPickerContainer = (props) => {
             />
         </div>
     );
-}
+};
