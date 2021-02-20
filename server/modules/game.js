@@ -7,6 +7,10 @@ import {
     updatePlayersIndividually,
 } from "./player.js";
 import {
+    changeGameStateAfterTime,
+    getPassedTime,
+} from "./delayedStateChange.js";
+import {
     dealBlackCards,
     dealStartingWhiteCards,
     dealWhiteCards,
@@ -21,10 +25,8 @@ import {
     validateOptions,
 } from "./validate.js";
 
-import { changeGameStateAfterTime } from "./delayedStateChange.js";
 import { createStateMachine } from "./finiteStateMachine.js";
 import { gameOptions } from "../consts/gameSettings.js";
-import { getPassedTime } from "./delayedStateChange.js";
 import hri from "human-readable-ids";
 import { randomBetween } from "./util.js";
 import { setPopularVoteLeader } from "./popularVote.js";
@@ -379,4 +381,13 @@ export const resetGame = (game) => {
     }
 
     return game;
+};
+
+export const updateTimers = (io, game) => {
+    io.in(game.id).emit("update_timers", {
+        timers: {
+            duration: game.client.timers.duration,
+            passedTime: getPassedTime(game.timeout),
+        },
+    });
 };

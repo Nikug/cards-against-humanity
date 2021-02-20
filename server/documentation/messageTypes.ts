@@ -9,7 +9,8 @@ type Server2Client =
     | "notification" // Send messages that are shown as notifications to client
     | "show_white_card" // Sends a white card to be shown
     | "update_game_and_players" // Updates game and players
-    | "upgraded_to_host"; // Receiver is now host
+    | "upgraded_to_host" // Receiver is now host
+    | "update_timers"; // Updates just the timers
 
 type Client2Server =
     | "join_game" // Player joins a game

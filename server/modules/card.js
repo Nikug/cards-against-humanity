@@ -16,6 +16,7 @@ import {
     everyoneHasPlayedTurn,
     getGame,
     setGame,
+    updateTimers,
 } from "./game.js";
 import {
     validateCardCzar,
@@ -313,6 +314,7 @@ export const showWhiteCard = (io, gameID, playerID) => {
             index: updatedGame.currentRound.cardIndex,
             outOf: updatedGame.currentRound.whiteCardsByPlayer.length,
         });
+        updateTimers(io, updatedGame);
     }
 };
 
