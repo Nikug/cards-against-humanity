@@ -1,7 +1,13 @@
-import { nanoid } from "nanoid";
-import sanitize from "sanitize";
-const sanitizer = sanitize();
-
+import {
+    INACTIVE_GAME_DELETE_TIME,
+    gameOptions,
+    playerName,
+} from "../consts/gameSettings.js";
+import {
+    anonymizedGameClient,
+    drawWhiteCards,
+    playWhiteCards,
+} from "./card.js";
 import {
     findGameAndPlayerBySocketID,
     getGame,
@@ -13,15 +19,14 @@ import {
     shouldReturnToLobby,
     skipRound,
 } from "./game.js";
-import {
-    INACTIVE_GAME_DELETE_TIME,
-    playerName,
-    gameOptions,
-} from "../consts/gameSettings.js";
-import { anonymizedGameClient, drawWhiteCards } from "./card.js";
-import { joiningPlayerStates } from "../consts/states.js";
-import { setPlayer } from "./join.js";
+
 import { closeSocketWithID } from "./socket.js";
+import { joiningPlayerStates } from "../consts/states.js";
+import { nanoid } from "nanoid";
+import sanitize from "sanitize";
+import { setPlayer } from "./join.js";
+
+const sanitizer = sanitize();
 
 export const emitToAllPlayerSockets = (io, player, message, data) => {
     player.sockets.map((socket) => {
@@ -94,10 +99,14 @@ export const createNewPlayer = (socketID, isHost, state = "pickingName") => {
     return player;
 };
 
-export const publicPlayersObject = (players) => {
+export const publicPlayersObject = (players, playerID) => {
     return players?.map((player) => {
         const { id, sockets, whiteCards, popularVoteScore, ...rest } = player;
-        return rest;
+        if (player.id === playerID) {
+            return { id: playerID, ...rest };
+        } else {
+            return rest;
+        }
     });
 };
 
@@ -188,12 +197,11 @@ export const addScore = (players, playerID, scoreToAdd) => {
 
 export const updatePlayersIndividually = (io, game) => {
     const anonymousClient = { ...anonymizedGameClient(game) };
-    const publicPlayers = publicPlayersObject(game.players);
 
     game.players.map((player) => {
         emitToAllPlayerSockets(io, player, "update_game_and_players", {
             game: anonymousClient,
-            players: publicPlayers,
+            players: publicPlayersObject(game.players, player.id),
             player: player,
         });
     });

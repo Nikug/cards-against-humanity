@@ -1,11 +1,11 @@
-import React, { Component } from "react";
-import { PLAYER_STATES } from "../../consts/playerstates";
-import { getPlayersList } from "../../fakedata/fakeplayerdata";
-import { isNullOrUndefined } from "../../helpers/generalhelpers";
-
 import "./../../styles/playerswidget.scss";
 
+import React, { Component } from "react";
+
+import { PLAYER_STATES } from "../../consts/playerstates";
 import { Player } from "./player";
+import { getPlayersList } from "../../fakedata/fakeplayerdata";
+import { isNullOrUndefined } from "../../helpers/generalhelpers";
 
 export class PlayersWidget extends Component {
     renderPlayers(players, self) {
