@@ -69,6 +69,7 @@ export default function Card(props) {
         givePopularVote,
         hasBeenPopularVoted,
         popularVoteScore,
+        playerName,
     } = props;
     let type = CARD_TYPES.BLACK;
 
@@ -117,12 +118,16 @@ export default function Card(props) {
             >
                 {textToRender}
                 <div className="footer">
-                    {type === CARD_TYPES.BLACK && (
-                        <span className="draw-and-play">
-                            {isNullOrUndefined(cardPackID)
-                                ? ""
-                                : `Nosta ${whiteCardsToDraw}, Pelaa ${whiteCardsToPlay}`}
-                        </span>
+                    {type === CARD_TYPES.BLACK &&
+                        isNullOrUndefined(playerName) && (
+                            <span className="draw-and-play">
+                                {isNullOrUndefined(cardPackID)
+                                    ? ""
+                                    : `Nosta ${whiteCardsToDraw}, Pelaa ${whiteCardsToPlay}`}
+                            </span>
+                        )}
+                    {playerName && (
+                        <span className="draw-and-play">{playerName}</span>
                     )}
                     <span>&nbsp;</span>
                     {!isNullOrUndefined(cardPackID) &&

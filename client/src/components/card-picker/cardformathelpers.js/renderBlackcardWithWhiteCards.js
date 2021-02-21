@@ -60,6 +60,7 @@ export const renderBlackCardwithWhiteCards = ({
             key={key || "mainCard"}
             bigCard={isBigCard}
             popularVoteScore={popularVoteScore}
+            playerName={playerName}
         />
     );
     return card;

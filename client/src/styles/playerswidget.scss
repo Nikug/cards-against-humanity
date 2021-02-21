@@ -39,7 +39,11 @@
     align-items: center;
     justify-content: space-between;
 
-    padding: 0.4rem;
+    padding: 0.4rem 0.8rem;
+    margin: 0 0.2rem;
+
+    background-color: $players-background-hover;
+    border-radius: 10%;
 
     /*
     &:hover {
@@ -75,9 +79,14 @@
     }
 }
 
+.myself {
+    .player-name {
+        color: $players-own-name;
+    }
+}
+
 .player-status {
     margin-right: 0.2rem;
-    margin-top: 0.25rem;
 }
 
 .player-name-and-status {
@@ -116,15 +125,19 @@
     //border-left: 1px solid white;
 }
 
-.status-playing {
-    color: $player-waiting;
-}
-
 .status-active {
     color: $player-ready;
 }
 
-.status-spectating {
+.status-playing {
+    color: $player-waiting;
+}
+
+.status-waiting {
+    color: $player-ready;
+}
+
+.status-joining {
     color: $player-ghost;
 }
 
@@ -132,11 +145,15 @@
     color: $player-ghost;
 }
 
-.status-kicked {
+.status-disconnected {
     color: $player-error;
 }
 
-.status-disconnected {
+.status-spectating {
+    color: $player-ghost;
+}
+
+.status-kicked {
     color: $player-error;
 }
 

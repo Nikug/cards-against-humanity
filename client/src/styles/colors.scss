@@ -86,6 +86,7 @@ $music-player: $color-grey;
 $players-background: $color-darkish-grey;
 $players-background-shadow: lighten($color-darkish-grey, 10%);
 $players-background-hover: darken($color-grey, 20%);
+$players-own-name: lighten($color-blue, 10%);
 
 // Player statuses
 

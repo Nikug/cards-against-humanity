@@ -25,17 +25,18 @@ export function GameEndContainer({ game, player }) {
             const whiteCards = round.whiteCardsByPlayer.find((card) => {
                 return card.wonRound === true;
             });
-            console.log({ whiteCards });
-            winnerCards.push(
-                renderBlackCardwithWhiteCards({
-                    blackCard,
-                    whiteCards: whiteCards.whiteCards,
-                    popularVoteScore: whiteCards.popularVote,
-                    playerName: whiteCards.playerName,
-                    isBigCard: true,
-                    key: i,
-                })
-            );
+            if (whiteCards?.whiteCards) {
+                winnerCards.push(
+                    renderBlackCardwithWhiteCards({
+                        blackCard,
+                        whiteCards: whiteCards.whiteCards,
+                        popularVoteScore: whiteCards.popularVote,
+                        playerName: whiteCards.playerName,
+                        isBigCard: true,
+                        key: i,
+                    })
+                );
+            }
         }
     }
 

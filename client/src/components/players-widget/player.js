@@ -28,6 +28,7 @@ export class Player extends Component {
             isCardCzar,
             isHost,
             isPopularVoteKing,
+            isSelf,
         } = this.props;
         const noName = name === null || name === undefined;
 
@@ -36,21 +37,29 @@ export class Player extends Component {
                 <span
                     className={`player-name-and-status  ${
                         isHost && false ? "host" : ""
-                    }`}
+                    }  ${isSelf ? "myself" : ""}`}
                 >
-                    <Icon
-                        name={
-                            isCardCzar
-                                ? "radio_button_checked"
-                                : "radio_button_unchecked"
-                        }
-                        className={`player-status md-18 status-${state}
-                        }`}
-                    />
+                    {state === "playing" && (
+                        <Icon
+                            name={"watch_later"}
+                            className={`player-status clock md-18 status-${state}
+                    `}
+                        />
+                    )}
+                    {isCardCzar && (
+                        <Icon
+                            name={"star"}
+                            className={`player-status md-18 black`}
+                        />
+                    )}
+                    {isHost && (
+                        <Icon
+                            name={"home"}
+                            className={`player-status md-18 white`}
+                        />
+                    )}
                     <span className={`player-name ${noName ? "no-name" : ""}`}>
-                        {`${noName ? "valitsee nimimerkkiä" : name}${
-                            isHost ? " (isäntä)" : ""
-                        }`}
+                        {`${noName ? "valitsee nimimerkkiä" : name}`}
                         {noName && (
                             <i
                                 className="fa fa-spinner fa-spin"

@@ -17,6 +17,9 @@
 .material-icons {
     line-height: normal;
     color: $icon-basic;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 
     &.clickable {
         cursor: pointer;
