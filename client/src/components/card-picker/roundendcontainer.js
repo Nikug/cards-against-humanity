@@ -4,10 +4,22 @@ import { socket } from "../sockets/socket";
 import { CardPicker } from "./cardpicker";
 import { emptyFn } from "../../helpers/generalhelpers";
 
+import Confetti from "react-confetti";
+
 const TIMEOUT = 10000;
 
 export function RoundEndContainer(props) {
     const { game, player, popularVotedCardsIDs, givePopularVote } = props;
+
+    let timeout = TIMEOUT;
+
+    if (game?.timers.passedTime && game?.timers.duration) {
+        const { passedTime, duration } = game.timers;
+        timeout = (duration - passedTime) * 1000;
+    }
+
+    console.log({ timeout });
+
     const [startingNewRound, setStartingNewRound] = useState(false);
 
     const startNewRound = () => {
@@ -20,9 +32,8 @@ export function RoundEndContainer(props) {
     useEffect(() => {
         setStartingNewRound(true);
 
-        const timeout = game?.options?.timers?.roundEnd * 1000 || TIMEOUT;
         if (player?.isCardCzar) {
-            setTimeout(startNewRound, TIMEOUT);
+            setTimeout(startNewRound, timeout);
         }
     }, []);
 
@@ -66,39 +77,52 @@ export function RoundEndContainer(props) {
     )[0].name;
 
     return (
-        <div className="blackcardpicker">
-            <CardPicker
-                mainCard={blackCard}
-                selectableCards={whiteCards}
-                selectedCards={confirmedCards}
-                confirmedCards={confirmedCards}
-                selectCard={emptyFn}
-                confirmCards={emptyFn}
-                description={
-                    showPopularVote
-                        ? "Anna ääni suosikeillesi"
-                        : "Valkoiset kortit"
-                }
-                alternativeText={
-                    startingNewRound
-                        ? "Käynnistetään uutta kierrosta..."
-                        : undefined
-                }
-                /*
+        <>
+            {winningWhiteCardsByPlayer?.playerName !== undefined && (
+                // https://www.npmjs.com/package/react-confetti
+                <Confetti
+                    tweenDuration={timeout}
+                    opacity={0.4}
+                    numberOfPieces={400}
+                    recycle={false}
+                    width={window.width}
+                    height={window.height}
+                />
+            )}
+            <div className="blackcardpicker">
+                <CardPicker
+                    mainCard={blackCard}
+                    selectableCards={whiteCards}
+                    selectedCards={confirmedCards}
+                    confirmedCards={confirmedCards}
+                    selectCard={emptyFn}
+                    confirmCards={emptyFn}
+                    description={
+                        showPopularVote
+                            ? "Anna ääni suosikeillesi"
+                            : "Valkoiset kortit"
+                    }
+                    alternativeText={
+                        startingNewRound
+                            ? "Käynnistetään uutta kierrosta..."
+                            : undefined
+                    }
+                    /*
                 customButtonTexts={["Seuraava kierros", "Ladataan"]}
                 customButtonIcons={["arrow_forward", "cached"]}
                 */
-                noActionButton={true}
-                topText={
-                    winningWhiteCardsByPlayer?.playerName
-                        ? `🎉 ${winningWhiteCardsByPlayer?.playerName} voitti kierroksen! 🎉`
-                        : `${cardCzarName} ei valinnut voittajaa ja menetti pisteen...`
-                }
-                showPopularVote={showPopularVote}
-                givePopularVote={givePopularVote}
-                popularVotedCardsIDs={popularVotedCardsIDs}
-                noBigMainCard={false}
-            />
-        </div>
+                    noActionButton={true}
+                    topText={
+                        winningWhiteCardsByPlayer?.playerName
+                            ? `🎉 ${winningWhiteCardsByPlayer?.playerName} voitti kierroksen! 🎉`
+                            : `${cardCzarName} ei valinnut voittajaa ja menetti pisteen...`
+                    }
+                    showPopularVote={showPopularVote}
+                    givePopularVote={givePopularVote}
+                    popularVotedCardsIDs={popularVotedCardsIDs}
+                    noBigMainCard={false}
+                />
+            </div>
+        </>
     );
 }

@@ -4,6 +4,7 @@ import { CardPicker } from "./cardpicker";
 import { emptyFn } from "../../helpers/generalhelpers";
 import { render } from "@testing-library/react";
 import { renderBlackCardwithWhiteCards } from "./cardformathelpers.js/renderBlackcardWithWhiteCards";
+import Confetti from "react-confetti";
 
 export function GameEndContainer({ game, player }) {
     const playersSorted = game.players.sort(function (a, b) {
@@ -51,17 +52,27 @@ export function GameEndContainer({ game, player }) {
     console.log({ winnerCards, sortedWinnerCards });
 
     return (
-        <div className="blackcardpicker">
-            <CardPicker
-                selectCard={emptyFn}
-                confirmCards={emptyFn}
-                noActionButton={true}
-                topText={`🎉🎉🎉 ${
-                    playersSorted[0].name ?? "Joku"
-                } voitti pelin! 🎉🎉🎉`}
-                description={"Tämän pelin voittajakortit:"}
-                preRenderedCards={sortedWinnerCards}
+        <>
+            <Confetti
+                tweenDuration={3000}
+                opacity={0.4}
+                numberOfPieces={3000}
+                recycle={false}
+                width={window.width}
+                height={window.height}
             />
-        </div>
+            <div className="blackcardpicker">
+                <CardPicker
+                    selectCard={emptyFn}
+                    confirmCards={emptyFn}
+                    noActionButton={true}
+                    topText={`🎉🎉🎉 ${
+                        playersSorted[0].name ?? "Joku"
+                    } voitti pelin! 🎉🎉🎉`}
+                    description={"Tämän pelin voittajakortit:"}
+                    preRenderedCards={sortedWinnerCards}
+                />
+            </div>
+        </>
     );
 }
