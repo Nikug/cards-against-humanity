@@ -8,6 +8,7 @@ import { getCookie, setCookie } from "./../helpers/cookies";
 import { BlackCardPickerContainer } from "../components/card-picker/blackcardpickercontainer";
 import { CardReadingContainer } from "../components/card-picker/cardreadingcontainer";
 import { GAME_STATES } from "../consts/gamestates";
+import { GameEndContainer } from "../components/card-picker/gameendcontainer";
 import { GameSettingsContainer } from "../components/game-settings/gamesettingscontainer";
 import { NOTIFICATION_TYPES } from "../components/notification/notification";
 import { PlayerName } from "../components/options/PlayerName";
@@ -18,7 +19,6 @@ import { WaitingCardPickerContainer } from "../components/card-picker/waitincard
 import { WhiteCardPickerContainer } from "../components/card-picker/whitecardpickercontainer";
 import { WinnerCardPickerContainer } from "../components/card-picker/winnercardpickercontainer";
 import { socket } from "../components/sockets/socket";
-import { GameEndContainer } from "../components/card-picker/gameendcontainer";
 
 export function Game(props) {
     const { game, player } = props;
@@ -130,7 +130,7 @@ export function Game(props) {
     useEffect(() => {
         if (game?.timers.passedTime && game?.timers.duration) {
             const { passedTime, duration } = game.timers;
-            let currentProgress = passedTime + 0.1 / duration;
+            let currentProgress = (passedTime + 0.1) / duration;
             currentProgress = currentProgress < 0.01 ? 0 : currentProgress;
 
             setStartingProgress(currentProgress);

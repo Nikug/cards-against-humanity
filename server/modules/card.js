@@ -62,18 +62,22 @@ export const playWhiteCards = (io, gameID, playerID, whiteCardIDs) => {
     ];
 
     if (everyoneHasPlayedTurn(game)) {
-        game.stateMachine.startReading();
-        game.client.state = game.stateMachine.state;
-        game.currentRound.whiteCardsByPlayer = shuffleCards([
-            ...game.currentRound.whiteCardsByPlayer,
-        ]);
-        const updatedGame = changeGameStateAfterTime(io, game, "showCards");
-        setGame(updatedGame);
-        updatePlayersIndividually(io, updatedGame);
+        startReading(io, game);
     } else {
         setGame(game);
         updatePlayersIndividually(io, game);
     }
+};
+
+export const startReading = (io, game) => {
+    game.stateMachine.startReading();
+    game.client.state = game.stateMachine.state;
+    game.currentRound.whiteCardsByPlayer = shuffleCards([
+        ...game.currentRound.whiteCardsByPlayer,
+    ]);
+    const updatedGame = changeGameStateAfterTime(io, game, "showCards");
+    setGame(updatedGame);
+    updatePlayersIndividually(io, updatedGame);
 };
 
 export const selectBlackCard = (

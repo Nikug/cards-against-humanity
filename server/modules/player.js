@@ -7,8 +7,10 @@ import {
     anonymizedGameClient,
     drawWhiteCards,
     playWhiteCards,
+    startReading,
 } from "./card.js";
 import {
+    everyoneHasPlayedTurn,
     findGameAndPlayerBySocketID,
     getGame,
     removeGame,
@@ -111,9 +113,15 @@ export const publicPlayersObject = (players, playerID) => {
 };
 
 export const setPlayersPlaying = (players) => {
-    return players.map((player) =>
-        player.state === "active" ? { ...player, state: "playing" } : player
-    );
+    return players.map((player) => {
+        if (player.isCardCzar) {
+            return { ...player, state: "waiting" };
+        } else {
+            return player.state === "active" || player.state === "waiting"
+                ? { ...player, state: "playing" }
+                : player;
+        }
+    });
 };
 
 export const setPlayersActive = (players) => {
@@ -122,6 +130,18 @@ export const setPlayersActive = (players) => {
             ? { ...player, state: "active" }
             : player
     );
+};
+
+export const setPlayersWaiting = (players) => {
+    return players.map((player) => {
+        if (player.isCardCzar) {
+            return { ...player, state: "playing" };
+        } else {
+            return player.state === "active" || player.state === "playing"
+                ? { ...player, state: "waiting" }
+                : player;
+        }
+    });
 };
 
 export const getPlayer = (game, playerID) => {
@@ -275,6 +295,11 @@ export const setPlayerDisconnected = (io, socketID, removePlayer) => {
         return;
     }
 
+    if (game.stateMachine.state === "playingWhiteCards") {
+        handlePlayerLeavingDuringWhiteCardSelection(io, game, player);
+        return;
+    }
+
     setGame(game);
     updatePlayersIndividually(io, game);
 };
@@ -295,6 +320,15 @@ export const resetPlayers = (players) => {
         popularVoteScore: 0,
         whiteCards: [],
     }));
+};
+
+const handlePlayerLeavingDuringWhiteCardSelection = (io, game) => {
+    if (everyoneHasPlayedTurn(game)) {
+        startReading(io, game);
+    } else {
+        setGame(game);
+        updatePlayersIndividually(io, game);
+    }
 };
 
 const handleCardCzarLeaving = (io, game, cardCzar) => {

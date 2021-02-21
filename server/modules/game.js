@@ -4,6 +4,7 @@ import {
     handleJoiningPlayers,
     resetPlayers,
     setPlayersPlaying,
+    setPlayersWaiting,
     updatePlayersIndividually,
 } from "./player.js";
 import {
@@ -171,7 +172,7 @@ export const startGame = (io, gameID, playerID) => {
             ? { ...player, isCardCzar: true }
             : player
     );
-    game.players = setPlayersPlaying(game.players);
+    game.players = setPlayersWaiting(game.players);
 
     game.cards.whiteCards = shuffleCards([...game.cards.whiteCards]);
     game.cards.blackCards = shuffleCards([...game.cards.blackCards]);
@@ -222,6 +223,7 @@ export const startNewRound = (io, gameID, playerID) => {
 
     game.players = appointNextCardCzar(game, playerID);
     game.players = setPopularVoteLeader(game.players);
+    game.players = setPlayersWaiting(game.players);
 
     const cardCzar = game.players.find((player) => player.isCardCzar);
     const newGame = dealBlackCards(io, cardCzar.sockets, game);
@@ -263,6 +265,8 @@ export const skipRound = (io, game, newCardCzar) => {
 
     game.stateMachine.skipRound();
     game.client.state = game.stateMachine.state;
+
+    game.players = setPlayersWaiting(game.players);
 
     const newGame = dealBlackCards(io, newCardCzar.sockets, game);
 
