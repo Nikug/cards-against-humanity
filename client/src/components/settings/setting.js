@@ -91,7 +91,9 @@ export class Setting extends Component {
                         callback={() =>
                             this.handleTextFieldChange(null, onChangeCallback)
                         }
-                        icon="add_circle_outline"
+                        icon={
+                            this.props.customButtonIcon || "add_circle_outline"
+                        }
                     ></Button>
                 )}
             </div>

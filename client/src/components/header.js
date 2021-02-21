@@ -53,7 +53,7 @@ export const Header = (props) => {
                             className="header-button"
                             onClick={leaveGame}
                         >
-                            <Icon className="header-icon" name="exit_to_app" />
+                            <Icon className="header-icon" name="logout" />
                             <span className="header-button-text">Poistu</span>
                         </span>
                     </Link>

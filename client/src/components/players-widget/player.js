@@ -33,7 +33,7 @@ export class Player extends Component {
         const noName = name === null || name === undefined;
 
         return (
-            <div className="player">
+            <div className={`player ${isCardCzar ? "cardCzar" : ""}`}>
                 <span
                     className={`player-name-and-status  ${
                         isHost && false ? "host" : ""
@@ -49,7 +49,7 @@ export class Player extends Component {
                     {isCardCzar && (
                         <Icon
                             name={"star"}
-                            className={`player-status md-18 black`}
+                            className={`player-status md-18 white`}
                         />
                     )}
                     {isHost && (
@@ -59,7 +59,7 @@ export class Player extends Component {
                         />
                     )}
                     <span className={`player-name ${noName ? "no-name" : ""}`}>
-                        {`${noName ? "valitsee nimimerkkiä" : name}`}
+                        {`${noName ? "nimeä valitaan..." : name}`}
                         {noName && (
                             <i
                                 className="fa fa-spinner fa-spin"

@@ -209,7 +209,7 @@ export function Game(props) {
                                     <div className="nickname-selector">
                                         <Setting
                                             text={"Nimimerkki"}
-                                            placeholderText={"nickname"}
+                                            placeholderText={"nimimerkki"}
                                             controlType={
                                                 CONTROL_TYPES.textWithConfirm
                                             }
@@ -219,6 +219,7 @@ export function Game(props) {
                                                 className: iconClassnames,
                                             }}
                                             charLimit={35}
+                                            customButtonIcon={"login"}
                                         />
                                     </div>
                                     {player?.isHost && (
@@ -313,6 +314,28 @@ export function Game(props) {
             renderedContent = (
                 <PlayerName gameID={game?.id} playerID={player?.id} />
             );
+            renderedContent = (
+                <div className="info">
+                    <div className="game-settings-container">
+                        <div className="nick-and-start-container">
+                            <div className="nickname-selector">
+                                <Setting
+                                    text={"Nimimerkki"}
+                                    placeholderText={"nimimerkki"}
+                                    controlType={CONTROL_TYPES.textWithConfirm}
+                                    onChangeCallback={setPlayerName}
+                                    icon={{
+                                        name: "person",
+                                        className: iconClassnames,
+                                    }}
+                                    charLimit={35}
+                                    customButtonIcon={"login"}
+                                />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            );
         } else {
             switch (gameState) {
                 case GAME_STATES.LOBBY:
@@ -324,7 +347,7 @@ export function Game(props) {
                                         <div className="nickname-selector">
                                             <Setting
                                                 text={"Nimimerkki"}
-                                                placeholderText={"nickname"}
+                                                placeholderText={"nimimerkki"}
                                                 controlType={
                                                     CONTROL_TYPES.textWithConfirm
                                                 }
@@ -334,6 +357,7 @@ export function Game(props) {
                                                     className: iconClassnames,
                                                 }}
                                                 charLimit={35}
+                                                customButtonIcon={"login"}
                                             />
                                         </div>
                                         {player?.isHost && (

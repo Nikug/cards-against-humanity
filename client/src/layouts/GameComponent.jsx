@@ -39,7 +39,7 @@ export const getRenderedComponent = (player, game) => {
                                     <div className="nickname-selector">
                                         <Setting
                                             text={"Nimimerkki"}
-                                            placeholderText={"nickname"}
+                                            placeholderText={"nimimerkki"}
                                             controlType={
                                                 CONTROL_TYPES.textWithConfirm
                                             }
@@ -148,7 +148,7 @@ export const getRenderedComponent = (player, game) => {
                                     <div className="nickname-selector">
                                         <Setting
                                             text={"Nimimerkki"}
-                                            placeholderText={"nickname"}
+                                            placeholderText={"nimnimerkki"}
                                             controlType={
                                                 CONTROL_TYPES.textWithConfirm
                                             }

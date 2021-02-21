@@ -43,7 +43,12 @@
     margin: 0 0.2rem;
 
     background-color: $players-background-hover;
-    border-radius: 10%;
+    border-radius: 1rem;
+    transition: width 2s, height 4s;
+
+    &.cardCzar {
+        background-color: darken($color-blue, 30%);
+    }
 
     /*
     &:hover {
