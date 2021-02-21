@@ -1,6 +1,6 @@
 import "./../../styles/playerswidget.scss";
 
-import React, { Component } from "react";
+import React, { Component, createRef } from "react";
 
 import { PLAYER_STATES } from "../../consts/playerstates";
 import { Player } from "./player";
@@ -11,7 +11,7 @@ export class PlayersWidget extends Component {
     renderPlayers(players, self) {
         const renderedPlayers = [];
         const game = this.props.game;
-        const ownName = self?.name;
+        const ownId = self?.id;
 
         for (let i = 0, len = players.length; i < len; i++) {
             const player = players[i];
@@ -25,8 +25,6 @@ export class PlayersWidget extends Component {
                 isPopularVoteKing,
             } = player;
 
-            console.log("debug 123", { name, ownName });
-
             renderedPlayers.push(
                 <Player
                     key={i}
@@ -37,11 +35,7 @@ export class PlayersWidget extends Component {
                     isCardCzar={isCardCzar}
                     isHost={isHost}
                     isPopularVoteKing={isPopularVoteKing}
-                    isSelf={
-                        !isNullOrUndefined(ownName) &&
-                        state !== "pickingName" &&
-                        name === ownName
-                    }
+                    isSelf={!isNullOrUndefined(ownId) && id === ownId}
                 />
             );
         }

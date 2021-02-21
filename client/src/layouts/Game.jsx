@@ -20,6 +20,8 @@ import { WhiteCardPickerContainer } from "../components/card-picker/whitecardpic
 import { WinnerCardPickerContainer } from "../components/card-picker/winnercardpickercontainer";
 import { socket } from "../components/sockets/socket";
 
+const NAME_CHAR_LIMIT = 50;
+
 export function Game(props) {
     const { game, player } = props;
     const [startingProgress, setStartingProgress] = useState(0);
@@ -218,7 +220,7 @@ export function Game(props) {
                                                 name: "person",
                                                 className: iconClassnames,
                                             }}
-                                            charLimit={35}
+                                            charLimit={NAME_CHAR_LIMIT}
                                             customButtonIcon={"login"}
                                         />
                                     </div>
@@ -328,7 +330,7 @@ export function Game(props) {
                                         name: "person",
                                         className: iconClassnames,
                                     }}
-                                    charLimit={35}
+                                    charLimit={NAME_CHAR_LIMIT}
                                     customButtonIcon={"login"}
                                 />
                             </div>
@@ -356,7 +358,7 @@ export function Game(props) {
                                                     name: "person",
                                                     className: iconClassnames,
                                                 }}
-                                                charLimit={35}
+                                                charLimit={NAME_CHAR_LIMIT}
                                                 customButtonIcon={"login"}
                                             />
                                         </div>

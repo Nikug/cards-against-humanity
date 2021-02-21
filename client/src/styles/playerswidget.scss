@@ -17,7 +17,7 @@
 
     display: flex;
     flex-direction: row;
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
 
     padding: 0.6rem;
 
@@ -47,7 +47,7 @@
     transition: width 2s, height 4s;
 
     &.cardCzar {
-        background-color: darken($color-blue, 30%);
+        //background-color: darken($color-blue, 30%);
     }
 
     /*
@@ -61,12 +61,31 @@
         }
     }
     */
+    .icon-anchor {
+        width: 100%;
+        height: 0;
+        position: relative;
+        top: 0;
+        right: 0;
+        overflow: visible;
+
+        .crown-icon {
+            width: 2.5rem;
+
+            position: relative;
+            top: -1.9rem;
+            left: -1.6rem;
+            transform: rotate(-30deg);
+        }
+    }
 }
 
 .player-name {
     width: fit-content;
-    max-width: 10rem;
-    white-space: wrap;
+    max-width: 6rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 
     &.no-name {
         font-style: italic;

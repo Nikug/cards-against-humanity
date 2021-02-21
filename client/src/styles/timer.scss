@@ -1,7 +1,7 @@
 @import "./colors.scss";
 
 .progress-div {
-    background-color: $timer-background;
+    background-color: lighten($timer-background, 5%);
     border-radius: 0 0 2px 2px;
     display: flex;
 }
