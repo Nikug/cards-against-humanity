@@ -6,12 +6,16 @@ import {
     useHistory,
     useLocation,
 } from "react-router-dom";
+import Button from "../components/button";
 
 import "../styles/instructions.scss";
 
-const NOT_READY = true;
+const NOT_READY = false;
 
 export const Instructions = ({ path }) => {
+    const history = useHistory();
+    const currentPath = history.location.pathname;
+
     if (NOT_READY) {
         return (
             <div className="instructions-wrapper">
@@ -20,23 +24,48 @@ export const Instructions = ({ path }) => {
         );
     }
 
+    const navigate = (route) => {
+        history.push(`${path}${route}`);
+    };
+
     return (
         <div className="instructions-wrapper">
+            {currentPath !== path && (
+                <Button
+                    text={"Takaisin"}
+                    callback={navigate}
+                    callbackParams={""}
+                />
+            )}
             <Switch>
                 <Route
                     exact
                     path={path}
                     render={(props) => (
-                        <div className="title-text-wrapper">
-                            <span className="title-text">
-                                Haluat oppia, kuinka pelataan kortteja
-                                ihmiskuntaa vastaan?
-                            </span>
-                            <span className="title-text small">
-                                Tulit <span className="cursive">tirsk</span>{" "}
-                                oikeaan paikkaan!
-                            </span>
-                        </div>
+                        <>
+                            <div className="title-text-wrapper">
+                                <span className="title-text">
+                                    Haluat siis oppia, kuinka pelataan kortteja
+                                    ihmiskuntaa vastaan?
+                                </span>
+                                <span className="title-text small">
+                                    Tulit <span className="cursive">tirsk</span>{" "}
+                                    oikeaan paikkaan!
+                                </span>
+                            </div>
+                            <div className="nav-buttons-wrapper">
+                                <Button
+                                    text={"Interaktiivinen demo"}
+                                    callback={navigate}
+                                    callbackParams={"/demo"}
+                                />
+                                <Button
+                                    text={"Tietoa projektista"}
+                                    callback={navigate}
+                                    callbackParams={"/about-us"}
+                                />
+                            </div>
+                        </>
                     )}
                 />
                 <Route
@@ -46,7 +75,7 @@ export const Instructions = ({ path }) => {
                     )}
                 />
                 <Route
-                    path={`${path}/about`}
+                    path={`${path}/about-us`}
                     render={(props) => (
                         <div>
                             Tässä on vielä joskus tunteita herättävä tarina
