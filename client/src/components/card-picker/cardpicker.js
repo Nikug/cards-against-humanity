@@ -29,12 +29,13 @@ export function CardPicker(props) {
         selectedCards = [],
         confirmedCards = [],
         selectCard,
-        confirmCards = [],
+        confirmCards,
         pickingBlackCard,
         description,
         selectDisabled,
         customButtonTexts,
         customButtonIcons,
+        customButtonState,
         noActionButton,
         topText,
         showPopularVote,
@@ -179,22 +180,44 @@ export function CardPicker(props) {
                 {noActionButton !== true && (
                     <Button
                         additionalClassname={`confirm-button ${
-                            cardsAreSelected ? "non-selectable" : ""
+                            (
+                                !isNullOrUndefined(customButtonState)
+                                    ? customButtonState === 1
+                                    : cardsAreSelected
+                            )
+                                ? "non-selectable"
+                                : ""
                         } ${selectDisabled ? "disabled" : ""}`}
                         text={
-                            cardsAreSelected ? buttonTexts[1] : buttonTexts[0]
+                            !isNullOrUndefined(customButtonState)
+                                ? buttonTexts[customButtonState]
+                                : cardsAreSelected
+                                ? buttonTexts[1]
+                                : buttonTexts[0]
                         }
                         callback={() => confirmCards()}
                         type={
-                            cardsAreSelected
+                            !isNullOrUndefined(customButtonState)
+                                ? customButtonState === 0
+                                    ? BUTTON_TYPES.PRIMARY
+                                    : BUTTON_TYPES.GREEN
+                                : cardsAreSelected
                                 ? BUTTON_TYPES.GREEN
                                 : BUTTON_TYPES.PRIMARY
                         }
                         icon={
-                            cardsAreSelected ? buttonIcons[1] : buttonIcons[0]
+                            !isNullOrUndefined(customButtonState)
+                                ? buttonIcons[customButtonState]
+                                : cardsAreSelected
+                                ? buttonIcons[1]
+                                : buttonIcons[0]
                         }
                         iconPosition="after"
-                        disabled={hasAlternativeText || disableConfirmButton}
+                        disabled={
+                            !isNullOrUndefined(customButtonState)
+                                ? customButtonState === 1
+                                : hasAlternativeText || disableConfirmButton
+                        }
                     />
                 )}
             </div>

@@ -73,8 +73,6 @@ export default function Card(props) {
     } = props;
     let type = CARD_TYPES.BLACK;
 
-    console.log({ bigCard });
-
     if (isNullOrUndefined(whiteCardsToPlay)) {
         type = CARD_TYPES.WHITE;
     }
@@ -97,8 +95,6 @@ export default function Card(props) {
             textToRender = <div className="text">{texts}</div>;
         }
     }
-
-    console.log({ popularVoteScore });
 
     return (
         <div

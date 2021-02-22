@@ -22,7 +22,7 @@ import { socket } from "../components/sockets/socket";
 
 const NAME_CHAR_LIMIT = 50;
 
-export function Game(props) {
+export const Game = (props) => {
     const { game, player } = props;
     const [startingProgress, setStartingProgress] = useState(0);
     const [timerIsOn, setTimerIsOn] = useState(false);
@@ -60,7 +60,6 @@ export function Game(props) {
 
     useEffect(() => {
         socket.on("send_popular_voted_cards", (data) => {
-            console.log("socket send_popular_voted_cards", data);
             setPopularVotedCardsIDs(data.whiteCardIDs);
         });
 
@@ -71,19 +70,15 @@ export function Game(props) {
 
     useEffect(() => {
         socket.on("update_player", (data) => {
-            console.log("socket update_player", data);
-
             setCookie({ field: "playerID", value: data.player.id });
             updateData({ player: data.player });
         });
 
         socket.on("update_game", (data) => {
-            console.log("socket update_game", data);
             updateData({ game: data.game });
         });
 
         socket.on("update_players", (data) => {
-            console.log("socket update_players", data);
             updateData({ players: data.players });
         });
 
@@ -92,7 +87,6 @@ export function Game(props) {
         });
 
         socket.on("deal_black_cards", (data) => {
-            console.log("Received black cards from socket", data.blackCards);
             setBlackCards(data.blackCards);
         });
 
@@ -109,6 +103,10 @@ export function Game(props) {
             };
 
             fireNotification(notification, 5);
+        });
+
+        socket.on("update_timers", (data) => {
+            updateData({ timers: data.timers });
         });
 
         return () => {
@@ -136,7 +134,6 @@ export function Game(props) {
             currentProgress = currentProgress < 0.01 ? 0 : currentProgress;
 
             setStartingProgress(currentProgress);
-            console.log("Set progress to", currentProgress);
 
             resetTimer();
         }
@@ -177,7 +174,6 @@ export function Game(props) {
     };
 
     const givePopularVote = (cardIDs) => {
-        console.log("POPULAR VOTE", cardIDs);
         socket.emit("give_popular_vote", {
             gameID: game?.id,
             playerID: player?.id,
@@ -476,4 +472,4 @@ export function Game(props) {
             <div className="lobby-container">{renderedContent}</div>
         </div>
     );
-}
+};

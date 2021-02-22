@@ -34,12 +34,10 @@ export function getCookie(cookieName) {
     for (let i = 0, len = cookieFields.length; i < len; i++) {
         const field = cookieFields[i].trim();
         const values = field.split("=");
-        console.log("Cookie values", values);
 
         if (values.length === 2 && values[0] === cookieName) {
             const cookieToReturn = {};
             cookieToReturn[cookieName] = values[1];
-            console.log("returning cookie", cookieToReturn);
             return values[1];
         }
     }

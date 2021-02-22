@@ -18,24 +18,15 @@ export function RoundEndContainer(props) {
         timeout = (duration - passedTime) * 1000;
     }
 
-    console.log({ timeout });
-
     const [startingNewRound, setStartingNewRound] = useState(false);
 
     const startNewRound = () => {
+        setStartingNewRound(true);
         socket.emit("start_round", {
             gameID: game.id,
             playerID: player.id,
         });
     };
-
-    useEffect(() => {
-        setStartingNewRound(true);
-
-        if (player?.isCardCzar) {
-            setTimeout(startNewRound, timeout);
-        }
-    }, []);
 
     const whiteCardsByPlayer =
         game.rounds[game.rounds.length - 1].whiteCardsByPlayer;
@@ -96,7 +87,7 @@ export function RoundEndContainer(props) {
                     selectedCards={confirmedCards}
                     confirmedCards={confirmedCards}
                     selectCard={emptyFn}
-                    confirmCards={emptyFn}
+                    confirmCards={startNewRound}
                     description={
                         showPopularVote
                             ? "Anna ääni suosikeillesi"
@@ -104,14 +95,12 @@ export function RoundEndContainer(props) {
                     }
                     alternativeText={
                         startingNewRound
-                            ? "Käynnistetään uutta kierrosta..."
+                            ? `Odotetaan, että ${cardCzarName} aloittaa uuden kierroksen...`
                             : undefined
                     }
-                    /*
-                customButtonTexts={["Seuraava kierros", "Ladataan"]}
-                customButtonIcons={["arrow_forward", "cached"]}
-                */
-                    noActionButton={true}
+                    customButtonTexts={["Seuraava kierros", "Ladataan"]}
+                    customButtonIcons={["arrow_forward", "cached"]}
+                    customButtonState={startingNewRound ? 1 : 0}
                     topText={
                         winningWhiteCardsByPlayer?.playerName
                             ? `🎉 ${winningWhiteCardsByPlayer?.playerName} voitti kierroksen! 🎉`
@@ -121,6 +110,7 @@ export function RoundEndContainer(props) {
                     givePopularVote={givePopularVote}
                     popularVotedCardsIDs={popularVotedCardsIDs}
                     noBigMainCard={false}
+                    noActionButton={!player.isCardCzar}
                 />
             </div>
         </>

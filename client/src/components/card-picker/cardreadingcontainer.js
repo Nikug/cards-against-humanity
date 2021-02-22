@@ -17,7 +17,6 @@ export const CardReadingContainer = (props) => {
     const textToSpeechInUse = game.players.filter(
         (player) => player.isCardCzar
     )[0].useTextToSpeech;
-    console.log({ textToSpeechInUse, players: game.players });
     const blackCard = game.rounds[game.rounds.length - 1].blackCard;
 
     useEffect(() => {
@@ -80,7 +79,6 @@ export const CardReadingContainer = (props) => {
     }
 
     function toggleTextToSpeech() {
-        console.log(textToSpeech);
         socket.emit("change_text_to_speech", {
             gameID: game.id,
             playerID: player.id,

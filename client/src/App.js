@@ -59,12 +59,13 @@ export const App = (props) => {
 
     useEffect(() => {
         socket.on("update_game_and_players", (data) => {
+            console.log("update_game_and_players", { data });
             if (data.error) {
                 console.log("Received error from server:", data.error);
                 setLoading(false);
                 return;
             }
-            console.log("Current game:", data.game);
+            //console.log("Current game:", data.game);
             if (isNullOrUndefined(data.game)) {
                 deleteCookie("playerID");
             } else {
@@ -107,6 +108,7 @@ export const App = (props) => {
     }, []);
 
     const updateData = (data) => {
+        console.log("updateData", { data });
         if (data.player) {
             setPlayer((prevPlayer) => ({ ...prevPlayer, ...data.player }));
         }
@@ -118,6 +120,9 @@ export const App = (props) => {
         }
         if (data.players) {
             setGame((prevGame) => ({ ...prevGame, players: data.players }));
+        }
+        if (data.timers) {
+            setGame((prevGame) => ({ ...prevGame, timers: data.timers }));
         }
     };
 
