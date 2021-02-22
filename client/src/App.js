@@ -24,6 +24,7 @@ import { Notification } from "./components/notification/notification";
 import axios from "axios";
 import { socket } from "./components/sockets/socket";
 import { Instructions } from "./layouts/Instructions";
+import Button from "./components/button";
 
 export const App = (props) => {
     const [game, setGame] = useState(undefined);
@@ -42,6 +43,10 @@ export const App = (props) => {
     function joinExistingGame(gameUrl) {
         history.push(`/g/${gameUrl}`);
     }
+
+    const navigate = (route) => {
+        history.push(`${route}`);
+    };
 
     const fireNotification = (newNotification, timeInSeconds = 3) => {
         const newList = notification.slice();
@@ -201,6 +206,25 @@ export const App = (props) => {
                                             fireNotification={fireNotification}
                                             updateData={updateData}
                                         />
+                                    )}
+                                />
+                                <Route
+                                    exact
+                                    path="/support-us"
+                                    render={(props) => (
+                                        <div
+                                            style={{
+                                                display: "flex",
+                                                flexDirection: "column",
+                                            }}
+                                        >
+                                            Hmmmm...?
+                                            <Button
+                                                text={"Takaisin"}
+                                                callback={navigate}
+                                                callbackParams={"/"}
+                                            />
+                                        </div>
                                     )}
                                 />
                             </Switch>

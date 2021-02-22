@@ -3,6 +3,7 @@ import { Link, useHistory, useLocation } from "react-router-dom";
 import { isNullOrUndefined } from "../helpers/generalhelpers";
 import { socket } from "./sockets/socket";
 import { deleteCookie } from "../helpers/cookies";
+import thinkingIcon from "./../assets/svgicons/thinking.svg";
 import "./../styles/header.scss";
 
 import Icon from "./icon";
@@ -31,6 +32,11 @@ export const Header = (props) => {
                 <div className="header-text">{text.toUpperCase()}</div>
             </Link>
             <div className="buttons">
+                <Link to="/support-us">
+                    <span className="header-button">
+                        <img className="thinking-icon" src={thinkingIcon} />
+                    </span>
+                </Link>
                 <Link to="/instructions">
                     <span className="header-button">
                         <Icon className="header-icon" name="help_center" />
