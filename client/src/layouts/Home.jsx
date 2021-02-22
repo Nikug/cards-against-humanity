@@ -4,7 +4,7 @@ import { Redirect, useHistory } from "react-router-dom";
 import "../styles/home.scss";
 
 import Button, { BUTTON_TYPES } from "../components/button";
-export function Home({ joinExistingGame, startNewGame }) {
+export const Home = ({ joinExistingGame, startNewGame }) => {
     const [newUrl, setNewUrl] = useState("");
 
     function handleKeyDown(event) {
@@ -70,4 +70,4 @@ export function Home({ joinExistingGame, startNewGame }) {
             </div>
         </div>
     );
-}
+};

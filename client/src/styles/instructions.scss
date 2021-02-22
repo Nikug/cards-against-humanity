@@ -1,0 +1,34 @@
+@import "./colors.scss";
+
+// Put everything that takes place in card picker inside instructions-cardpicker class,
+// so that the styles are applied only when the component is used for instructions.
+
+.instructions-cardpicker {
+}
+
+.instructions-wrapper {
+    margin: 0 2rem;
+
+    .title-text-wrapper {
+        display: flex;
+        flex-direction: column;
+        align-items: start;
+
+        .title-text {
+            color: $app-text;
+            width: fit-content;
+            font-size: 2.6rem;
+            text-align: center;
+
+            &.small {
+                font-size: 2rem;
+            }
+
+            .cursive {
+                font-style: italic;
+                margin: 0 0.2rem 0 0rem;
+                color: $header-button-hover;
+            }
+        }
+    }
+}

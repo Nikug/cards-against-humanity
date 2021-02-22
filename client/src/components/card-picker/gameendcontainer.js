@@ -2,11 +2,12 @@ import React, { useState, useEffect } from "react";
 import { socket } from "../sockets/socket";
 import { CardPicker } from "./cardpicker";
 import { emptyFn } from "../../helpers/generalhelpers";
-import { render } from "@testing-library/react";
 import { renderBlackCardwithWhiteCards } from "./cardformathelpers.js/renderBlackcardWithWhiteCards";
 import Confetti from "react-confetti";
 
-export function GameEndContainer({ game, player }) {
+export const GameEndContainer = ({ game, player }) => {
+    const [returningBackToLobby, setReturningBackToLobby] = useState(false);
+
     const playersSorted = game.players.sort(function (a, b) {
         var keyA = new Date(a.score),
             keyB = new Date(b.score);
@@ -17,7 +18,6 @@ export function GameEndContainer({ game, player }) {
 
     const winnerCards = [];
     const rounds = game?.rounds;
-    console.log({ game });
 
     if (rounds?.length > 0) {
         for (let i = 0, len = rounds.length; i < len; i++) {
@@ -49,7 +49,13 @@ export function GameEndContainer({ game, player }) {
         return 0;
     });
 
-    console.log({ winnerCards, sortedWinnerCards });
+    const returnBackToLobby = () => {
+        setReturningBackToLobby(true);
+        socket.emit("return_to_lobby", {
+            gameID: game?.id,
+            playerID: player?.id,
+        });
+    };
 
     return (
         <>
@@ -64,8 +70,11 @@ export function GameEndContainer({ game, player }) {
             <div className="blackcardpicker">
                 <CardPicker
                     selectCard={emptyFn}
-                    confirmCards={emptyFn}
-                    noActionButton={true}
+                    confirmCards={returnBackToLobby}
+                    customButtonState={returningBackToLobby ? 1 : 0}
+                    customButtonTexts={["Palaa aulaan", "Palataan aulaan..."]}
+                    centerActionButton={true}
+                    noActionButton={!player?.isHost}
                     topText={`🎉🎉🎉 ${
                         playersSorted[0].name ?? "Joku"
                     } voitti pelin! 🎉🎉🎉`}
@@ -75,4 +84,4 @@ export function GameEndContainer({ game, player }) {
             </div>
         </>
     );
-}
+};

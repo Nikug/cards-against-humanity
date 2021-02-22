@@ -23,6 +23,7 @@ import Music from "./components/music";
 import { Notification } from "./components/notification/notification";
 import axios from "axios";
 import { socket } from "./components/sockets/socket";
+import { Instructions } from "./layouts/Instructions";
 
 export const App = (props) => {
     const [game, setGame] = useState(undefined);
@@ -185,13 +186,9 @@ export const App = (props) => {
                                     )}
                                 />
                                 <Route
-                                    exact
                                     path="/instructions"
                                     render={(props) => (
-                                        <div>
-                                            Ohjeita rakennetaan... Tässä voi
-                                            mennä hetki!
-                                        </div>
+                                        <Instructions path={"/instructions"} />
                                     )}
                                 />
                                 <Route

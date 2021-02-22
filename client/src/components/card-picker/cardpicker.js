@@ -22,6 +22,7 @@ import { renderBlackCardwithWhiteCards } from "./cardformathelpers.js/renderBlac
 
 export function CardPicker(props) {
     const {
+        isForInstructions,
         alternativeText,
         disableConfirmButton,
         mainCard,
@@ -36,6 +37,7 @@ export function CardPicker(props) {
         customButtonTexts,
         customButtonIcons,
         customButtonState,
+        centerActionButton,
         noActionButton,
         topText,
         showPopularVote,
@@ -172,12 +174,16 @@ export function CardPicker(props) {
     }
 
     return (
-        <div className="cardpicker-wrapper">
+        <div
+            className={`cardpicker-wrapper ${
+                isForInstructions ? "instructions-cardpicker" : ""
+            }`}
+        >
             {topText && <div className="toptext">{topText}</div>}
             <div className="main">
-                <span />
+                {!centerActionButton && <span />}
                 {mainContent}
-                {noActionButton !== true && (
+                {!noActionButton && (
                     <Button
                         additionalClassname={`confirm-button ${
                             (

@@ -23,7 +23,7 @@ export class Setting extends Component {
         };
 
         if (this.props.DEV_CARD_PACK_AUTOFILL === true) {
-            this.state.inputText = "qM1V1IaYBE";
+            this.state.inputText = "U4nL88ujS" || "qM1V1IaYBE";
         }
     }
     renderToggle(currentValue, isDisabled, onChangeCallback) {

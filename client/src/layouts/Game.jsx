@@ -464,8 +464,16 @@ export const Game = (props) => {
                 <PlayersWidget game={game} player={player} />
                 <Timer
                     width={100}
-                    percent={timerIsOn ? 1 : 0}
-                    startingPercent={startingProgress}
+                    percent={
+                        game?.state === GAME_STATES.LOBBY
+                            ? 0
+                            : timerIsOn
+                            ? 1
+                            : 0
+                    }
+                    startingPercent={
+                        game?.state === GAME_STATES.LOBBY ? 0 : startingProgress
+                    }
                     time={game?.timers.duration ?? 0}
                 />
             </div>
