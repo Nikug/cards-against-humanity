@@ -61,11 +61,9 @@ const addPlayerToGame = (io, socket, gameID, playerID) => {
 
     if (!player) {
         if (checkPlayerLimit(game)) {
-            console.log("Adding new player!");
             const newPlayer = createNewPlayer(socket.id, isHost);
             game.players = addPlayer(game.players, newPlayer);
         } else if (checkSpectatorLimit(game)) {
-            console.log("Adding new spectator!");
             const newPlayer = createNewPlayer(socket.id, isHost, "spectating");
             game.players = addPlayer(game.players, newPlayer);
         } else {
@@ -119,5 +117,5 @@ const checkSpectatorLimit = (game) => {
     const spectators = game.players.filter(
         (player) => player.state === "spectating"
     );
-    return gameOptions.spectatorLimit > spectators;
+    return gameOptions.spectatorLimit > spectators.length;
 };

@@ -241,6 +241,11 @@ export const getActivePlayers = (players) => {
     );
 };
 
+export const getAllActivePlayers = (players) =>
+    players.filter((player) =>
+        ["active", "playing", "waiting", "pickingName"].includes(player.state)
+    );
+
 export const setPlayerDisconnected = (io, socketID, removePlayer) => {
     const result = findGameAndPlayerBySocketID(socketID);
     if (!result) return;
@@ -357,7 +362,7 @@ const handleHostLeaving = (game, host) => {
 
     let players = [];
     if (game.stateMachine.state === "lobby") {
-        players = [...game.players];
+        players = getAllActivePlayers(game.players);
     } else {
         players = getActivePlayers(game.players);
     }
