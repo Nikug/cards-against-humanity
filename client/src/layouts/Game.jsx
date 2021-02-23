@@ -461,6 +461,7 @@ export const Game = (props) => {
     return (
         <div>
             <div className="info">
+                {player?.state === "spectating" && <p>Spectator</p>}
                 <PlayersWidget game={game} player={player} />
                 <Timer
                     width={100}

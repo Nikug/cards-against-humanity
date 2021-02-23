@@ -137,5 +137,4 @@ type PlayerState =
     | "joining"
     | "pickingName"
     | "disconnected"
-    | "spectating"
-    | "kicked";
+    | "spectating";

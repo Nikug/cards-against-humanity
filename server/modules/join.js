@@ -1,6 +1,6 @@
-import { gameOptions, playerName } from "../consts/gameSettings.js";
-import { findGameByPlayerID, getGame, setGame } from "./game.js";
 import { createNewPlayer, updatePlayersIndividually } from "./player.js";
+import { findGameByPlayerID, getGame, setGame } from "./game.js";
+import { gameOptions, playerName } from "../consts/gameSettings.js";
 
 export const joinGame = (io, socket, gameID, playerID) => {
     console.log(`Joining game! gameID: ${gameID} playerID: ${playerID}`);
@@ -58,11 +58,20 @@ const addPlayerToGame = (io, socket, gameID, playerID) => {
 
     const isHost = game.players.length === 0;
     const player = findPlayer(game.players, playerID);
-    socket.join(gameID);
 
     if (!player) {
-        const newPlayer = createNewPlayer(socket.id, isHost);
-        game.players = addPlayer(game.players, newPlayer);
+        if (checkPlayerLimit(game)) {
+            console.log("Adding new player!");
+            const newPlayer = createNewPlayer(socket.id, isHost);
+            game.players = addPlayer(game.players, newPlayer);
+        } else if (checkSpectatorLimit(game)) {
+            console.log("Adding new spectator!");
+            const newPlayer = createNewPlayer(socket.id, isHost, "spectating");
+            game.players = addPlayer(game.players, newPlayer);
+        } else {
+            console.log("Can't add player to game, there is no room");
+            return;
+        }
     } else {
         if (player.sockets.length === 0) {
             if (player.name.length >= playerName.minimumLength) {
@@ -76,6 +85,7 @@ const addPlayerToGame = (io, socket, gameID, playerID) => {
         player.sockets = [...player.sockets, socket.id];
         game.players = setPlayer(game.players, player);
     }
+    socket.join(gameID);
     setGame(game);
     updatePlayersIndividually(io, game);
 };
@@ -96,4 +106,18 @@ export const setPlayer = (players, newPlayer) => {
 
 const returnError = (socket) => {
     socket.emit("update_game_and_players", { error: "No game found" });
+};
+
+const checkPlayerLimit = (game) => {
+    const nonSpectators = game.players.filter(
+        (player) => player.state !== "spectating"
+    );
+    return game.client.options.maximumPlayers > nonSpectators.length;
+};
+
+const checkSpectatorLimit = (game) => {
+    const spectators = game.players.filter(
+        (player) => player.state === "spectating"
+    );
+    return gameOptions.spectatorLimit > spectators;
 };

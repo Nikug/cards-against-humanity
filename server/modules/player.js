@@ -203,8 +203,6 @@ export const getNextCardCzar = (players, previousCardCzarID) => {
 export const appointNextCardCzar = (game, previousCardCzarID, winnerID) => {
     const nextCardCzarID =
         winnerID ?? getNextCardCzar(game.players, previousCardCzarID);
-
-    console.log("Next card czar", nextCardCzarID, "winnter", winnerID);
     const players = game.players.map((player) => {
         if (player.id === previousCardCzarID) {
             return { ...player, isCardCzar: false };
@@ -260,7 +258,7 @@ export const setPlayerDisconnected = (io, socketID, removePlayer) => {
         return;
     }
 
-    if (removePlayer) {
+    if (removePlayer || player.state === "spectating") {
         game.players = game.players.filter(
             (gamePlayer) => gamePlayer.id !== player.id
         );
@@ -315,7 +313,8 @@ export const setPlayerDisconnected = (io, socketID, removePlayer) => {
 };
 
 const resetPlayerState = (player) => {
-    if (player.state === "disconnected") return player.state;
+    if (player.state === "disconnected" || player.state === "spectating")
+        return player.state;
     return player.name.length > playerName.minimumLength
         ? "active"
         : "pickingName";

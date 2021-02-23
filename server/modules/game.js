@@ -149,6 +149,8 @@ export const updateGameOptions = (io, gameID, playerID, newOptions) => {
     });
     const updatedGame = setGame(game);
 
+    console.log("Game options", game.client.options);
+
     io.in(gameID).emit("update_game_options", {
         options: updatedGame.client.options,
     });
@@ -322,7 +324,7 @@ export const findGameByPlayerID = (playerID) => {
 export const shouldGameBeDeleted = (game) => {
     if (game.stateMachine.state === "lobby") {
         return game.players.every((player) =>
-            ["disconnected", "kicked"].includes(player.state)
+            ["disconnected", "spectating"].includes(player.state)
         );
     } else {
         return false;
