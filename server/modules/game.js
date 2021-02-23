@@ -1,6 +1,7 @@
 import {
     appointNextCardCzar,
     getActivePlayers,
+    getRoundWinner,
     handleJoiningPlayers,
     resetPlayers,
     setPlayersPlaying,
@@ -221,7 +222,13 @@ export const startNewRound = (io, gameID, playerID) => {
 
     game.players = handleJoiningPlayers(io, game);
 
-    game.players = appointNextCardCzar(game, playerID);
+    if (game.client.options.winnerBecomesCardCzar && game.currentRound) {
+        const winnerID = getRoundWinner(game.currentRound);
+        game.players = appointNextCardCzar(game, playerID, winnerID);
+    } else {
+        game.players = appointNextCardCzar(game, playerID);
+    }
+
     game.players = setPopularVoteLeader(game.players);
     game.players = setPlayersWaiting(game.players);
 

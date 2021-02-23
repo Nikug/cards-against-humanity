@@ -150,6 +150,13 @@ export const getPlayer = (game, playerID) => {
     return players[0];
 };
 
+export const getRoundWinner = (round) => {
+    if (!round?.whiteCardsByPlayer) return undefined;
+
+    const cards = round.whiteCardsByPlayer.find((cards) => cards.wonRound);
+    return cards?.playerID;
+};
+
 export const getPlayerByWhiteCards = (game, whiteCardIDs) => {
     const players = game.currentRound.whiteCardsByPlayer.filter(
         (whiteCardByPlayer) => {
@@ -193,8 +200,11 @@ export const getNextCardCzar = (players, previousCardCzarID) => {
     }
 };
 
-export const appointNextCardCzar = (game, previousCardCzarID) => {
-    const nextCardCzarID = getNextCardCzar(game.players, previousCardCzarID);
+export const appointNextCardCzar = (game, previousCardCzarID, winnerID) => {
+    const nextCardCzarID =
+        winnerID ?? getNextCardCzar(game.players, previousCardCzarID);
+
+    console.log("Next card czar", nextCardCzarID, "winnter", winnerID);
     const players = game.players.map((player) => {
         if (player.id === previousCardCzarID) {
             return { ...player, isCardCzar: false };
