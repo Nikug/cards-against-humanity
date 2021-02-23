@@ -145,9 +145,7 @@ export const setPlayersWaiting = (players) => {
 };
 
 export const getPlayer = (game, playerID) => {
-    const players = game.players.filter((player) => player.id === playerID);
-    if (players.length !== 1) return undefined;
-    return players[0];
+    return game.players.find((player) => player.id === playerID);
 };
 
 export const getRoundWinner = (round) => {

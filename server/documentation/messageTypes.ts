@@ -24,4 +24,5 @@ type Client2Server =
     | "show_next_white_card" // In the reading phase returns the cards played by one player
     | "pick_winning_card" // Card Czar picks the winner and sends the winning card IDs back
     | "start_round" // Start new round after earlier round has ended
-    | "return_to_lobby"; // Returns back to lobby and resets game
+    | "return_to_lobby" // Returns back to lobby and resets game
+    | "toggle_player_mode"; // Used to switch between spectator and active player

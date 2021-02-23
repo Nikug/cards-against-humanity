@@ -106,14 +106,14 @@ const returnError = (socket) => {
     socket.emit("update_game_and_players", { error: "No game found" });
 };
 
-const checkPlayerLimit = (game) => {
+export const checkPlayerLimit = (game) => {
     const nonSpectators = game.players.filter(
         (player) => player.state !== "spectating"
     );
     return game.client.options.maximumPlayers > nonSpectators.length;
 };
 
-const checkSpectatorLimit = (game) => {
+export const checkSpectatorLimit = (game) => {
     const spectators = game.players.filter(
         (player) => player.state === "spectating"
     );

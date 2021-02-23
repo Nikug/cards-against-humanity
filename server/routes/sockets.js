@@ -1,24 +1,26 @@
-import {
-    updateGameOptions,
-    startGame,
-    startNewRound,
-    validateHostAndReturnToLobby,
-} from "../modules/game.js";
-import {
-    setPlayerDisconnected,
-    updatePlayerName,
-    changePlayerTextToSpeech,
-} from "../modules/player.js";
 import { addCardPack, removeCardPack } from "../modules/cardpack.js";
 import {
-    selectBlackCard,
+    changePlayerTextToSpeech,
+    setPlayerDisconnected,
+    updatePlayerName,
+} from "../modules/player.js";
+import {
     playWhiteCards,
-    showWhiteCard,
+    selectBlackCard,
     selectWinner,
     sendBlackCards,
+    showWhiteCard,
 } from "../modules/card.js";
-import { popularVote } from "../modules/popularVote.js";
+import {
+    startGame,
+    startNewRound,
+    updateGameOptions,
+    validateHostAndReturnToLobby,
+} from "../modules/game.js";
+
 import { joinGame } from "../modules/join.js";
+import { popularVote } from "../modules/popularVote.js";
+import { togglePlayerMode } from "../modules/togglePlayerMode.js";
 
 export const sockets = (io) => {
     io.on("connection", (socket) => {
@@ -220,6 +222,15 @@ export const sockets = (io) => {
                     data.playerID,
                     data.whiteCardIDs
                 );
+            }
+        });
+
+        socket.on("toggle_player_mode", (data) => {
+            const missingFields = validateFields(["gameID", "playerID"]);
+            if (missingFields.length > 0) {
+                sendError(socket, "Invalid data", missingFields);
+            } else {
+                togglePlayerMode(io, data.gameID, data.playerID);
             }
         });
     });
