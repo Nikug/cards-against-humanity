@@ -69,7 +69,7 @@ const addPlayerToGame = (io, socket, gameID, playerID) => {
             const newPlayer = createNewPlayer(socket.id, isHost, "spectating");
             game.players = addPlayer(game.players, newPlayer);
         } else {
-            console.log("Can't add player to game, there is no room");
+            socket.disconnect();
             return;
         }
     } else {
