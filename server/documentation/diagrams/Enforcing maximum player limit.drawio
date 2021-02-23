@@ -1,1 +1,78 @@
-<mxfile host="app.diagrams.net" modified="2021-02-23T12:01:45.613Z" agent="5.0 (Windows)" etag="abMWYiAtozQR_vywiYZ4" version="14.4.2" type="github"><diagram id="wif9jX2Z0KPijwD7vvL0" name="Page-1">5Vlbb5swFP410Z5aAYaEPDZpu27qtkqd1PbRAQdcGcyMc+uvnw0mXJykbG0CVfOQcA6+nu87FzsDMI3WXxlMwh/UR2RgGf56AC4HlviMLPEjNZtcM7ZArggY9nOVWSru8QtSSkNpF9hHaa0hp5RwnNSVHo1j5PGaDjJGV/Vmc0rqsyYwQJri3oNE1z5gn4e51nWMUn+DcBAWM5uGehPBorFSpCH06aqiAlcDMGWU8vwpWk8RkcYr7JL3u97zdrswhmLepoO1er4dgpu75S/rd/L9YfLHN6dnCoyUb4oNI1/sX4mU8ZAGNIbkqtROGF3EPpKjGkIq29xSmgilKZTPiPONAhMuOBWqkEdEvRULZptH2f/cKcQnNVwmXK5r0kZJ+VrlAveaQKlSumAeOrDvgkqQBYgfaGdtgRIMRzRCYj2iH0MEcrysrwMqqgXbdiUa4kEB8g/gqHGXkCzUTHcEbhATumeK41TDro7MKsQc3ScwM8RKuGcdBTU4YhytD9tT33/h3iPFbeXcVuEWq9JVzIL/YcVNhsaRTOZ0wed35KXVkpd2l7wcarz8SXfa/RbORDqo2QoSHMTi2ROmEUwGE0lALOLthXoRYd/PYUEpfoGzbDwJTCIoz7OtOJOBc3mIwSoZqM5lCK4isp8+e+l+ZpxbNb6r6VpbXY18J3dSaULn81Sg3YRlu4D/R8r9JO5ggjf6QwOZgk5uPb7ZZiNu5QtTvd4fvrHmaE9Ij/of0tPcVz3NdD+Ys1kaWt9SaYoiZxMcYbmS+UKOe61n75BGs0V6msw9rjMbjPTM7e5I3O6xErf9aq1jBDBC+dTiy8s4UFq3Z5WQ03klZLbO0h8nHZigbT7Yk8hPVLe7reP2qU5aWyE7Z5XHrhOctFpjNuoUM7A7eqeJTG+c9i2Auz2L36bzegCHDYN2HLOHvQvZo/029GD8hStbyrmzkkYO2bERheM0mOh2bUZgalb5HJdaltsy1ILxG0Pt7uPSsOFRoAnxkY9Llp53t/6TrjD3QpmFDYFcHoZ6EoX6dodm62Goq/Jljflj5blSvAipdCgpFP5U+mFnJQ8Yt/RDu9My1dbdpZsTQg9CZ3vIhl1CBvQboQuGqlVV2pP6dGj1rEC1DxSooriS3yGlKSoSBEEwu2BQtw4ejRKCOCKbzjPGqJlmO6+4bP2uYWtbLBkZ0aUwUCX1FlztWfJ1zOOZUojln715yVP+ZQ6u/gI=</diagram></mxfile>
+<mxfile host="app.diagrams.net" modified="2021-02-23T12:16:07.919Z" agent="5.0 (Windows)" etag="uN-8wZ0_0S2lAGryj1IG" version="14.4.2" type="github">
+  <diagram id="wif9jX2Z0KPijwD7vvL0" name="Page-1">
+    <mxGraphModel dx="2272" dy="923" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="2wjL63HPvO2TpJWBqd1C-3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="1" source="2wjL63HPvO2TpJWBqd1C-1" target="2wjL63HPvO2TpJWBqd1C-2" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="2wjL63HPvO2TpJWBqd1C-1" value="Player joins" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="270" y="250" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="2wjL63HPvO2TpJWBqd1C-5" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" parent="1" source="2wjL63HPvO2TpJWBqd1C-2" target="2wjL63HPvO2TpJWBqd1C-4" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="2wjL63HPvO2TpJWBqd1C-6" value="No" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" parent="2wjL63HPvO2TpJWBqd1C-5" vertex="1" connectable="0">
+          <mxGeometry x="-0.2" y="1" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="2wjL63HPvO2TpJWBqd1C-8" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" parent="1" source="2wjL63HPvO2TpJWBqd1C-2" target="2wjL63HPvO2TpJWBqd1C-13" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="180" y="410" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="2wjL63HPvO2TpJWBqd1C-9" value="Yes" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" parent="2wjL63HPvO2TpJWBqd1C-8" vertex="1" connectable="0">
+          <mxGeometry x="-0.2182" y="1" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="2wjL63HPvO2TpJWBqd1C-2" value="Is player limit full?" style="rhombus;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="290" y="370" width="80" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="2wjL63HPvO2TpJWBqd1C-4" value="Player joins game as active player" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="270" y="550" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="2wjL63HPvO2TpJWBqd1C-16" value="No" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" parent="1" source="2wjL63HPvO2TpJWBqd1C-13" target="2wjL63HPvO2TpJWBqd1C-15" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="2wjL63HPvO2TpJWBqd1C-18" value="Yes" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="2wjL63HPvO2TpJWBqd1C-13" target="2wjL63HPvO2TpJWBqd1C-17" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="2wjL63HPvO2TpJWBqd1C-13" value="Is spectator limit full?" style="rhombus;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="80" y="370" width="80" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="2wjL63HPvO2TpJWBqd1C-15" value="Player joins as spectator" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="60" y="550" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="2wjL63HPvO2TpJWBqd1C-17" value="Player can&#39;t join at all" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="-130" y="380" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="2wjL63HPvO2TpJWBqd1C-31" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="1" source="2wjL63HPvO2TpJWBqd1C-28" target="2wjL63HPvO2TpJWBqd1C-39" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="660" y="360" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="2wjL63HPvO2TpJWBqd1C-28" value="Player switches to spectator" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="600" y="250" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="2wjL63HPvO2TpJWBqd1C-47" value="Yes" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="2wjL63HPvO2TpJWBqd1C-39" target="2wjL63HPvO2TpJWBqd1C-45" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="2wjL63HPvO2TpJWBqd1C-48" value="No" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="1" source="2wjL63HPvO2TpJWBqd1C-39" target="2wjL63HPvO2TpJWBqd1C-46" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="2wjL63HPvO2TpJWBqd1C-39" value="Are spectators full?" style="rhombus;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="620" y="370" width="80" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="2wjL63HPvO2TpJWBqd1C-45" value="Player can choose to leave game completely" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="760" y="380" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="2wjL63HPvO2TpJWBqd1C-46" value="Player is moved to spectators" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="600" y="510" width="120" height="60" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
