@@ -2,9 +2,9 @@ import { checkPlayerLimit, checkSpectatorLimit } from "./join.js";
 import { getGame, setGame } from "./game.js";
 import { getPlayer, updatePlayersIndividually } from "./player.js";
 
+import { handleSpecialCases } from "./disconnect.js";
 import { playerName } from "../consts/gameSettings.js";
 
-// TODO: look at how disconnecting handles cases, since switching to spectator basically disconnects player gameplaywise
 export const togglePlayerMode = (io, gameID, playerID) => {
     const game = getGame(gameID);
     if (!game) return;
@@ -31,9 +31,10 @@ export const togglePlayerMode = (io, gameID, playerID) => {
                     game.stateMachine.state === "lobby" ? "active" : "joining"
                 );
             }
+            handleSpecialCases(io, game, player);
+            return;
         }
     }
-
     setGame(game);
     updatePlayersIndividually(io, game);
 };

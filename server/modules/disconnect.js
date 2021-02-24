@@ -2,6 +2,7 @@ import {
     emitToAllPlayerSockets,
     getActivePlayers,
     getAllActivePlayers,
+    updatePlayersIndividually,
 } from "./player.js";
 import {
     everyoneHasPlayedTurn,
@@ -72,6 +73,10 @@ export const setPlayerDisconnected = (io, socketID, removePlayer) => {
         emitToAllPlayerSockets(io, newHost, "upgraded_to_host", {});
     }
 
+    handleSpecialCases(io, game, player);
+};
+
+export const handleSpecialCases = (io, game, player) => {
     if (shouldReturnToLobby(game)) {
         returnToLobby(io, game);
         return;
