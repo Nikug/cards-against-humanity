@@ -1,7 +1,6 @@
 import { addCardPack, removeCardPack } from "../modules/cardpack.js";
 import {
     changePlayerTextToSpeech,
-    setPlayerDisconnected,
     updatePlayerName,
 } from "../modules/player.js";
 import {
@@ -20,6 +19,7 @@ import {
 
 import { joinGame } from "../modules/join.js";
 import { popularVote } from "../modules/popularVote.js";
+import { setPlayerDisconnected } from "../modules/disconnect.js";
 import { togglePlayerMode } from "../modules/togglePlayerMode.js";
 
 export const sockets = (io) => {
