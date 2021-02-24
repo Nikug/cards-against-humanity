@@ -4,6 +4,7 @@ import { getPlayer, updatePlayersIndividually } from "./player.js";
 
 import { playerName } from "../consts/gameSettings.js";
 
+// TODO: look at how disconnecting handles cases, since switching to spectator basically disconnects player gameplaywise
 export const togglePlayerMode = (io, gameID, playerID) => {
     const game = getGame(gameID);
     if (!game) return;

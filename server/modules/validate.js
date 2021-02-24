@@ -71,7 +71,7 @@ export const validateOptions = (newOptions) => {
         ...newOptions,
         maximumPlayers: clamp(
             newOptions.maximumPlayers,
-            gameOptions.minimunPlayers,
+            gameOptions.minimumPlayers,
             gameOptions.maximumPlayers
         ),
         scoreLimit: clamp(
@@ -95,10 +95,10 @@ export const validateGameStartRequirements = (game) => {
     const activePlayerCount = game.players.filter(
         (player) => player.state === "active"
     ).length;
-    if (activePlayerCount < gameOptions.minimunPlayers)
+    if (activePlayerCount < gameOptions.minimumPlayers)
         return {
             result: false,
-            error: `Ei tarpeeksi pelaajia, tarvitaan vähintään ${gameOptions.minimunPlayers}`,
+            error: `Ei tarpeeksi pelaajia, tarvitaan vähintään ${gameOptions.minimumPlayers}`,
         };
     if (
         activePlayerCount > game.client.options.maximumPlayers ||

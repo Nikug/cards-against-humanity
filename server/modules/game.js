@@ -237,7 +237,7 @@ export const startNewRound = (io, gameID, playerID) => {
 
     const updatedGame = changeGameStateAfterTime(
         io,
-        game,
+        newGame,
         "startPlayingWhiteCards"
     );
     setGame(updatedGame);
@@ -332,7 +332,7 @@ export const shouldGameBeDeleted = (game) => {
 export const shouldReturnToLobby = (game) => {
     if (game.stateMachine.state !== "lobby") {
         const activePlayers = getActivePlayers(game.players);
-        if (activePlayers.length <= 1) {
+        if (activePlayers.length <= gameOptions.minimumPlayers) {
             return true;
         }
         return game.players.every((player) =>
@@ -363,8 +363,11 @@ export const validateHostAndReturnToLobby = (io, gameID, playerID) => {
 };
 
 export const resetGame = (game) => {
+    // Clear timeout
+    clearTimeout(game.timeout);
+
     // Reset rounds
-    game.rounds = [];
+    game.client.rounds = [];
     game.currentRound = undefined;
 
     // Reset playerStates, scores, cardczar status and player white cards

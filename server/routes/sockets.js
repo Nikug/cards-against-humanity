@@ -31,6 +31,7 @@ export const sockets = (io) => {
         });
 
         socket.on("disconnect", (reason) => {
+            if (reason === "server namespace disconnect") return;
             console.log(`Client left: ${reason}, Socket ID: ${socket.id}`);
             setPlayerDisconnected(io, socket.id, false);
         });
