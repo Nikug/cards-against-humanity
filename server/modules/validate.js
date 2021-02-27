@@ -1,6 +1,7 @@
-import { getPlayer } from "./player.js";
-import { clamp } from "./util.js";
 import { gameOptions, playerName } from "../consts/gameSettings.js";
+
+import { clamp } from "./util.js";
+import { getPlayer } from "./player.js";
 
 export const validateHost = (game, playerID) => {
     return game.players.find(
@@ -70,7 +71,7 @@ export const validateOptions = (newOptions) => {
         ...newOptions,
         maximumPlayers: clamp(
             newOptions.maximumPlayers,
-            gameOptions.minimunPlayers,
+            gameOptions.minimumPlayers,
             gameOptions.maximumPlayers
         ),
         scoreLimit: clamp(
@@ -94,10 +95,10 @@ export const validateGameStartRequirements = (game) => {
     const activePlayerCount = game.players.filter(
         (player) => player.state === "active"
     ).length;
-    if (activePlayerCount < gameOptions.minimunPlayers)
+    if (activePlayerCount < gameOptions.minimumPlayers)
         return {
             result: false,
-            error: `Ei tarpeeksi pelaajia, tarvitaan vähintään ${gameOptions.minimunPlayers}`,
+            error: `Ei tarpeeksi pelaajia, tarvitaan vähintään ${gameOptions.minimumPlayers}`,
         };
     if (
         activePlayerCount > game.client.options.maximumPlayers ||
@@ -107,19 +108,6 @@ export const validateGameStartRequirements = (game) => {
             result: false,
             error: "Liikaa pelaajia",
         };
-
-    if (
-        game.players.some(
-            (player) =>
-                player.name.length < playerName.minimumLength ||
-                player.name.length > playerName.maximumLength
-        )
-    ) {
-        return {
-            result: false,
-            error: "Pelaajien nimet eivät kelpaa",
-        };
-    }
 
     if (
         game.cards.whiteCards.length <

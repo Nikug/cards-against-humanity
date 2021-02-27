@@ -1,6 +1,7 @@
 import {
     appointNextCardCzar,
     getActivePlayers,
+    getRoundWinner,
     handleJoiningPlayers,
     resetPlayers,
     setPlayersPlaying,
@@ -221,7 +222,13 @@ export const startNewRound = (io, gameID, playerID) => {
 
     game.players = handleJoiningPlayers(io, game);
 
-    game.players = appointNextCardCzar(game, playerID);
+    if (game.client.options.winnerBecomesCardCzar && game.currentRound) {
+        const winnerID = getRoundWinner(game.currentRound);
+        game.players = appointNextCardCzar(game, playerID, winnerID);
+    } else {
+        game.players = appointNextCardCzar(game, playerID);
+    }
+
     game.players = setPopularVoteLeader(game.players);
     game.players = setPlayersWaiting(game.players);
 
@@ -230,7 +237,7 @@ export const startNewRound = (io, gameID, playerID) => {
 
     const updatedGame = changeGameStateAfterTime(
         io,
-        game,
+        newGame,
         "startPlayingWhiteCards"
     );
     setGame(updatedGame);
@@ -315,7 +322,7 @@ export const findGameByPlayerID = (playerID) => {
 export const shouldGameBeDeleted = (game) => {
     if (game.stateMachine.state === "lobby") {
         return game.players.every((player) =>
-            ["disconnected", "kicked"].includes(player.state)
+            ["disconnected", "spectating"].includes(player.state)
         );
     } else {
         return false;
@@ -325,13 +332,11 @@ export const shouldGameBeDeleted = (game) => {
 export const shouldReturnToLobby = (game) => {
     if (game.stateMachine.state !== "lobby") {
         const activePlayers = getActivePlayers(game.players);
-        if (activePlayers.length <= 1) {
+        if (activePlayers.length <= gameOptions.minimumPlayers) {
             return true;
         }
         return game.players.every((player) =>
-            ["disconnected", "kicked", "pickingName", "spectating"].includes(
-                player.state
-            )
+            ["disconnected", "pickingName", "spectating"].includes(player.state)
         );
     } else {
         return false;
@@ -358,8 +363,11 @@ export const validateHostAndReturnToLobby = (io, gameID, playerID) => {
 };
 
 export const resetGame = (game) => {
+    // Clear timeout
+    clearTimeout(game.timeout);
+
     // Reset rounds
-    game.rounds = [];
+    game.client.rounds = [];
     game.currentRound = undefined;
 
     // Reset playerStates, scores, cardczar status and player white cards

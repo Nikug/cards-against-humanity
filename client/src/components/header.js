@@ -1,12 +1,13 @@
-import React, { Component } from "react";
-import { Link, useHistory, useLocation } from "react-router-dom";
-import { isNullOrUndefined } from "../helpers/generalhelpers";
-import { socket } from "./sockets/socket";
-import { deleteCookie } from "../helpers/cookies";
-import thinkingIcon from "./../assets/svgicons/thinking.svg";
 import "./../styles/header.scss";
 
+import { Link, useHistory, useLocation } from "react-router-dom";
+import React, { Component } from "react";
+
 import Icon from "./icon";
+import { deleteCookie } from "../helpers/cookies";
+import { isNullOrUndefined } from "../helpers/generalhelpers";
+import { socket } from "./sockets/socket";
+import thinkingIcon from "./../assets/svgicons/thinking.svg";
 
 export const Header = (props) => {
     const text = "Kortit ihmiskuntaa vastaan";
@@ -21,9 +22,8 @@ export const Header = (props) => {
             gameID: game?.id,
             playerID: player?.id,
         });
-        socket.close();
-        props.reset();
-        history.push("/");
+        // props.reset();
+        // history.push("/");
     };
 
     return (

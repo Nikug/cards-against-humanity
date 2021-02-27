@@ -1,32 +1,10 @@
-import {
-    INACTIVE_GAME_DELETE_TIME,
-    gameOptions,
-    playerName,
-} from "../consts/gameSettings.js";
-import {
-    anonymizedGameClient,
-    drawWhiteCards,
-    playWhiteCards,
-    startReading,
-} from "./card.js";
-import {
-    everyoneHasPlayedTurn,
-    findGameAndPlayerBySocketID,
-    getGame,
-    removeGame,
-    removeGameIfNoActivePlayers,
-    returnToLobby,
-    setGame,
-    shouldGameBeDeleted,
-    shouldReturnToLobby,
-    skipRound,
-} from "./game.js";
+import { anonymizedGameClient, drawWhiteCards } from "./card.js";
+import { gameOptions, playerName } from "../consts/gameSettings.js";
+import { getGame, setGame } from "./game.js";
 
-import { closeSocketWithID } from "./socket.js";
 import { joiningPlayerStates } from "../consts/states.js";
 import { nanoid } from "nanoid";
 import sanitize from "sanitize";
-import { setPlayer } from "./join.js";
 
 const sanitizer = sanitize();
 
@@ -145,9 +123,14 @@ export const setPlayersWaiting = (players) => {
 };
 
 export const getPlayer = (game, playerID) => {
-    const players = game.players.filter((player) => player.id === playerID);
-    if (players.length !== 1) return undefined;
-    return players[0];
+    return game.players.find((player) => player.id === playerID);
+};
+
+export const getRoundWinner = (round) => {
+    if (!round?.whiteCardsByPlayer) return undefined;
+
+    const cards = round.whiteCardsByPlayer.find((cards) => cards.wonRound);
+    return cards?.playerID;
 };
 
 export const getPlayerByWhiteCards = (game, whiteCardIDs) => {
@@ -193,8 +176,9 @@ export const getNextCardCzar = (players, previousCardCzarID) => {
     }
 };
 
-export const appointNextCardCzar = (game, previousCardCzarID) => {
-    const nextCardCzarID = getNextCardCzar(game.players, previousCardCzarID);
+export const appointNextCardCzar = (game, previousCardCzarID, winnerID) => {
+    const nextCardCzarID =
+        winnerID ?? getNextCardCzar(game.players, previousCardCzarID);
     const players = game.players.map((player) => {
         if (player.id === previousCardCzarID) {
             return { ...player, isCardCzar: false };
@@ -233,79 +217,14 @@ export const getActivePlayers = (players) => {
     );
 };
 
-export const setPlayerDisconnected = (io, socketID, removePlayer) => {
-    const result = findGameAndPlayerBySocketID(socketID);
-    if (!result) return;
-
-    const { game, player } = result;
-    if (!player) return;
-
-    const remainingSockets = player.sockets.filter(
-        (socket) => socket !== socketID
+export const getAllActivePlayers = (players) =>
+    players.filter((player) =>
+        ["active", "playing", "waiting", "pickingName"].includes(player.state)
     );
-    if (remainingSockets.length > 0 && !removePlayer) {
-        player.sockets = remainingSockets;
-        game.players = setPlayer(game.players, player);
-        setGame(game);
-        return;
-    }
-
-    if (removePlayer) {
-        game.players = game.players.filter(
-            (gamePlayer) => gamePlayer.id !== player.id
-        );
-        player.sockets.map((socket) => {
-            closeSocketWithID(io, socket);
-        });
-    } else {
-        player.state = "disconnected";
-        player.sockets = remainingSockets;
-        game.players = setPlayer(game.players, player);
-    }
-
-    if (shouldGameBeDeleted(game)) {
-        if (removePlayer) {
-            removeGame(game.id);
-            return;
-        } else {
-            setTimeout(
-                () => removeGameIfNoActivePlayers(game.id),
-                INACTIVE_GAME_DELETE_TIME
-            );
-            setGame(game);
-            return;
-        }
-    }
-
-    if (player.isHost) {
-        game.players = handleHostLeaving(game, player);
-        if (!game.players) return;
-
-        const newHost = game.players.find((player) => player.isHost);
-        emitToAllPlayerSockets(io, newHost, "upgraded_to_host", {});
-    }
-
-    if (shouldReturnToLobby(game)) {
-        returnToLobby(io, game);
-        return;
-    }
-
-    if (player.isCardCzar) {
-        handleCardCzarLeaving(io, game, player);
-        return;
-    }
-
-    if (game.stateMachine.state === "playingWhiteCards") {
-        handlePlayerLeavingDuringWhiteCardSelection(io, game, player);
-        return;
-    }
-
-    setGame(game);
-    updatePlayersIndividually(io, game);
-};
 
 const resetPlayerState = (player) => {
-    if (player.state === "disconnected") return player.state;
+    if (player.state === "disconnected" || player.state === "spectating")
+        return player.state;
     return player.name.length > playerName.minimumLength
         ? "active"
         : "pickingName";
@@ -320,53 +239,6 @@ export const resetPlayers = (players) => {
         popularVoteScore: 0,
         whiteCards: [],
     }));
-};
-
-const handlePlayerLeavingDuringWhiteCardSelection = (io, game) => {
-    if (everyoneHasPlayedTurn(game)) {
-        startReading(io, game);
-    } else {
-        setGame(game);
-        updatePlayersIndividually(io, game);
-    }
-};
-
-const handleCardCzarLeaving = (io, game, cardCzar) => {
-    game.players = appointNextCardCzar(game, cardCzar.id);
-    skipRound(
-        io,
-        game,
-        game.players.find((player) => player.isCardCzar)
-    );
-};
-
-const handleHostLeaving = (game, host) => {
-    const hostIndex = game.players.findIndex((player) => player.id === host.id);
-    if (hostIndex !== -1) {
-        game.players[hostIndex].isHost = false;
-    }
-
-    let players = [];
-    if (game.stateMachine.state === "lobby") {
-        players = [...game.players];
-    } else {
-        players = getActivePlayers(game.players);
-    }
-
-    const activePlayers = players.filter((player) => player.id !== host.id);
-
-    if (activePlayers.length > 0) {
-        game.players = game.players.map((player) =>
-            player.id === activePlayers[0].id
-                ? { ...player, isHost: true }
-                : player
-        );
-    } else {
-        console.log("Host left and no one to make new host, removing game...");
-        removeGame(game.id);
-        return undefined;
-    }
-    return [...game.players];
 };
 
 export const getJoiningPlayerState = (gameState, hasName) => {

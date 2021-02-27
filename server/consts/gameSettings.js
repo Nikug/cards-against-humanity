@@ -1,6 +1,7 @@
 export const gameOptions = {
-    minimunPlayers: 1,
+    minimumPlayers: 2,
     maximumPlayers: 50,
+    spectatorLimit: 20,
     defaultPlayers: 8,
 
     minimumScoreLimit: 1,
