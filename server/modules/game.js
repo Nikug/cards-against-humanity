@@ -352,7 +352,7 @@ export const validateHostAndReturnToLobby = (io, gameID, playerID) => {
     const game = getGame(gameID);
     if (!game) return;
 
-    if (!validateHost(playerID)) return;
+    if (!validateHost(game, playerID)) return;
 
     returnToLobby(io, game);
 };
