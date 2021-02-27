@@ -11,12 +11,21 @@
     user-select: none;
     font-size: 1.5rem;
     max-height: 2rem;
+
+    .logo {
+        width: 2rem;
+        height: 2rem;
+        margin-right: 0.5rem;
+    }
 }
 
 .header-text {
     margin: 0 0.8rem;
     font-weight: 800;
     cursor: pointer;
+    display: flex;
+    flex-direction: row;
+    user-select: none;
 }
 
 .buttons {

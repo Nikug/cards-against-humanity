@@ -8,6 +8,7 @@ import { deleteCookie } from "../helpers/cookies";
 import { isNullOrUndefined } from "../helpers/generalhelpers";
 import { socket } from "./sockets/socket";
 import thinkingIcon from "./../assets/svgicons/thinking.svg";
+import logo from "./../assets/images/korttipeli_favicon.png";
 
 export const Header = (props) => {
     const text = "Kortit ihmiskuntaa vastaan";
@@ -29,7 +30,10 @@ export const Header = (props) => {
     return (
         <div className="header">
             <Link to="/">
-                <div className="header-text">{text.toUpperCase()}</div>
+                <div className="header-text">
+                    <img className="logo" src={logo} />
+                    {text.toUpperCase()}
+                </div>
             </Link>
             <div className="buttons">
                 <Link to="/support-us">

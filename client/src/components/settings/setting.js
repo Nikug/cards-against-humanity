@@ -1,10 +1,11 @@
-import React, { Component } from "react";
+import React, { useState, useEffect } from "react";
 import "./../../styles/gamesettings.scss";
 import "./../../styles/input.scss";
 
 import Icon from "./../icon";
 import Button from "./../button";
 import { BUTTON_TYPES } from "./../button";
+import { Toggle } from "./controls/toggle";
 
 export const CONTROL_TYPES = {
     toggle: "toggle",
@@ -14,34 +15,17 @@ export const CONTROL_TYPES = {
     custom: "custom",
 };
 
-export class Setting extends Component {
-    constructor(props) {
-        super(props);
+export const Setting = (props) => {
+    const [inputText, setInputText] = useState("");
 
-        this.state = {
-            inputText: "",
-        };
-
-        if (this.props.DEV_CARD_PACK_AUTOFILL === true) {
-            this.state.inputText = "U4nL88ujS" || "qM1V1IaYBE";
+    useEffect(() => {
+        if (props.DEV_CARD_PACK_AUTOFILL === true) {
+            const cardpackId = "U4nL88ujS" || "qM1V1IaYBE";
+            setInputText(cardpackId);
         }
-    }
-    renderToggle(currentValue, isDisabled, onChangeCallback) {
-        return (
-            <Icon
-                name={`${
-                    currentValue === true
-                        ? "check_box"
-                        : "check_box_outline_blank"
-                }`}
-                className="md-36 button-icon"
-                color={isDisabled ? "disabled" : "active"}
-                onClick={onChangeCallback}
-            />
-        );
-    }
+    }, []);
 
-    renderNumberSelect(currentValue, isDisabled, onChangeCallback) {
+    const renderNumberSelect = (currentValue, isDisabled, onChangeCallback) => {
         return (
             <div className="number-control">
                 <Icon
@@ -59,15 +43,15 @@ export class Setting extends Component {
                 />
             </div>
         );
-    }
+    };
 
-    renderTextField(
-        currentValue = this.state.inputText,
+    const renderTextField = (
+        currentValue = inputText,
         isDisabled,
         onChangeCallback,
         placeholderText,
         hasConfirm = false
-    ) {
+    ) => {
         return (
             <div className="text-control">
                 <input
@@ -77,49 +61,43 @@ export class Setting extends Component {
                     value={currentValue}
                     onChange={
                         hasConfirm
-                            ? (e) => this.handleKeyDown(e)
-                            : (e) =>
-                                  this.handleTextFieldChange(
-                                      e,
-                                      onChangeCallback
-                                  )
+                            ? (e) => handleKeyDown(e)
+                            : (e) => handleTextFieldChange(e, onChangeCallback)
                     }
                 />
                 {hasConfirm && (
                     <Button
                         type={BUTTON_TYPES.PRIMARY}
                         callback={() =>
-                            this.handleTextFieldChange(null, onChangeCallback)
+                            handleTextFieldChange(null, onChangeCallback)
                         }
-                        icon={
-                            this.props.customButtonIcon || "add_circle_outline"
-                        }
+                        icon={props.customButtonIcon || "add_circle_outline"}
                     ></Button>
                 )}
             </div>
         );
-    }
+    };
 
-    handleKeyDown(event) {
+    const handleKeyDown = (event) => {
         event.preventDefault();
 
-        const charLimit = this.props.charLimit;
+        const charLimit = props.charLimit;
         const newInput = event.target.value.slice(0, charLimit);
 
-        this.setState({ inputText: newInput });
-    }
+        setInputText(newInput);
+    };
 
-    handleTextFieldChange(event, changeCallback) {
+    const handleTextFieldChange = (event, changeCallback) => {
         if (event === null) {
-            changeCallback(this.state.inputText);
-            this.setState({ inputText: "" });
+            changeCallback(inputText);
+            setInputText("");
         } else {
             event.preventDefault();
             changeCallback(event.target.value);
         }
-    }
+    };
 
-    renderIcon(icon) {
+    const renderIcon = (icon) => {
         const { name, className, color, onClick, isDisabled } = icon;
 
         return (
@@ -132,30 +110,32 @@ export class Setting extends Component {
                 onClick={onClick}
             />
         );
-    }
+    };
 
-    renderControl(
+    const renderControl = (
         controlType,
         currentValue,
         isDisabled,
         onChangeCallback,
         placeholderText
-    ) {
+    ) => {
         switch (controlType) {
             case CONTROL_TYPES.toggle:
-                return this.renderToggle(
-                    currentValue,
-                    isDisabled,
-                    onChangeCallback
+                return (
+                    <Toggle
+                        currentValue={currentValue}
+                        isDisabled={isDisabled}
+                        onChangeCallback={onChangeCallback}
+                    />
                 );
             case CONTROL_TYPES.number:
-                return this.renderNumberSelect(
+                return renderNumberSelect(
                     currentValue,
                     isDisabled,
                     onChangeCallback
                 );
             case CONTROL_TYPES.text:
-                return this.renderTextField(
+                return renderTextField(
                     currentValue,
                     isDisabled,
                     onChangeCallback,
@@ -163,7 +143,7 @@ export class Setting extends Component {
                     false
                 );
             case CONTROL_TYPES.textWithConfirm:
-                return this.renderTextField(
+                return renderTextField(
                     currentValue,
                     isDisabled,
                     onChangeCallback,
@@ -173,54 +153,64 @@ export class Setting extends Component {
             default:
                 break;
         }
-    }
+    };
 
-    render() {
-        const {
-            icon,
-            text,
-            toolTipText,
-            controlType,
-            currentValue,
-            isDisabled,
-            onChangeCallback,
-            customControl,
-            placeholderText,
-        } = this.props;
-        let renderedIcon;
+    const changeCallback = (value) => {
+        const field = props.field;
+        const callbackFunction = props.onChangeCallback;
 
-        if (icon !== undefined) {
-            renderedIcon = this.renderIcon(icon);
+        if (!callbackFunction) return;
+
+        if (field) {
+            callbackFunction({ value: value, field: field });
         }
 
-        const control =
-            controlType === CONTROL_TYPES.custom
-                ? customControl
-                : this.renderControl(
-                      controlType,
-                      currentValue,
-                      isDisabled,
-                      onChangeCallback,
-                      placeholderText
-                  );
+        return callbackFunction(value);
+    };
 
-        return (
-            <div className="setting">
-                <div className="icon-and-text">
-                    {icon && (
-                        <span className="tooltip">
-                            {toolTipText && (
-                                <span className="tooltiptext">
-                                    {toolTipText}
-                                </span>
-                            )}
-                            {renderedIcon}
-                        </span>
-                    )}
-                    {text}
-                </div>
-                <div className="control">{control}</div>
-            </div>
-        );
+    const {
+        icon,
+        text,
+        toolTipText,
+        controlType,
+        currentValue,
+        isDisabled,
+        onChangeCallback,
+        customControl,
+        placeholderText,
+        className,
+    } = props;
+    let renderedIcon;
+
+    if (icon !== undefined) {
+        renderedIcon = renderIcon(icon);
     }
-}
+
+    const control =
+        controlType === CONTROL_TYPES.custom
+            ? customControl
+            : renderControl(
+                  controlType,
+                  currentValue,
+                  isDisabled,
+                  changeCallback,
+                  placeholderText
+              );
+
+    return (
+        <div className={`setting ${className ? className : ""}`}>
+            <div className="icon-and-text">
+                {icon && (
+                    <span className="tooltip">
+                        {toolTipText && (
+                            <span className="tooltiptext">{toolTipText}</span>
+                        )}
+                        {renderedIcon}
+                    </span>
+                )}
+                {text}
+            </div>
+            <div className="control">{control}</div>
+        </div>
+    );
+};

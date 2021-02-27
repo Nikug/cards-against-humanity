@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import { CollabsibelSettingsSection } from "../settings/collabsiblesettingssection";
 
 import { socket } from "../sockets/socket";
 
@@ -7,26 +8,6 @@ import "./../../styles/home.scss";
 
 import { Setting, CONTROL_TYPES } from "./../settings/setting";
 import { CardPack } from "./cardpack";
-
-/*
-CardPack {
-    id: string;
-    name: string;
-    isNSFW: boolean;
-    whiteCards: number;
-    blackCards: number;
-}
-
-Options {
-    maximumPlayers: number;
-    scoreLimit: number;
-    winnerBecomesCardCzar: boolean;
-    allowKickedPlayerJoin: boolean;
-    cardPacks: CardPack[];
-    selectWhiteCardTimeLimit: number;
-    selectBlackCardTimeLimit: number;
-}
-*/
 
 export class GameSettingsContainer extends Component {
     constructor(props) {
@@ -217,34 +198,7 @@ export class GameSettingsContainer extends Component {
                                     isDisabled: isDisabled,
                                 }}
                             />
-                            <Setting
-                                text={"Valkoisen kortin valinnan aikaraja"}
-                                controlType={CONTROL_TYPES.number}
-                                onChangeCallback={
-                                    this.changeWhiteCardSelectionTime
-                                }
-                                currentValue={selectWhiteCardTimeLimit}
-                                isDisabled={isDisabled}
-                                icon={{
-                                    name: "hourglass_bottom",
-                                    className: iconClassnames,
-                                    isDisabled: isDisabled,
-                                }}
-                            />
-                            <Setting
-                                text={"Mustan kortin valinnan aikaraja"}
-                                controlType={CONTROL_TYPES.number}
-                                onChangeCallback={
-                                    this.changeBlackCardSelectionTime
-                                }
-                                currentValue={selectBlackCardTimeLimit}
-                                isDisabled={isDisabled}
-                                icon={{
-                                    name: "hourglass_bottom",
-                                    className: iconClassnames,
-                                    isDisabled: isDisabled,
-                                }}
-                            />
+
                             <Setting
                                 text={"Pelaajien enimmäismäärä"}
                                 controlType={CONTROL_TYPES.number}
@@ -256,6 +210,74 @@ export class GameSettingsContainer extends Component {
                                     className: iconClassnames,
                                     isDisabled: isDisabled,
                                 }}
+                            />
+                            <CollabsibelSettingsSection
+                                content={
+                                    <>
+                                        <Setting
+                                            text={"Mustan kortin valinta"}
+                                            controlType={CONTROL_TYPES.number}
+                                            onChangeCallback={
+                                                this
+                                                    .changeBlackCardSelectionTime
+                                            }
+                                            currentValue={
+                                                selectBlackCardTimeLimit
+                                            }
+                                            isDisabled={isDisabled}
+                                        />
+                                        <Setting
+                                            text={"Valkoisen kortin valinta"}
+                                            controlType={CONTROL_TYPES.number}
+                                            onChangeCallback={
+                                                this
+                                                    .changeWhiteCardSelectionTime
+                                            }
+                                            currentValue={
+                                                selectWhiteCardTimeLimit
+                                            }
+                                            isDisabled={isDisabled}
+                                        />
+                                        <Setting
+                                            text={"Kortin lukeminen"}
+                                            controlType={CONTROL_TYPES.number}
+                                            onChangeCallback={
+                                                this
+                                                    .changeWhiteCardSelectionTime
+                                            }
+                                            currentValue={
+                                                selectWhiteCardTimeLimit
+                                            }
+                                            isDisabled={isDisabled}
+                                        />
+                                        <Setting
+                                            text={"Voittajan valinta"}
+                                            controlType={CONTROL_TYPES.number}
+                                            onChangeCallback={
+                                                this
+                                                    .changeWhiteCardSelectionTime
+                                            }
+                                            currentValue={
+                                                selectWhiteCardTimeLimit
+                                            }
+                                            isDisabled={isDisabled}
+                                        />
+                                        <Setting
+                                            text={
+                                                "Uuden kierroksen aloittaminen"
+                                            }
+                                            controlType={CONTROL_TYPES.number}
+                                            onChangeCallback={
+                                                this
+                                                    .changeWhiteCardSelectionTime
+                                            }
+                                            currentValue={
+                                                selectWhiteCardTimeLimit
+                                            }
+                                            isDisabled={isDisabled}
+                                        />
+                                    </>
+                                }
                             />
                             <Setting
                                 text={"Yleisöäänet käytössä"}
