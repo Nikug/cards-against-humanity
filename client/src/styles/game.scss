@@ -37,19 +37,63 @@
     margin: 2rem;
     font-size: 3rem;
 }
-.anchor {
-    height: 0;
-    width: 100%;
-    overflow: visible;
 
-    .spectators {
-        box-sizing: border-box;
-        display: flex;
-        flex-direction: row;
-        flex-wrap: nowrap;
-        justify-content: flex-end;
+.actions-wrapper {
+    display: flex;
+    flex-direction: row;
+
+    .spectator-info {
         width: 100%;
-        padding: 0 0.3em;
-        font-size: 0.7em;
+
+        .anchor {
+            height: 0;
+            width: 100%;
+            overflow: visible;
+
+            .spectators {
+                box-sizing: border-box;
+                display: flex;
+                flex-direction: row;
+                flex-wrap: nowrap;
+                justify-content: flex-end;
+                width: 100%;
+                padding: 0.2em 0.3em;
+                font-size: 0.7em;
+            }
+
+            .spectator-indicator {
+                box-sizing: border-box;
+                display: flex;
+                flex-direction: row;
+                flex-wrap: nowrap;
+                justify-content: flex-start;
+                width: 100%;
+                padding: 0.2em 0.5em;
+                font-size: 0.7em;
+            }
+        }
+    }
+
+    .menu-button-wrapper {
+        width: 2em;
+        margin: 0.3em 0;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .menu-anchor {
+        height: 0;
+        width: 0;
+        z-index: 5;
+
+        .menu-container {
+            box-sizing: border-box;
+            padding: 0.5em;
+            background-color: rgba(20, 20, 20, 0.829);
+            width: fit-content;
+            margin: 0.2em 0;
+            border-radius: 2px;
+            box-shadow: 10px 10px 3px #0000008f;
+        }
     }
 }

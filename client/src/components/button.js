@@ -35,7 +35,7 @@ export default function Button(props) {
                         : ""
                 }`}
                 onClick={(e) => {
-                    if (disabled) {
+                    if (disabled || !callback) {
                         return;
                     }
                     callback(callbackParams);

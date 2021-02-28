@@ -25,6 +25,10 @@
     backface-visibility: hidden;
     outline: none;
 
+    .button-icon {
+        color: $button-text;
+    }
+
     &:hover {
         background: linear-gradient(
                 180deg,
@@ -52,6 +56,10 @@
                 $button-background-primary
             )
             $button-background-primary;
+
+        .button-icon {
+            color: $button-text-green;
+        }
 
         &:hover {
             background: linear-gradient(
@@ -81,6 +89,10 @@
                 $button-background-green
             )
             $button-background-green;
+
+        .button-icon {
+            color: $button-text-green;
+        }
 
         &:hover {
             background: linear-gradient(

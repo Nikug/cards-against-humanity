@@ -1,26 +1,16 @@
 import "./../../styles/game.scss";
 
-import Button, { BUTTON_TYPES } from "../../components/button";
-import { CONTROL_TYPES, Setting } from "../../components/settings/setting";
+import Button from "../../components/button";
 import React, { useEffect, useState } from "react";
 import { getCookie, setCookie } from "../../helpers/cookies";
-
-import { BlackCardPickerContainer } from "../../components/card-picker/blackcardpickercontainer";
-import { CardReadingContainer } from "../../components/card-picker/cardreadingcontainer";
 import { GAME_STATES } from "../../consts/gamestates";
-import { GameEndContainer } from "../../components/card-picker/gameendcontainer";
-import { GameSettingsContainer } from "../../components/game-settings/gamesettingscontainer";
 import { NOTIFICATION_TYPES } from "../../components/notification/notification";
-import { PlayerName } from "../../components/options/PlayerName";
 import { PlayersWidget } from "../../components/players-widget/playerswidget";
-import { RoundEndContainer } from "../../components/card-picker/roundendcontainer";
 import { Timer } from "../../components/timer";
-import { WaitingCardPickerContainer } from "../../components/card-picker/waitincardpickercontainer";
-import { WhiteCardPickerContainer } from "../../components/card-picker/whitecardpickercontainer";
-import { WinnerCardPickerContainer } from "../../components/card-picker/winnercardpickercontainer";
 import { socket } from "../../components/sockets/socket";
 import { getGamePhaseContent } from "./getGamePhaseContent";
 import { isPlayerSpectator } from "../../helpers/player-helpers";
+import { ActionButtonRow } from "./components/ActionButtonRow";
 
 export const NAME_CHAR_LIMIT = 50;
 export const ICON_CLASSNAMES = "md-36 icon-margin-right";
@@ -33,6 +23,7 @@ export const Game = (props) => {
     const [timerIsOn, setTimerIsOn] = useState(false);
     const [blackCards, setBlackCards] = useState([]);
     const [popularVotedCardsIDs, setPopularVotedCardsIDs] = useState([]);
+    const [menuIsOpen, setMenuIsOpen] = useState(false);
 
     const getGameIdFromURL = () => {
         const url = window.location.pathname;
@@ -192,6 +183,10 @@ export const Game = (props) => {
         });
     };
 
+    const toggleMenu = () => {
+        setMenuIsOpen(!menuIsOpen);
+    };
+
     const contentProps = {
         callbacks: {
             setPlayerName,
@@ -228,14 +223,49 @@ export const Game = (props) => {
                     }
                     time={game?.timers.duration ?? 0}
                 />
-                {spectatorCount > 0 && (
-                    <div className="anchor">
-                        <div className="spectators">
-                            Katsojia: {spectatorCount}
+                <div className="actions-wrapper">
+                    <div className="menu-button-wrapper">
+                        <Button icon="menu" callback={toggleMenu} />
+                        <div className="menu-anchor">
+                            {menuIsOpen && (
+                                <div className="menu-container">
+                                    Valikko
+                                    <ActionButtonRow
+                                        buttons={[
+                                            isSpectator
+                                                ? {
+                                                      icon: "login",
+                                                      text: "Liity peliin",
+                                                      callback: togglePlayerMode,
+                                                  }
+                                                : {
+                                                      icon: "groups",
+                                                      text: "Siirry katsomoon",
+                                                      callback: togglePlayerMode,
+                                                  },
+                                        ]}
+                                    />
+                                </div>
+                            )}
                         </div>
                     </div>
-                )}
-                <Button text={"toggle spectator"} callback={togglePlayerMode} />
+                    <div className="spectator-info">
+                        {spectatorCount > 0 && (
+                            <div className="anchor">
+                                <div className="spectators">
+                                    Katsojia: {spectatorCount}
+                                </div>
+                            </div>
+                        )}
+                        {isSpectator && (
+                            <div className="anchor">
+                                <div className="spectator-indicator">
+                                    Olet katsomossa
+                                </div>
+                            </div>
+                        )}
+                    </div>
+                </div>
             </div>
             <div className="lobby-container">{renderedContent}</div>
         </div>
