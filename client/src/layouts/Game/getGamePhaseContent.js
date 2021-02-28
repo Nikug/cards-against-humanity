@@ -13,6 +13,7 @@ import { LobbyContent } from "./phases/lobby/LobbyContent";
 import { NamePicker } from "./phases/lobby/NamePicker";
 import { ErrorContainer } from "./components/ErrorContainer";
 import { WhiteCardPickerContainer } from "../../components/card-picker/whitecardpickercontainer";
+import { isPlayerCardCzar } from "../../helpers/player-helpers";
 
 export const getGamePhaseContent = ({
     callbacks: { setPlayerName, givePopularVote, togglePlayerMode, startGame },
@@ -24,8 +25,11 @@ export const getGamePhaseContent = ({
     const gameState = game?.state;
     const playerState = player?.state;
     const disableStartGameButton = !canStartGame(game);
-    const isCardCzar = player?.isCardCzar;
-    const isSpectator = playerState === "spectating";
+    const isCardCzar = isPlayerCardCzar(player);
+
+    if (!game || !player) {
+        return <div>ladataan...</div>;
+    }
 
     if (gameState !== "lobby" && playerState === "pickingName") {
         return <NamePicker setPlayerName={setPlayerName} />;

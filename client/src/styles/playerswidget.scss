@@ -2,14 +2,6 @@
 
 .players-widget {
     font-size: 1.5rem;
-    /*
-    background: linear-gradient(
-            180deg,
-            $players-background-shadow,
-            $players-background
-        )
-        $players-background;
-    */
     background-color: $players-background-shadow;
     border-radius: 2px 2px 0 0;
 
@@ -20,17 +12,22 @@
     flex-wrap: nowrap;
 
     padding: 0.6rem;
+    min-height: 3.5em;
 
-    /*
-    &:hover {
-        background: linear-gradient(
-                180deg,
-                $players-background-shadow,
-                $players-background-hover
-            )
-            $players-background-hover;
+    &.no-active-players {
+        justify-content: center;
+        align-items: center;
+        flex-direction: row;
+
+        > .material-icons {
+            margin-right: 0.3em;
+        }
     }
-    */
+
+    &.loading {
+        justify-content: center;
+        align-items: center;
+    }
 }
 
 .player {

@@ -3,6 +3,7 @@ import React from "react";
 import { CardPicker } from "./cardpicker";
 import { emptyFn } from "../../helpers/generalhelpers";
 import { GAME_STATES } from "../../consts/gamestates";
+import { isPlayerSpectator } from "../../helpers/player-helpers";
 
 export function WaitingCardPickerContainer(props) {
     const {
@@ -13,10 +14,19 @@ export function WaitingCardPickerContainer(props) {
         gameState,
         noBigMainCard,
     } = props;
-    const whiteCards =
-        gameState === GAME_STATES.SHOWING_CARDS
-            ? game.rounds[game.rounds.length - 1].whiteCardsByPlayer
-            : player?.whiteCards;
+
+    const isSpectator = isPlayerSpectator(player);
+    let whiteCards;
+
+    if (isSpectator) {
+        whiteCards = [];
+    } else {
+        whiteCards =
+            gameState === GAME_STATES.SHOWING_CARDS
+                ? game.rounds[game.rounds.length - 1].whiteCardsByPlayer
+                : player?.whiteCards;
+    }
+
     let mainCard = null;
 
     if (showMainCard !== false) {
@@ -33,7 +43,7 @@ export function WaitingCardPickerContainer(props) {
                 confirmedCards={[]}
                 selectCard={emptyFn}
                 confirmCards={emptyFn}
-                description={"Valkoiset korttisi"}
+                description={isSpectator ? null : "Valkoiset korttisi"}
                 noActionButton={true}
                 noBigMainCard={noBigMainCard}
             />

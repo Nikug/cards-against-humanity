@@ -20,6 +20,7 @@ import { WhiteCardPickerContainer } from "../../components/card-picker/whitecard
 import { WinnerCardPickerContainer } from "../../components/card-picker/winnercardpickercontainer";
 import { socket } from "../../components/sockets/socket";
 import { getGamePhaseContent } from "./getGamePhaseContent";
+import { isPlayerSpectator } from "../../helpers/player-helpers";
 
 export const NAME_CHAR_LIMIT = 50;
 export const ICON_CLASSNAMES = "md-36 icon-margin-right";
@@ -205,6 +206,9 @@ export const Game = (props) => {
     };
 
     const renderedContent = getGamePhaseContent(contentProps);
+    const spectatorCount = game?.players.filter((player) =>
+        isPlayerSpectator(player)
+    ).length;
 
     return (
         <div>
@@ -224,6 +228,13 @@ export const Game = (props) => {
                     }
                     time={game?.timers.duration ?? 0}
                 />
+                {spectatorCount > 0 && (
+                    <div className="anchor">
+                        <div className="spectators">
+                            Katsojia: {spectatorCount}
+                        </div>
+                    </div>
+                )}
                 <Button text={"toggle spectator"} callback={togglePlayerMode} />
             </div>
             <div className="lobby-container">{renderedContent}</div>

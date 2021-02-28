@@ -6,6 +6,8 @@ import { PLAYER_STATES } from "../../consts/playerstates";
 import { Player } from "./player";
 import { getPlayersList } from "../../fakedata/fakeplayerdata";
 import { isNullOrUndefined } from "../../helpers/generalhelpers";
+import { Spinner } from "../spinner";
+import Icon from "../icon";
 
 export class PlayersWidget extends Component {
     renderPlayers(players, self) {
@@ -47,13 +49,26 @@ export class PlayersWidget extends Component {
         const { game, player } = this.props;
         let playersToRender = game?.players || [];
 
-        if (playersToRender.length === 0 && player) {
-            playersToRender.unshift(player);
+        if (playersToRender.length === undefined) {
+            return (
+                <div className="players-widget loading">
+                    <Spinner />
+                </div>
+            );
         }
 
         playersToRender = playersToRender.filter((player) => {
             return player.state !== "spectating";
         });
+
+        if (playersToRender.length === 0) {
+            return (
+                <div className="players-widget no-active-players">
+                    <Icon name="sentiment_dissatisfied" />
+                    <div>Ei yhtään aktiivista pelaajaa</div>
+                </div>
+            );
+        }
 
         const renderedPlayers = this.renderPlayers(playersToRender, player);
 

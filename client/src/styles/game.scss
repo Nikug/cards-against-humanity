@@ -37,3 +37,19 @@
     margin: 2rem;
     font-size: 3rem;
 }
+.anchor {
+    height: 0;
+    width: 100%;
+    overflow: visible;
+
+    .spectators {
+        box-sizing: border-box;
+        display: flex;
+        flex-direction: row;
+        flex-wrap: nowrap;
+        justify-content: flex-end;
+        width: 100%;
+        padding: 0 0.3em;
+        font-size: 0.7em;
+    }
+}
