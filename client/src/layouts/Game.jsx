@@ -19,17 +19,18 @@ import { WaitingCardPickerContainer } from "../components/card-picker/waitincard
 import { WhiteCardPickerContainer } from "../components/card-picker/whitecardpickercontainer";
 import { WinnerCardPickerContainer } from "../components/card-picker/winnercardpickercontainer";
 import { socket } from "../components/sockets/socket";
+import { emptyFn } from "../helpers/generalhelpers";
 
 const NAME_CHAR_LIMIT = 50;
 
 export const Game = (props) => {
-    const { game, player } = props;
+    const { game, player, fireNotification, updateData } = props;
+    const isSpectator = player ? player.state === "spectating" : false;
+
     const [startingProgress, setStartingProgress] = useState(0);
     const [timerIsOn, setTimerIsOn] = useState(false);
     const [blackCards, setBlackCards] = useState([]);
     const [popularVotedCardsIDs, setPopularVotedCardsIDs] = useState([]);
-
-    const { fireNotification, updateData } = props;
 
     const getGameIdFromURL = () => {
         const url = window.location.pathname;
@@ -181,6 +182,14 @@ export const Game = (props) => {
         });
     };
 
+    const togglePlayerMode = () => {
+        console.log("toggle");
+        socket.emit("toggle_player_mode", {
+            gameID: game?.id,
+            playerID: player?.id,
+        });
+    };
+
     const iconClassnames = "md-36 icon-margin-right";
     const canStartGame =
         game?.players?.length > 0 && game?.options?.cardPacks?.length > 0; // TODO: Why is player name not there? Player is not updated by back-end
@@ -189,7 +198,7 @@ export const Game = (props) => {
 
     const defaultContent = (
         <div className="error-info">
-            Something went wrong. Try to reload the page.
+            Jokin meni pieleen. Kokeile, jos sivun päivittäminen auttaisi.
         </div>
     );
 
@@ -461,7 +470,6 @@ export const Game = (props) => {
     return (
         <div>
             <div className="info">
-                {player?.state === "spectating" && <p>Spectator</p>}
                 <PlayersWidget game={game} player={player} />
                 <Timer
                     width={100}
@@ -477,6 +485,7 @@ export const Game = (props) => {
                     }
                     time={game?.timers.duration ?? 0}
                 />
+                <Button text={"toggle spectator"} callback={togglePlayerMode} />
             </div>
             <div className="lobby-container">{renderedContent}</div>
         </div>
