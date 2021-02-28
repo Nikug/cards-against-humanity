@@ -51,6 +51,10 @@ export class PlayersWidget extends Component {
             playersToRender.unshift(player);
         }
 
+        playersToRender = playersToRender.filter((player) => {
+            return player.state !== "spectating";
+        });
+
         const renderedPlayers = this.renderPlayers(playersToRender, player);
 
         return <div className="players-widget">{renderedPlayers}</div>;

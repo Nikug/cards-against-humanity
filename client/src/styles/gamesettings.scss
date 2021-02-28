@@ -35,19 +35,19 @@
 
     &.disabled {
         user-select: none;
-        cursor: not-allowed;
+        cursor: default;
 
-        color: $settings-text-disabled;
+        //color: $settings-text-disabled;
 
         .setting {
             &:hover {
                 text-shadow: none;
-                color: $settings-text-disabled;
+                //color: $settings-text-disabled;
                 background-color: $setting-background;
             }
 
             .button-icon {
-                cursor: not-allowed;
+                cursor: default;
 
                 &.active {
                     color: $settings-control;
@@ -188,7 +188,7 @@
         text-shadow: none;
 
         &.disabled {
-            color: $settings-icon-disabled;
+            //color: $settings-icon-disabled;
         }
     }
 }

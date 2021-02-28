@@ -207,6 +207,7 @@ export const GameSettingsContainer = ({
                             }}
                         />
                         <CollabsibelSettingsSection
+                            isDisabled={isDisabled}
                             title={{
                                 titleText: "Aikarajat",
                                 titleIconName: "hourglass_bottom",

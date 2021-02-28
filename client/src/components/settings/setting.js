@@ -131,17 +131,18 @@ export const Setting = (props) => {
 
         for (let i = 0, len = controls.length; i < len; i++) {
             renderedControls.push(
-                renderControl(
-                    controls[i],
-                    currentValue,
-                    isDisabled,
-                    onChangeCallback,
-                    placeholderText
-                )
+                <div key={i}>
+                    {renderControl(
+                        controls[i],
+                        currentValue,
+                        isDisabled,
+                        onChangeCallback,
+                        placeholderText
+                    )}
+                </div>
             );
         }
 
-        console.log(renderedControls);
         return renderedControls;
     };
 

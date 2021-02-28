@@ -22,10 +22,12 @@ export const getGamePhaseContent = ({
     popularVotedCardsIDs,
 }) => {
     const gameState = game?.state;
+    const playerState = player?.state;
     const disableStartGameButton = !canStartGame(game);
     const isCardCzar = player?.isCardCzar;
+    const isSpectator = playerState === "spectating";
 
-    if (gameState !== "lobby" && player?.state === "pickingName") {
+    if (gameState !== "lobby" && playerState === "pickingName") {
         return <NamePicker setPlayerName={setPlayerName} />;
     }
 
