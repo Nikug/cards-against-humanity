@@ -200,7 +200,6 @@ export const Setting = (props) => {
     };
 
     const changeCallback = (value) => {
-        console.log("changeCallback", { value });
         const field = props.field;
         const callbackFunction = props.onChangeCallback;
 
@@ -224,6 +223,7 @@ export const Setting = (props) => {
         customControl,
         placeholderText,
         className,
+        onClick,
     } = props;
     let renderedIcon;
 
@@ -243,7 +243,10 @@ export const Setting = (props) => {
               );
 
     return (
-        <div className={`setting ${className ? className : ""}`}>
+        <div
+            className={`setting ${className ? className : ""}`}
+            onClick={onClick}
+        >
             <div className="icon-and-text">
                 {icon && (
                     <span className="tooltip">

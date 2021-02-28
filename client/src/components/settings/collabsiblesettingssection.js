@@ -25,10 +25,7 @@ export const CollabsibelSettingsSection = ({
                 text={titleText}
                 controlType={CONTROL_TYPES.custom}
                 customControl={
-                    <Icon
-                        name={isOpen ? "expand_less" : "expand_more"}
-                        onClick={toggle}
-                    />
+                    <Icon name={isOpen ? "expand_less" : "expand_more"} />
                 }
                 onChangeCallback={emptyFn}
                 icon={{
@@ -38,6 +35,7 @@ export const CollabsibelSettingsSection = ({
                 }}
                 isDisabled={isDisabled}
                 className="title"
+                onClick={toggle}
             />
             {isOpen && content}
         </div>

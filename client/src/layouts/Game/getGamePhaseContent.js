@@ -13,7 +13,10 @@ import { LobbyContent } from "./phases/lobby/LobbyContent";
 import { NamePicker } from "./phases/lobby/NamePicker";
 import { ErrorContainer } from "./components/ErrorContainer";
 import { WhiteCardPickerContainer } from "../../components/card-picker/whitecardpickercontainer";
-import { isPlayerCardCzar } from "../../helpers/player-helpers";
+import {
+    isPlayerCardCzar,
+    isPlayerSpectator,
+} from "../../helpers/player-helpers";
 
 export const getGamePhaseContent = ({
     callbacks: { setPlayerName, givePopularVote, togglePlayerMode, startGame },
@@ -26,6 +29,7 @@ export const getGamePhaseContent = ({
     const playerState = player?.state;
     const disableStartGameButton = !canStartGame(game);
     const isCardCzar = isPlayerCardCzar(player);
+    const isSpectator = isPlayerSpectator(player);
 
     if (!game || !player) {
         return <div>ladataan...</div>;
@@ -69,13 +73,13 @@ export const getGamePhaseContent = ({
                 />
             );
         case GAME_STATES.PLAYING_WHITE_CARDS:
-            if (isCardCzar) {
+            if (isCardCzar || isSpectator) {
                 return (
                     <WaitingCardPickerContainer
                         player={player}
                         game={game}
                         alternativeText={
-                            "Muut valitsevat valkoisia korttejaan..."
+                            "Pelaajat valitsevat valkoisia korttejaan..."
                         }
                         showMainCard={true}
                         noBigMainCard={true}
