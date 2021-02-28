@@ -6,7 +6,7 @@ import { containsObjectWithMatchingFieldIndex } from "../../helpers/generalhelpe
 
 export function WhiteCardPickerContainer(props) {
     const { game, player } = props;
-    const whiteCards = player.whiteCards;
+    const whiteCards = player?.whiteCards;
     const [selectedCards, setSelectedCards] = useState([]);
     const [confirmedCards, setConfirmedCards] = useState([]);
 
