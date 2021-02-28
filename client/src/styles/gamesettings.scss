@@ -242,6 +242,10 @@
         margin-right: 0.3rem;
         min-width: 1.4rem;
         text-align: center;
+
+        &.three-numbers {
+            min-width: 2rem;
+        }
     }
 }
 

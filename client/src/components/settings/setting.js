@@ -26,20 +26,28 @@ export const Setting = (props) => {
     }, []);
 
     const renderNumberSelect = (currentValue, isDisabled, onChangeCallback) => {
+        const showAsDisabled = isDisabled || currentValue === null;
+
         return (
             <div className="number-control">
                 <Icon
                     name="arrow_back_ios"
                     className="md-24 button-icon"
-                    color={isDisabled ? "disabled" : "active"}
-                    onClick={() => onChangeCallback(false)}
+                    color={showAsDisabled ? "disabled" : "active"}
+                    onClick={() => onChangeCallback("decrease")}
                 />
-                <span className="number">{currentValue}</span>
+                <span
+                    className={`number ${
+                        currentValue > 99 ? "three-numbers" : ""
+                    }`}
+                >
+                    {currentValue}
+                </span>
                 <Icon
                     name="arrow_forward_ios"
                     className="md-24 button-icon"
-                    color={isDisabled ? "disabled" : "active"}
-                    onClick={() => onChangeCallback(true)}
+                    color={showAsDisabled ? "disabled" : "active"}
+                    onClick={() => onChangeCallback("increase")}
                 />
             </div>
         );
@@ -112,6 +120,31 @@ export const Setting = (props) => {
         );
     };
 
+    const renderMultiplseControls = (
+        controls,
+        currentValue,
+        isDisabled,
+        onChangeCallback,
+        placeholderText
+    ) => {
+        const renderedControls = [];
+
+        for (let i = 0, len = controls.length; i < len; i++) {
+            renderedControls.push(
+                renderControl(
+                    controls[i],
+                    currentValue,
+                    isDisabled,
+                    onChangeCallback,
+                    placeholderText
+                )
+            );
+        }
+
+        console.log(renderedControls);
+        return renderedControls;
+    };
+
     const renderControl = (
         controlType,
         currentValue,
@@ -119,6 +152,16 @@ export const Setting = (props) => {
         onChangeCallback,
         placeholderText
     ) => {
+        if (Array.isArray(controlType)) {
+            return renderMultiplseControls(
+                controlType,
+                currentValue,
+                isDisabled,
+                onChangeCallback,
+                placeholderText
+            );
+        }
+
         switch (controlType) {
             case CONTROL_TYPES.toggle:
                 return (
@@ -156,6 +199,7 @@ export const Setting = (props) => {
     };
 
     const changeCallback = (value) => {
+        console.log("changeCallback", { value });
         const field = props.field;
         const callbackFunction = props.onChangeCallback;
 
@@ -163,9 +207,9 @@ export const Setting = (props) => {
 
         if (field) {
             callbackFunction({ value: value, field: field });
+        } else {
+            callbackFunction(value);
         }
-
-        return callbackFunction(value);
     };
 
     const {

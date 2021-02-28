@@ -13,6 +13,8 @@ export const CollabsibelSettingsSection = ({
     const [isOpen, setIsOpen] = useState(false);
     const iconClassnames = "md-36 icon-margin-right";
 
+    const { titleText, titleIconName } = title;
+
     const toggle = () => {
         setIsOpen(!isOpen);
     };
@@ -20,7 +22,7 @@ export const CollabsibelSettingsSection = ({
     return (
         <div className="collabsible-settings-section">
             <Setting
-                text={"Aikarajat"}
+                text={titleText}
                 controlType={CONTROL_TYPES.custom}
                 customControl={
                     <Icon
@@ -30,7 +32,7 @@ export const CollabsibelSettingsSection = ({
                 }
                 onChangeCallback={emptyFn}
                 icon={{
-                    name: "hourglass_bottom",
+                    name: titleIconName,
                     className: iconClassnames,
                     isDisabled: isDisabled,
                 }}
