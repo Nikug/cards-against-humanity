@@ -26,26 +26,31 @@ export const gameOptions = {
             minimum: 5,
             default: 20,
             maximum: 10 * 60,
+            use: true,
         },
         selectWhiteCards: {
             minimum: 5,
             default: 60,
             maximum: 10 * 60,
+            use: true,
         },
         readBlackCard: {
             minimum: 5,
             default: 30,
             maximum: 10 * 60,
+            use: true,
         },
         selectWinner: {
             minimum: 5,
             default: 30,
             maximum: 10 * 60,
+            use: true,
         },
         roundEnd: {
             minimum: 5,
             default: 10,
             maximum: 10 * 60,
+            use: true,
         },
     },
 

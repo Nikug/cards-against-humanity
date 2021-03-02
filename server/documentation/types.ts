@@ -104,11 +104,20 @@ interface Options {
 
 // Values in seconds
 interface Timers {
-    selectBlackCard: number | null;
-    selectWhiteCards: number | null;
-    readBlackCard: number | null;
-    selectWinner: number | null;
-    roundEnd: number | null;
+    selectBlackCard: number;
+    useSelectBlackCard: boolean;
+
+    selectWhiteCards: number;
+    useSelectWhiteCards: boolean;
+
+    readBlackCard: number;
+    useReadBlackCard: boolean;
+
+    selectWinner: number;
+    useSelectWinner: boolean;
+
+    roundEnd: number;
+    useRoundEnd: boolean;
 }
 
 interface CardPack {
