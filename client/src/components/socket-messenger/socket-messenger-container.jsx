@@ -1,8 +1,9 @@
-import { Button } from "../button";
-import React from "react";
+import React, { useState } from "react";
+
+import Button from "../button";
 import { SocketMessenger } from "./socket-messenger";
 
-export const socketMessengerContainer = (props) => {
+export const SocketMessengerContainer = (props) => {
     const [open, setOpen] = useState(false);
 
     const toggleMenu = () => {
@@ -15,7 +16,10 @@ export const socketMessengerContainer = (props) => {
             <div className="menu-anchor">
                 {open && (
                     <div className="menu-container">
-                        <SocketMessenger />
+                        <SocketMessenger
+                            gameID={props.gameID}
+                            playerID={props.playerID}
+                        />
                     </div>
                 )}
             </div>
