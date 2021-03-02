@@ -1,7 +1,7 @@
-import React from "react";
-import Icon from "./icon";
-
 import "../styles/music.scss";
+
+import Icon from "./icon";
+import React from "react";
 
 export default class Music extends React.Component {
     constructor(props) {
@@ -9,7 +9,8 @@ export default class Music extends React.Component {
         this.state = {
             play: false,
         };
-        this.url = "http://streaming.tdiradio.com:8000/house.mp3";
+        // this.url = "http://streaming.tdiradio.com:8000/house.mp3";
+        this.url = "https://stream.bauermedia.fi/radionova/radionova_64.aac";
         this.audio = new Audio(this.url);
         this.audio.volume = 0.05;
     }
