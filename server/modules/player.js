@@ -66,6 +66,7 @@ export const changePlayerTextToSpeech = (io, gameID, playerID, useTTS) => {
 export const createNewPlayer = (socketID, isHost, state = "pickingName") => {
     const player = {
         id: nanoid(),
+        publicID: nanoid(),
         sockets: [socketID],
         name: "",
         state: state,

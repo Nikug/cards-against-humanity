@@ -44,7 +44,7 @@ export const togglePlayerMode = (io, gameID, playerID) => {
     updatePlayersIndividually(io, game);
 };
 
-const setPlayerState = (players, playerID, state) => {
+export const setPlayerState = (players, playerID, state) => {
     return players.map((player) =>
         player.id === playerID
             ? {

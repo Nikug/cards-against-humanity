@@ -28,6 +28,7 @@ interface ClientTimers {
 // This information is only shown to each player separately
 interface Player {
     id: string;
+    publicID: string;
     sockets: string;
     name: string;
     state: PlayerState;

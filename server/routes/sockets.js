@@ -17,6 +17,7 @@ import {
     validateHostAndReturnToLobby,
 } from "../modules/game.js";
 
+import { hostKick } from "../modules/kick.js";
 import { joinGame } from "../modules/join.js";
 import { popularVote } from "../modules/popularVote.js";
 import { setPlayerDisconnected } from "../modules/disconnect.js";
@@ -232,6 +233,24 @@ export const sockets = (io) => {
                 sendError(socket, "Invalid data", missingFields);
             } else {
                 togglePlayerMode(io, data.gameID, data.playerID);
+            }
+        });
+
+        socket.on("kick_player", (data) => {
+            const missingFields = validateFields(
+                ["gameID", "playerID", "targetID", "removeFromGame"],
+                data
+            );
+            if (missingFields.length > 0) {
+                sendError(socket, "Invalid data", missingFields);
+            } else {
+                hostKick(
+                    io,
+                    data.gameID,
+                    data.playerID,
+                    data.targetID,
+                    data.removeFromGame
+                );
             }
         });
     });
