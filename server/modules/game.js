@@ -332,7 +332,7 @@ export const shouldGameBeDeleted = (game) => {
 export const shouldReturnToLobby = (game) => {
     if (game.stateMachine.state !== "lobby") {
         const activePlayers = getActivePlayers(game.players);
-        if (activePlayers.length <= gameOptions.minimumPlayers) {
+        if (activePlayers.length < gameOptions.minimumPlayers) {
             return true;
         }
         return game.players.every((player) =>

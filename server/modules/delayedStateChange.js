@@ -12,7 +12,6 @@ export const changeGameStateAfterTime = (io, game, transition) => {
     clearTimeout(game.timeout);
 
     const delay = getTimeoutTime(game);
-    console.log(`Setting timeout for: ${transition}, delay: ${delay}`);
 
     game.client.timers.duration = delay;
     game.client.timers.passedTime = 0;

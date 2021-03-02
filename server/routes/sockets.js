@@ -227,7 +227,7 @@ export const sockets = (io) => {
         });
 
         socket.on("toggle_player_mode", (data) => {
-            const missingFields = validateFields(["gameID", "playerID"]);
+            const missingFields = validateFields(["gameID", "playerID"], data);
             if (missingFields.length > 0) {
                 sendError(socket, "Invalid data", missingFields);
             } else {
