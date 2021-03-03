@@ -27,7 +27,7 @@ export const SocketMessenger = (props) => {
     };
 
     const handleTab = (event) => {
-        if (event.keyCode === 9) {
+        if (event.key === "Tab") {
             event.preventDefault();
             const start = event.target.selectionStart;
             const end = event.target.selectionEnd;
@@ -36,7 +36,6 @@ export const SocketMessenger = (props) => {
                 text.substring(0, start) +
                 " ".repeat(tabWidth) +
                 text.substring(end);
-            setData(value);
             textArea.current.value = value;
             textArea.current.setSelectionRange(
                 start + tabWidth,
