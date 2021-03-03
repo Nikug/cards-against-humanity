@@ -1,4 +1,8 @@
-import { anonymizedGameClient, drawWhiteCards } from "./card.js";
+import {
+    anonymizeRounds,
+    anonymizedGameClient,
+    drawWhiteCards,
+} from "./card.js";
 import { gameOptions, playerName } from "../consts/gameSettings.js";
 import { getGame, setGame } from "./game.js";
 
@@ -204,8 +208,12 @@ export const updatePlayersIndividually = (io, game) => {
     const anonymousClient = { ...anonymizedGameClient(game) };
 
     game.players.map((player) => {
+        const playerClient = {
+            ...anonymousClient,
+            rounds: anonymizeRounds(anonymousClient.rounds, player.id),
+        };
         emitToAllPlayerSockets(io, player, "update_game_and_players", {
-            game: anonymousClient,
+            game: playerClient,
             players: publicPlayersObject(game.players, player.id),
             player: player,
         });

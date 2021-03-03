@@ -322,21 +322,23 @@ export const showWhiteCard = (io, gameID, playerID) => {
     }
 };
 
-export const anonymizePlayedWhiteCards = (playedWhiteCards) => {
+export const anonymizePlayedWhiteCards = (playedWhiteCards, id) => {
     return playedWhiteCards.map((card) => {
         const { popularVotes, playerID, ...rest } = card;
         return {
             ...rest,
             playerName: card.wonRound ? card.playerName : null,
+            isOwn: playerID === id,
         };
     });
 };
 
-export const anonymizeRounds = (rounds) => {
+export const anonymizeRounds = (rounds, playerID) => {
     return rounds.map((round) => {
         const { cardCzar, ...rest } = round;
         rest.whiteCardsByPlayer = anonymizePlayedWhiteCards(
-            rest.whiteCardsByPlayer
+            rest.whiteCardsByPlayer,
+            playerID
         );
         return rest;
     });
@@ -347,7 +349,6 @@ export const anonymizedGameClient = (game) => {
 
     return {
         ...game.client,
-        rounds: anonymizeRounds(game.client.rounds),
         timers: {
             ...game.client.timers,
             passedTime: getPassedTime(game.timeout),

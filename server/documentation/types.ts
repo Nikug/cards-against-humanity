@@ -87,6 +87,7 @@ interface Round {
         popularVote: number;
         popularVotes: string[]; // List of player ids who voted for this player
         whiteCards: WhiteCard[];
+        isOwn: boolean;
     }[];
 }
 

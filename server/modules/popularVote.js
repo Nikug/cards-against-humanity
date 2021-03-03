@@ -1,10 +1,11 @@
-import { gameOptions } from "../consts/gameSettings.js";
-import { getGame, setGame } from "./game.js";
 import {
     emitToAllPlayerSockets,
     getPlayer,
     updatePlayersIndividually,
 } from "./player.js";
+import { getGame, setGame } from "./game.js";
+
+import { gameOptions } from "../consts/gameSettings.js";
 import { validatePopularVote } from "./validate.js";
 
 export const popularVote = (io, socket, gameID, playerID, whiteCardIDs) => {
@@ -16,6 +17,7 @@ export const popularVote = (io, socket, gameID, playerID, whiteCardIDs) => {
 
     const whiteCardsByPlayer = getWhiteCardsByIDs(game, whiteCardIDs);
     if (!whiteCardsByPlayer) return;
+    if (whiteCardsByPlayer.playerID === playerID) return;
 
     const playerVote = whiteCardsByPlayer.popularVotes.find(
         (id) => id === playerID
