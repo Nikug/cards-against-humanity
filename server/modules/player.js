@@ -6,6 +6,7 @@ import {
 import { gameOptions, playerName } from "../consts/gameSettings.js";
 import { getGame, setGame } from "./game.js";
 
+import { defaultAvatar } from "./avatar.js";
 import { joiningPlayerStates } from "../consts/states.js";
 import { nanoid } from "nanoid";
 import sanitize from "sanitize";
@@ -80,6 +81,7 @@ export const createNewPlayer = (socketID, isHost, state = "pickingName") => {
         popularVoteScore: 0,
         whiteCards: [],
         useTextToSpeech: false,
+        avatar: defaultAvatar(),
     };
     return player;
 };

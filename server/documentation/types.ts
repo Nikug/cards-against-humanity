@@ -39,6 +39,7 @@ interface Player {
     popularVoteScore: number;
     whiteCards: WhiteCard[];
     useTextToSpeech: boolean;
+    avatar: Avatar;
 }
 
 // This information about a player is shown to other players
@@ -51,6 +52,14 @@ interface PlayerPublic {
     isHost: boolean;
     isPopularVoteKing: boolean;
     useTextToSpeech: boolean;
+    avatar: Avatar;
+}
+
+interface Avatar {
+    hatType: number;
+    eyeType: number;
+    mouthType: number;
+    skinType: number;
 }
 
 interface Cards {

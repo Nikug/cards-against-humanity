@@ -26,4 +26,6 @@ type Client2Server =
     | "start_round" // Start new round after earlier round has ended
     | "return_to_lobby" // Returns back to lobby and resets game
     | "toggle_player_mode" // Used to switch between spectator and active player
-    | "kick_player"; // Used to kick player or force them to spectator
+    | "kick_player" // Used to kick player or force them to spectator
+    | "set_player_name" // Used to select player name
+    | "set_player_avatar"; // Used to update player avatar

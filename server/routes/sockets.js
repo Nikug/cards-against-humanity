@@ -22,6 +22,7 @@ import { joinGame } from "../modules/join.js";
 import { popularVote } from "../modules/popularVote.js";
 import { setPlayerDisconnected } from "../modules/disconnect.js";
 import { togglePlayerMode } from "../modules/togglePlayerMode.js";
+import { updateAvatar } from "../modules/avatar.js";
 
 export const sockets = (io) => {
     io.on("connection", (socket) => {
@@ -73,6 +74,18 @@ export const sockets = (io) => {
                     data.playerID,
                     data.playerName
                 );
+            }
+        });
+
+        socket.on("set_player_avatar", (data) => {
+            const missingFields = validateFields(
+                ["gameID", "playerID", "avatar"],
+                data
+            );
+            if (missingFields.length > 0) {
+                sendError(socket, "Invalid data", missingFields);
+            } else {
+                updateAvatar(io, data.gameID, data.playerID, data.avatar);
             }
         });
 
