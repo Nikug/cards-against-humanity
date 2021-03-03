@@ -14,7 +14,7 @@ export const togglePlayerMode = (io, gameID, playerID) => {
 
     if (player.state !== "spectating") {
         if (checkSpectatorLimit(game)) {
-            game.players = setPlayerState(game.players, playerID, state);
+            game.players = setPlayerState(game.players, playerID, "spectating");
         }
     } else {
         if (checkPlayerLimit(game)) {

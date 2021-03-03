@@ -226,6 +226,7 @@ export const Game = (props) => {
                 <div className="actions-wrapper">
                     <div className="menu-button-wrapper">
                         <Button icon="menu" callback={toggleMenu} />
+                        {/*// TODO: Close menu if user clicks outside of it.*/}
                         <div className="menu-anchor">
                             {menuIsOpen && (
                                 <div className="menu-container">
