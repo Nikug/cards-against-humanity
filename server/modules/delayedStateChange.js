@@ -75,6 +75,7 @@ const gameStateChange = (io, gameID, transition) => {
     } else if (transition === "endRound") {
         // Nothing was voted, remove points from card czar as punishment
         game.players = punishCardCzar(game.players);
+        setNewTimeout = "startRound";
     }
 
     game.stateMachine[transition]();
