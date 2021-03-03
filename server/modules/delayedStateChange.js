@@ -12,7 +12,12 @@ export const changeGameStateAfterTime = (io, game, transition) => {
     clearTimeout(game.timeout);
 
     const delay = getTimeoutTime(game);
-    console.log(`Setting timeout for: ${transition}, delay: ${delay}`);
+    if (delay === 0) {
+        game.client.timers.duration = undefined;
+        game.client.timers.passedTime = undefined;
+        game.timeout = undefined;
+        return game;
+    }
 
     game.client.timers.duration = delay;
     game.client.timers.passedTime = 0;
@@ -70,6 +75,7 @@ const gameStateChange = (io, gameID, transition) => {
     } else if (transition === "endRound") {
         // Nothing was voted, remove points from card czar as punishment
         game.players = punishCardCzar(game.players);
+        setNewTimeout = "startRound";
     }
 
     game.stateMachine[transition]();
@@ -119,15 +125,15 @@ const getTimeoutTime = (game) => {
     const timers = game.client.options.timers;
     switch (game.stateMachine.state) {
         case "pickingBlackCard":
-            return timers.selectBlackCard;
+            return timers.useSelectBlackCard ? timers.selectBlackCard : 0;
         case "playingWhiteCards":
-            return timers.selectWhiteCards;
+            return timers.useSelectWhiteCards ? timers.selectWhiteCards : 0;
         case "readingCards":
-            return timers.readBlackCard;
+            return timers.useReadBlackCard ? timers.readBlackCard : 0;
         case "showingCards":
-            return timers.selectWinner;
+            return timers.useSelectWinner ? timers.selectWinner : 0;
         case "roundEnd":
-            return timers.roundEnd;
+            return timers.useRoundEnd ? timers.roundEnd : 0;
         default:
             return timers.selectBlackCard;
     }

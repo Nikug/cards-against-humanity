@@ -88,11 +88,17 @@ const createNewGame = (url) => {
                 cardPacks: [],
                 timers: {
                     selectBlackCard: gameOptions.timers.selectBlackCard.default,
+                    useSelectBlackCard: gameOptions.timers.selectBlackCard.use,
                     selectWhiteCards:
                         gameOptions.timers.selectWhiteCards.default,
+                    useSelectWhiteCards:
+                        gameOptions.timers.selectWhiteCards.use,
                     readBlackCard: gameOptions.timers.readBlackCard.default,
+                    useReadBlackCard: gameOptions.timers.readBlackCard.use,
                     selectWinner: gameOptions.timers.selectWinner.default,
+                    useSelectWinner: gameOptions.timers.selectWinner.use,
                     roundEnd: gameOptions.timers.roundEnd.default,
+                    useRoundEnd: gameOptions.timers.roundEnd.use,
                 },
             },
             rounds: [],
@@ -332,7 +338,7 @@ export const shouldGameBeDeleted = (game) => {
 export const shouldReturnToLobby = (game) => {
     if (game.stateMachine.state !== "lobby") {
         const activePlayers = getActivePlayers(game.players);
-        if (activePlayers.length <= gameOptions.minimumPlayers) {
+        if (activePlayers.length < gameOptions.minimumPlayers) {
             return true;
         }
         return game.players.every((player) =>

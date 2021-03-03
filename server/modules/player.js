@@ -1,7 +1,12 @@
-import { anonymizedGameClient, drawWhiteCards } from "./card.js";
+import {
+    anonymizeRounds,
+    anonymizedGameClient,
+    drawWhiteCards,
+} from "./card.js";
 import { gameOptions, playerName } from "../consts/gameSettings.js";
 import { getGame, setGame } from "./game.js";
 
+import { defaultAvatar } from "./avatar.js";
 import { joiningPlayerStates } from "../consts/states.js";
 import { nanoid } from "nanoid";
 import sanitize from "sanitize";
@@ -66,6 +71,7 @@ export const changePlayerTextToSpeech = (io, gameID, playerID, useTTS) => {
 export const createNewPlayer = (socketID, isHost, state = "pickingName") => {
     const player = {
         id: nanoid(),
+        publicID: nanoid(),
         sockets: [socketID],
         name: "",
         state: state,
@@ -75,6 +81,7 @@ export const createNewPlayer = (socketID, isHost, state = "pickingName") => {
         popularVoteScore: 0,
         whiteCards: [],
         useTextToSpeech: false,
+        avatar: defaultAvatar(),
     };
     return player;
 };
@@ -203,8 +210,12 @@ export const updatePlayersIndividually = (io, game) => {
     const anonymousClient = { ...anonymizedGameClient(game) };
 
     game.players.map((player) => {
+        const playerClient = {
+            ...anonymousClient,
+            rounds: anonymizeRounds(anonymousClient.rounds, player.id),
+        };
         emitToAllPlayerSockets(io, player, "update_game_and_players", {
-            game: anonymousClient,
+            game: playerClient,
             players: publicPlayersObject(game.players, player.id),
             player: player,
         });

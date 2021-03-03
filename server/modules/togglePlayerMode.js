@@ -1,5 +1,10 @@
 import { checkPlayerLimit, checkSpectatorLimit } from "./join.js";
-import { getGame, setGame } from "./game.js";
+import {
+    getGame,
+    returnToLobby,
+    setGame,
+    shouldReturnToLobby,
+} from "./game.js";
 import { getPlayer, updatePlayersIndividually } from "./player.js";
 
 import { handleSpecialCases } from "./disconnect.js";
@@ -15,6 +20,8 @@ export const togglePlayerMode = (io, gameID, playerID) => {
     if (player.state !== "spectating") {
         if (checkSpectatorLimit(game)) {
             game.players = setPlayerState(game.players, playerID, "spectating");
+            handleSpecialCases(io, game, player);
+            return;
         }
     } else {
         if (checkPlayerLimit(game)) {
@@ -31,15 +38,13 @@ export const togglePlayerMode = (io, gameID, playerID) => {
                     game.stateMachine.state === "lobby" ? "active" : "joining"
                 );
             }
-            handleSpecialCases(io, game, player);
-            return;
         }
     }
     setGame(game);
     updatePlayersIndividually(io, game);
 };
 
-const setPlayerState = (players, playerID, state) => {
+export const setPlayerState = (players, playerID, state) => {
     return players.map((player) =>
         player.id === playerID
             ? {

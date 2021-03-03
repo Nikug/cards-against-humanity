@@ -117,5 +117,8 @@ export const checkSpectatorLimit = (game) => {
     const spectators = game.players.filter(
         (player) => player.state === "spectating"
     );
+    console.log(
+        `Spectator limit ${gameOptions.spectatorLimit}, spectators ${spectators.length}`
+    );
     return gameOptions.spectatorLimit > spectators.length;
 };

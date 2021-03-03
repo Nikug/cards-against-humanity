@@ -17,10 +17,12 @@ import {
     validateHostAndReturnToLobby,
 } from "../modules/game.js";
 
+import { hostKick } from "../modules/kick.js";
 import { joinGame } from "../modules/join.js";
 import { popularVote } from "../modules/popularVote.js";
 import { setPlayerDisconnected } from "../modules/disconnect.js";
 import { togglePlayerMode } from "../modules/togglePlayerMode.js";
+import { updateAvatar } from "../modules/avatar.js";
 
 export const sockets = (io) => {
     io.on("connection", (socket) => {
@@ -72,6 +74,18 @@ export const sockets = (io) => {
                     data.playerID,
                     data.playerName
                 );
+            }
+        });
+
+        socket.on("set_player_avatar", (data) => {
+            const missingFields = validateFields(
+                ["gameID", "playerID", "avatar"],
+                data
+            );
+            if (missingFields.length > 0) {
+                sendError(socket, "Invalid data", missingFields);
+            } else {
+                updateAvatar(io, data.gameID, data.playerID, data.avatar);
             }
         });
 
@@ -233,6 +247,24 @@ export const sockets = (io) => {
                 sendError(socket, "Invalid data", missingFields);
             } else {
                 togglePlayerMode(io, data.gameID, data.playerID);
+            }
+        });
+
+        socket.on("kick_player", (data) => {
+            const missingFields = validateFields(
+                ["gameID", "playerID", "targetID", "removeFromGame"],
+                data
+            );
+            if (missingFields.length > 0) {
+                sendError(socket, "Invalid data", missingFields);
+            } else {
+                hostKick(
+                    io,
+                    data.gameID,
+                    data.playerID,
+                    data.targetID,
+                    data.removeFromGame
+                );
             }
         });
     });

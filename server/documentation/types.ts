@@ -28,6 +28,7 @@ interface ClientTimers {
 // This information is only shown to each player separately
 interface Player {
     id: string;
+    publicID: string;
     sockets: string;
     name: string;
     state: PlayerState;
@@ -38,6 +39,7 @@ interface Player {
     popularVoteScore: number;
     whiteCards: WhiteCard[];
     useTextToSpeech: boolean;
+    avatar: Avatar;
 }
 
 // This information about a player is shown to other players
@@ -50,6 +52,14 @@ interface PlayerPublic {
     isHost: boolean;
     isPopularVoteKing: boolean;
     useTextToSpeech: boolean;
+    avatar: Avatar;
+}
+
+interface Avatar {
+    hatType: number;
+    eyeType: number;
+    mouthType: number;
+    skinType: number;
 }
 
 interface Cards {
@@ -86,6 +96,7 @@ interface Round {
         popularVote: number;
         popularVotes: string[]; // List of player ids who voted for this player
         whiteCards: WhiteCard[];
+        isOwn: boolean;
     }[];
 }
 
@@ -104,11 +115,20 @@ interface Options {
 
 // Values in seconds
 interface Timers {
-    selectBlackCard: number | null;
-    selectWhiteCards: number | null;
-    readBlackCard: number | null;
-    selectWinner: number | null;
-    roundEnd: number | null;
+    selectBlackCard: number;
+    useSelectBlackCard: boolean;
+
+    selectWhiteCards: number;
+    useSelectWhiteCards: boolean;
+
+    readBlackCard: number;
+    useReadBlackCard: boolean;
+
+    selectWinner: number;
+    useSelectWinner: boolean;
+
+    roundEnd: number;
+    useRoundEnd: boolean;
 }
 
 interface CardPack {
