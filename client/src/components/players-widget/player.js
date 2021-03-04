@@ -1,5 +1,7 @@
-import React, { useRef, useState, useEffect, useCallback } from "react";
-import { isNullOrUndefined } from "../../helpers/generalhelpers";
+import React, { useState, useCallback } from "react";
+import { useSpring, useTransition } from "react-spring";
+import { animated } from "react-spring";
+import { useMeasure } from "../../helpers/animation-helpers";
 import Icon from "../icon";
 import crownIcon from "./../../assets/svgicons/crown-svgrepo-com.svg";
 
@@ -31,6 +33,7 @@ export const Player = ({
 }) => {
     const noName = name === null || name === undefined;
     const [showTitle, setShowTitle] = useState(false);
+
     const nameRef = useCallback(
         (node) => {
             if (node !== null) {
@@ -53,6 +56,28 @@ export const Player = ({
         },
         [name]
     );
+
+    // Score animation
+    const transitions = useTransition(score, null, {
+        from: {
+            position: "relative",
+            transform: "translate3d(0,-20px,0)",
+            opacity: 0,
+            height: 0,
+            width: 0,
+        },
+        enter: {
+            transform: "translate3d(0,0px,0)",
+            opacity: 1,
+            height: "auto",
+            width: "auto",
+        },
+        leave: {
+            opacity: 0,
+            height: 0,
+            width: 0,
+        },
+    });
 
     return (
         <div
@@ -83,12 +108,6 @@ export const Player = ({
                     `}
                     />
                 )}
-                {false && isCardCzar && (
-                    <Icon
-                        name={"star"}
-                        className={`player-status md-18 white`}
-                    />
-                )}
                 {isHost && (
                     <Icon
                         name={"home"}
@@ -111,7 +130,11 @@ export const Player = ({
             <span className="player-scores">
                 <span className="player-score">
                     <Icon name="emoji_events" className="win-icon" />
-                    {score}
+                    {transitions.map(({ item, props, key }) => (
+                        <animated.div key={key} style={props}>
+                            {item}
+                        </animated.div>
+                    ))}
                 </span>
                 {isPopularVoteKing && (
                     <span className="player-popularVoteScore">
