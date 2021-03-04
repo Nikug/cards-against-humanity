@@ -8,12 +8,12 @@ import { Button } from "../../components/button";
 import { GAME_STATES } from "../../consts/gamestates";
 import { NOTIFICATION_TYPES } from "../../components/notification/notification";
 import { PlayersWidget } from "../../components/players-widget/playerswidget";
-import { SocketMessengerContainer } from "../../components/socket-messenger/socket-messenger-container";
+import { PopOverMenu } from "../../components/popover-menu/PopoverMenu";
+import { SocketMessenger } from "../../components/socket-messenger/socket-messenger";
 import { Timer } from "../../components/timer";
 import { getGamePhaseContent } from "./getGamePhaseContent";
 import { isPlayerSpectator } from "../../helpers/player-helpers";
 import { socket } from "../../components/sockets/socket";
-import { PopOverMenu } from "../../components/popover-menu/PopoverMenu";
 
 export const NAME_CHAR_LIMIT = 50;
 export const ICON_CLASSNAMES = "md-36 icon-margin-right";
@@ -246,12 +246,15 @@ export const Game = (props) => {
                             </>
                         }
                     />
-                    <span>
-                        <SocketMessengerContainer
-                            gameID={game?.id}
-                            playerID={player?.id}
-                        />
-                    </span>
+                    <PopOverMenu
+                        buttonProps={{ icon: "menu", text: "Debug" }}
+                        content={
+                            <SocketMessenger
+                                gameID={game?.id}
+                                playerID={player?.id}
+                            />
+                        }
+                    />
                     <div className="spectator-info">
                         {spectatorCount > 0 && (
                             <div className="anchor">

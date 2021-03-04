@@ -1,8 +1,9 @@
 import React, { memo, useRef, useState } from "react";
-import { useSpring, animated } from "react-spring";
+import { animated, useSpring } from "react-spring";
 import { useMeasure, usePrevious } from "../../helpers/animation-helpers";
-import { useClickOutside } from "../../helpers/useClickOutside";
+
 import { Button } from "../button";
+import { useClickOutside } from "../../helpers/useClickOutside";
 
 export const PopOverMenu = memo(({ content, buttonProps }) => {
     const [isOpen, setOpen] = useState(false);
