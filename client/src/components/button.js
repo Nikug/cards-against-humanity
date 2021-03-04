@@ -9,7 +9,7 @@ export const BUTTON_TYPES = {
     GREEN: 2,
 };
 
-export default function Button(props) {
+export const Button = React.forwardRef((props, ref) => {
     const {
         text,
         type,
@@ -25,6 +25,7 @@ export default function Button(props) {
     return (
         <>
             <button
+                ref={ref}
                 className={`button ${disabled ? "disabled" : ""} ${
                     additionalClassname ? additionalClassname : ""
                 } ${
@@ -60,4 +61,4 @@ export default function Button(props) {
             </button>
         </>
     );
-}
+});

@@ -3,7 +3,7 @@ import { Redirect, useHistory } from "react-router-dom";
 
 import "../styles/home.scss";
 
-import Button, { BUTTON_TYPES } from "../components/button";
+import { Button, BUTTON_TYPES } from "../components/button";
 export const Home = ({ joinExistingGame, startNewGame }) => {
     const [newUrl, setNewUrl] = useState("");
 

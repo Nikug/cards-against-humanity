@@ -24,6 +24,7 @@
     line-height: 29px;
     backface-visibility: hidden;
     outline: none;
+    box-sizing: border-box;
 
     .button-icon {
         color: $button-text;

@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-import Button from "../button";
+import { Button } from "../button";
 import { SocketMessenger } from "./socket-messenger";
 
 export const SocketMessengerContainer = (props) => {

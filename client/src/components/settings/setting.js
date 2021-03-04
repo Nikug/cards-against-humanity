@@ -3,7 +3,7 @@ import "./../../styles/gamesettings.scss";
 import "./../../styles/input.scss";
 
 import Icon from "./../icon";
-import Button from "./../button";
+import { Button } from "./../button";
 import { BUTTON_TYPES } from "./../button";
 import { Toggle } from "./controls/toggle";
 

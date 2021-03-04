@@ -83,17 +83,26 @@
 
     .menu-anchor {
         height: 0;
-        width: 0;
         z-index: 5;
+        z-index: 20;
 
         .menu-container {
-            box-sizing: border-box;
+            position: relative;
             padding: 0.5em;
             background-color: rgba(20, 20, 20, 0.829);
-            width: fit-content;
             margin: 0.2em 0;
             border-radius: 2px;
             box-shadow: 10px 10px 3px #0000008f;
+            display: flex;
+            flex-direction: column;
+            overflow: visible;
+            width: fit-content;
+            width: -moz-fit-content;
         }
     }
+}
+
+.popover-container {
+    width: fit-content;
+    width: -moz-fit-content;
 }

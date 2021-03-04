@@ -1,5 +1,5 @@
 import React from "react";
-import Button, { BUTTON_TYPES } from "../../../../components/button";
+import { Button, BUTTON_TYPES } from "../../../../components/button";
 
 export const StartGameButton = ({
     game,

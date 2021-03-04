@@ -4,7 +4,7 @@ import React, { useEffect, useState } from "react";
 import { getCookie, setCookie } from "../../helpers/cookies";
 
 import { ActionButtonRow } from "./components/ActionButtonRow";
-import Button from "../../components/button";
+import { Button } from "../../components/button";
 import { GAME_STATES } from "../../consts/gamestates";
 import { NOTIFICATION_TYPES } from "../../components/notification/notification";
 import { PlayersWidget } from "../../components/players-widget/playerswidget";
@@ -13,6 +13,7 @@ import { Timer } from "../../components/timer";
 import { getGamePhaseContent } from "./getGamePhaseContent";
 import { isPlayerSpectator } from "../../helpers/player-helpers";
 import { socket } from "../../components/sockets/socket";
+import { PopOverMenu } from "../../components/popover-menu/PopoverMenu";
 
 export const NAME_CHAR_LIMIT = 50;
 export const ICON_CLASSNAMES = "md-36 icon-margin-right";
@@ -185,10 +186,6 @@ export const Game = (props) => {
         });
     };
 
-    const toggleMenu = () => {
-        setMenuIsOpen(!menuIsOpen);
-    };
-
     const contentProps = {
         callbacks: {
             setPlayerName,
@@ -226,32 +223,29 @@ export const Game = (props) => {
                     time={game?.timers.duration ?? 0}
                 />
                 <div className="actions-wrapper">
-                    <div className="menu-button-wrapper">
-                        <Button icon="menu" callback={toggleMenu} />
-                        {/*// TODO: Close menu if user clicks outside of it.*/}
-                        <div className="menu-anchor">
-                            {menuIsOpen && (
-                                <div className="menu-container">
-                                    Valikko
-                                    <ActionButtonRow
-                                        buttons={[
-                                            isSpectator
-                                                ? {
-                                                      icon: "login",
-                                                      text: "Liity peliin",
-                                                      callback: togglePlayerMode,
-                                                  }
-                                                : {
-                                                      icon: "groups",
-                                                      text: "Siirry katsomoon",
-                                                      callback: togglePlayerMode,
-                                                  },
-                                        ]}
-                                    />
-                                </div>
-                            )}
-                        </div>
-                    </div>
+                    <PopOverMenu
+                        buttonProps={{ icon: "menu", text: "Menu" }}
+                        content={
+                            <>
+                                Valikko
+                                <ActionButtonRow
+                                    buttons={[
+                                        isSpectator
+                                            ? {
+                                                  icon: "login",
+                                                  text: "Liity peliin",
+                                                  callback: togglePlayerMode,
+                                              }
+                                            : {
+                                                  icon: "groups",
+                                                  text: "Siirry katsomoon",
+                                                  callback: togglePlayerMode,
+                                              },
+                                    ]}
+                                />
+                            </>
+                        }
+                    />
                     <span>
                         <SocketMessengerContainer
                             gameID={game?.id}

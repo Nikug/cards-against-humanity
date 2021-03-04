@@ -6,7 +6,7 @@ import {
     emptyFn,
     isNullOrUndefined,
 } from "../../helpers/generalhelpers";
-import Button, { BUTTON_TYPES } from "../button";
+import { Button, BUTTON_TYPES } from "../button";
 import { renderBlackCardwithWhiteCards } from "./cardformathelpers.js/renderBlackcardWithWhiteCards";
 
 /**

@@ -16,7 +16,7 @@ import {
 } from "./helpers/generalhelpers";
 import { deleteCookie, getCookie, setCookie } from "./helpers/cookies";
 
-import Button from "./components/button";
+import { Button } from "./components/button";
 import { Game } from "./layouts/Game/Game.jsx";
 import { Header } from "./components/header";
 import { Home } from "./layouts/Home";

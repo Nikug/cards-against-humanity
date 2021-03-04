@@ -6,7 +6,7 @@ import {
     useHistory,
     useLocation,
 } from "react-router-dom";
-import Button from "../components/button";
+import { Button } from "../components/button";
 
 import "../styles/instructions.scss";
 
