@@ -59,6 +59,12 @@ export const Player = ({
 
     // Score animation
     const transitions = useTransition(score, null, {
+        initial: {
+            transform: "translate3d(0,0px,0)",
+            opacity: 1,
+            height: "auto",
+            width: "auto",
+        },
         from: {
             position: "relative",
             transform: "translate3d(0,-20px,0)",
