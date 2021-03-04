@@ -1,5 +1,3 @@
-import "./../styles/header.scss";
-
 import { Link, useHistory, useLocation } from "react-router-dom";
 import React, { Component } from "react";
 

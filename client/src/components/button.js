@@ -1,7 +1,5 @@
 import React from "react";
 
-import "../styles/button.scss";
-
 import Icon from "./icon";
 
 export const BUTTON_TYPES = {

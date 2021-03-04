@@ -1,6 +1,6 @@
 import React from "react";
 import { Button, BUTTON_TYPES } from "../../../components/button";
-import { a, useSpring, useTransform } from "react-spring";
+import { a, useSpring } from "react-spring";
 import { useMeasure } from "../../../helpers/animation-helpers";
 
 export const ActionButtonRow = ({ buttons }) => {

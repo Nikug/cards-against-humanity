@@ -1,7 +1,3 @@
-import "./styles/App.scss";
-import "./styles/footer.scss";
-import "./styles/notification.scss";
-
 import React, { useEffect, useState } from "react";
 import {
     Route,

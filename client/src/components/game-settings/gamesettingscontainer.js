@@ -3,9 +3,6 @@ import { CollabsibelSettingsSection } from "../settings/collabsiblesettingssecti
 
 import { socket } from "../sockets/socket";
 
-import "./../../styles/gamesettings.scss";
-import "./../../styles/home.scss";
-
 import { Setting, CONTROL_TYPES } from "./../settings/setting";
 import { CardPack } from "./cardpack";
 

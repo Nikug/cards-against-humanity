@@ -1,5 +1,3 @@
-import "./../../styles/game.scss";
-
 import React, { useEffect, useState } from "react";
 import { getCookie, setCookie } from "../../helpers/cookies";
 

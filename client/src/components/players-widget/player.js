@@ -5,9 +5,6 @@ import { useMeasure } from "../../helpers/animation-helpers";
 import Icon from "../icon";
 import crownIcon from "./../../assets/svgicons/crown-svgrepo-com.svg";
 
-import "./../../styles/playerswidget.scss";
-import "./../../styles/tooltip.scss";
-
 /*
 interface Player {
     id: string;
@@ -58,7 +55,7 @@ export const Player = ({
     );
 
     // Score animation
-    const transitions = useTransition(score, null, {
+    const scoreTransitions = useTransition(score, null, {
         initial: {
             transform: "translate3d(0,0px,0)",
             opacity: 1,
@@ -136,7 +133,7 @@ export const Player = ({
             <span className="player-scores">
                 <span className="player-score">
                     <Icon name="emoji_events" className="win-icon" />
-                    {transitions.map(({ item, props, key }) => (
+                    {scoreTransitions.map(({ item, props, key }) => (
                         <animated.div key={key} style={props}>
                             {item}
                         </animated.div>

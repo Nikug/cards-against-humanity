@@ -1,6 +1,5 @@
 import React from "react";
 import { emptyFn, isNullOrUndefined } from "../helpers/generalhelpers";
-import "./../styles/icons.scss";
 
 export default function Icon(props) {
     const { name, className, color, onClick } = props;

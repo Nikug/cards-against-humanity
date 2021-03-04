@@ -1,5 +1,3 @@
-import "../styles/music.scss";
-
 import Icon from "./icon";
 import React from "react";
 

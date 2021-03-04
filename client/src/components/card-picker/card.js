@@ -1,6 +1,5 @@
 import React from "react";
 import { emptyFn, isNullOrUndefined } from "../../helpers/generalhelpers.js";
-import "./../../styles/card.scss";
 
 import Button, { BUTTON_TYPES } from "../button";
 import Icon from "../icon";

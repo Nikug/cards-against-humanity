@@ -1,8 +1,6 @@
 import React from "react";
 
 import Icon from "./../icon";
-import "../../styles/cardpack.scss";
-import "../../styles/gamesettings.scss";
 
 export function CardPack({
     id,

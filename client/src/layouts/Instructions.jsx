@@ -8,8 +8,6 @@ import {
 } from "react-router-dom";
 import { Button } from "../components/button";
 
-import "../styles/instructions.scss";
-
 const NOT_READY = false;
 
 export const Instructions = ({ path }) => {
