@@ -29,18 +29,18 @@ export const SocketMessenger = (props) => {
     const handleTab = (event) => {
         if (event.key === "Tab") {
             event.preventDefault();
-            const start = event.target.selectionStart;
-            const end = event.target.selectionEnd;
-            const text = event.target.value;
+            const {
+                selectionStart: start,
+                selectionEnd: end,
+                value: text,
+            } = event.target;
             const value =
                 text.substring(0, start) +
                 " ".repeat(tabWidth) +
                 text.substring(end);
             textArea.current.value = value;
-            textArea.current.setSelectionRange(
-                start + tabWidth,
-                start + tabWidth
-            );
+            const cursorPosition = start + tabWidth;
+            textArea.current.setSelectionRange(cursorPosition, cursorPosition);
         }
     };
 
