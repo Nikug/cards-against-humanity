@@ -244,7 +244,7 @@ export const Game = (props) => {
                             </>
                         }
                     />
-                    <PopOverMenu
+                    {/* <PopOverMenu
                         buttonProps={{ icon: "menu", text: "Debug" }}
                         content={
                             <SocketMessenger
@@ -252,7 +252,7 @@ export const Game = (props) => {
                                 playerID={player?.id}
                             />
                         }
-                    />
+                    /> */}
                     <div className="spectator-info">
                         {spectatorCount > 0 && (
                             <div className="anchor">
