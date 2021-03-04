@@ -21,12 +21,10 @@ export const PopOverMenu = memo(({ content, buttonProps }) => {
 
     const closeMenu = () => {
         setOpen(false);
-        console.log("close");
     };
 
     const toggleMenu = () => {
         setOpen(!isOpen);
-        console.log("toggle");
     };
 
     const menuRef = useRef(null);

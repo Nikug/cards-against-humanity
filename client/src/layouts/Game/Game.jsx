@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { getCookie, setCookie } from "../../helpers/cookies";
 
 import { ActionButtonRow } from "./components/ActionButtonRow";
-import { Button } from "../../components/button";
+import { Button, BUTTON_TYPES } from "../../components/button";
 import { GAME_STATES } from "../../consts/gamestates";
 import { NOTIFICATION_TYPES } from "../../components/notification/notification";
 import { PlayersWidget } from "../../components/players-widget/playerswidget";
@@ -10,8 +10,9 @@ import { PopOverMenu } from "../../components/popover-menu/PopoverMenu";
 import { SocketMessenger } from "../../components/socket-messenger/socket-messenger";
 import { Timer } from "../../components/timer";
 import { getGamePhaseContent } from "./getGamePhaseContent";
-import { isPlayerSpectator } from "../../helpers/player-helpers";
+import { isPlayerHost, isPlayerSpectator } from "../../helpers/player-helpers";
 import { socket } from "../../components/sockets/socket";
+import { emptyFn } from "../../helpers/generalhelpers";
 
 export const NAME_CHAR_LIMIT = 50;
 export const ICON_CLASSNAMES = "md-36 icon-margin-right";
@@ -177,8 +178,14 @@ export const Game = (props) => {
     };
 
     const togglePlayerMode = () => {
-        console.log("toggle");
         socket.emit("toggle_player_mode", {
+            gameID: game?.id,
+            playerID: player?.id,
+        });
+    };
+
+    const returnBackToLobby = () => {
+        socket.emit("return_to_lobby", {
             gameID: game?.id,
             playerID: player?.id,
         });
@@ -233,12 +240,42 @@ export const Game = (props) => {
                                                   icon: "login",
                                                   text: "Liity peliin",
                                                   callback: togglePlayerMode,
+                                                  type: BUTTON_TYPES.PRIMARY,
                                               }
                                             : {
                                                   icon: "groups",
                                                   text: "Siirry katsomoon",
                                                   callback: togglePlayerMode,
+                                                  type: BUTTON_TYPES.PRIMARY,
                                               },
+                                        {
+                                            icon: "home",
+                                            text: "Takaisin aulaan",
+                                            callback: returnBackToLobby,
+                                            type: BUTTON_TYPES.PRIMARY,
+                                            disabled:
+                                                !isPlayerHost(player) ||
+                                                game?.state ===
+                                                    GAME_STATES.LOBBY,
+                                        },
+                                        {
+                                            icon: "settings",
+                                            text: "Pelin asetukset",
+                                            callback: emptyFn,
+                                            type: BUTTON_TYPES.PRIMARY,
+                                            disabled:
+                                                true ||
+                                                !isPlayerHost(player) ||
+                                                game?.state ===
+                                                    GAME_STATES.LOBBY,
+                                        },
+                                        {
+                                            icon: "history",
+                                            text: "Historia",
+                                            callback: emptyFn,
+                                            type: BUTTON_TYPES.PRIMARY,
+                                            disabled: true,
+                                        },
                                     ]}
                                 />
                             </>
