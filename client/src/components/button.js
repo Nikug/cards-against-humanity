@@ -17,6 +17,7 @@ export const Button = React.forwardRef((props, ref) => {
         callbackParams,
         additionalClassname,
         disabled,
+        fill,
     } = props;
     const noText = text === undefined || text === null || text.length === 0;
 
@@ -24,9 +25,9 @@ export const Button = React.forwardRef((props, ref) => {
         <>
             <button
                 ref={ref}
-                className={`button ${disabled ? "disabled" : ""} ${
-                    additionalClassname ? additionalClassname : ""
-                } ${
+                className={`button ${fill ? "fill" : ""} ${
+                    disabled ? "disabled" : ""
+                } ${additionalClassname ? additionalClassname : ""} ${
                     type === BUTTON_TYPES.PRIMARY
                         ? "primary"
                         : type === BUTTON_TYPES.GREEN

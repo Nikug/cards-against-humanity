@@ -26,6 +26,10 @@
     outline: none;
     box-sizing: border-box;
 
+    &.fill {
+        width: 100%;
+    }
+
     .button-icon {
         color: $button-text;
     }
@@ -115,7 +119,7 @@
     }
 
     &.disabled {
-        cursor: not-allowed;
+        cursor: default;
         background: linear-gradient(180deg, $button-shadow, $button-background)
             $button-background;
         border: 1px solid $button-border;
@@ -141,7 +145,7 @@
         }
 
         .button-icon {
-            cursor: not-allowed;
+            cursor: default;
         }
     }
 
