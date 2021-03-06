@@ -1,5 +1,4 @@
-import React, { useState, useEffect } from "react";
-import { Redirect, useHistory } from "react-router-dom";
+import React, { useState } from "react";
 
 import { Button, BUTTON_TYPES } from "../components/button";
 export const Home = ({ joinExistingGame, startNewGame }) => {

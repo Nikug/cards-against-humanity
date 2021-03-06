@@ -84,7 +84,7 @@ export function CardPicker(props) {
                         "id"
                     )}
                     selectCard={selectCard}
-                    showPopularVote={showPopularVote}
+                    showPopularVote={showPopularVote && !card.isOwn}
                     givePopularVote={givePopularVote}
                     hasBeenPopularVoted={hasBeenPopularVoted}
                 />

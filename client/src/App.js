@@ -1,15 +1,6 @@
 import React, { useEffect, useState } from "react";
-import {
-    Route,
-    BrowserRouter as Router,
-    Switch,
-    useHistory,
-    useLocation,
-} from "react-router-dom";
-import {
-    containsObjectWithMatchingFieldIndex,
-    isNullOrUndefined,
-} from "./helpers/generalhelpers";
+import { Route, Switch, useHistory, useLocation } from "react-router-dom";
+import { isNullOrUndefined } from "./helpers/generalhelpers";
 import { deleteCookie, getCookie, setCookie } from "./helpers/cookies";
 
 import { Button } from "./components/button";
@@ -21,8 +12,9 @@ import Music from "./components/music";
 import { Notification } from "./components/notification/notification";
 import axios from "axios";
 import { socket } from "./components/sockets/socket";
+import { getRandomSpinner } from "./components/spinner";
 
-export const App = (props) => {
+export const App = () => {
     const [game, setGame] = useState(undefined);
     const [player, setPlayer] = useState(undefined);
     const [notification, setNotification] = useState([]);
@@ -67,7 +59,6 @@ export const App = (props) => {
                 setLoading(false);
                 return;
             }
-            //console.log("Current game:", data.game);
             if (isNullOrUndefined(data.game)) {
                 deleteCookie("playerID");
             } else {
@@ -101,10 +92,8 @@ export const App = (props) => {
             socket.emit("join_game", {
                 playerID: cookie,
             });
-            // setPlayer({ player: { id: cookie } });
         } else {
             deleteCookie("playerID");
-            //setCookie({ field: "playerID", value: "random-id-123" });
             setLoading(false);
         }
     }, []);
@@ -152,7 +141,12 @@ export const App = (props) => {
     const pathName = useLocation().pathname;
 
     if (loading) {
-        content = <div>loading...</div>;
+        content = (
+            <div className="loading-page-spinner-container">
+                <div className="loading-text">Ei hätää, sivua ladataan...</div>
+                <div className="loading-page-spinner">{getRandomSpinner()}</div>
+            </div>
+        );
     } else {
         content = (
             <>

@@ -1,37 +1,28 @@
-import React, { useState, useEffect } from 'react';
-import { socket } from '../sockets/socket';
+import React, { useState } from "react";
+import { socket } from "../sockets/socket";
 
-import { CardPicker } from './cardpicker';
-import { containsObjectWithMatchingFieldIndex, emptyFn } from '../../helpers/generalhelpers';
+import { CardPicker } from "./cardpicker";
+import { mergeWhiteCardsByplayer } from "./cardformathelpers.js/mergeWhiteCardsByplayer";
+import {
+    containsObjectWithMatchingFieldIndex,
+    emptyFn,
+} from "../../helpers/generalhelpers";
 
-export function WinnerCardPickerContainer(props) {
-    const { game, player, givePopularVote, popularVotedCardsIDs } = props;
-
-    const whiteCardsByPlayer = game.rounds[game.rounds.length - 1].whiteCardsByPlayer;
-    const whiteCardsToRender = [];
-
-    for (let i = 0, len = whiteCardsByPlayer.length; i < len; i++) {
-        const whiteCards = whiteCardsByPlayer[i].whiteCards;
-        const newWhiteCard = {
-            id: [],
-            cardPackID: [],
-            text: [],
-        };
-
-        for (let j = 0, len2 = whiteCards.length; j < len2; j++) {
-            const whiteCard = whiteCards[j];
-
-            newWhiteCard.id.push(whiteCard.id);
-            newWhiteCard.cardPackID.push(whiteCard.cardPackID);
-            newWhiteCard.text.push(whiteCard.text);
-        }
-
-        whiteCardsToRender.push(newWhiteCard);
-    }
-
-    const whiteCards = whiteCardsToRender;
+export const WinnerCardPickerContainer = ({
+    game,
+    player,
+    givePopularVote,
+    popularVotedCardsIDs,
+}) => {
     const [selectedCards, setSelectedCards] = useState([]);
     const [confirmedCards, setConfirmedCards] = useState([]);
+
+    const round = game.rounds.length - 1;
+    const blackCard = game.rounds[round].blackCard;
+    const isCardCzar = player?.isCardCzar;
+    const hasPopularVote = game?.options?.popularVote;
+    const whiteCardsByPlayer = game.rounds[round].whiteCardsByPlayer;
+    const [whiteCards] = mergeWhiteCardsByplayer(whiteCardsByPlayer);
 
     const selectCard = (card) => {
         if (confirmedCards.length > 0) {
@@ -41,7 +32,11 @@ export function WinnerCardPickerContainer(props) {
 
         const pickLimit = 1;
 
-        const i = containsObjectWithMatchingFieldIndex(card, newSelectedCards, 'id');
+        const i = containsObjectWithMatchingFieldIndex(
+            card,
+            newSelectedCards,
+            "id"
+        );
         if (i !== -1) {
             newSelectedCards.splice(i);
         } else if (newSelectedCards.length < pickLimit) {
@@ -60,24 +55,18 @@ export function WinnerCardPickerContainer(props) {
             const gameID = game.id;
             const playerID = player.id;
 
-            socket.emit('pick_winning_card', {
+            socket.emit("pick_winning_card", {
                 gameID: gameID,
                 playerID: playerID,
                 whiteCardIDs: selectedCards[0].id,
             });
 
             setConfirmedCards(selectedCards);
-        } else {
-            console.log('There was not enough white cards to confirm');
         }
     };
 
-    const blackCard = game.rounds[game.rounds.length - 1].blackCard;
-    const isCardCzar = player?.isCardCzar;
-    const hasPopularVote = game?.options?.popularVote;
-
     return (
-        <div className='blackcardpicker'>
+        <div className="blackcardpicker">
             <CardPicker
                 mainCard={blackCard}
                 selectableCards={whiteCards}
@@ -86,9 +75,17 @@ export function WinnerCardPickerContainer(props) {
                 selectCard={isCardCzar ? selectCard : emptyFn}
                 confirmCards={isCardCzar ? confirmCard : emptyFn}
                 description={
-                    isCardCzar ? 'Valitse voittaja' : hasPopularVote ? 'Anna ääni suosikeillesi' : 'Valkoiset kortit'
+                    isCardCzar
+                        ? "Valitse voittaja"
+                        : hasPopularVote
+                        ? "Anna ääni suosikeillesi"
+                        : "Valkoiset kortit"
                 }
-                alternativeText={isCardCzar ? undefined : 'Korttikuningas valitsee voittajaa...'}
+                alternativeText={
+                    isCardCzar
+                        ? undefined
+                        : "Korttikuningas valitsee voittajaa..."
+                }
                 noActionButton={!isCardCzar}
                 selectDisabled={selectedCards.length !== 1}
                 showPopularVote={hasPopularVote && !isCardCzar}
@@ -98,4 +95,4 @@ export function WinnerCardPickerContainer(props) {
             />
         </div>
     );
-}
+};

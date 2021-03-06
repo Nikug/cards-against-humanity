@@ -39,3 +39,25 @@
         background-position: center top;
     }
 }
+
+.loading-page-spinner-container {
+    background: $app-background;
+    text-decoration: none;
+    font-family: "Teko", sans-serif;
+    font-size: 5em;
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+
+    .loading-text {
+        color: $app-text;
+        margin-bottom: 2em;
+    }
+
+    .loading-page-spinner {
+        width: 30%;
+    }
+}
