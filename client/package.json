@@ -18,7 +18,8 @@
         "react-scripts": "3.4.3",
         "react-spring": "^8.0.27",
         "socket.io-client": "^2.3.0",
-        "spinners-react": "^1.0.4"
+        "spinners-react": "^1.0.4",
+        "resize-observer-polyfill": "^1.5.1"
     },
     "scripts": {
         "start": "react-scripts start",
@@ -40,8 +41,5 @@
             "last 1 firefox version",
             "last 1 safari version"
         ]
-    },
-    "devDependencies": {
-        "resize-observer-polyfill": "^1.5.1"
     }
 }
