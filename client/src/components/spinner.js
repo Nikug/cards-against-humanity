@@ -31,7 +31,6 @@ const defaultProps = {
 };
 
 export const Spinner = ({ type }) => {
-    console.log({ type });
     switch (type) {
         case SPINNER_TYPES.SpinnerCircular:
             return <SpinnerCircular {...defaultProps} />;

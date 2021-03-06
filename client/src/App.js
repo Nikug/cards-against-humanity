@@ -15,6 +15,19 @@ import { socket } from "./components/sockets/socket";
 import { getRandomSpinner } from "./components/spinner";
 
 export const App = () => {
+    /*****************************************************************/ // Purely for hiding dev things from the production.
+    const [clicked, setClicked] = useState(0);
+    const [showDebug, setShowDebug] = useState(false);
+
+    const secretClick = () => {
+        if (clicked > 3) {
+            setShowDebug(true);
+        } else {
+            setClicked(clicked + 1);
+        }
+    };
+    /*****************************************************************/
+
     const [game, setGame] = useState(undefined);
     const [player, setPlayer] = useState(undefined);
     const [notification, setNotification] = useState([]);
@@ -195,6 +208,7 @@ export const App = () => {
                                             player={player}
                                             fireNotification={fireNotification}
                                             updateData={updateData}
+                                            showDebug={showDebug}
                                         />
                                     )}
                                 />
@@ -223,7 +237,7 @@ export const App = () => {
                             <span className="music-player">
                                 <Music />
                             </span>
-                            <span className="copyrights">
+                            <span className="copyrights" onClick={secretClick}>
                                 &copy; {new Date().getFullYear()}
                             </span>
                         </div>
