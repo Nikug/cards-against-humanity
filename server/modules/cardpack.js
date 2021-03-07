@@ -1,23 +1,33 @@
-import fetch from "node-fetch";
-
 import { getGame, setGame } from "./game.js";
-import { validateHost } from "./validate.js";
+import { validateHost, validateState } from "./validate.js";
+
+import fetch from "node-fetch";
+import sanitize from "sanitize";
+
+const sanitizer = sanitize();
 
 export const addCardPack = async (io, gameID, cardPackID, playerID) => {
-    const url = `https://allbad.cards/api/pack/get?pack=${cardPackID}`;
-    const res = await fetch(url);
-    const json = await res.json();
+    const cleanID = sanitizer.value(cardPackID, "str");
+    const url = `https://allbad.cards/api/pack/get?pack=${cleanID}`;
+    let json = undefined;
+    try {
+        const res = await fetch(url);
+        json = await res.json();
+    } catch (error) {
+        console.log("Failed to load cardpack:", error);
+        return;
+    }
 
-    if (json.message === "Pack not found!") return;
+    if (json?.message === "Pack not found!") return;
 
     const whiteCards = json.definition.white.map((item, i) => ({
-        id: `w-${cardPackID}-${i.toString()}`,
-        cardPackID: cardPackID,
+        id: `w-${cleanID}-${i.toString()}`,
+        cardPackID: cleanID,
         text: item,
     }));
     const blackCards = json.definition.black.map((item, i) => ({
-        id: `b-${cardPackID}-${i.toString()}`,
-        cardPackID: cardPackID,
+        id: `b-${cleanID}-${i.toString()}`,
+        cardPackID: cleanID,
         text: item.content,
         whiteCardsToPlay: item.pick,
         whiteCardsToDraw: item.draw,
@@ -85,7 +95,7 @@ export const removeCardPackFromGame = (gameID, cardPackID, playerID) => {
     const game = getGame(gameID);
     if (!game) return undefined;
 
-    if (validateState(game, "lobby")) return undefined;
+    if (!validateState(game, "lobby")) return undefined;
     if (!validateHost(game, playerID)) return undefined;
 
     game.client.options.cardPacks = game.client.options.cardPacks.filter(
