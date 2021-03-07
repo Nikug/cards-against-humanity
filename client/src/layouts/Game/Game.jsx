@@ -1,19 +1,19 @@
+import { BUTTON_TYPES, Button } from "../../components/button";
 import React, { useEffect, useState } from "react";
 import { getCookie, setCookie } from "../../helpers/cookies";
+import { isPlayerHost, isPlayerSpectator } from "../../helpers/player-helpers";
 
 import { ActionButtonRow } from "./components/ActionButtonRow";
-import { Button, BUTTON_TYPES } from "../../components/button";
 import { GAME_STATES } from "../../consts/gamestates";
 import { NOTIFICATION_TYPES } from "../../components/notification/notification";
 import { PlayersWidget } from "../../components/players-widget/playerswidget";
 import { PopOverMenu } from "../../components/popover-menu/PopoverMenu";
 import { SocketMessenger } from "../../components/socket-messenger/socket-messenger";
 import { Timer } from "../../components/timer";
-import { getGamePhaseContent } from "./getGamePhaseContent";
-import { isPlayerHost, isPlayerSpectator } from "../../helpers/player-helpers";
-import { socket } from "../../components/sockets/socket";
-import { emptyFn } from "../../helpers/generalhelpers";
 import { WholePageLoader } from "../../components/WholePageLoader";
+import { emptyFn } from "../../helpers/generalhelpers";
+import { getGamePhaseContent } from "./getGamePhaseContent";
+import { socket } from "../../components/sockets/socket";
 
 export const NAME_CHAR_LIMIT = 50;
 export const ICON_CLASSNAMES = "md-36 icon-margin-right";
