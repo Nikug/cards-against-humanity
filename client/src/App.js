@@ -1,6 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { Route, Switch, useHistory, useLocation } from "react-router-dom";
-import { isNullOrUndefined } from "./helpers/generalhelpers";
+import {
+    containsObjectWithMatchingFieldIndex,
+    isNullOrUndefined,
+} from "./helpers/generalhelpers";
 import { deleteCookie, getCookie, setCookie } from "./helpers/cookies";
 
 import { Button } from "./components/button";
@@ -13,6 +16,9 @@ import { Notification } from "./components/notification/notification";
 import axios from "axios";
 import { socket } from "./components/sockets/socket";
 import { getRandomSpinner } from "./components/spinner";
+import { GameContextProvider } from "./contexts/GameContext";
+import { NotificationContextProvider } from "./contexts/NotificationContext";
+import { socketOn } from "./helpers/communicationhelpers";
 
 export const App = () => {
     /*****************************************************************/ // Purely for hiding dev things from the production.
@@ -30,8 +36,9 @@ export const App = () => {
 
     const [game, setGame] = useState(undefined);
     const [player, setPlayer] = useState(undefined);
-    const [notification, setNotification] = useState([]);
+    const [notifications, setNotifications] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [notificationCount, setNotificationCount] = useState(0);
 
     const history = useHistory();
 
@@ -49,54 +56,93 @@ export const App = () => {
         history.push(`${route}`);
     };
 
-    const fireNotification = (newNotification, timeInSeconds = 3) => {
-        const newList = notification.slice();
-        newList.push(newNotification);
-        setNotification(newList);
+    const getNewId = () => {
+        const newId = notificationCount + 1;
+        setNotificationCount((prevValue) => prevValue + 1);
+
+        return newId;
+    };
+
+    const fireNotification = (newNotification, timeInSeconds = 4) => {
+        const id = getNewId();
+        console.log({ id });
+
+        setNotifications((prevValue) => [
+            ...prevValue,
+            { ...newNotification, id },
+        ]);
 
         setTimeout(() => {
-            hideNotification();
+            hideNotification(id);
         }, timeInSeconds * 1000);
     };
 
-    // TODO: Deal with deleting the correct notification, not all.
-    const hideNotification = () => {
-        setNotification([]);
+    const notificationParams = {
+        fireNotification,
+        notificationCount,
+        setNotificationCount,
+    };
+
+    const hideNotification = (id) => {
+        const newList = notifications.slice();
+        console.log({ notifications, id });
+
+        for (let i = 0, len = notifications.length; i < len; i++) {
+            const notification = notifications[i];
+            if (notification.id === id) {
+                newList.splice(i, 1);
+                break;
+            }
+        }
+
+        setNotifications(newList);
     };
 
     useEffect(() => {
-        socket.on("update_game_and_players", (data) => {
-            console.log("update_game_and_players", { data });
-            if (data.error) {
-                console.log("Received error from server:", data.error);
+        socketOn(
+            "update_game_and_players",
+            (data) => {
+                console.log("update_game_and_players", { data });
+                if (data.error) {
+                    console.log("Received error from server:", data.error);
+                    setLoading(false);
+                    return;
+                }
+                if (isNullOrUndefined(data.game)) {
+                    deleteCookie("playerID");
+                } else {
+                    setGame((prevGame) => ({
+                        ...prevGame,
+                        ...data.game,
+                        players: data.players,
+                    }));
+                    setPlayer((prevPlayer) => ({
+                        ...prevPlayer,
+                        ...data.player,
+                    }));
+                    setCookie({ field: "playerID", value: data.player.id });
+                    history.push(`/g/${data.game.id}`);
+                }
                 setLoading(false);
-                return;
-            }
-            if (isNullOrUndefined(data.game)) {
-                deleteCookie("playerID");
-            } else {
-                setGame((prevGame) => ({
-                    ...prevGame,
-                    ...data.game,
-                    players: data.players,
-                }));
-                setPlayer((prevPlayer) => ({ ...prevPlayer, ...data.player }));
-                setCookie({ field: "playerID", value: data.player.id });
-                history.push(`/g/${data.game.id}`);
-            }
-            setLoading(false);
-        });
+            },
+            notificationParams
+        );
 
-        socket.on("disconnect", () => {
-            socket.close();
-            resetData();
-            history.push("/");
-        });
+        socketOn(
+            "disconnect",
+            () => {
+                socket.close();
+                resetData();
+                history.push("/");
+            },
+            notificationParams
+        );
 
         return () => {
             socket.off("update_game_and_players");
+            socket.off("disconnect");
         };
-    }, []);
+    }, [notificationParams, fireNotification, notificationCount]);
 
     useEffect(() => {
         const cookie = getCookie("playerID");
@@ -137,15 +183,17 @@ export const App = () => {
 
     const notificationsToRender = [];
 
-    for (let i = 0, len = notification.length; i < len; i++) {
-        const singleNotification = notification[i];
+    for (let i = 0, len = notifications.length; i < len; i++) {
+        const singleNotification = notifications[i];
+        const { id, text, type } = singleNotification;
 
         notificationsToRender.push(
             <Notification
-                key={i}
-                text={singleNotification.text}
-                type={singleNotification.type}
-                icon={singleNotification.icon}
+                key={id}
+                id={id}
+                text={text}
+                type={type}
+                destroy={hideNotification}
             />
         );
     }
@@ -162,13 +210,12 @@ export const App = () => {
         );
     } else {
         content = (
-            <>
-                {!isNullOrUndefined(notification) &&
-                    notification.length > 0 && (
-                        <div className="notification-wrapper">
-                            {notificationsToRender}
-                        </div>
-                    )}
+            <NotificationContextProvider value={notificationParams}>
+                {notifications.length > 0 && (
+                    <div className="notification-wrapper">
+                        {notificationsToRender}
+                    </div>
+                )}
                 <div
                     className={`App ${
                         pathName === "/" ? "background-img" : "mono-background"
@@ -203,13 +250,18 @@ export const App = () => {
                                     exact
                                     path="/g/:id"
                                     render={(props) => (
-                                        <Game
-                                            game={game}
-                                            player={player}
-                                            fireNotification={fireNotification}
-                                            updateData={updateData}
-                                            showDebug={showDebug}
-                                        />
+                                        <GameContextProvider
+                                            value={{
+                                                game,
+                                                player,
+                                                updateData,
+                                            }}
+                                        >
+                                            <Game
+                                                updateData={updateData}
+                                                showDebug={showDebug}
+                                            />
+                                        </GameContextProvider>
                                     )}
                                 />
                                 <Route
@@ -243,7 +295,7 @@ export const App = () => {
                         </div>
                     </div>
                 </div>
-            </>
+            </NotificationContextProvider>
         );
     }
 

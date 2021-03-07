@@ -38,7 +38,7 @@ export const PopOverMenu = memo(({ content, buttonProps }) => {
     return (
         <div
             style={{
-                width: containerWidth + 2, // I am not sure why it needs those 2 extra pixels, but it does.
+                width: containerWidth + 2, // I am not sure why it needs those 2 extra pixels, but it does. EDIT: 2 pixels might be buttons borders?
             }}
         >
             <Button

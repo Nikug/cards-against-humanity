@@ -1,44 +1,45 @@
-import { BUTTON_TYPES, Button } from "../../components/button";
 import React, { useEffect, useState } from "react";
-import { getCookie, setCookie } from "../../helpers/cookies";
-import { isPlayerHost, isPlayerSpectator } from "../../helpers/player-helpers";
 
-import { ActionButtonRow } from "./components/ActionButtonRow";
+import { socket } from "../../components/sockets/socket";
+import { getCookie, setCookie } from "../../helpers/cookies";
+import { isPlayerSpectator } from "../../helpers/player-helpers";
+
+import { getGamePhaseContent } from "./getGamePhaseContent";
+
 import { GAME_STATES } from "../../consts/gamestates";
 import { NOTIFICATION_TYPES } from "../../components/notification/notification";
+
+import { useGameContext } from "../../contexts/GameContext";
+import { useNotification } from "../../contexts/NotificationContext";
+
 import { PlayersWidget } from "../../components/players-widget/playerswidget";
-import { PopOverMenu } from "../../components/popover-menu/PopoverMenu";
-import { SocketMessenger } from "../../components/socket-messenger/socket-messenger";
 import { Timer } from "../../components/timer";
 import { WholePageLoader } from "../../components/WholePageLoader";
-import { emptyFn } from "../../helpers/generalhelpers";
-import { getGamePhaseContent } from "./getGamePhaseContent";
-import { socket } from "../../components/sockets/socket";
+import { socketOn } from "../../helpers/communicationhelpers";
+import { GameMenu } from "./components/GameMenu/GameMenu";
+import { SpectatorsInfo } from "./components/SpectatorsInfo/SpectatorsInfo";
 
 export const NAME_CHAR_LIMIT = 50;
 export const ICON_CLASSNAMES = "md-36 icon-margin-right";
 
-export const Game = ({
-    game,
-    player,
-    fireNotification,
-    updateData,
-    showDebug,
-}) => {
-    const isSpectator = player ? player.state === "spectating" : false;
-    const isLobby = game?.state === GAME_STATES.LOBBY;
+export const Game = ({ showDebug }) => {
+    // Contexts
+    const { game, player, updateData } = useGameContext();
+    const notificationParams = useNotification();
+    const { fireNotification, notificationCount } = notificationParams;
 
+    // States
     const [isLoading, setIsLoading] = useState(false);
     const [startingProgress, setStartingProgress] = useState(0);
     const [timerIsOn, setTimerIsOn] = useState(false);
     const [blackCards, setBlackCards] = useState([]);
     const [popularVotedCardsIDs, setPopularVotedCardsIDs] = useState([]);
 
-    const getGameIdFromURL = () => {
-        const url = window.location.pathname;
-        return url.replace("/g/", "");
-    };
+    // Common consts
+    const isSpectator = player ? player.state === "spectating" : false;
+    const isLobby = game?.state === GAME_STATES.LOBBY;
 
+    // useEffects
     useEffect(() => {
         setIsLoading(false);
         if (game === undefined) {
@@ -56,56 +57,82 @@ export const Game = ({
     }, [game, player]);
 
     useEffect(() => {
-        socket.on("send_popular_voted_cards", (data) => {
-            setPopularVotedCardsIDs(data.whiteCardIDs);
-        });
+        socketOn(
+            "update_player",
+            (data) => {
+                setCookie({ field: "playerID", value: data.player.id });
+                updateData({ player: data.player });
+            },
+            notificationParams
+        );
 
-        return () => {
-            socket.off("send_popular_voted_cards");
-        };
-    }, []);
+        socketOn(
+            "update_game",
+            (data) => {
+                updateData({ game: data.game });
+                setIsLoading(false);
+            },
+            notificationParams
+        );
 
-    useEffect(() => {
-        socket.on("update_player", (data) => {
-            setCookie({ field: "playerID", value: data.player.id });
-            updateData({ player: data.player });
-        });
+        socketOn(
+            "update_players",
+            (data) => {
+                updateData({ players: data.players });
+            },
+            notificationParams
+        );
 
-        socket.on("update_game", (data) => {
-            updateData({ game: data.game });
-            setIsLoading(false);
-        });
+        socketOn(
+            "update_game_options",
+            (data) => {
+                updateData({ options: data.options });
+            },
+            notificationParams
+        );
 
-        socket.on("update_players", (data) => {
-            updateData({ players: data.players });
-        });
+        socketOn(
+            "deal_black_cards",
+            (data) => {
+                setBlackCards(data.blackCards);
+            },
+            notificationParams
+        );
 
-        socket.on("update_game_options", (data) => {
-            updateData({ options: data.options });
-        });
+        socketOn(
+            "upgrade_to_host",
+            (data) => {
+                const notification = {
+                    text:
+                        "Pelin edellinen isäntä lähti, joten sinä olet nyt uusi isäntä!",
+                    type: NOTIFICATION_TYPES.DEFAULT,
+                    icon: {
+                        name: "info",
+                        color: "blue",
+                        className: "type-icon",
+                    },
+                };
 
-        socket.on("deal_black_cards", (data) => {
-            setBlackCards(data.blackCards);
-        });
+                fireNotification(notification, 5);
+            },
+            notificationParams
+        );
 
-        socket.on("upgrade_to_host", (data) => {
-            const notification = {
-                text:
-                    "Pelin edellinen isäntä lähti, joten sinä olet nyt uusi isäntä!",
-                type: NOTIFICATION_TYPES.DEFAULT,
-                icon: {
-                    name: "info",
-                    color: "blue",
-                    className: "type-icon",
-                },
-            };
+        socketOn(
+            "update_timers",
+            (data) => {
+                updateData({ timers: data.timers });
+            },
+            notificationParams
+        );
 
-            fireNotification(notification, 5);
-        });
-
-        socket.on("update_timers", (data) => {
-            updateData({ timers: data.timers });
-        });
+        socketOn(
+            "send_popular_voted_cards",
+            (data) => {
+                setPopularVotedCardsIDs(data.whiteCardIDs);
+            },
+            notificationParams
+        );
 
         return () => {
             socket.off("update_player");
@@ -114,16 +141,9 @@ export const Game = ({
             socket.off("update_game_options");
             socket.off("deal_black_cards");
             socket.off("upgrade_to_host");
+            socket.off("send_popular_voted_cards");
         };
-    }, []);
-
-    const resetTimer = () => {
-        setTimerIsOn(false);
-
-        setTimeout(() => {
-            setTimerIsOn(true);
-        }, 100);
-    };
+    }, [notificationParams, fireNotification, notificationCount]);
 
     useEffect(() => {
         if (game?.timers.passedTime && game?.timers.duration) {
@@ -137,7 +157,6 @@ export const Game = ({
         }
     }, [game?.state, game?.timers]);
 
-    // New window is opened for the same user in an existing game
     // Ask for black cards
     useEffect(() => {
         if (
@@ -151,13 +170,26 @@ export const Game = ({
         }
     }, []);
 
+    // Functions
+    const getGameIdFromURL = () => {
+        const url = window.location.pathname;
+        return url.replace("/g/", "");
+    };
+
+    const resetTimer = () => {
+        setTimerIsOn(false);
+
+        setTimeout(() => {
+            setTimerIsOn(true);
+        }, 100);
+    };
+
+    // Send data to server
     const startGame = (gameID, playerID) => {
         if (!!gameID && !!playerID) {
             socket.emit("start_game", { gameID, playerID });
         }
     };
-
-    //console.log(`Is socket still open: ${socket.connected ? "Yes" : "No"}`);
 
     const setPlayerName = (name) => {
         const cleanedName = name.trim();
@@ -193,6 +225,12 @@ export const Game = ({
         });
     };
 
+    // Renderin related stuff
+
+    if (isLoading) {
+        return <WholePageLoader text={"Pieni hetki, peliä ladataan..."} />;
+    }
+
     const contentProps = {
         callbacks: {
             setPlayerName,
@@ -207,13 +245,6 @@ export const Game = ({
     };
 
     const renderedContent = getGamePhaseContent(contentProps);
-    const spectatorCount = game?.players.filter((player) =>
-        isPlayerSpectator(player)
-    ).length;
-
-    if (isLoading) {
-        return <WholePageLoader text={"Pieni hetki, peliä ladataan..."} />;
-    }
 
     return (
         <div>
@@ -221,99 +252,16 @@ export const Game = ({
                 <PlayersWidget game={game} player={player} />
                 <Timer
                     width={100}
-                    percent={
-                        game?.state === GAME_STATES.LOBBY
-                            ? 0
-                            : timerIsOn
-                            ? 1
-                            : 0
-                    }
-                    startingPercent={
-                        game?.state === GAME_STATES.LOBBY ? 0 : startingProgress
-                    }
+                    percent={isLobby ? 0 : timerIsOn ? 1 : 0}
+                    startingPercent={isLobby ? 0 : startingProgress}
                     time={game?.timers.duration ?? 0}
                 />
                 <div className="actions-wrapper">
-                    <PopOverMenu
-                        buttonProps={{ icon: "menu" }}
-                        content={
-                            <>
-                                Valikko
-                                <ActionButtonRow
-                                    buttons={[
-                                        isSpectator
-                                            ? {
-                                                  icon: "login",
-                                                  text: "Liity peliin",
-                                                  callback: togglePlayerMode,
-                                                  type: BUTTON_TYPES.PRIMARY,
-                                              }
-                                            : {
-                                                  icon: "groups",
-                                                  text: "Siirry katsomoon",
-                                                  callback: togglePlayerMode,
-                                                  type: BUTTON_TYPES.PRIMARY,
-                                              },
-                                        {
-                                            icon: "home",
-                                            text: "Takaisin aulaan",
-                                            callback: returnBackToLobby,
-                                            type: BUTTON_TYPES.PRIMARY,
-                                            disabled:
-                                                !isPlayerHost(player) ||
-                                                game?.state ===
-                                                    GAME_STATES.LOBBY,
-                                        },
-                                        {
-                                            icon: "settings",
-                                            text: "Pelin asetukset",
-                                            callback: emptyFn,
-                                            type: BUTTON_TYPES.PRIMARY,
-                                            disabled:
-                                                true ||
-                                                !isPlayerHost(player) ||
-                                                game?.state ===
-                                                    GAME_STATES.LOBBY,
-                                        },
-                                        {
-                                            icon: "history",
-                                            text: "Historia",
-                                            callback: emptyFn,
-                                            type: BUTTON_TYPES.PRIMARY,
-                                            disabled: true,
-                                        },
-                                    ]}
-                                />
-                            </>
-                        }
+                    <GameMenu
+                        callbacks={{ togglePlayerMode, returnBackToLobby }}
+                        showDebug={showDebug}
                     />
-                    {showDebug && (
-                        <PopOverMenu
-                            buttonProps={{ icon: "menu", text: "Debug" }}
-                            content={
-                                <SocketMessenger
-                                    gameID={game?.id}
-                                    playerID={player?.id}
-                                />
-                            }
-                        />
-                    )}
-                    <div className="spectator-info">
-                        {spectatorCount > 0 && (
-                            <div className="anchor">
-                                <div className="spectators">
-                                    Katsojia: {spectatorCount}
-                                </div>
-                            </div>
-                        )}
-                        {isSpectator && (
-                            <div className="anchor">
-                                <div className="spectator-indicator">
-                                    Olet katsomossa
-                                </div>
-                            </div>
-                        )}
-                    </div>
+                    <SpectatorsInfo />
                 </div>
             </div>
             <div className="lobby-container">{renderedContent}</div>

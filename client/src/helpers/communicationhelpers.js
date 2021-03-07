@@ -1,12 +1,31 @@
-import { socket } from "../sockets/socket";
-import axios from "axios";
+import { socket } from "../components/sockets/socket";
+import { NOTIFICATION_TYPES } from "../components/notification/notification";
 
-export function socketEmit(method, paramsObject) {
-    socket.emit(method, paramsObject);
-}
+export const socketEmit = (eventName, paramsObject) => {
+    socket.emit(eventName, paramsObject);
+};
 
-export function axiosPost(route) {
-    axios.post("/g").then((res) => {
-        return res;
+export const socketOn = (eventName, callback, notificationParams = {}) => {
+    const { fireNotification } = notificationParams;
+
+    socket.on(eventName, (data) => {
+        callback(data);
+
+        /*
+        const notification = {
+            text: `Testi notifikaatio, päivitetty data: ${
+                data.game ? "game" : ""
+            } ${data.players ? "players" : ""} ${data.player ? "player" : ""} ${
+                data.options ? "options" : ""
+            }`,
+            type: NOTIFICATION_TYPES.DEFAULT,
+            time: 200,
+        };
+        */
+        const notification = data?.notification;
+
+        if (notification && fireNotification) {
+            fireNotification(notification, notification.time);
+        }
     });
-}
+};

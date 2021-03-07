@@ -3,12 +3,7 @@
 .game-settings-container {
     font-size: 1.7rem;
     color: $settings-text;
-    background: linear-gradient(
-            180deg,
-            $players-background-shadow,
-            $players-background
-        )
-        $players-background;
+    background: $settings-container-background;
     border-radius: 2px;
 
     cursor: default;

@@ -10,6 +10,8 @@
     flex-direction: column;
     align-items: center;
     font-family: "Ubuntu", sans-serif;
+
+    z-index: 100;
 }
 
 .notification {
@@ -19,7 +21,6 @@
     max-width: 80%;
     padding: 0.8rem;
     background-color: $notification-background;
-    color: black;
     border-radius: 1rem;
     border: 3px solid $notification-border;
     text-align: left;
@@ -29,6 +30,7 @@
     justify-content: space-between;
     white-space: normal;
     color: $notification-text;
+    margin-bottom: 1em;
 
     &.error {
         border-color: $notification-border-error;
@@ -45,6 +47,9 @@
     }
 
     .icon-and-text {
+        display: flex;
+        align-items: center;
+
         .type-icon {
             margin-right: 0.8rem;
             margin-top: auto;

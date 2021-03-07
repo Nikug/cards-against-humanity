@@ -8,16 +8,21 @@ import {
 
 import { CardPicker } from "./cardpicker";
 import { socket } from "../sockets/socket";
+import { socketOn } from "../../helpers/communicationhelpers";
+import { useGameContext } from "../../contexts/GameContext";
+import { useNotification } from "../../contexts/NotificationContext";
 
-export const CardReadingContainer = (props) => {
-    const { game, player } = props;
+export const CardReadingContainer = () => {
+    const { game, player } = useGameContext();
+    const notificationParams = useNotification();
+
     const [whiteCards, setWhiteCards] = useState([]);
     const [whiteCardIndex, setWhiteCardIndex] = useState(0);
     const [outOf, setOutOf] = useState(0);
-    const textToSpeechInUse = game.players.filter(
+    const textToSpeechInUse = game?.players?.filter(
         (player) => player.isCardCzar
     )[0].useTextToSpeech;
-    const blackCard = game.rounds[game.rounds.length - 1].blackCard;
+    const blackCard = game?.rounds[game.rounds.length - 1].blackCard;
 
     useEffect(() => {
         const listener = (data) => {
@@ -26,7 +31,7 @@ export const CardReadingContainer = (props) => {
             setOutOf(data.outOf);
 
             const blackCardToRead =
-                game.rounds[game.rounds.length - 1].blackCard;
+                game?.rounds[game.rounds.length - 1].blackCard;
 
             if (textToSpeechInUse && !isNullOrUndefined(blackCardToRead)) {
                 const whiteCardsToRead = data.whiteCards;
@@ -47,10 +52,10 @@ export const CardReadingContainer = (props) => {
                 textToSpeech(fullText);
             }
         };
-        socket.on("show_white_card", listener);
+        socketOn("show_white_card", listener);
 
         return () => {
-            socket.off("show_white_card", listener);
+            socket.off("show_white_card");
         };
     }, [textToSpeechInUse]);
 
@@ -80,7 +85,7 @@ export const CardReadingContainer = (props) => {
 
     function toggleTextToSpeech() {
         socket.emit("change_text_to_speech", {
-            gameID: game.id,
+            gameID: game?.id,
             playerID: player.id,
             useTextToSpeech: !textToSpeechInUse,
         });
@@ -88,7 +93,7 @@ export const CardReadingContainer = (props) => {
 
     const showNextCard = () => {
         socket.emit("show_next_white_card", {
-            gameID: game.id,
+            gameID: game?.id,
             playerID: player.id,
         });
     };

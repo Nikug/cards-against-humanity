@@ -139,6 +139,12 @@ interface CardPack {
     blackCards: number;
 }
 
+interface Notification {
+    text: string;
+    type?: "default" | "error" | "success";
+    time?: number; // seconds
+}
+
 type GameState =
     | "lobby"
     | "pickingBlackCard"

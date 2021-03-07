@@ -8,6 +8,8 @@ $color-darkening-grey: #303030;
 $color-darkish-grey: #363636;
 $color-grey: #727272;
 $color-light-grey: #bdbdbd;
+// Mildly colorfull colors
+$color-gray-blue: #2f373d;
 // Bright colors
 $color-bright-yellow: #ffc518;
 $color-yellow: #ce9a00;
@@ -108,11 +110,12 @@ $timer-background: lighten($color-darkish-grey, 10%);
 $timer-progress: $color-blue;
 
 // Settings
+$settings-container-background: lighten($color-darkish-grey, 10%);
 $settings-text: $color-white;
 $settings-text-disabled: darken($color-light-grey, 10%);
 $settings-divider: $color-light-grey;
-$setting-background: darken($color-grey, 5%);
-$setting-background-hover: darken($color-grey, 0%);
+$setting-background: darken($color-grey, 2%);
+$setting-background-hover: lighten($color-grey, 5%);
 $settings-item-hover-text-shadow: darken($color-blue, 10%);
 $settings-item-hover-text: $color-white;
 $settings-control: $color-white;
@@ -133,7 +136,7 @@ $card-confimerd: $color-green;
 
 // Notification
 $notification-text: $color-white;
-$notification-background: $color-dark-grey;
+$notification-background: rgba(34, 34, 34, 0.8);
 $notification-border: $color-blue;
 $notification-border-error: $color-red;
 $notification-border-success: $color-green;

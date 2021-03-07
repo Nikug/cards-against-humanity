@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import { isNullOrUndefined } from "../../helpers/generalhelpers";
 import Icon from "../icon";
 
 export const NOTIFICATION_TYPES = {
@@ -8,37 +7,50 @@ export const NOTIFICATION_TYPES = {
     SUCCESS: "success",
 };
 
-export const Notification = (props) => {
-    const { text, type, icon } = props;
-    const [hidden, setHidden] = useState(false);
-
+export const Notification = ({ id, text, type, destroy }) => {
     const hide = () => {
-        setHidden(true);
+        destroy(id);
     };
 
-    const show = () => {
-        setHidden(false);
+    const mapType = (type) => {
+        switch (type) {
+            case NOTIFICATION_TYPES.DEFAULT:
+                return NOTIFICATION_TYPES.DEFAULT;
+            case NOTIFICATION_TYPES.ERROR:
+                return NOTIFICATION_TYPES.ERROR;
+            case NOTIFICATION_TYPES.SUCCESS:
+                return NOTIFICATION_TYPES.SUCCESS;
+            default:
+                return NOTIFICATION_TYPES.DEFAULT;
+        }
     };
 
-    useEffect(() => {
-        show();
-    }, [props]);
+    const mapIcon = (type) => {
+        switch (type) {
+            case NOTIFICATION_TYPES.DEFAULT:
+                return { name: "info", color: "blue", className: "type-icon" };
+            case NOTIFICATION_TYPES.ERROR:
+                return {
+                    name: "warning",
+                    color: "red",
+                    className: "type-icon",
+                };
+            case NOTIFICATION_TYPES.SUCCESS:
+                return {
+                    name: "check_circle",
+                    color: "green",
+                    className: "type-icon",
+                };
+            default:
+                return { name: "info", color: "blue", className: "type-icon" };
+        }
+    };
 
     return (
-        <div
-            className={`notification ${isNullOrUndefined(type) ? "" : type} ${
-                hidden ? "hide" : ""
-            }`}
-        >
+        <div className={`notification ${mapType(type)}`}>
             <div className="icon-and-text">
-                {icon && (
-                    <Icon
-                        name={"info"}
-                        color={"blue"}
-                        className={"type-icon"}
-                    />
-                )}
-                {text}
+                <Icon {...mapIcon(type)} />
+                <span className="text">{text}</span>
             </div>
             <div className="dismiss-btn">
                 <Icon name={"highlight_off"} color={"white"} onClick={hide} />
