@@ -1,31 +1,38 @@
+import { BUTTON_TYPES, Button } from "../../components/button";
 import React, { useEffect, useState } from "react";
 import { getCookie, setCookie } from "../../helpers/cookies";
+import { isPlayerHost, isPlayerSpectator } from "../../helpers/player-helpers";
 
 import { ActionButtonRow } from "./components/ActionButtonRow";
-import { Button, BUTTON_TYPES } from "../../components/button";
 import { GAME_STATES } from "../../consts/gamestates";
 import { NOTIFICATION_TYPES } from "../../components/notification/notification";
 import { PlayersWidget } from "../../components/players-widget/playerswidget";
 import { PopOverMenu } from "../../components/popover-menu/PopoverMenu";
 import { SocketMessenger } from "../../components/socket-messenger/socket-messenger";
 import { Timer } from "../../components/timer";
-import { getGamePhaseContent } from "./getGamePhaseContent";
-import { isPlayerHost, isPlayerSpectator } from "../../helpers/player-helpers";
-import { socket } from "../../components/sockets/socket";
+import { WholePageLoader } from "../../components/WholePageLoader";
 import { emptyFn } from "../../helpers/generalhelpers";
+import { getGamePhaseContent } from "./getGamePhaseContent";
+import { socket } from "../../components/sockets/socket";
 
 export const NAME_CHAR_LIMIT = 50;
 export const ICON_CLASSNAMES = "md-36 icon-margin-right";
 
-export const Game = (props) => {
-    const { game, player, fireNotification, updateData } = props;
+export const Game = ({
+    game,
+    player,
+    fireNotification,
+    updateData,
+    showDebug,
+}) => {
     const isSpectator = player ? player.state === "spectating" : false;
+    const isLobby = game?.state === GAME_STATES.LOBBY;
 
+    const [isLoading, setIsLoading] = useState(false);
     const [startingProgress, setStartingProgress] = useState(0);
     const [timerIsOn, setTimerIsOn] = useState(false);
     const [blackCards, setBlackCards] = useState([]);
     const [popularVotedCardsIDs, setPopularVotedCardsIDs] = useState([]);
-    const [menuIsOpen, setMenuIsOpen] = useState(false);
 
     const getGameIdFromURL = () => {
         const url = window.location.pathname;
@@ -33,7 +40,9 @@ export const Game = (props) => {
     };
 
     useEffect(() => {
+        setIsLoading(false);
         if (game === undefined) {
+            setIsLoading(true);
             const cookie = getCookie("playerID");
             if (socket.disconnected) {
                 console.log("opening socket");
@@ -43,14 +52,6 @@ export const Game = (props) => {
                 gameID: getGameIdFromURL(),
                 playerID: cookie,
             });
-            console.log(
-                "joining game!",
-                cookie,
-                "socket",
-                socket,
-                "game",
-                game
-            );
         }
     }, [game, player]);
 
@@ -72,6 +73,7 @@ export const Game = (props) => {
 
         socket.on("update_game", (data) => {
             updateData({ game: data.game });
+            setIsLoading(false);
         });
 
         socket.on("update_players", (data) => {
@@ -209,6 +211,10 @@ export const Game = (props) => {
         isPlayerSpectator(player)
     ).length;
 
+    if (isLoading) {
+        return <WholePageLoader text={"Pieni hetki, peliä ladataan..."} />;
+    }
+
     return (
         <div>
             <div className="info">
@@ -229,7 +235,7 @@ export const Game = (props) => {
                 />
                 <div className="actions-wrapper">
                     <PopOverMenu
-                        buttonProps={{ icon: "menu", text: "Menu" }}
+                        buttonProps={{ icon: "menu" }}
                         content={
                             <>
                                 Valikko
@@ -281,15 +287,17 @@ export const Game = (props) => {
                             </>
                         }
                     />
-                    {/* <PopOverMenu
-                        buttonProps={{ icon: "menu", text: "Debug" }}
-                        content={
-                            <SocketMessenger
-                                gameID={game?.id}
-                                playerID={player?.id}
-                            />
-                        }
-                    /> */}
+                    {showDebug && (
+                        <PopOverMenu
+                            buttonProps={{ icon: "menu", text: "Debug" }}
+                            content={
+                                <SocketMessenger
+                                    gameID={game?.id}
+                                    playerID={player?.id}
+                                />
+                            }
+                        />
+                    )}
                     <div className="spectator-info">
                         {spectatorCount > 0 && (
                             <div className="anchor">

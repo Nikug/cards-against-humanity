@@ -41,6 +41,8 @@
 .actions-wrapper {
     display: flex;
     flex-direction: row;
+    height: 0;
+    overflow: visible;
 
     .spectator-info {
         width: 100%;

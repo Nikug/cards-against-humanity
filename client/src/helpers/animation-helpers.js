@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
-import ResizeObserver from "resize-observer-polyfill";
+import "resize-observer-polyfill";
 
 export function usePrevious(value) {
     const ref = useRef();

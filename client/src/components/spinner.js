@@ -27,9 +27,10 @@ const SPINNER_TYPES = {
 
 const defaultProps = {
     color: "#268bd2",
+    size: "100%",
 };
 
-export const Spinner = (type) => {
+export const Spinner = ({ type }) => {
     switch (type) {
         case SPINNER_TYPES.SpinnerCircular:
             return <SpinnerCircular {...defaultProps} />;
@@ -55,7 +56,7 @@ export const Spinner = (type) => {
 };
 
 function getRandomArbitrary(min, max) {
-    return Math.random() * (max - min) + min;
+    return Math.round(Math.random() * (max - min) + min);
 }
 
 export const getRandomSpinner = () => {

@@ -1,15 +1,6 @@
 import React, { useEffect, useState } from "react";
-import {
-    Route,
-    BrowserRouter as Router,
-    Switch,
-    useHistory,
-    useLocation,
-} from "react-router-dom";
-import {
-    containsObjectWithMatchingFieldIndex,
-    isNullOrUndefined,
-} from "./helpers/generalhelpers";
+import { Route, Switch, useHistory, useLocation } from "react-router-dom";
+import { isNullOrUndefined } from "./helpers/generalhelpers";
 import { deleteCookie, getCookie, setCookie } from "./helpers/cookies";
 
 import { Button } from "./components/button";
@@ -21,8 +12,22 @@ import Music from "./components/music";
 import { Notification } from "./components/notification/notification";
 import axios from "axios";
 import { socket } from "./components/sockets/socket";
+import { getRandomSpinner } from "./components/spinner";
 
-export const App = (props) => {
+export const App = () => {
+    /*****************************************************************/ // Purely for hiding dev things from the production.
+    const [clicked, setClicked] = useState(0);
+    const [showDebug, setShowDebug] = useState(false);
+
+    const secretClick = () => {
+        if (clicked > 3) {
+            setShowDebug(true);
+        } else {
+            setClicked(clicked + 1);
+        }
+    };
+    /*****************************************************************/
+
     const [game, setGame] = useState(undefined);
     const [player, setPlayer] = useState(undefined);
     const [notification, setNotification] = useState([]);
@@ -67,7 +72,6 @@ export const App = (props) => {
                 setLoading(false);
                 return;
             }
-            //console.log("Current game:", data.game);
             if (isNullOrUndefined(data.game)) {
                 deleteCookie("playerID");
             } else {
@@ -101,10 +105,8 @@ export const App = (props) => {
             socket.emit("join_game", {
                 playerID: cookie,
             });
-            // setPlayer({ player: { id: cookie } });
         } else {
             deleteCookie("playerID");
-            //setCookie({ field: "playerID", value: "random-id-123" });
             setLoading(false);
         }
     }, []);
@@ -152,7 +154,12 @@ export const App = (props) => {
     const pathName = useLocation().pathname;
 
     if (loading) {
-        content = <div>loading...</div>;
+        content = (
+            <div className="loading-page-spinner-container">
+                <div className="loading-text">Ei hätää, sivua ladataan...</div>
+                <div className="loading-page-spinner">{getRandomSpinner()}</div>
+            </div>
+        );
     } else {
         content = (
             <>
@@ -201,6 +208,7 @@ export const App = (props) => {
                                             player={player}
                                             fireNotification={fireNotification}
                                             updateData={updateData}
+                                            showDebug={showDebug}
                                         />
                                     )}
                                 />
@@ -229,7 +237,7 @@ export const App = (props) => {
                             <span className="music-player">
                                 <Music />
                             </span>
-                            <span className="copyrights">
+                            <span className="copyrights" onClick={secretClick}>
                                 &copy; {new Date().getFullYear()}
                             </span>
                         </div>
