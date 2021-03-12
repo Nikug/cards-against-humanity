@@ -15,7 +15,7 @@ import { ErrorContainer } from "./components/ErrorContainer";
 import { WhiteCardPickerContainer } from "../../components/card-picker/whitecardpickercontainer";
 import {
     isPlayerCardCzar,
-    isPlayerSpectator,
+    isPlayerSpectatorOrJoining,
 } from "../../helpers/player-helpers";
 
 export const getGamePhaseContent = ({
@@ -29,7 +29,7 @@ export const getGamePhaseContent = ({
     const playerState = player?.state;
     const disableStartGameButton = !canStartGame(game);
     const isCardCzar = isPlayerCardCzar(player);
-    const isSpectator = isPlayerSpectator(player);
+    const isSpectator = isPlayerSpectatorOrJoining(player);
 
     if (!game || !player) {
         return <div>ladataan...</div>;

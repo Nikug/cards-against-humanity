@@ -3,7 +3,7 @@ import React from "react";
 import { CardPicker } from "./cardpicker";
 import { emptyFn } from "../../helpers/generalhelpers";
 import { GAME_STATES } from "../../consts/gamestates";
-import { isPlayerSpectator } from "../../helpers/player-helpers";
+import { isPlayerSpectatorOrJoining } from "../../helpers/player-helpers";
 
 export function WaitingCardPickerContainer(props) {
     const {
@@ -15,7 +15,7 @@ export function WaitingCardPickerContainer(props) {
         noBigMainCard,
     } = props;
 
-    const isSpectator = isPlayerSpectator(player);
+    const isSpectator = isPlayerSpectatorOrJoining(player);
     let whiteCards;
 
     if (isSpectator) {

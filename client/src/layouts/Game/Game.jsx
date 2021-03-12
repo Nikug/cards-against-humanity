@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 
 import { socket } from "../../components/sockets/socket";
 import { getCookie, setCookie } from "../../helpers/cookies";
-import { isPlayerSpectator } from "../../helpers/player-helpers";
 
 import { getGamePhaseContent } from "./getGamePhaseContent";
 

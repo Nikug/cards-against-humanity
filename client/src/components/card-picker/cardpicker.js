@@ -8,6 +8,8 @@ import {
 } from "../../helpers/generalhelpers";
 import { Button, BUTTON_TYPES } from "../button";
 import { renderBlackCardwithWhiteCards } from "./cardformathelpers.js/renderBlackcardWithWhiteCards";
+import { isPlayerJoining } from "../../helpers/player-helpers";
+import { useGameContext } from "../../contexts/GameContext";
 
 /**
  * Everything given via props
@@ -46,6 +48,8 @@ export function CardPicker(props) {
         popularVotedCardsIDs,
         preRenderedCards = [],
     } = props;
+    const { player } = useGameContext();
+
     const renderedCards = preRenderedCards.slice();
     const selectableCardsLength = selectableCards ? selectableCards.length : 0;
 
@@ -140,6 +144,13 @@ export function CardPicker(props) {
                         className="fa fa-spinner fa-spin"
                         style={{ fontSize: "24px" }}
                     />
+                </div>
+            );
+        }
+        if (isPlayerJoining(player)) {
+            content.push(
+                <div className="alternativetext" key="joining-text">
+                    Pääset pelaamaan seuraavalla kierroksella!
                 </div>
             );
         }
