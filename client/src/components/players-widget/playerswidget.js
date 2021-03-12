@@ -33,7 +33,7 @@ export const PlayersWidget = ({ game, player }) => {
                 <Player
                     player={player}
                     key={publicID}
-                    id={id || publicID}
+                    publicID={publicID}
                     name={state === PLAYER_STATES.PICKING_NAME ? null : name}
                     state={state}
                     score={score}

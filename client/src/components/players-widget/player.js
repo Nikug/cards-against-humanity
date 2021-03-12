@@ -1,9 +1,14 @@
 import React, { useState, useCallback } from "react";
-import { useSpring, useTransition } from "react-spring";
+import { useTransition } from "react-spring";
 import { animated } from "react-spring";
-import { useMeasure } from "../../helpers/animation-helpers";
 import Icon from "../icon";
+import { PopOverMenu } from "../popover-menu/PopoverMenu";
 import crownIcon from "./../../assets/svgicons/crown-svgrepo-com.svg";
+import { ActionButtonRow } from "../../layouts/Game/components/GameMenu/ActionButtonRow";
+import { emptyFn } from "../../helpers/generalhelpers";
+import { useGameContext } from "../../contexts/GameContext";
+import { isPlayerHost } from "../../helpers/player-helpers";
+import { socket } from "./../sockets/socket";
 
 /*
 interface Player {
@@ -27,9 +32,18 @@ export const Player = ({
     isHost,
     isPopularVoteKing,
     isSelf,
+    publicID,
 }) => {
+    const { player, game } = useGameContext();
     const noName = name === null || name === undefined;
     const [showTitle, setShowTitle] = useState(false);
+    const [menuIsOpen, setMenuIsOpen] = useState(false);
+
+    const toggleMenu = () => {
+        if (isPlayerHost(player)) {
+            setMenuIsOpen(!menuIsOpen);
+        }
+    };
 
     const nameRef = useCallback(
         (node) => {
@@ -82,10 +96,24 @@ export const Player = ({
         },
     });
 
+    const removePlayer = (removeFromGame = true) => {
+        socket.emit("kick_player", {
+            gameID: game?.id,
+            playerID: player?.id,
+            targetID: publicID,
+            removeFromGame: removeFromGame,
+        });
+    };
+
+    const makePlayerSpectator = () => {
+        removePlayer(false);
+    };
+
     return (
         <div
             title={showTitle ? name : undefined}
             className={`player ${isCardCzar ? "cardCzar" : ""}`}
+            onClick={toggleMenu}
         >
             {isCardCzar && (
                 <div className="icon-anchor">
@@ -148,6 +176,28 @@ export const Player = ({
                     </span>
                 )}
             </span>
+            {isPlayerHost(player) && (
+                <PopOverMenu
+                    isDefaultOpen={menuIsOpen}
+                    noControl={true}
+                    content={
+                        <ActionButtonRow
+                            buttons={[
+                                {
+                                    icon: "logout",
+                                    text: "Poista pelistä",
+                                    callback: removePlayer,
+                                },
+                                {
+                                    icon: "groups",
+                                    text: "Siirrä katsomoon",
+                                    callback: makePlayerSpectator,
+                                },
+                            ]}
+                        />
+                    }
+                />
+            )}
         </div>
     );
 };

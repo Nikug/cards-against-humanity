@@ -1,12 +1,17 @@
-import React, { memo, useRef, useState } from "react";
+import React, { memo, useRef, useState, useEffect } from "react";
 import { animated, useSpring } from "react-spring";
 import { useMeasure, usePrevious } from "../../helpers/animation-helpers";
 
 import { Button } from "../button";
 import { useClickOutside } from "../../helpers/useClickOutside";
 
-export const PopOverMenu = memo(({ content, buttonProps }) => {
-    const [isOpen, setOpen] = useState(false);
+export const PopOverMenu = ({
+    content,
+    buttonProps,
+    noControl,
+    isDefaultOpen = false,
+}) => {
+    const [isOpen, setOpen] = useState(isDefaultOpen);
     const previous = usePrevious(isOpen);
     const [bind, { height: viewHeight }] = useMeasure();
     const [buttonBind, { width: buttonWidth }] = useMeasure();
@@ -19,12 +24,20 @@ export const PopOverMenu = memo(({ content, buttonProps }) => {
         },
     });
 
+    useEffect(() => {
+        if (isDefaultOpen) {
+            toggleMenu(true);
+        } else if (isDefaultOpen === false) {
+            closeMenu();
+        }
+    }, [isDefaultOpen]);
+
     const closeMenu = () => {
         setOpen(false);
     };
 
-    const toggleMenu = () => {
-        setOpen(!isOpen);
+    const toggleMenu = (value = !isOpen) => {
+        setOpen(value);
     };
 
     const menuRef = useRef(null);
@@ -41,11 +54,13 @@ export const PopOverMenu = memo(({ content, buttonProps }) => {
                 width: containerWidth + 2, // I am not sure why it needs those 2 extra pixels, but it does. EDIT: 2 pixels might be buttons borders?
             }}
         >
-            <Button
-                {...buttonProps}
-                callback={toggleMenu}
-                ref={buttonBind.ref}
-            />
+            {!noControl && (
+                <Button
+                    {...buttonProps}
+                    callback={toggleMenu}
+                    ref={buttonBind.ref}
+                />
+            )}
             <div className="menu-anchor">
                 <animated.div
                     className="menu-container"
@@ -117,4 +132,4 @@ export const PopOverMenu = memo(({ content, buttonProps }) => {
         </div>
     );
     */
-});
+};

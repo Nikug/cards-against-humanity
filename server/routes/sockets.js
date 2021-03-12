@@ -251,6 +251,7 @@ export const sockets = (io) => {
         });
 
         socket.on("kick_player", (data) => {
+            console.log(data);
             const missingFields = validateFields(
                 ["gameID", "playerID", "targetID", "removeFromGame"],
                 data
