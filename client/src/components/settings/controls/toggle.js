@@ -1,9 +1,19 @@
 import React from "react";
 import Icon from "../../icon";
 
-export const Toggle = ({ currentValue, isDisabled, onChangeCallback }) => {
+export const Toggle = ({
+    currentValue,
+    isDisabled,
+    onChangeCallback,
+    field,
+}) => {
     const onClick = (event) => {
         event.stopPropagation();
+
+        if (field) {
+            onChangeCallback({ field, value: !currentValue });
+            return;
+        }
 
         onChangeCallback(!currentValue);
     };

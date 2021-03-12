@@ -15,18 +15,57 @@ export const CONTROL_TYPES = {
     custom: "custom",
 };
 
-export const Setting = (props) => {
+export const Setting = ({
+    DEV_CARD_PACK_AUTOFILL,
+    icon,
+    text,
+    toolTipText,
+    controlType,
+    currentValue,
+    isDisabled,
+    onChangeCallback,
+    customControl,
+    placeholderText,
+    className,
+    onClick,
+    field,
+    customButtonIcon,
+    charLimit,
+}) => {
     const [inputText, setInputText] = useState("");
 
     useEffect(() => {
-        if (props.DEV_CARD_PACK_AUTOFILL === true) {
+        if (DEV_CARD_PACK_AUTOFILL === true) {
             const cardpackId = "U4nL88ujS" || "qM1V1IaYBE";
             setInputText(cardpackId);
         }
     }, []);
 
-    const renderNumberSelect = (currentValue, isDisabled, onChangeCallback) => {
+    const renderNumberSelect = (
+        currentValue,
+        isDisabled,
+        onChangeCallback,
+        field
+    ) => {
         const showAsDisabled = isDisabled || currentValue === null;
+
+        const onIncrease = () => {
+            if (field) {
+                onChangeCallback({ field, value: "increase" });
+                return;
+            }
+
+            onChangeCallback("increase");
+        };
+
+        const onDecrease = () => {
+            if (field) {
+                onChangeCallback({ field, value: "decrease" });
+                return;
+            }
+
+            onChangeCallback("decrease");
+        };
 
         return (
             <div className="number-control">
@@ -34,7 +73,7 @@ export const Setting = (props) => {
                     name="arrow_back_ios"
                     className="md-24 button-icon"
                     color={showAsDisabled ? "disabled" : "active"}
-                    onClick={() => onChangeCallback("decrease")}
+                    onClick={onDecrease}
                 />
                 <span
                     className={`number ${
@@ -47,7 +86,7 @@ export const Setting = (props) => {
                     name="arrow_forward_ios"
                     className="md-24 button-icon"
                     color={showAsDisabled ? "disabled" : "active"}
-                    onClick={() => onChangeCallback("increase")}
+                    onClick={onIncrease}
                 />
             </div>
         );
@@ -57,6 +96,7 @@ export const Setting = (props) => {
         currentValue = inputText,
         isDisabled,
         onChangeCallback,
+        field,
         placeholderText,
         hasConfirm = false
     ) => {
@@ -69,38 +109,51 @@ export const Setting = (props) => {
                     value={currentValue}
                     onChange={
                         hasConfirm
-                            ? (e) => handleKeyDown(e)
-                            : (e) => handleTextFieldChange(e, onChangeCallback)
+                            ? (e) => handleKeyDown(e, field)
+                            : (e) =>
+                                  handleTextFieldChange(
+                                      e,
+                                      onChangeCallback,
+                                      field
+                                  )
                     }
                 />
                 {hasConfirm && (
                     <Button
                         type={BUTTON_TYPES.PRIMARY}
                         callback={() =>
-                            handleTextFieldChange(null, onChangeCallback)
+                            handleTextFieldChange(null, onChangeCallback, field)
                         }
-                        icon={props.customButtonIcon || "add_circle_outline"}
+                        icon={customButtonIcon || "add_circle_outline"}
                     ></Button>
                 )}
             </div>
         );
     };
 
-    const handleKeyDown = (event) => {
+    const handleKeyDown = (event, field) => {
         event.preventDefault();
 
-        const charLimit = props.charLimit;
         const newInput = event.target.value.slice(0, charLimit);
 
         setInputText(newInput);
     };
 
-    const handleTextFieldChange = (event, changeCallback) => {
+    const handleTextFieldChange = (event, changeCallback, field) => {
         if (event === null) {
-            changeCallback(inputText);
+            if (field) {
+                changeCallback({ field, value: inputText });
+            } else {
+                changeCallback(inputText);
+            }
+
             setInputText("");
         } else {
             event.preventDefault();
+
+            if (field) {
+                changeCallback({ field, value: event.target.value });
+            }
             changeCallback(event.target.value);
         }
     };
@@ -134,10 +187,11 @@ export const Setting = (props) => {
                 <div key={i}>
                     {renderControl(
                         controls[i],
-                        currentValue,
+                        currentValue?.[i],
                         isDisabled,
                         onChangeCallback,
-                        placeholderText
+                        placeholderText,
+                        field?.[i]
                     )}
                 </div>
             );
@@ -151,7 +205,8 @@ export const Setting = (props) => {
         currentValue,
         isDisabled,
         onChangeCallback,
-        placeholderText
+        placeholderText,
+        field
     ) => {
         if (Array.isArray(controlType)) {
             return renderMultiplseControls(
@@ -170,19 +225,22 @@ export const Setting = (props) => {
                         currentValue={currentValue}
                         isDisabled={isDisabled}
                         onChangeCallback={onChangeCallback}
+                        field={field}
                     />
                 );
             case CONTROL_TYPES.number:
                 return renderNumberSelect(
                     currentValue,
                     isDisabled,
-                    onChangeCallback
+                    onChangeCallback,
+                    field
                 );
             case CONTROL_TYPES.text:
                 return renderTextField(
                     currentValue,
                     isDisabled,
                     onChangeCallback,
+                    field,
                     placeholderText,
                     false
                 );
@@ -191,6 +249,7 @@ export const Setting = (props) => {
                     currentValue,
                     isDisabled,
                     onChangeCallback,
+                    field,
                     placeholderText,
                     true
                 );
@@ -199,32 +258,14 @@ export const Setting = (props) => {
         }
     };
 
-    const changeCallback = (value) => {
-        const field = props.field;
-        const callbackFunction = props.onChangeCallback;
+    const changeCallback = (param) => {
+        const callbackFunction = onChangeCallback;
 
         if (!callbackFunction) return;
 
-        if (field) {
-            callbackFunction({ value: value, field: field });
-        } else {
-            callbackFunction(value);
-        }
+        callbackFunction(param);
     };
 
-    const {
-        icon,
-        text,
-        toolTipText,
-        controlType,
-        currentValue,
-        isDisabled,
-        onChangeCallback,
-        customControl,
-        placeholderText,
-        className,
-        onClick,
-    } = props;
     let renderedIcon;
 
     if (icon !== undefined) {

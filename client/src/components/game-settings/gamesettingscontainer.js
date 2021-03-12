@@ -27,16 +27,10 @@ export const GameSettingsContainer = ({
     };
 
     const updateTimers = ({ field, value }) => {
-        console.log("updateTimers", { field, value });
         if (!playerID || !gameID) return;
 
         const oldValue = options.timers[field];
-        let newValue =
-            value === false
-                ? null
-                : value === "increase"
-                ? oldValue + 5
-                : oldValue - 5;
+        let newValue;
 
         switch (value) {
             case "increase":
@@ -45,18 +39,12 @@ export const GameSettingsContainer = ({
             case "decrease":
                 newValue = oldValue - 5;
                 break;
-            case false:
-                newValue = null;
-                break;
-            case true:
-                newValue = 30; // Some defaultValue, should server provide these?
-                break;
             default:
-                newValue = oldValue;
+                newValue = value;
                 break;
         }
 
-        if (newValue !== null && (newValue < 5 || newValue > 600)) {
+        if (Number.isInteger(newValue) && (newValue < 5 || newValue > 600)) {
             return;
         }
 
@@ -161,10 +149,15 @@ export const GameSettingsContainer = ({
     } = options;
     const renderedCardPacks = renderCardPacks(cardPacks);
     const {
+        useSelectBlackCard,
         selectBlackCard,
+        useSelectWhiteCards,
         selectWhiteCards,
+        useReadBlackCard,
         readBlackCard,
+        useSelectWinner,
         selectWinner,
+        useRoundEnd,
         roundEnd,
     } = options.timers;
 
@@ -180,9 +173,9 @@ export const GameSettingsContainer = ({
                         <h2 className="game-settings-title">Pelin asetukset</h2>
                         <Setting
                             text={"Pisteraja"}
-                            controlType={CONTROL_TYPES.number}
+                            controlType={[CONTROL_TYPES.number]}
                             onChangeCallback={changeWinScore}
-                            currentValue={scoreLimit}
+                            currentValue={[scoreLimit]}
                             isDisabled={isDisabled}
                             icon={{
                                 name: "emoji_events",
@@ -193,9 +186,9 @@ export const GameSettingsContainer = ({
 
                         <Setting
                             text={"Pelaajien enimmäismäärä"}
-                            controlType={CONTROL_TYPES.number}
+                            controlType={[CONTROL_TYPES.number]}
                             onChangeCallback={changeMaxPlayers}
-                            currentValue={maximumPlayers}
+                            currentValue={[maximumPlayers]}
                             isDisabled={isDisabled}
                             icon={{
                                 name: "groups",
@@ -218,8 +211,14 @@ export const GameSettingsContainer = ({
                                             CONTROL_TYPES.number,
                                         ]}
                                         onChangeCallback={updateTimers}
-                                        field={"selectBlackCard"}
-                                        currentValue={selectBlackCard}
+                                        field={[
+                                            "useSelectBlackCard",
+                                            "selectBlackCard",
+                                        ]}
+                                        currentValue={[
+                                            useSelectBlackCard,
+                                            selectBlackCard,
+                                        ]}
                                         isDisabled={isDisabled}
                                     />
                                     <Setting
@@ -229,8 +228,14 @@ export const GameSettingsContainer = ({
                                             CONTROL_TYPES.number,
                                         ]}
                                         onChangeCallback={updateTimers}
-                                        field={"selectWhiteCards"}
-                                        currentValue={selectWhiteCards}
+                                        field={[
+                                            "useSelectWhiteCards",
+                                            "selectWhiteCards",
+                                        ]}
+                                        currentValue={[
+                                            useSelectWhiteCards,
+                                            selectWhiteCards,
+                                        ]}
                                         isDisabled={isDisabled}
                                     />
                                     <Setting
@@ -240,8 +245,14 @@ export const GameSettingsContainer = ({
                                             CONTROL_TYPES.number,
                                         ]}
                                         onChangeCallback={updateTimers}
-                                        field={"readBlackCard"}
-                                        currentValue={readBlackCard}
+                                        field={[
+                                            "useReadBlackCard",
+                                            "readBlackCard",
+                                        ]}
+                                        currentValue={[
+                                            useReadBlackCard,
+                                            readBlackCard,
+                                        ]}
                                         isDisabled={isDisabled}
                                     />
                                     <Setting
@@ -251,8 +262,14 @@ export const GameSettingsContainer = ({
                                             CONTROL_TYPES.number,
                                         ]}
                                         onChangeCallback={updateTimers}
-                                        field={"selectWinner"}
-                                        currentValue={selectWinner}
+                                        field={[
+                                            "useSelectWinner",
+                                            "selectWinner",
+                                        ]}
+                                        currentValue={[
+                                            useSelectWinner,
+                                            selectWinner,
+                                        ]}
                                         isDisabled={isDisabled}
                                     />
                                     <Setting
@@ -262,8 +279,8 @@ export const GameSettingsContainer = ({
                                             CONTROL_TYPES.number,
                                         ]}
                                         onChangeCallback={updateTimers}
-                                        field={"roundEnd"}
-                                        currentValue={roundEnd}
+                                        field={["useRoundEnd", "roundEnd"]}
+                                        currentValue={[useRoundEnd, roundEnd]}
                                         isDisabled={isDisabled}
                                     />
                                 </>
@@ -271,9 +288,9 @@ export const GameSettingsContainer = ({
                         />
                         <Setting
                             text={"Yleisöäänet käytössä"}
-                            controlType={CONTROL_TYPES.toggle}
+                            controlType={[CONTROL_TYPES.toggle]}
                             onChangeCallback={() => toggleValue("popularVote")}
-                            currentValue={popularVote ? popularVote : false}
+                            currentValue={[popularVote ? popularVote : false]}
                             isDisabled={isDisabled}
                             icon={{
                                 name: "thumb_up",
@@ -283,11 +300,11 @@ export const GameSettingsContainer = ({
                         />
                         <Setting
                             text={"Voittajasta tulee seuraava korttikuningas"}
-                            controlType={CONTROL_TYPES.toggle}
+                            controlType={[CONTROL_TYPES.toggle]}
                             onChangeCallback={() =>
                                 toggleValue("winnerBecomesCardCzar")
                             }
-                            currentValue={winnerBecomesCardCzar}
+                            currentValue={[winnerBecomesCardCzar]}
                             isDisabled={isDisabled}
                             icon={{
                                 name: "low_priority",
@@ -299,11 +316,11 @@ export const GameSettingsContainer = ({
                             text={
                                 "Potkitut pelaajat voivat liittyä takaisin peliin"
                             }
-                            controlType={CONTROL_TYPES.toggle}
+                            controlType={[CONTROL_TYPES.toggle]}
                             onChangeCallback={() =>
                                 toggleValue("allowKickedPlayerJoin")
                             }
-                            currentValue={allowKickedPlayerJoin}
+                            currentValue={[allowKickedPlayerJoin]}
                             isDisabled={isDisabled}
                             icon={{
                                 name: "remove_circle_outline",
@@ -318,7 +335,7 @@ export const GameSettingsContainer = ({
                             DEV_CARD_PACK_AUTOFILL={true}
                             text={"Lisää korttipakka"}
                             placeholderText={"rAnD0MchArs"}
-                            controlType={CONTROL_TYPES.textWithConfirm}
+                            controlType={[CONTROL_TYPES.textWithConfirm]}
                             onChangeCallback={addCardPack}
                             customControl={"custom control"}
                             icon={{
