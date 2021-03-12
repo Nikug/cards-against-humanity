@@ -1,22 +1,18 @@
 import React, { useEffect, useState } from "react";
-
-import { socket } from "../../components/sockets/socket";
 import { getCookie, setCookie } from "../../helpers/cookies";
 
-import { getGamePhaseContent } from "./getGamePhaseContent";
-
 import { GAME_STATES } from "../../consts/gamestates";
+import { GameMenu } from "./components/GameMenu/GameMenu";
 import { NOTIFICATION_TYPES } from "../../components/notification/notification";
-
-import { useGameContext } from "../../contexts/GameContext";
-import { useNotification } from "../../contexts/NotificationContext";
-
 import { PlayersWidget } from "../../components/players-widget/playerswidget";
+import { SpectatorsInfo } from "./components/SpectatorsInfo/SpectatorsInfo";
 import { Timer } from "../../components/timer";
 import { WholePageLoader } from "../../components/WholePageLoader";
+import { getGamePhaseContent } from "./getGamePhaseContent";
+import { socket } from "../../components/sockets/socket";
 import { socketOn } from "../../helpers/communicationhelpers";
-import { GameMenu } from "./components/GameMenu/GameMenu";
-import { SpectatorsInfo } from "./components/SpectatorsInfo/SpectatorsInfo";
+import { useGameContext } from "../../contexts/GameContext";
+import { useNotification } from "../../contexts/NotificationContext";
 
 export const NAME_CHAR_LIMIT = 50;
 export const ICON_CLASSNAMES = "md-36 icon-margin-right";
@@ -135,6 +131,7 @@ export const Game = ({ showDebug }) => {
 
         return () => {
             socket.off("update_player");
+            socket.off("update_timers");
             socket.off("update_game");
             socket.off("update_players");
             socket.off("update_game_options");
