@@ -1,11 +1,10 @@
-import express from "express";
-import http from "http";
-import socketIo from "socket.io";
-
 import path, { dirname } from "path";
-import { fileURLToPath } from 'url';
 
-import { router } from"./routes/routes.js";
+import express from "express";
+import { fileURLToPath } from "url";
+import http from "http";
+import { router } from "./routes/routes.js";
+import socketIo from "socket.io";
 import { sockets } from "./routes/sockets.js";
 
 const __filename = fileURLToPath(import.meta.url);
@@ -16,19 +15,21 @@ const PRODUCTION = process.env.PRODUCTION;
 
 const app = express();
 const server = http.createServer(app);
-const io = socketIo(server);
+const io = socketIo(server, {
+    pingTimeout: 10 * 1000,
+    pingInterval: 30 * 1000,
+});
 
 app.use(express.static(path.join(__dirname, "/../client/build")));
 
 app.use(router());
 sockets(io);
 
-
-if(PRODUCTION) {
+if (PRODUCTION) {
     console.log("Running production environment!");
     app.get("*", (req, res) => {
         res.sendFile(path.join(__dirname + "/../client/build/index.html"));
-    })
+    });
 }
 
 server.listen(port, () => {
