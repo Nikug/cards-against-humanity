@@ -32,6 +32,14 @@ export const changeGameStateAfterTime = (io, game, transition) => {
     return game;
 };
 
+export const clearGameTimer = (game) => {
+    clearTimeout(game.timeout);
+    game.timeout = undefined;
+    game.client.timers.duration = undefined;
+    game.client.timers.passedTime = undefined;
+    return game;
+};
+
 const gameStateChange = (io, gameID, transition) => {
     const game = getGame(gameID);
     if (!game) return;

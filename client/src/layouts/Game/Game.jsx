@@ -148,9 +148,8 @@ export const Game = ({ showDebug }) => {
             currentProgress = currentProgress < 0.01 ? 0 : currentProgress;
 
             setStartingProgress(currentProgress);
-
-            resetTimer();
         }
+        resetTimer();
     }, [game?.state, game?.timers]);
 
     // Ask for black cards

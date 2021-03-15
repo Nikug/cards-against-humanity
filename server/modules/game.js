@@ -10,6 +10,7 @@ import {
 } from "./player.js";
 import {
     changeGameStateAfterTime,
+    clearGameTimer,
     getPassedTime,
 } from "./delayedStateChange.js";
 import {
@@ -254,8 +255,11 @@ export const endGame = (io, game) => {
     if (game.stateMachine.can("endGame")) {
         game.stateMachine.endGame();
         game.client.state = game.stateMachine.state;
-        setGame(game);
-        updatePlayersIndividually(io, game);
+
+        const updatedGame = clearGameTimer(game);
+
+        setGame(updatedGame);
+        updatePlayersIndividually(io, updatedGame);
     }
 };
 
@@ -370,35 +374,35 @@ export const validateHostAndReturnToLobby = (io, gameID, playerID) => {
 
 export const resetGame = (game) => {
     // Clear timeout
-    clearTimeout(game.timeout);
+    const updatedGame = clearGameTimer(game);
 
     // Reset rounds
-    game.client.rounds = [];
-    game.currentRound = undefined;
+    updatedGame.client.rounds = [];
+    updatedGame.currentRound = undefined;
 
     // Reset playerStates, scores, cardczar status and player white cards
-    game.players = resetPlayers(game.players);
+    updatedGame.players = resetPlayers(updatedGame.players);
 
     // Reset played cards back to deck
-    game.cards.whiteCards = [
-        ...game.cards.whiteCards,
-        ...game.cards.playedWhiteCards,
+    updatedGame.cards.whiteCards = [
+        ...updatedGame.cards.whiteCards,
+        ...updatedGame.cards.playedWhiteCards,
     ];
-    game.cards.blackCards = [
-        ...game.cards.blackCards,
-        ...game.cards.playedBlackCards,
+    updatedGame.cards.blackCards = [
+        ...updatedGame.cards.blackCards,
+        ...updatedGame.cards.playedBlackCards,
     ];
 
     // Reset timers
-    game.client.options.timers.duration = undefined;
-    game.client.options.timers.passedTime = undefined;
+    updatedGame.client.options.timers.duration = undefined;
+    updatedGame.client.options.timers.passedTime = undefined;
 
     // Reset game state if not in lobby
-    if (game.stateMachine.state !== "lobby") {
-        game.stateMachine.returnToLobby();
+    if (updatedGame.stateMachine.state !== "lobby") {
+        updatedGame.stateMachine.returnToLobby();
     }
 
-    return game;
+    return updatedGame;
 };
 
 export const updateTimers = (io, game) => {

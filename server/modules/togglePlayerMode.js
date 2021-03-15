@@ -1,10 +1,5 @@
 import { checkPlayerLimit, checkSpectatorLimit } from "./join.js";
-import {
-    getGame,
-    returnToLobby,
-    setGame,
-    shouldReturnToLobby,
-} from "./game.js";
+import { getGame, setGame } from "./game.js";
 import { getPlayer, updatePlayersIndividually } from "./player.js";
 
 import { handleSpecialCases } from "./disconnect.js";
