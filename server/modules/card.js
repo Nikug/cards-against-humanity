@@ -300,11 +300,7 @@ export const showWhiteCard = (io, gameID, playerID) => {
         const updatedGame = changeGameStateAfterTime(io, game, "endRound");
         setGame(updatedGame);
 
-        io.in(gameID).emit("update_game", {
-            game: {
-                ...anonymizedGameClient(updatedGame),
-            },
-        });
+        updatePlayersIndividually(io, updatedGame);
     } else {
         const whiteCards =
             game.currentRound.whiteCardsByPlayer[game.currentRound.cardIndex]
