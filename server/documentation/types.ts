@@ -102,7 +102,7 @@ interface Round {
 
 interface Options {
     maximumPlayers: number;
-    scoreLimit: number;
+    winConditions: winConditions;
     winnerBecomesCardCzar: boolean;
     allowKickedPlayerJoin: boolean;
     allowCardCzarPopularVote: boolean;
@@ -111,6 +111,14 @@ interface Options {
     selectWhiteCardTimeLimit: number;
     selectBlackCardTimeLimit: number;
     timers: Timers;
+}
+
+interface winConditions {
+    scoreLimit: number;
+    useScoreLimit: boolean;
+
+    roundLimit: number;
+    useRoundLimit: boolean;
 }
 
 // Values in seconds

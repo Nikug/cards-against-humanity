@@ -1,6 +1,7 @@
-import express from "express";
-const expressRouter = express.Router();
 import { createGame } from "../modules/game.js";
+import express from "express";
+
+const expressRouter = express.Router();
 
 export const router = () => {
     expressRouter.get("/", (req, res) => {

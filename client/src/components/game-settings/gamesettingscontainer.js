@@ -1,10 +1,9 @@
+import { CONTROL_TYPES, Setting } from "./../settings/setting";
 import React, { Component } from "react";
-import { CollabsibelSettingsSection } from "../settings/collabsiblesettingssection";
 
-import { socket } from "../sockets/socket";
-
-import { Setting, CONTROL_TYPES } from "./../settings/setting";
 import { CardPack } from "./cardpack";
+import { CollabsibelSettingsSection } from "../settings/collabsiblesettingssection";
+import { socket } from "../sockets/socket";
 
 export const GameSettingsContainer = ({
     options,
@@ -71,7 +70,7 @@ export const GameSettingsContainer = ({
     };
 
     const changeWinScore = (value) => {
-        const oldValue = options.scoreLimit;
+        const oldValue = options.winConditions.scoreLimit;
         let newValue;
 
         if (value === "increase") {
@@ -141,7 +140,7 @@ export const GameSettingsContainer = ({
         maximumPlayers,
         selectWhiteCardTimeLimit,
         selectBlackCardTimeLimit,
-        scoreLimit,
+        winConditions,
         popularVote,
         winnerBecomesCardCzar,
         allowKickedPlayerJoin,
@@ -175,7 +174,7 @@ export const GameSettingsContainer = ({
                             text={"Pisteraja"}
                             controlType={[CONTROL_TYPES.number]}
                             onChangeCallback={changeWinScore}
-                            currentValue={[scoreLimit]}
+                            currentValue={[winConditions.scoreLimit]}
                             isDisabled={isDisabled}
                             icon={{
                                 name: "emoji_events",

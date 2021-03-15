@@ -28,9 +28,9 @@ import {
     validateOptions,
 } from "./validate.js";
 
-import { createStateMachine } from "./finiteStateMachine.js";
 import { gameOptions } from "../consts/gameSettings.js";
 import hri from "human-readable-ids";
+import { newGameTemplate } from "./newGame.js";
 import { randomBetween } from "./util.js";
 import { setPopularVoteLeader } from "./popularVote.js";
 
@@ -38,7 +38,7 @@ let games = [];
 
 export const createGame = () => {
     const gameURL = hri.hri.random();
-    const newGame = createNewGame(gameURL);
+    const newGame = newGameTemplate(gameURL);
     games = [...games, newGame];
     return newGame;
 };
@@ -70,61 +70,6 @@ export const removeGameIfNoActivePlayers = (gameID) => {
 export const removeGame = (gameID) => {
     console.log("Game was removed");
     games = games.filter((game) => game.id !== gameID);
-};
-
-const createNewGame = (url) => {
-    const fsm = createStateMachine();
-    const game = {
-        id: url,
-        client: {
-            id: url,
-            state: fsm.state,
-            options: {
-                maximumPlayers: gameOptions.defaultPlayers,
-                scoreLimit: gameOptions.defaultScoreLimit,
-                winnerBecomesCardCzar: gameOptions.defaultWinnerBecomesCardCzar,
-                allowKickedPlayerJoin: gameOptions.defaultAllowKickedPlayerJoin,
-                allowCardCzarPopularVote:
-                    gameOptions.defaultAllowCardCzarPopularVote,
-                cardPacks: [],
-                timers: {
-                    selectBlackCard: gameOptions.timers.selectBlackCard.default,
-                    useSelectBlackCard: gameOptions.timers.selectBlackCard.use,
-                    selectWhiteCards:
-                        gameOptions.timers.selectWhiteCards.default,
-                    useSelectWhiteCards:
-                        gameOptions.timers.selectWhiteCards.use,
-                    readBlackCard: gameOptions.timers.readBlackCard.default,
-                    useReadBlackCard: gameOptions.timers.readBlackCard.use,
-                    selectWinner: gameOptions.timers.selectWinner.default,
-                    useSelectWinner: gameOptions.timers.selectWinner.use,
-                    roundEnd: gameOptions.timers.roundEnd.default,
-                    useRoundEnd: gameOptions.timers.roundEnd.use,
-                },
-            },
-            rounds: [],
-            timers: {
-                duration: undefined,
-                passedTime: undefined,
-            },
-        },
-        players: [],
-        cards: {
-            whiteCards: [],
-            blackCards: [],
-            playedWhiteCards: [],
-            playedBlackCards: [],
-        },
-        stateMachine: fsm,
-        currentRound: {
-            round: 0,
-            blackCard: null,
-            cardCzar: null,
-            cardIndex: 0,
-            whiteCardsByPlayer: [],
-        },
-    };
-    return game;
 };
 
 export const createRound = (roundNumber, blackCard, cardCzarID) => {

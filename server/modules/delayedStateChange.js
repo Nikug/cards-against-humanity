@@ -133,15 +133,19 @@ const getTimeoutTime = (game) => {
     const timers = game.client.options.timers;
     switch (game.stateMachine.state) {
         case "pickingBlackCard":
-            return timers.useSelectBlackCard ? timers.selectBlackCard : 0;
+            return timers.useSelectBlackCard
+                ? timers.selectBlackCard
+                : undefined;
         case "playingWhiteCards":
-            return timers.useSelectWhiteCards ? timers.selectWhiteCards : 0;
+            return timers.useSelectWhiteCards
+                ? timers.selectWhiteCards
+                : undefined;
         case "readingCards":
-            return timers.useReadBlackCard ? timers.readBlackCard : 0;
+            return timers.useReadBlackCard ? timers.readBlackCard : undefined;
         case "showingCards":
-            return timers.useSelectWinner ? timers.selectWinner : 0;
+            return timers.useSelectWinner ? timers.selectWinner : undefined;
         case "roundEnd":
-            return timers.useRoundEnd ? timers.roundEnd : 0;
+            return timers.useRoundEnd ? timers.roundEnd : undefined;
         default:
             return timers.selectBlackCard;
     }

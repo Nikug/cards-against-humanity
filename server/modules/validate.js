@@ -67,6 +67,7 @@ export const validatePlayerPlayingWhiteCards = (
 };
 
 export const validateOptions = (newOptions) => {
+    validateTimers(newOptions.timers);
     const validatedOptions = {
         ...newOptions,
         maximumPlayers: clamp(
@@ -74,15 +75,54 @@ export const validateOptions = (newOptions) => {
             gameOptions.minimumPlayers,
             gameOptions.maximumPlayers
         ),
-        scoreLimit: clamp(
-            newOptions.scoreLimit,
-            gameOptions.minimumScoreLimit,
-            gameOptions.maximumScoreLimit
-        ),
+        winConditions: {
+            scoreLimit: clamp(
+                newOptions.winConditions.scoreLimit,
+                gameOptions.winConditions.scoreLimit.minimum,
+                gameOptions.winConditions.scoreLimit.maximum
+            ),
+            useScoreLimit: !!newOptions.winConditions.useScoreLimit,
+            roundLimit: clamp(
+                newOptions.winConditions.roundLimit,
+                gameOptions.winConditions.roundLimit.minimum,
+                gameOptions.winConditions.roundLimit.maximum
+            ),
+            useRoundLimit: !!newOptions.winConditions.useRoundLimit,
+        },
+
+        timers: validateTimers(newOptions.timers),
+
         winnerBecomesCardCzar: !!newOptions.winnerBecomesCardCzar,
         allowKickedPlayerJoin: !!newOptions.allowKickedPlayerJoin,
     };
     return validatedOptions;
+};
+
+const validateTimers = (timers) => {
+    const keys = [
+        ...Object.keys(gameOptions.timers),
+        "useSelectBlackCard",
+        "useSelectWhiteCards",
+        "useReadBlackCard",
+        "useSelectWinner",
+        "useRoundEnd",
+    ];
+    let newTimers = {};
+
+    for (const [key, value] of Object.entries(timers)) {
+        if (!keys.includes(key)) continue;
+
+        if (typeof value === "number") {
+            newTimers[key] = clamp(
+                value,
+                gameOptions.timers[key].minimum,
+                gameOptions.timers[key].maximum
+            );
+        } else {
+            newTimers[key] = !!value;
+        }
+    }
+    return newTimers;
 };
 
 export const validateGameStartRequirements = (game) => {
@@ -166,11 +206,25 @@ export const validatePopularVote = (game, playerID) => {
 };
 
 export const validateGameEnding = (game) => {
-    const highestScore = game.players.reduce(
-        (prev, current) => (prev.score > current.score ? prev : current),
-        { score: 0 }
-    );
-    return highestScore.score >= game.client.options.scoreLimit;
+    let gameOver = false;
+    if (game.client.options.winConditions.useScoreLimit) {
+        const highestScore = game.players.reduce(
+            (prev, current) => (prev.score > current.score ? prev : current),
+            { score: 0 }
+        );
+        gameOver =
+            gameOver ||
+            highestScore.score >= game.client.options.winConditions.scoreLimit;
+    }
+
+    if (game.client.options.winConditions.useRoundLimit) {
+        gameOver =
+            gameOver ||
+            game.client.rounds.length >=
+                game.client.options.winConditions.roundLimit;
+    }
+
+    return gameOver;
 };
 
 export const validateState = (game, states) => {

@@ -4,10 +4,6 @@ export const gameOptions = {
     spectatorLimit: 20,
     defaultPlayers: 8,
 
-    minimumScoreLimit: 1,
-    maximumScoreLimit: 100,
-    defaultScoreLimit: 5,
-
     // If no one has votes, no point in making anyone king
     // Required minimum score is thus at least 1
     defaultScoreForShowingPopularVoteLeader: 1,
@@ -20,6 +16,21 @@ export const gameOptions = {
     blackCardsToChooseFrom: 3,
 
     notSelectingWinnerPunishment: 1,
+
+    winConditions: {
+        scoreLimit: {
+            minimum: 1,
+            maximum: 100,
+            default: 5,
+            use: true,
+        },
+        roundLimit: {
+            minimum: 1,
+            maximum: 100,
+            default: 5,
+            use: false,
+        },
+    },
 
     timers: {
         selectBlackCard: {
