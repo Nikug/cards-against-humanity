@@ -1,10 +1,11 @@
 import {
     appointNextCardCzar,
+    getActiveAndJoiningPlayers,
     getActivePlayers,
+    getPlayersWithState,
     getRoundWinner,
     handleJoiningPlayers,
     resetPlayers,
-    setPlayersPlaying,
     setPlayersWaiting,
     updatePlayersIndividually,
 } from "./player.js";
@@ -228,6 +229,7 @@ export const skipRound = (io, game, newCardCzar) => {
     game.stateMachine.skipRound();
     game.client.state = game.stateMachine.state;
 
+    game.players = handleJoiningPlayers(io, game);
     game.players = setPlayersWaiting(game.players);
 
     const newGame = dealBlackCards(io, newCardCzar.sockets, game);
@@ -292,6 +294,20 @@ export const shouldReturnToLobby = (game) => {
         }
         return game.players.every((player) =>
             ["disconnected", "pickingName", "spectating"].includes(player.state)
+        );
+    } else {
+        return false;
+    }
+};
+
+export const shouldSkipRound = (game) => {
+    if (game.stateMachine.state !== "lobby") {
+        const activePlayerCount = getActivePlayers(game.players).length;
+        const joiningPlayerCount = getPlayersWithState(game.players, "joining")
+            .length;
+        return (
+            activePlayerCount < gameOptions.minimumPlayers &&
+            activePlayerCount + joiningPlayerCount >= gameOptions.minimumPlayers
         );
     } else {
         return false;
