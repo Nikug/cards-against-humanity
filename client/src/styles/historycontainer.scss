@@ -1,0 +1,27 @@
+.history-container {
+    overflow-y: auto;
+    height: 80%;
+
+    .title {
+        font-size: 2rem;
+    }
+    .container {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .one-round-history {
+        .title {
+            font-size: 1.8rem;
+        }
+        .cards-container {
+            display: flex;
+            flex-direction: row;
+            flex-wrap: wrap;
+
+            .card-wrapper {
+                margin: 0.5rem 0.5rem;
+            }
+        }
+    }
+}

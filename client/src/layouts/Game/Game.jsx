@@ -17,6 +17,7 @@ import { TimerV2 } from "../../components/Timer/timerV2";
 import { PLAYER_STATES } from "../../consts/playerstates";
 import { LayerMenu } from "../../components/layer-menu/LayerMenu";
 import { GameSettingsContainer } from "../../components/game-settings/gamesettingscontainer";
+import { HistoryContainer } from "./components/GameMenu/history/HistoryContainer";
 
 export const NAME_CHAR_LIMIT = 50;
 export const ICON_CLASSNAMES = "md-36 icon-margin-right";
@@ -30,6 +31,7 @@ export const Game = ({ showDebug }) => {
     // States
     const [isLoading, setIsLoading] = useState(false);
     const [gameSettingsMenuOpen, setGameSettingsMenuOpen] = useState(false);
+    const [historyMenuOpen, setHistoryMenuOpen] = useState(false);
     const [startingProgress, setStartingProgress] = useState(0);
     const [timerIsOn, setTimerIsOn] = useState(false);
     const [blackCards, setBlackCards] = useState([]);
@@ -226,8 +228,11 @@ export const Game = ({ showDebug }) => {
     };
 
     const openGameSettings = () => {
-        console.log("open game settings menu");
         setGameSettingsMenuOpen(!gameSettingsMenuOpen);
+    };
+
+    const openHistory = () => {
+        setHistoryMenuOpen(!historyMenuOpen);
     };
 
     // Renderin related stuff
@@ -265,6 +270,12 @@ export const Game = ({ showDebug }) => {
                         />
                     }
                     closeLayerMenu={openGameSettings}
+                />
+            )}
+            {historyMenuOpen && (
+                <LayerMenu
+                    content={<HistoryContainer />}
+                    closeLayerMenu={openHistory}
                 />
             )}
             <div className="info">
@@ -305,6 +316,7 @@ export const Game = ({ showDebug }) => {
                             togglePlayerMode,
                             returnBackToLobby,
                             openGameSettings,
+                            openHistory,
                         }}
                         showDebug={showDebug}
                     />

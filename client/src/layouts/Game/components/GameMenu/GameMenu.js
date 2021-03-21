@@ -12,7 +12,12 @@ import { BUTTON_TYPES } from "../../../../components/button";
 import { emptyFn } from "../../../../helpers/generalhelpers";
 
 export const GameMenu = ({
-    callbacks: { togglePlayerMode, returnBackToLobby, openGameSettings },
+    callbacks: {
+        togglePlayerMode,
+        returnBackToLobby,
+        openGameSettings,
+        openHistory,
+    },
     showDebug,
 }) => {
     const { game, player } = useGameContext();
@@ -58,9 +63,9 @@ export const GameMenu = ({
                                 {
                                     icon: "history",
                                     text: "Historia",
-                                    callback: emptyFn,
+                                    callback: openHistory,
                                     type: BUTTON_TYPES.PRIMARY,
-                                    disabled: true,
+                                    disabled: !(game?.rounds?.length > 0),
                                 },
                             ]}
                         />
