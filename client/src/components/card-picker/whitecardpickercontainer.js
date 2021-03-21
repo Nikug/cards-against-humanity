@@ -59,6 +59,11 @@ export function WhiteCardPickerContainer(props) {
     return (
         <div className="blackcardpicker">
             <CardPicker
+                alternativeText={
+                    confirmedCards.length > 0
+                        ? "Muut pelaajat valitsevat vielä korttejaan"
+                        : null
+                }
                 mainCard={blackCard}
                 selectableCards={whiteCards}
                 selectedCards={selectedCards}

@@ -13,6 +13,8 @@ import { socket } from "../../components/sockets/socket";
 import { socketOn } from "../../helpers/communicationhelpers";
 import { useGameContext } from "../../contexts/GameContext";
 import { useNotification } from "../../contexts/NotificationContext";
+import { TimerV2 } from "../../components/Timer/timerV2";
+import { PLAYER_STATES } from "../../consts/playerstates";
 
 export const NAME_CHAR_LIMIT = 50;
 export const ICON_CLASSNAMES = "md-36 icon-margin-right";
@@ -176,7 +178,7 @@ export const Game = ({ showDebug }) => {
 
         setTimeout(() => {
             setTimerIsOn(true);
-        }, 100);
+        }, 1);
     };
 
     // Send data to server
@@ -240,17 +242,42 @@ export const Game = ({ showDebug }) => {
     };
 
     const renderedContent = getGamePhaseContent(contentProps);
+    const hasProgressInTimer = !isLobby && timerIsOn;
 
     return (
         <div>
             <div className="info">
                 <PlayersWidget game={game} player={player} />
-                <Timer
-                    width={100}
-                    percent={isLobby ? 0 : timerIsOn ? 1 : 0}
-                    startingPercent={isLobby ? 0 : startingProgress}
-                    time={game?.timers.duration ?? 0}
-                />
+                {true && (
+                    <Timer
+                        width={100}
+                        percent={isLobby ? 0 : timerIsOn ? 1 : 0}
+                        startingPercent={isLobby ? 0 : startingProgress}
+                        time={game?.timers.duration ?? 0}
+                    />
+                )}
+                {false &&
+                    !hasProgressInTimer && ( // Because life is not easy and css animations are fun, we have to unmount the whole timer component and remount it again to restart the animation (:
+                        <TimerV2
+                            key={"without-progress"}
+                            width={100}
+                            fillToPercent={0}
+                            percentToStartFrom={0}
+                            time={0}
+                        />
+                    )}
+                {false && hasProgressInTimer && (
+                    <TimerV2
+                        key={"with-progress"}
+                        width={100}
+                        fillToPercent={isLobby ? 0 : timerIsOn ? 100 : 1}
+                        percentToStartFrom={
+                            isLobby ? 0 : startingProgress * 100
+                        }
+                        time={game?.timers.duration ?? 0}
+                        shouldBlink={player?.state === PLAYER_STATES.PLAYING}
+                    />
+                )}
                 <div className="actions-wrapper">
                     <GameMenu
                         callbacks={{ togglePlayerMode, returnBackToLobby }}

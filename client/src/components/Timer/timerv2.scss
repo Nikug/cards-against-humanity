@@ -1,0 +1,79 @@
+@import "../../styles/colors.scss";
+
+@keyframes progress-bar-animation {
+    0% {
+        transform: scaleX(0);
+    }
+    100% {
+        transform: scaleX(1);
+    }
+}
+
+@keyframes blink-red {
+    0% {
+        background-color: lighten($timer-background, 5%);
+    }
+    80% {
+        background-color: lighten($timer-background, 5%);
+    }
+    82% {
+        background-color: red;
+    }
+    84% {
+        background-color: lighten($timer-background, 5%);
+    }
+    86% {
+        background-color: red;
+    }
+    88% {
+        background-color: lighten($timer-background, 5%);
+    }
+    90% {
+        background-color: red;
+    }
+    92% {
+        background-color: lighten($timer-background, 5%);
+    }
+    94% {
+        background-color: red;
+    }
+    96% {
+        background-color: lighten($timer-background, 5%);
+    }
+    98% {
+        background-color: red;
+    }
+    100% {
+        background-color: red;
+    }
+}
+
+.timer-container {
+    background-color: lighten($timer-background, 5%);
+    border-radius: 0 0 2px 2px;
+    display: flex;
+
+    &.blink-animation {
+        animation-fill-mode: forwards;
+        animation: blink-red linear;
+    }
+}
+
+.progress-no-animation {
+    background-color: $timer-progress;
+    height: 10px;
+    border-radius: 0 0 0 2px;
+}
+
+.timer-progress {
+    background-color: $timer-progress;
+    height: 10px;
+    border-radius: 0 0 2px 2px;
+    animation: progress-bar-animation linear;
+    animation-fill-mode: forwards;
+    transform-origin: 0% 50%; // Will start scaleX from left side and move only right side further. Default 50% 50%;
+
+    &.timer-continuing {
+        border-radius: 0 0 2px 0;
+    }
+}
