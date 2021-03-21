@@ -54,8 +54,8 @@ export function RoundEndContainer(props) {
                     opacity={0.4}
                     numberOfPieces={400}
                     recycle={false}
-                    width={window.width}
-                    height={window.height}
+                    width={window.innerWidth}
+                    height={window.innerHeight}
                 />
             )}
             <div className="blackcardpicker">

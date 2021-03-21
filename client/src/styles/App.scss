@@ -8,8 +8,11 @@
     font-family: "Teko", sans-serif;
     min-height: 100vh;
     max-height: 100vh;
+    min-width: 100vw;
+    max-width: 100vw;
     color: $app-text;
     overflow-y: auto;
+    overflow-x: hidden;
     scrollbar-color: lighten($app-background, 10%) $app-background;
 
     .basic-grid {

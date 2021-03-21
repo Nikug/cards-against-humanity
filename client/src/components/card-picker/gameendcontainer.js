@@ -64,8 +64,8 @@ export const GameEndContainer = ({ game, player }) => {
                 opacity={0.4}
                 numberOfPieces={3000}
                 recycle={false}
-                width={window.width}
-                height={window.height}
+                width={window.innerWidth}
+                height={window.innerHeight}
             />
             <div className="blackcardpicker">
                 <CardPicker
