@@ -258,72 +258,82 @@ export const Game = ({ showDebug }) => {
     const hasProgressInTimer = !isLobby && timerIsOn;
 
     return (
-        <div>
-            {gameSettingsMenuOpen && (
-                <LayerMenu
-                    content={
-                        <GameSettingsContainer
-                            options={game ? game.options : {}}
-                            gameID={game?.id}
-                            isDisabled={player?.isHost !== true}
-                            playerID={player?.id}
-                        />
-                    }
-                    closeLayerMenu={openGameSettings}
-                />
-            )}
-            {historyMenuOpen && (
-                <LayerMenu
-                    content={<HistoryContainer />}
-                    closeLayerMenu={openHistory}
-                />
-            )}
-            <div className="info">
-                <PlayersWidget game={game} player={player} />
-                {true && (
-                    <Timer
-                        width={100}
-                        percent={isLobby ? 0 : timerIsOn ? 1 : 0}
-                        startingPercent={isLobby ? 0 : startingProgress}
-                        time={game?.timers.duration ?? 0}
-                    />
-                )}
-                {false &&
-                    !hasProgressInTimer && ( // Because life is not easy and css animations are fun, we have to unmount the whole timer component and remount it again to restart the animation (:
-                        <TimerV2
-                            key={"without-progress"}
-                            width={100}
-                            fillToPercent={0}
-                            percentToStartFrom={0}
-                            time={0}
-                        />
-                    )}
-                {false && hasProgressInTimer && (
-                    <TimerV2
-                        key={"with-progress"}
-                        width={100}
-                        fillToPercent={isLobby ? 0 : timerIsOn ? 100 : 1}
-                        percentToStartFrom={
-                            isLobby ? 0 : startingProgress * 100
+        <>
+            <div>
+                {gameSettingsMenuOpen && (
+                    <LayerMenu
+                        content={
+                            <GameSettingsContainer
+                                options={game ? game.options : {}}
+                                gameID={game?.id}
+                                isDisabled={player?.isHost !== true}
+                                playerID={player?.id}
+                            />
                         }
-                        time={game?.timers.duration ?? 0}
-                        shouldBlink={player?.state === PLAYER_STATES.PLAYING}
+                        closeLayerMenu={openGameSettings}
                     />
                 )}
-                <div className="actions-wrapper">
-                    <GameMenu
-                        callbacks={{
-                            togglePlayerMode,
-                            returnBackToLobby,
-                            openGameSettings,
-                            openHistory,
-                        }}
-                        showDebug={showDebug}
+                {historyMenuOpen && (
+                    <LayerMenu
+                        content={<HistoryContainer />}
+                        closeLayerMenu={openHistory}
                     />
-                    <SpectatorsInfo />
+                )}
+                <div className="info">
+                    <PlayersWidget game={game} player={player} />
                 </div>
             </div>
-            <div className="lobby-container">{renderedContent}</div>
-        </div>
+            <div>
+                <div className="info sticky">
+                    {true && (
+                        <Timer
+                            width={100}
+                            percent={isLobby ? 0 : timerIsOn ? 1 : 0}
+                            startingPercent={isLobby ? 0 : startingProgress}
+                            time={game?.timers.duration ?? 0}
+                        />
+                    )}
+                    {false &&
+                        !hasProgressInTimer && ( // Because life is not easy and css animations are fun, we have to unmount the whole timer component and remount it again to restart the animation (:
+                            <TimerV2
+                                key={"without-progress"}
+                                width={100}
+                                fillToPercent={0}
+                                percentToStartFrom={0}
+                                time={0}
+                            />
+                        )}
+                    {false && hasProgressInTimer && (
+                        <TimerV2
+                            key={"with-progress"}
+                            width={100}
+                            fillToPercent={isLobby ? 0 : timerIsOn ? 100 : 1}
+                            percentToStartFrom={
+                                isLobby ? 0 : startingProgress * 100
+                            }
+                            time={game?.timers.duration ?? 0}
+                            shouldBlink={
+                                player?.state === PLAYER_STATES.PLAYING
+                            }
+                        />
+                    )}
+                </div>
+                <div className="info">
+                    <div className="actions-wrapper">
+                        <GameMenu
+                            callbacks={{
+                                togglePlayerMode,
+                                returnBackToLobby,
+                                openGameSettings,
+                                openHistory,
+                            }}
+                            showDebug={showDebug}
+                        />
+                        <SpectatorsInfo />
+                    </div>
+                </div>
+                <div className="lobby-container">{renderedContent}</div>
+            </div>
+        </>
     );
 };

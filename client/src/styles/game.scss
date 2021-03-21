@@ -5,6 +5,11 @@
         margin-right: auto;
         margin-left: auto;
     }
+
+    &.sticky {
+        position: sticky;
+        top: 0;
+    }
 }
 
 .lobby-container {

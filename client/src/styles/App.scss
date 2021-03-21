@@ -15,12 +15,6 @@
     overflow-x: hidden;
     scrollbar-color: lighten($app-background, 10%) $app-background;
 
-    .basic-grid {
-        display: grid;
-        grid-template-rows: 2em 30em;
-        grid-template-columns: 100%;
-    }
-
     a {
         color: inherit;
         text-decoration: none;

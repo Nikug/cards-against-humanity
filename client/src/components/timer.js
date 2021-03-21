@@ -15,22 +15,18 @@ export function Timer({ width, percent = 1, startingPercent, time }) {
     }, [percent, width, startingPercent, time]);
 
     return (
-        <div>
-            <div className="progress-div" style={{ width: `${width}%` }}>
-                <div
-                    style={{ width: `${startingValue}%` }}
-                    className="no-animation"
-                />
-                <div
-                    style={{
-                        width: `${value}%`,
-                        transitionDuration: `${percent === 0 ? 0 : timeLeft}s`,
-                    }}
-                    className={`progress ${
-                        startingValue > 0 ? "continuing" : ""
-                    }`}
-                />
-            </div>
+        <div className="progress-div" style={{ width: `${width}%` }}>
+            <div
+                style={{ width: `${startingValue}%` }}
+                className="no-animation"
+            />
+            <div
+                style={{
+                    width: `${value}%`,
+                    transitionDuration: `${percent === 0 ? 0 : timeLeft}s`,
+                }}
+                className={`progress ${startingValue > 0 ? "continuing" : ""}`}
+            />
         </div>
     );
 }

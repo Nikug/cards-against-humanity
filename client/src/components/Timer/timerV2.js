@@ -17,33 +17,31 @@ export function TimerV2({
     );
 
     return (
-        <div>
+        <div
+            className={`timer-container ${
+                shouldBlink ? "blink-animation" : ""
+            }`}
+            style={{
+                width: `${fullWidthPercent}%`,
+                animationDuration: `${idle ? 0 : timeLeft}s`,
+            }}
+        >
             <div
-                className={`timer-container ${
-                    shouldBlink ? "blink-animation" : ""
-                }`}
                 style={{
-                    width: `${fullWidthPercent}%`,
+                    width: `${percentToStartFrom}%`,
+                }}
+                className={`progress-no-animation`}
+            />
+            <div
+                style={{
+                    width: `${fillToPercent - percentToStartFrom}%`,
                     animationDuration: `${idle ? 0 : timeLeft}s`,
                 }}
-            >
-                <div
-                    style={{
-                        width: `${percentToStartFrom}%`,
-                    }}
-                    className={`progress-no-animation`}
-                />
-                <div
-                    style={{
-                        width: `${fillToPercent - percentToStartFrom}%`,
-                        animationDuration: `${idle ? 0 : timeLeft}s`,
-                    }}
-                    className={`timer-progress 
+                className={`timer-progress 
                         ${percentToStartFrom > 0 ? "timer-continuing" : ""} 
                         ${idle ? "progress-no-animation" : ""}
                         `}
-                />
-            </div>
+            />
         </div>
     );
 }
