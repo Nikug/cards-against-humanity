@@ -69,21 +69,29 @@ export const GameSettingsContainer = ({
         updateOptions("maximumPlayers", newValue);
     };
 
-    const changeWinScore = (value) => {
-        const oldValue = options.winConditions.scoreLimit;
+    const changeWinCondition = ({ field, value }) => {
+        const oldValue = options.winConditions[field];
         let newValue;
 
-        if (value === "increase") {
-            newValue = oldValue + 1;
-        } else {
-            newValue = oldValue - 1;
+        switch (value) {
+            case "increase":
+                newValue = oldValue + 1;
+                break;
+            case "decrease":
+                newValue = oldValue - 1;
+                break;
+            default:
+                newValue = value;
+                break;
         }
 
-        if (newValue > 99) {
+        if (Number.isInteger(newValue) && newValue < 1) {
             return;
         }
 
-        updateOptions("scoreLimit", newValue);
+        const newValues = { ...options.winConditions, [field]: newValue };
+
+        updateOptions("winConditions", newValues);
     };
 
     const toggleValue = (value) => {
@@ -159,6 +167,21 @@ export const GameSettingsContainer = ({
         useRoundEnd,
         roundEnd,
     } = options.timers;
+    const {
+        scoreLimit,
+        useScoreLimit,
+        roundLimit,
+        useRoundLimit,
+    } = options.winConditions;
+    /**
+     * 
+    scoreLimit: number;
+    useScoreLimit: boolean;
+
+    roundLimit: number;
+    useRoundLimit: boolean;
+}
+     */
 
     return (
         <div
@@ -170,17 +193,44 @@ export const GameSettingsContainer = ({
                 <div className="game-settings">
                     <div className="settings-block">
                         <h2 className="game-settings-title">Pelin asetukset</h2>
-                        <Setting
-                            text={"Pisteraja"}
-                            controlType={[CONTROL_TYPES.number]}
-                            onChangeCallback={changeWinScore}
-                            currentValue={[winConditions.scoreLimit]}
+                        <CollabsibelSettingsSection
                             isDisabled={isDisabled}
-                            icon={{
-                                name: "emoji_events",
-                                className: iconClassnames,
-                                isDisabled: isDisabled,
+                            title={{
+                                titleText: "Voittoehto",
+                                titleIconName: "emoji_events",
                             }}
+                            content={
+                                <>
+                                    <Setting
+                                        text={"Pisteraja"}
+                                        controlType={[
+                                            CONTROL_TYPES.toggle,
+                                            CONTROL_TYPES.number,
+                                        ]}
+                                        onChangeCallback={changeWinCondition}
+                                        field={["useScoreLimit", "scoreLimit"]}
+                                        currentValue={[
+                                            useScoreLimit,
+                                            scoreLimit,
+                                        ]}
+                                        isDisabled={isDisabled}
+                                    />
+                                    <Setting
+                                        text={"Kierrostaja"}
+                                        controlType={[
+                                            CONTROL_TYPES.toggle,
+                                            CONTROL_TYPES.number,
+                                        ]}
+                                        onChangeCallback={changeWinCondition}
+                                        field={["useRoundLimit", "roundLimit"]}
+                                        currentValue={[
+                                            useRoundLimit,
+                                            roundLimit,
+                                        ]}
+                                        isDisabled={isDisabled}
+                                    />
+                                </>
+                            }
                         />
 
                         <Setting
