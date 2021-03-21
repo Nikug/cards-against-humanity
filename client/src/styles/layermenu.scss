@@ -1,0 +1,33 @@
+.layermenu {
+    box-sizing: border-box;
+    position: fixed;
+    width: 100%;
+    height: calc(100% - 2.7rem);
+    background-color: rgba(20, 20, 20, 0.829);
+    top: 2.7rem;
+    z-index: 300;
+    padding: 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    user-select: none;
+    cursor: default;
+    overflow: auto;
+
+    .content {
+        width: fit-content;
+        height: fit-content;
+    }
+
+    .anchor {
+        width: 0;
+        height: 0;
+
+        .close-icon {
+            position: absolute;
+            right: 1rem;
+            top: 0.5rem;
+            cursor: pointer;
+        }
+    }
+}

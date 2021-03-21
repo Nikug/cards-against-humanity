@@ -12,7 +12,7 @@ import { BUTTON_TYPES } from "../../../../components/button";
 import { emptyFn } from "../../../../helpers/generalhelpers";
 
 export const GameMenu = ({
-    callbacks: { togglePlayerMode, returnBackToLobby },
+    callbacks: { togglePlayerMode, returnBackToLobby, openGameSettings },
     showDebug,
 }) => {
     const { game, player } = useGameContext();
@@ -52,12 +52,8 @@ export const GameMenu = ({
                                 {
                                     icon: "settings",
                                     text: "Pelin asetukset",
-                                    callback: emptyFn,
+                                    callback: openGameSettings,
                                     type: BUTTON_TYPES.PRIMARY,
-                                    disabled:
-                                        true ||
-                                        !isPlayerHost(player) ||
-                                        isLobby,
                                 },
                                 {
                                     icon: "history",

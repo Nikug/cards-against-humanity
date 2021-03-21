@@ -31,7 +31,6 @@ export const LobbyContent = ({
                 <GameSettingsContainer
                     options={game ? game.options : {}}
                     gameID={game?.id}
-                    isHost={player?.isHost}
                     isDisabled={player?.isHost !== true}
                     playerID={player?.id}
                 />

@@ -15,6 +15,8 @@ import { useGameContext } from "../../contexts/GameContext";
 import { useNotification } from "../../contexts/NotificationContext";
 import { TimerV2 } from "../../components/Timer/timerV2";
 import { PLAYER_STATES } from "../../consts/playerstates";
+import { LayerMenu } from "../../components/layer-menu/LayerMenu";
+import { GameSettingsContainer } from "../../components/game-settings/gamesettingscontainer";
 
 export const NAME_CHAR_LIMIT = 50;
 export const ICON_CLASSNAMES = "md-36 icon-margin-right";
@@ -27,6 +29,7 @@ export const Game = ({ showDebug }) => {
 
     // States
     const [isLoading, setIsLoading] = useState(false);
+    const [gameSettingsMenuOpen, setGameSettingsMenuOpen] = useState(false);
     const [startingProgress, setStartingProgress] = useState(0);
     const [timerIsOn, setTimerIsOn] = useState(false);
     const [blackCards, setBlackCards] = useState([]);
@@ -222,6 +225,11 @@ export const Game = ({ showDebug }) => {
         });
     };
 
+    const openGameSettings = () => {
+        console.log("open game settings menu");
+        setGameSettingsMenuOpen(!gameSettingsMenuOpen);
+    };
+
     // Renderin related stuff
 
     if (isLoading) {
@@ -246,6 +254,19 @@ export const Game = ({ showDebug }) => {
 
     return (
         <div>
+            {gameSettingsMenuOpen && (
+                <LayerMenu
+                    content={
+                        <GameSettingsContainer
+                            options={game ? game.options : {}}
+                            gameID={game?.id}
+                            isDisabled={player?.isHost !== true}
+                            playerID={player?.id}
+                        />
+                    }
+                    closeLayerMenu={openGameSettings}
+                />
+            )}
             <div className="info">
                 <PlayersWidget game={game} player={player} />
                 {true && (
@@ -280,7 +301,11 @@ export const Game = ({ showDebug }) => {
                 )}
                 <div className="actions-wrapper">
                     <GameMenu
-                        callbacks={{ togglePlayerMode, returnBackToLobby }}
+                        callbacks={{
+                            togglePlayerMode,
+                            returnBackToLobby,
+                            openGameSettings,
+                        }}
                         showDebug={showDebug}
                     />
                     <SpectatorsInfo />

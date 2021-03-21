@@ -8,7 +8,6 @@ import { socket } from "../sockets/socket";
 export const GameSettingsContainer = ({
     options,
     gameID,
-    isHost,
     isDisabled,
     playerID,
 }) => {
@@ -146,8 +145,6 @@ export const GameSettingsContainer = ({
     const iconClassnames = "md-36 icon-margin-right";
     const {
         maximumPlayers,
-        selectWhiteCardTimeLimit,
-        selectBlackCardTimeLimit,
         winConditions,
         popularVote,
         winnerBecomesCardCzar,
@@ -173,15 +170,6 @@ export const GameSettingsContainer = ({
         roundLimit,
         useRoundLimit,
     } = options.winConditions;
-    /**
-     * 
-    scoreLimit: number;
-    useScoreLimit: boolean;
-
-    roundLimit: number;
-    useRoundLimit: boolean;
-}
-     */
 
     return (
         <div
