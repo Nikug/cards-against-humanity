@@ -73,7 +73,12 @@ export const PlayersWidget = ({ game, player }) => {
         );
     }
 
-    const renderedPlayers = renderPlayers(playersToRender, player);
+    const renderedPlayers = [
+        ...renderPlayers(playersToRender, player),
+        ...renderPlayers(playersToRender, player),
+        ...renderPlayers(playersToRender, player),
+        ...renderPlayers(playersToRender, player),
+    ];
 
     const playerTransitions = useTransition(
         renderedPlayers,

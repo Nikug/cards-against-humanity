@@ -10,20 +10,6 @@ import { useGameContext } from "../../contexts/GameContext";
 import { isPlayerHost } from "../../helpers/player-helpers";
 import { socket } from "./../sockets/socket";
 
-/*
-interface Player {
-    id: string;
-    socket: string;
-    name: string;
-    state: PlayerState;
-    score: number;
-    isCardCzar: boolean;
-    isHost: boolean;
-    popularVoteScore: number;
-    whiteCards: WhiteCard[];
-}
-*/
-
 export const Player = ({
     name,
     state,
