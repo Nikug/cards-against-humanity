@@ -28,14 +28,12 @@
 
     display: flex;
     flex-direction: row;
-    flex-wrap: nowrap;
+    flex-wrap: wrap;
+    gap: 0.4em;
 
     padding: 0.6rem;
     min-height: 3.5em;
-    max-height: 7rem;
 
-    overflow-x: auto;
-    overflow-y: hidden;
     scrollbar-color: lighten($players-background-shadow, 10%)
         $players-background-shadow;
 
@@ -65,7 +63,7 @@
     justify-content: space-between;
 
     padding: 0.4rem 0.8rem;
-    margin: 0 0.2rem;
+    //margin: 0 0.2rem;
 
     background-color: $players-background-hover;
     border-radius: 1rem;
