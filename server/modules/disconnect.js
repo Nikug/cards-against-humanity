@@ -14,6 +14,7 @@ import {
     setGame,
     shouldGameBeDeleted,
     shouldReturnToLobby,
+    shouldSkipRound,
     skipRound,
 } from "./game.js";
 
@@ -78,6 +79,13 @@ export const setPlayerDisconnected = (io, socketID, removePlayer) => {
 };
 
 export const handleSpecialCases = (io, game, player) => {
+    if (shouldSkipRound(game)) {
+        game.players = appointNextCardCzar(game, getCardCzar(game.players)?.id);
+        const nextCardCzar = getCardCzar(game.players);
+        skipRound(io, game, nextCardCzar);
+        return;
+    }
+
     if (shouldReturnToLobby(game)) {
         returnToLobby(io, game);
         return;
@@ -108,11 +116,7 @@ const handlePlayerLeavingDuringWhiteCardSelection = (io, game) => {
 
 const handleCardCzarLeaving = (io, game, cardCzar) => {
     game.players = appointNextCardCzar(game, cardCzar.id);
-    skipRound(
-        io,
-        game,
-        game.players.find((player) => player.isCardCzar)
-    );
+    skipRound(io, game, getCardCzar(game.players));
 };
 
 const handleHostLeaving = (game, host) => {
@@ -143,3 +147,5 @@ const handleHostLeaving = (game, host) => {
     }
     return [...game.players];
 };
+
+const getCardCzar = (players) => players.find((player) => player.isCardCzar);

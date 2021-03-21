@@ -161,7 +161,7 @@ export const getPlayerByWhiteCards = (game, whiteCardIDs) => {
 export const getNextCardCzar = (players, previousCardCzarID) => {
     const activePlayerIndexes = players
         .map((player, index) =>
-            ["active", "playing", "waiting"].includes(player.state)
+            ["active", "playing", "waiting", "joining"].includes(player.state)
                 ? index
                 : undefined
         )
@@ -175,7 +175,6 @@ export const getNextCardCzar = (players, previousCardCzarID) => {
         (index) => index > cardCzarIndex
     );
 
-    // TODO: add support for the winner becoming next card czar
     if (nextCardCzars.length > 0) {
         return players[nextCardCzars[0]].id;
     } else {
@@ -225,6 +224,16 @@ export const updatePlayersIndividually = (io, game) => {
 export const getActivePlayers = (players) => {
     return players.filter((player) =>
         ["active", "playing", "waiting"].includes(player.state)
+    );
+};
+
+export const getPlayersWithState = (players, state) => {
+    return players.filter((player) => player.state === state);
+};
+
+export const getActiveAndJoiningPlayers = (players) => {
+    return players.filter((player) =>
+        ["active", "playing", "waiting", "joining"].includes(player.state)
     );
 };
 
