@@ -53,9 +53,17 @@ export const sockets = (io) => {
 
         socket.on("update_game_options", (data) => {
             if (
-                validateFields(socket, ["gameID", "playerID", "options"], data)
+                validateFields(socket, ["gameID", "playerID", "options"], {
+                    ...data,
+                })
             ) {
-                updateGameOptions(io, data.gameID, data.playerID, data.options);
+                updateGameOptions(
+                    io,
+                    socket,
+                    data.gameID,
+                    data.playerID,
+                    data.options
+                );
             }
         });
 

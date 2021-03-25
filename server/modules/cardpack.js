@@ -16,12 +16,10 @@ export const addCardPack = async (io, socket, gameID, cardPackID, playerID) => {
         const res = await fetch(url);
         json = await res.json();
     } catch (error) {
-        console.log("Failed to load cardpack:", error);
         return;
     }
 
     if (json?.message === "Pack not found!") {
-        console.log("Pack not found: sending notification");
         sendNotification(
             ERROR_TYPES.cardPackWasNotFound,
             NOTIFICATION_TYPES.error,

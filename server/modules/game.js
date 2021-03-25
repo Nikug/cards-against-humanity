@@ -116,7 +116,7 @@ export const updateGameOptions = (io, socket, gameID, playerID, newOptions) => {
     });
 };
 
-export const startGame = (io, gameID, playerID) => {
+export const startGame = (io, socket, gameID, playerID) => {
     const game = getGame(gameID);
     if (!game) return undefined;
 

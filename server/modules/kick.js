@@ -35,6 +35,7 @@ export const hostKick = (
         game.players = filterByPublicID(game.players, targetID);
         sendNotification(ERROR_TYPES.kickedByHost, NOTIFICATION_TYPES.error, {
             sockets: target.sockets,
+            io: io,
         });
         target.sockets.map((socket) => {
             closeSocketWithID(io, socket);
@@ -46,6 +47,7 @@ export const hostKick = (
             NOTIFICATION_TYPES.error,
             {
                 sockets: target.sockets,
+                io: io,
             }
         );
     }

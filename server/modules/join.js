@@ -37,7 +37,6 @@ const handleGameID = (io, socket, gameID) => {
     if (!!gameID) {
         const game = getGame(gameID);
         if (!!game) {
-            console.log("Joining with just a gameID");
             addPlayerToGame(io, socket, gameID, null);
         } else {
             // Can't find a game with the id, return error
@@ -49,8 +48,8 @@ const handleGameID = (io, socket, gameID) => {
         // No game id, return error about bad query
 
         // TODO: fix this hack for removing player cookie
-        // console.log("DOing the hack");
-        // socket.emit("update_game_and_players", { data: { game: null } });
+        console.log("DOing the hack");
+        socket.emit("update_game_and_players", { data: { game: null } });
 
         returnError(socket);
         socket.disconnect(true);

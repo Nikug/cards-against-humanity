@@ -21,7 +21,6 @@ export const sendNotification = (message, type, options) => {
             type: type,
         });
     } else if (options.socket) {
-        console.log("Sending notifation through socket");
         options.socket.emit("notification", {
             notification: {
                 text: message,
@@ -29,8 +28,9 @@ export const sendNotification = (message, type, options) => {
                 time: NOTIFICATION_TIME,
             },
         });
-    } else if (options.sockets) {
-        options.sockets.map((socket) =>
+    } else if (options.sockets && options.io) {
+        const sockets = getSocketsWithIDs(options.io, options.sockets);
+        sockets.map((socket) =>
             socket.emit("notification", {
                 notification: {
                     text: message,
