@@ -55,7 +55,7 @@ const gameStateChange = (io, gameID, transition) => {
     if (transition === "startRound") {
         const cardCzar = currentCardCzar(game.players);
         if (!cardCzar) return;
-        startNewRound(io, gameID, cardCzar.id);
+        startNewRound(io, null, gameID, cardCzar.id);
         return;
     } else if (transition === "startPlayingWhiteCards") {
         // Cardczar didn't pick a blackcard, appoint next cardczar

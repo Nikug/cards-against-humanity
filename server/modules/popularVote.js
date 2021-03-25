@@ -5,15 +5,20 @@ import {
 } from "./player.js";
 import { getGame, setGame } from "./game.js";
 
+import { NOTIFICATION_TYPES } from "../consts/error.js";
 import { gameOptions } from "../consts/gameSettings.js";
+import { sendNotification } from "./socket.js";
 import { validatePopularVote } from "./validate.js";
 
 export const popularVote = (io, socket, gameID, playerID, whiteCardIDs) => {
     const game = getGame(gameID);
     if (!game) return;
 
-    const { result, error } = validatePopularVote(game, playerID);
-    if (!!error || !result) return;
+    const { error } = validatePopularVote(game, playerID);
+    if (!!error) {
+        sendNotification(error, NOTIFICATION_TYPES.error, { socket: socket });
+        return;
+    }
 
     const whiteCardsByPlayer = getWhiteCardsByIDs(game, whiteCardIDs);
     if (!whiteCardsByPlayer) return;

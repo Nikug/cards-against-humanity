@@ -1,3 +1,8 @@
+import {
+    ERROR_TYPES,
+    NOTIFICATION_TIME,
+    NOTIFICATION_TYPES,
+} from "../consts/error.js";
 import { addCardPack, removeCardPack } from "../modules/cardpack.js";
 import {
     changePlayerTextToSpeech,
@@ -20,6 +25,7 @@ import {
 import { hostKick } from "../modules/kick.js";
 import { joinGame } from "../modules/join.js";
 import { popularVote } from "../modules/popularVote.js";
+import { sendNotification } from "../modules/socket.js";
 import { setPlayerDisconnected } from "../modules/disconnect.js";
 import { togglePlayerMode } from "../modules/togglePlayerMode.js";
 import { updateAvatar } from "../modules/avatar.js";
@@ -39,35 +45,28 @@ export const sockets = (io) => {
         });
 
         socket.on("leave_game", (data) => {
-            const missingFields = validateFields(["gameID", "playerID"], data);
-            if (missingFields.length > 0) {
-                sendError(socket, "Invalid data", missingFields);
-            } else {
+            if (validateFields(socket, ["gameID", "playerID"], data)) {
                 setPlayerDisconnected(io, socket.id, true);
                 socket.disconnect(true);
             }
         });
 
         socket.on("update_game_options", (data) => {
-            const missingFields = validateFields(
-                ["gameID", "playerID", "options"],
-                data
-            );
-            if (missingFields.length > 0) {
-                sendError(socket, "Invalid data", missingFields);
-            } else {
+            if (
+                validateFields(socket, ["gameID", "playerID", "options"], data)
+            ) {
                 updateGameOptions(io, data.gameID, data.playerID, data.options);
             }
         });
 
         socket.on("set_player_name", (data) => {
-            const missingFields = validateFields(
-                ["gameID", "playerID", "playerName"],
-                data
-            );
-            if (missingFields.length > 0) {
-                sendError(socket, "Invalid data", missingFields);
-            } else {
+            if (
+                validateFields(
+                    socket,
+                    ["gameID", "playerID", "playerName"],
+                    data
+                )
+            ) {
                 updatePlayerName(
                     io,
                     data.gameID,
@@ -78,25 +77,21 @@ export const sockets = (io) => {
         });
 
         socket.on("set_player_avatar", (data) => {
-            const missingFields = validateFields(
-                ["gameID", "playerID", "avatar"],
-                data
-            );
-            if (missingFields.length > 0) {
-                sendError(socket, "Invalid data", missingFields);
-            } else {
+            if (
+                validateFields(socket, ["gameID", "playerID", "avatar"], data)
+            ) {
                 updateAvatar(io, data.gameID, data.playerID, data.avatar);
             }
         });
 
         socket.on("change_text_to_speech", (data) => {
-            const missingFields = validateFields(
-                ["gameID", "playerID", "useTextToSpeech"],
-                data
-            );
-            if (missingFields.length > 0) {
-                sendError(socket, "Invalid data", missingFields);
-            } else {
+            if (
+                validateFields(
+                    socket,
+                    ["gameID", "playerID", "useTextToSpeech"],
+                    data
+                )
+            ) {
                 changePlayerTextToSpeech(
                     io,
                     data.gameID,
@@ -107,57 +102,69 @@ export const sockets = (io) => {
         });
 
         socket.on("add_card_pack", (data) => {
-            const missingFields = validateFields(
-                ["gameID", "cardPackID", "playerID"],
-                data
-            );
-            if (missingFields.length > 0) {
-                sendError(socket, "Invalid data", missingFields);
-            } else {
-                addCardPack(io, data.gameID, data.cardPackID, data.playerID);
+            if (
+                validateFields(
+                    socket,
+                    ["gameID", "cardPackID", "playerID"],
+                    data
+                )
+            ) {
+                addCardPack(
+                    io,
+                    socket,
+                    data.gameID,
+                    data.cardPackID,
+                    data.playerID
+                );
             }
         });
 
         socket.on("remove_card_pack", (data) => {
-            const missingFields = validateFields(
-                ["gameID", "playerID", "cardPackID"],
-                data
-            );
-            if (missingFields.length > 0) {
-                sendError(socket, "Invalid data", missingFields);
-            } else {
-                removeCardPack(io, data.gameID, data.cardPackID, data.playerID);
+            if (
+                validateFields(
+                    socket,
+                    ["gameID", "playerID", "cardPackID"],
+                    data
+                )
+            ) {
+                removeCardPack(
+                    io,
+                    socket,
+                    data.gameID,
+                    data.cardPackID,
+                    data.playerID
+                );
             }
         });
 
         socket.on("start_game", (data) => {
-            const missingFields = validateFields(["gameID", "playerID"], data);
-            if (missingFields.length > 0) {
-                sendError(socket, "Invalid data", missingFields);
-            } else {
-                startGame(io, data.gameID, data.playerID);
+            if (validateFields(socket, ["gameID", "playerID"], data)) {
+                startGame(io, socket, data.gameID, data.playerID);
             }
         });
 
         socket.on("draw_black_cards", (data) => {
-            const missingFields = validateFields(["gameID", "playerID"], data);
-            if (missingFields.length > 0) {
-                sendError(socket, "Invalid data", missingFields);
-            } else {
+            if (validateFields(socket, ["gameID", "playerID"], data)) {
                 sendBlackCards(socket, data.gameID, data.playerID);
             }
         });
 
         socket.on("select_black_card", (data) => {
-            const missingFields = validateFields(
-                ["gameID", "playerID", "selectedCardID", "discardedCardIDs"],
-                data
-            );
-            if (missingFields.length > 0) {
-                sendError(socket, "Invalid data", missingFields);
-            } else {
+            if (
+                validateFields(
+                    socket,
+                    [
+                        "gameID",
+                        "playerID",
+                        "selectedCardID",
+                        "discardedCardIDs",
+                    ],
+                    data
+                )
+            ) {
                 selectBlackCard(
                     io,
+                    socket,
                     data.gameID,
                     data.playerID,
                     data.selectedCardID,
@@ -167,15 +174,16 @@ export const sockets = (io) => {
         });
 
         socket.on("play_white_cards", (data) => {
-            const missingFields = validateFields(
-                ["gameID", "playerID", "whiteCardIDs"],
-                data
-            );
-            if (missingFields.length > 0) {
-                sendError(socket, "Invalid data", missingFields);
-            } else {
+            if (
+                validateFields(
+                    socket,
+                    ["gameID", "playerID", "whiteCardIDs"],
+                    data
+                )
+            ) {
                 playWhiteCards(
                     io,
+                    socket,
                     data.gameID,
                     data.playerID,
                     data.whiteCardIDs
@@ -184,52 +192,54 @@ export const sockets = (io) => {
         });
 
         socket.on("show_next_white_card", (data) => {
-            const missingFields = validateFields(["gameID", "playerID"], data);
-            if (missingFields.length > 0) {
-                sendError(socket, "Invalid data", missingFields);
-            } else {
-                showWhiteCard(io, data.gameID, data.playerID);
+            if (validateFields(socket, ["gameID", "playerID"], data)) {
+                showWhiteCard(io, socket, data.gameID, data.playerID);
             }
         });
 
         socket.on("pick_winning_card", (data) => {
-            const missingFields = validateFields(
-                ["gameID", "playerID", "whiteCardIDs"],
-                data
-            );
-            if (missingFields.length > 0) {
-                sendError(socket, "Invalid data", missingFields);
-            } else {
-                selectWinner(io, data.gameID, data.playerID, data.whiteCardIDs);
+            if (
+                validateFields(
+                    socket,
+                    ["gameID", "playerID", "whiteCardIDs"],
+                    data
+                )
+            ) {
+                selectWinner(
+                    io,
+                    socket,
+                    data.gameID,
+                    data.playerID,
+                    data.whiteCardIDs
+                );
             }
         });
 
         socket.on("start_round", (data) => {
-            const missingFields = validateFields(["gameID", "playerID"], data);
-            if (missingFields.length > 0) {
-                sendError(socket, "Invalid data", missingFields);
-            } else {
-                startNewRound(io, data.gameID, data.playerID);
+            if (validateFields(socket, ["gameID", "playerID"], data)) {
+                startNewRound(io, socket, data.gameID, data.playerID);
             }
         });
 
         socket.on("return_to_lobby", (data) => {
-            const missingFields = validateFields(["gameID", "playerID"], data);
-            if (missingFields.length > 0) {
-                sendError(socket, "Invalid data", missingFields);
-            } else {
-                validateHostAndReturnToLobby(io, data.gameID, data.playerID);
+            if (validateFields(socket, ["gameID", "playerID"], data)) {
+                validateHostAndReturnToLobby(
+                    io,
+                    socket,
+                    data.gameID,
+                    data.playerID
+                );
             }
         });
 
         socket.on("give_popular_vote", (data) => {
-            const missingFields = validateFields(
-                ["gameID", "playerID", "whiteCardIDs"],
-                data
-            );
-            if (missingFields.length > 0) {
-                sendError(socket, "Invalid data", missingFields);
-            } else {
+            if (
+                validateFields(
+                    socket,
+                    ["gameID", "playerID", "whiteCardIDs"],
+                    data
+                )
+            ) {
                 popularVote(
                     io,
                     socket,
@@ -241,26 +251,22 @@ export const sockets = (io) => {
         });
 
         socket.on("toggle_player_mode", (data) => {
-            console.log("toggle_player_mode");
-            const missingFields = validateFields(["gameID", "playerID"], data);
-            if (missingFields.length > 0) {
-                sendError(socket, "Invalid data", missingFields);
-            } else {
-                togglePlayerMode(io, data.gameID, data.playerID);
+            if (validateFields(socket, ["gameID", "playerID"], data)) {
+                togglePlayerMode(io, socket, data.gameID, data.playerID);
             }
         });
 
         socket.on("kick_player", (data) => {
-            console.log(data);
-            const missingFields = validateFields(
-                ["gameID", "playerID", "targetID", "removeFromGame"],
-                data
-            );
-            if (missingFields.length > 0) {
-                sendError(socket, "Invalid data", missingFields);
-            } else {
+            if (
+                validateFields(
+                    socket,
+                    ["gameID", "playerID", "targetID", "removeFromGame"],
+                    data
+                )
+            ) {
                 hostKick(
                     io,
+                    socket,
                     data.gameID,
                     data.playerID,
                     data.targetID,
@@ -271,17 +277,27 @@ export const sockets = (io) => {
     });
 };
 
-const sendError = (socket, id, message) => {
-    socket?.emit("notification", {
-        id: id,
-        message: message,
-    });
+const sendError = (socket, data) => {
+    sendNotification(
+        `${ERROR_TYPES.missingFields}: ${data}`,
+        NOTIFICATION_TYPES.error,
+        {
+            socket: socket,
+        }
+    );
 };
 
-const validateFields = (fields, data) => {
-    return fields
+const validateFields = (socket, fields, data) => {
+    const missingFields = fields
         .map((field) => {
             return data[field] == null ? field : null;
         })
         .filter((error) => error !== null);
+
+    if (missingFields.length > 0) {
+        sendError(socket, missingFields);
+        return false;
+    } else {
+        return true;
+    }
 };

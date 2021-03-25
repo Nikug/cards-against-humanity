@@ -1,15 +1,31 @@
+import { ERROR_TYPES, NOTIFICATION_TYPES } from "../consts/error.js";
+import { closeSocketWithID, sendNotification } from "./socket.js";
+
 import { checkSpectatorLimit } from "./join.js";
-import { closeSocketWithID } from "./socket.js";
 import { getGame } from "./game.js";
 import { handleSpecialCases } from "./disconnect.js";
 import { setPlayerState } from "./togglePlayerMode.js";
 import { validateHost } from "./validate.js";
 
-export const hostKick = (io, gameID, playerID, targetID, removeFromGame) => {
+export const hostKick = (
+    io,
+    socket,
+    gameID,
+    playerID,
+    targetID,
+    removeFromGame
+) => {
     const game = getGame(gameID);
     if (!game) return;
 
-    if (!validateHost(game, playerID)) return;
+    if (!validateHost(game, playerID)) {
+        sendNotification(
+            ERROR_TYPES.forbiddenHostAction,
+            NOTIFICATION_TYPES.error,
+            { socket: socket }
+        );
+        return;
+    }
 
     const target = getPlayerByPublicID(game.players, targetID);
     if (!target) return;
@@ -17,11 +33,21 @@ export const hostKick = (io, gameID, playerID, targetID, removeFromGame) => {
 
     if (removeFromGame || !checkSpectatorLimit(game)) {
         game.players = filterByPublicID(game.players, targetID);
+        sendNotification(ERROR_TYPES.kickedByHost, NOTIFICATION_TYPES.error, {
+            sockets: target.sockets,
+        });
         target.sockets.map((socket) => {
             closeSocketWithID(io, socket);
         });
     } else {
         game.players = setPlayerState(game.players, target.id, "spectating");
+        sendNotification(
+            ERROR_TYPES.movedToSpectators,
+            NOTIFICATION_TYPES.error,
+            {
+                sockets: target.sockets,
+            }
+        );
     }
     handleSpecialCases(io, game, target);
 };

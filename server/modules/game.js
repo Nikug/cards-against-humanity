@@ -1,3 +1,4 @@
+import { ERROR_TYPES, NOTIFICATION_TYPES } from "../consts/error.js";
 import {
     appointNextCardCzar,
     getActiveAndJoiningPlayers,
@@ -33,6 +34,7 @@ import { gameOptions } from "../consts/gameSettings.js";
 import hri from "human-readable-ids";
 import { newGameTemplate } from "./newGame.js";
 import { randomBetween } from "./util.js";
+import { sendNotification } from "./socket.js";
 import { setPopularVoteLeader } from "./popularVote.js";
 
 let games = [];
@@ -90,11 +92,18 @@ export const everyoneHasPlayedTurn = (game) => {
     return waitingPlayers.length === getActivePlayers(game.players).length - 1; // Remove card czar with -1
 };
 
-export const updateGameOptions = (io, gameID, playerID, newOptions) => {
+export const updateGameOptions = (io, socket, gameID, playerID, newOptions) => {
     const game = getGame(gameID);
 
     if (!game) return;
-    if (!validateHost(game, playerID)) return;
+    if (!validateHost(game, playerID)) {
+        sendNotification(
+            ERROR_TYPES.forbiddenHostAction,
+            NOTIFICATION_TYPES.error,
+            { socket: socket }
+        );
+        return;
+    }
 
     game.client.options = validateOptions({
         ...game.client.options,
@@ -113,8 +122,11 @@ export const startGame = (io, gameID, playerID) => {
 
     if (!validateHost(game, playerID)) return undefined;
 
-    const result = validateGameStartRequirements(game);
-    if (!!result.error) return result.error;
+    const { error } = validateGameStartRequirements(game);
+    if (!!error) {
+        sendNotification(error, NOTIFICATION_TYPES.error, { socket: socket });
+        return;
+    }
 
     game.stateMachine.startGame();
     game.client.state = game.stateMachine.state;
@@ -152,18 +164,36 @@ export const startGame = (io, gameID, playerID) => {
     updatePlayersIndividually(io, updatedGame);
 };
 
-export const startNewRound = (io, gameID, playerID) => {
+export const startNewRound = (io, socket, gameID, playerID) => {
     const game = getGame(gameID);
     if (!game) return undefined;
 
-    if (!validateCardCzar(game, playerID)) return;
+    if (!validateCardCzar(game, playerID)) {
+        if (!!socket) {
+            sendNotification(
+                ERROR_TYPES.forbiddenCardCzarAction,
+                NOTIFICATION_TYPES.error,
+                { socket: socket }
+            );
+        }
+        return;
+    }
 
     if (validateGameEnding(game)) {
         endGame(io, game);
         return;
     }
 
-    if (game.stateMachine.cannot("startRound")) return;
+    if (game.stateMachine.cannot("startRound")) {
+        if (!!socket) {
+            sendNotification(
+                ERROR_TYPES.incorrectGameState,
+                NOTIFICATION_TYPES.error,
+                { socket: socket }
+            );
+        }
+        return;
+    }
 
     game.stateMachine.startRound();
     game.client.state = game.stateMachine.state;
@@ -324,11 +354,18 @@ export const returnToLobby = (io, game) => {
     updatePlayersIndividually(io, initialGame);
 };
 
-export const validateHostAndReturnToLobby = (io, gameID, playerID) => {
+export const validateHostAndReturnToLobby = (io, socket, gameID, playerID) => {
     const game = getGame(gameID);
     if (!game) return;
 
-    if (!validateHost(game, playerID)) return;
+    if (!validateHost(game, playerID)) {
+        sendNotification(
+            ERROR_TYPES.forbiddenHostAction,
+            NOTIFICATION_TYPES.error,
+            { socket: socket }
+        );
+        return;
+    }
 
     returnToLobby(io, game);
 };

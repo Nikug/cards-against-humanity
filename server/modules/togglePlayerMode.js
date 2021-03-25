@@ -1,11 +1,13 @@
+import { ERROR_TYPES, NOTIFICATION_TYPES } from "../consts/error.js";
 import { checkPlayerLimit, checkSpectatorLimit } from "./join.js";
 import { getGame, setGame } from "./game.js";
 import { getPlayer, updatePlayersIndividually } from "./player.js";
 
 import { handleSpecialCases } from "./disconnect.js";
 import { playerName } from "../consts/gameSettings.js";
+import { sendNotification } from "./socket.js";
 
-export const togglePlayerMode = (io, gameID, playerID) => {
+export const togglePlayerMode = (io, socket, gameID, playerID) => {
     const game = getGame(gameID);
     if (!game) return;
 
@@ -16,6 +18,13 @@ export const togglePlayerMode = (io, gameID, playerID) => {
         if (checkSpectatorLimit(game)) {
             game.players = setPlayerState(game.players, playerID, "spectating");
             handleSpecialCases(io, game, player);
+            return;
+        } else {
+            sendNotification(
+                ERROR_TYPES.spectatorsAreFull,
+                NOTIFICATION_TYPES.error,
+                { socket: socket }
+            );
             return;
         }
     } else {
@@ -33,6 +42,13 @@ export const togglePlayerMode = (io, gameID, playerID) => {
                     game.stateMachine.state === "lobby" ? "active" : "joining"
                 );
             }
+        } else {
+            sendNotification(
+                ERROR_TYPES.playersAreFull,
+                NOTIFICATION_TYPES.error,
+                { socket: socket }
+            );
+            return;
         }
     }
     setGame(game);

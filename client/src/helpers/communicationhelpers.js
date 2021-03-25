@@ -1,5 +1,5 @@
-import { socket } from "../components/sockets/socket";
 import { NOTIFICATION_TYPES } from "../components/notification/notification";
+import { socket } from "../components/sockets/socket";
 
 export const socketEmit = (eventName, paramsObject) => {
     socket.emit(eventName, paramsObject);
@@ -9,6 +9,7 @@ export const socketOn = (eventName, callback, notificationParams = {}) => {
     const { fireNotification } = notificationParams;
 
     socket.on(eventName, (data) => {
+        console.log("Received event", eventName);
         callback(data);
 
         /*

@@ -1,6 +1,9 @@
+import { ERROR_TYPES, NOTIFICATION_TYPES } from "../consts/error.js";
 import { createNewPlayer, updatePlayersIndividually } from "./player.js";
 import { findGameByPlayerID, getGame, setGame } from "./game.js";
 import { gameOptions, playerName } from "../consts/gameSettings.js";
+
+import { sendNotification } from "./socket.js";
 
 export const joinGame = (io, socket, gameID, playerID) => {
     console.log(`Joining game! gameID: ${gameID} playerID: ${playerID}`);
@@ -9,17 +12,17 @@ export const joinGame = (io, socket, gameID, playerID) => {
         if (!!game) {
             if (!!gameID) {
                 if (gameID === game.id) {
-                    console.log("Joining with gameID and playerID");
                     addPlayerToGame(io, socket, gameID, playerID);
                 } else {
                     // Join the game but send also warning about joining a different game than expected
-                    console.log(
-                        "Joining with gameID and playerID, but different game was found"
-                    );
                     addPlayerToGame(io, socket, game.id, playerID);
+                    sendNotification(
+                        ERROR_TYPES.joinedToDifferentGame,
+                        NOTIFICATION_TYPES.default,
+                        { socket: socket }
+                    );
                 }
             } else {
-                console.log("Joining with playerID and no gameID");
                 addPlayerToGame(io, socket, game.id, playerID);
             }
         } else {
@@ -38,16 +41,19 @@ const handleGameID = (io, socket, gameID) => {
             addPlayerToGame(io, socket, gameID, null);
         } else {
             // Can't find a game with the id, return error
-            console.log("Tried to join with just a gameID that was incorrect");
             returnError(socket);
-            socket.disconnect();
+            socket.disconnect(true);
             return;
         }
     } else {
         // No game id, return error about bad query
-        console.log("No gameID, no playerID, returning");
+
+        // TODO: fix this hack for removing player cookie
+        // console.log("DOing the hack");
+        // socket.emit("update_game_and_players", { data: { game: null } });
+
         returnError(socket);
-        socket.disconnect();
+        socket.disconnect(true);
         return;
     }
 };
@@ -64,9 +70,19 @@ const addPlayerToGame = (io, socket, gameID, playerID) => {
             const newPlayer = createNewPlayer(socket.id, isHost);
             game.players = addPlayer(game.players, newPlayer);
         } else if (checkSpectatorLimit(game)) {
+            sendNotification(
+                ERROR_TYPES.lobbyIsFullJoinAsSpectator,
+                NOTIFICATION_TYPES.default,
+                { socket: socket }
+            );
             const newPlayer = createNewPlayer(socket.id, isHost, "spectating");
             game.players = addPlayer(game.players, newPlayer);
         } else {
+            sendNotification(
+                ERROR_TYPES.lobbyAndSpectatorsAreFull,
+                NOTIFICATION_TYPES.default,
+                { socket: socket }
+            );
             socket.disconnect();
             return;
         }
@@ -103,7 +119,9 @@ export const setPlayer = (players, newPlayer) => {
 };
 
 const returnError = (socket) => {
-    socket.emit("update_game_and_players", { error: "No game found" });
+    sendNotification(ERROR_TYPES.gameWasNotFound, NOTIFICATION_TYPES.error, {
+        socket: socket,
+    });
 };
 
 export const checkPlayerLimit = (game) => {
@@ -116,9 +134,6 @@ export const checkPlayerLimit = (game) => {
 export const checkSpectatorLimit = (game) => {
     const spectators = game.players.filter(
         (player) => player.state === "spectating"
-    );
-    console.log(
-        `Spectator limit ${gameOptions.spectatorLimit}, spectators ${spectators.length}`
     );
     return gameOptions.spectatorLimit > spectators.length;
 };

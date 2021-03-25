@@ -8,16 +8,16 @@ import { deleteCookie, getCookie, setCookie } from "./helpers/cookies";
 
 import { Button } from "./components/button";
 import { Game } from "./layouts/Game/Game.jsx";
+import { GameContextProvider } from "./contexts/GameContext";
 import { Header } from "./components/header";
 import { Home } from "./layouts/Home";
 import { Instructions } from "./layouts/Instructions";
 import Music from "./components/music";
 import { Notification } from "./components/notification/notification";
-import axios from "axios";
-import { socket } from "./components/sockets/socket";
-import { getRandomSpinner } from "./components/spinner";
-import { GameContextProvider } from "./contexts/GameContext";
 import { NotificationContextProvider } from "./contexts/NotificationContext";
+import axios from "axios";
+import { getRandomSpinner } from "./components/spinner";
+import { socket } from "./components/sockets/socket";
 import { socketOn } from "./helpers/communicationhelpers";
 
 export const App = () => {
@@ -109,6 +109,7 @@ export const App = () => {
                     return;
                 }
                 if (isNullOrUndefined(data.game)) {
+                    console.log("Should remove cookie");
                     deleteCookie("playerID");
                 } else {
                     setGame((prevGame) => ({
@@ -138,9 +139,14 @@ export const App = () => {
             notificationParams
         );
 
+        socketOn("notification", (data) => {
+            console.log("Notification", data);
+        });
+
         return () => {
             socket.off("update_game_and_players");
             socket.off("disconnect");
+            socket.off("notification");
         };
     }, [notificationParams, fireNotification, notificationCount]);
 

@@ -1,3 +1,4 @@
+import { ERROR_TYPES, NOTIFICATION_TYPES } from "../consts/error.js";
 import {
     addScore,
     emitToAllPlayerSockets,
@@ -28,12 +29,21 @@ import {
 
 import { gameOptions } from "../consts/gameSettings.js";
 import { randomBetween } from "./util.js";
+import { sendNotification } from "./socket.js";
 
-export const playWhiteCards = (io, gameID, playerID, whiteCardIDs) => {
+export const playWhiteCards = (io, socket, gameID, playerID, whiteCardIDs) => {
     let game = getGame(gameID);
     if (!game) return;
-    if (!validatePlayerPlayingWhiteCards(game, playerID, whiteCardIDs).result)
+
+    const { error } = validatePlayerPlayingWhiteCards(
+        game,
+        playerID,
+        whiteCardIDs
+    );
+    if (!!error) {
+        sendNotification(error, NOTIFICATION_TYPES.error, { socket: socket });
         return;
+    }
 
     const player = getPlayer(game, playerID);
     if (!player) return;
@@ -82,6 +92,7 @@ export const startReading = (io, game) => {
 
 export const selectBlackCard = (
     io,
+    socket,
     gameID,
     playerID,
     selectedCardID,
@@ -90,8 +101,22 @@ export const selectBlackCard = (
     const game = getGame(gameID);
     if (!game) return;
 
-    if (!validateState(game, "pickingBlackCard")) return;
-    if (!validateCardCzar(game, playerID)) return;
+    if (!validateState(game, "pickingBlackCard")) {
+        sendNotification(
+            ERROR_TYPES.incorrectGameState,
+            NOTIFICATION_TYPES.error,
+            { socket: socket }
+        );
+        return;
+    }
+    if (!validateCardCzar(game, playerID)) {
+        sendNotification(
+            ERROR_TYPES.forbiddenCardCzarAction,
+            NOTIFICATION_TYPES.error,
+            { socket: socket }
+        );
+        return;
+    }
 
     if (
         !game.cards.sentBlackCards.some(
@@ -143,8 +168,22 @@ export const sendBlackCards = (socket, gameID, playerID) => {
     const game = getGame(gameID);
     if (!game) return;
 
-    if (!validateCardCzar(game, playerID)) return;
-    if (game.stateMachine.state !== "pickingBlackCard") return;
+    if (!validateCardCzar(game, playerID)) {
+        sendNotification(
+            ERROR_TYPES.forbiddenCardCzarAction,
+            NOTIFICATION_TYPES.error,
+            { socket: socket }
+        );
+        return;
+    }
+    if (game.stateMachine.state !== "pickingBlackCard") {
+        sendNotification(
+            ERROR_TYPES.incorrectGameState,
+            NOTIFICATION_TYPES.error,
+            { socket: socket }
+        );
+        return;
+    }
 
     socket.emit("deal_black_cards", {
         blackCards: game.cards.sentBlackCards,
@@ -281,13 +320,13 @@ export const shuffleCards = (cards) => {
     return cards;
 };
 
-export const showWhiteCard = (io, gameID, playerID) => {
+export const showWhiteCard = (io, socket, gameID, playerID) => {
     const game = getGame(gameID);
     if (!game) return;
 
-    const { result, error } = validateShowingWhiteCard(game, playerID);
-    if (!result || error) {
-        console.log(error);
+    const { error } = validateShowingWhiteCard(game, playerID);
+    if (!!error) {
+        sendNotification(error, NOTIFICATION_TYPES.error, { socket: socket });
         return;
     }
 
@@ -352,7 +391,7 @@ export const anonymizedGameClient = (game) => {
     };
 };
 
-export const selectWinner = (io, gameID, playerID, whiteCardIDs) => {
+export const selectWinner = (io, socket, gameID, playerID, whiteCardIDs) => {
     const game = getGame(gameID);
     if (!game) return;
 
@@ -361,7 +400,10 @@ export const selectWinner = (io, gameID, playerID, whiteCardIDs) => {
         playerID,
         whiteCardIDs
     );
-    if (!!error || !result) return;
+    if (!!error) {
+        sendNotification(error, NOTIFICATION_TYPES.error, { socket: socket });
+        return;
+    }
 
     const winnerID = getPlayerByWhiteCards(game, whiteCardIDs);
     if (!winnerID) return;

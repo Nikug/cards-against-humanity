@@ -1,10 +1,16 @@
 import {
+    ERROR_TYPES,
+    NOTIFICATION_TIME,
+    NOTIFICATION_TYPES,
+} from "../consts/error.js";
+import {
     appointNextCardCzar,
     emitToAllPlayerSockets,
     getActivePlayers,
     getAllActivePlayers,
     updatePlayersIndividually,
 } from "./player.js";
+import { closeSocketWithID, sendNotification } from "./socket.js";
 import {
     everyoneHasPlayedTurn,
     findGameAndPlayerBySocketID,
@@ -19,7 +25,6 @@ import {
 } from "./game.js";
 
 import { INACTIVE_GAME_DELETE_TIME } from "../consts/gameSettings.js";
-import { closeSocketWithID } from "./socket.js";
 import { setPlayer } from "./join.js";
 import { startReading } from "./card.js";
 
@@ -72,7 +77,13 @@ export const setPlayerDisconnected = (io, socketID, removePlayer) => {
         if (!game.players) return;
 
         const newHost = game.players.find((player) => player.isHost);
-        emitToAllPlayerSockets(io, newHost, "upgraded_to_host", {});
+        emitToAllPlayerSockets(io, newHost, "upgraded_to_host", {
+            notification: {
+                text: ERROR_TYPES.promotedToHost,
+                type: NOTIFICATION_TYPES.default,
+                time: NOTIFICATION_TIME,
+            },
+        });
     }
 
     handleSpecialCases(io, game, player);
@@ -88,6 +99,11 @@ export const handleSpecialCases = (io, game, player) => {
 
     if (shouldReturnToLobby(game)) {
         returnToLobby(io, game);
+        sendNotification(
+            ERROR_TYPES.notEnoughPlayers,
+            NOTIFICATION_TYPES.default,
+            { io: io, gameID: game.id }
+        );
         return;
     }
 
