@@ -19,6 +19,7 @@ import axios from "axios";
 import { getRandomSpinner } from "./components/spinner";
 import { socket } from "./components/sockets/socket";
 import { socketOn } from "./helpers/communicationhelpers";
+import { WholePageLoader } from "./components/WholePageLoader";
 
 export const App = () => {
     /*****************************************************************/ // Purely for hiding dev things from the production.
@@ -139,9 +140,7 @@ export const App = () => {
             notificationParams
         );
 
-        socketOn("notification", (data) => {
-            console.log("Notification", data);
-        });
+        socketOn("notification", null, notificationParams);
 
         return () => {
             socket.off("update_game_and_players");
@@ -208,12 +207,7 @@ export const App = () => {
     const pathName = useLocation().pathname;
 
     if (loading) {
-        content = (
-            <div className="loading-page-spinner-container">
-                <div className="loading-text">Ei hätää, sivua ladataan...</div>
-                <div className="loading-page-spinner">{getRandomSpinner()}</div>
-            </div>
-        );
+        content = <WholePageLoader />;
     } else {
         content = (
             <NotificationContextProvider value={notificationParams}>
