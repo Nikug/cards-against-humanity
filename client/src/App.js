@@ -20,6 +20,7 @@ import { getRandomSpinner } from "./components/spinner";
 import { socket } from "./components/sockets/socket";
 import { socketOn } from "./helpers/communicationhelpers";
 import { WholePageLoader } from "./components/WholePageLoader";
+import { useTranslation } from "react-i18next";
 
 export const App = () => {
     /*****************************************************************/ // Purely for hiding dev things from the production.
@@ -34,6 +35,7 @@ export const App = () => {
         }
     };
     /*****************************************************************/
+    const { t } = useTranslation();
 
     const [game, setGame] = useState(undefined);
     const [player, setPlayer] = useState(undefined);

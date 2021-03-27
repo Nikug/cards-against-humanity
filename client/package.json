@@ -1,5 +1,5 @@
 {
-    "name": "Kortit ihmiskuntaa vastaan",
+    "name": "client",
     "version": "0.1.0",
     "private": true,
     "proxy": "http://localhost:4000",
@@ -19,7 +19,11 @@
         "react-spring": "^8.0.27",
         "resize-observer-polyfill": "^1.5.1",
         "socket.io-client": "^2.3.0",
-        "spinners-react": "^1.0.4"
+        "spinners-react": "^1.0.4",
+        "i18next": "^19.8.7",
+        "react-i18next": "^11.8.5",
+        "i18next-http-backend": "^1.1.0",
+        "i18next-browser-languagedetector": "^6.0.1"
     },
     "scripts": {
         "start": "react-scripts start",
