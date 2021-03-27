@@ -18,9 +18,39 @@ import { PLAYER_STATES } from "../../consts/playerstates";
 import { LayerMenu } from "../../components/layer-menu/LayerMenu";
 import { GameSettingsContainer } from "../../components/game-settings/gamesettingscontainer";
 import { HistoryContainer } from "./components/GameMenu/history/HistoryContainer";
+import { isNullOrUndefined } from "../../helpers/generalhelpers";
 
 export const NAME_CHAR_LIMIT = 50;
 export const ICON_CLASSNAMES = "md-36 icon-margin-right";
+
+const hasTimerInUse = (game) => {
+    const gameState = game?.state;
+    const timers = game?.options?.timers;
+
+    console.log({ gameState, timers });
+    if (isNullOrUndefined(gameState) || isNullOrUndefined(timers)) {
+        return false;
+    }
+
+    switch (gameState) {
+        case GAME_STATES.LOBBY:
+            return false;
+        case GAME_STATES.PICKING_BLACK_CARD:
+            return timers.useSelectBlackCard;
+        case GAME_STATES.PLAYING_WHITE_CARDS:
+            return timers.useSelectWhiteCards;
+        case GAME_STATES.READING_CARDS:
+            return timers.useReadBlackCard;
+        case GAME_STATES.SHOWING_CARDS:
+            return timers.useSelectWinner;
+        case GAME_STATES.ROUND_END:
+            return timers.useRoundEnd;
+        case GAME_STATES.GAME_OVER:
+            return false;
+        default:
+            return false;
+    }
+};
 
 export const Game = ({ showDebug }) => {
     // Contexts
@@ -256,6 +286,8 @@ export const Game = ({ showDebug }) => {
 
     const renderedContent = getGamePhaseContent(contentProps);
     const hasProgressInTimer = !isLobby && timerIsOn;
+    const hasTimer = hasTimerInUse(game);
+    console.log({ hasTimer });
 
     return (
         <>
@@ -284,7 +316,7 @@ export const Game = ({ showDebug }) => {
                 </div>
             </div>
             <div>
-                <div className="info sticky">
+                <div className={`info ${hasTimer ? "sticky" : ""}`}>
                     {true && (
                         <Timer
                             width={100}
