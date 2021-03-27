@@ -27,7 +27,6 @@ const hasTimerInUse = (game) => {
     const gameState = game?.state;
     const timers = game?.options?.timers;
 
-    console.log({ gameState, timers });
     if (isNullOrUndefined(gameState) || isNullOrUndefined(timers)) {
         return false;
     }
@@ -287,7 +286,6 @@ export const Game = ({ showDebug }) => {
     const renderedContent = getGamePhaseContent(contentProps);
     const hasProgressInTimer = !isLobby && timerIsOn;
     const hasTimer = hasTimerInUse(game);
-    console.log({ hasTimer });
 
     return (
         <>
