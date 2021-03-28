@@ -48,6 +48,8 @@ export function RoundEndContainer(props) {
         (player) => player.isCardCzar === true
     )[0].name;
 
+    console.log("ses", winningWhiteCardsByPlayer);
+
     return (
         <>
             {winningWhiteCardsByPlayer?.playerName !== undefined && (
@@ -91,14 +93,9 @@ export function RoundEndContainer(props) {
                     customButtonState={startingNewRound ? 1 : 0}
                     topText={
                         winningWhiteCardsByPlayer?.playerName
-                            ? `🎉 ${
-                                  ("_player_WonTheRound",
-                                  t,
-                                  {
-                                      player:
-                                          winningWhiteCardsByPlayer?.playerName,
-                                  })
-                              }! 🎉`
+                            ? `🎉 ${translateCommon("_player_WonTheRound", t, {
+                                  player: winningWhiteCardsByPlayer?.playerName,
+                              })}! 🎉`
                             : `${translateCommon(
                                   "_player_DidNotChooseAWinnerAndLostOnePoint",
                                   t,

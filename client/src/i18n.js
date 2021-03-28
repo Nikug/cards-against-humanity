@@ -1,5 +1,5 @@
-import i18n from "i18next";
 import Backend from "i18next-http-backend";
+import i18n from "i18next";
 import { initReactI18next } from "react-i18next";
 
 i18n
@@ -16,8 +16,8 @@ i18n
         react: {
             useSuspense: true,
         },
-        lang: "fi",
-        fallbackLng: ["fi", "en"],
+        lang: "en",
+        fallbackLng: ["en", "fi"],
         debug: false,
 
         interpolation: {
