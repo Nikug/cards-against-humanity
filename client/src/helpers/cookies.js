@@ -1,5 +1,3 @@
-import { isNullOrUndefined } from "./generalhelpers";
-
 export function setCookie(cookie, expireTimeInHours = 1) {
     Date.prototype.addHours = function (h) {
         this.setTime(this.getTime() + h * 60 * 60 * 1000);

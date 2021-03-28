@@ -1,4 +1,4 @@
-import React, { memo, useRef, useState, useEffect } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { animated, useSpring } from "react-spring";
 import { useMeasure, usePrevious } from "../../helpers/animation-helpers";
 
@@ -79,57 +79,4 @@ export const PopOverMenu = ({
             </div>
         </div>
     );
-
-    /*
-    const [isOpen, setIsOpen] = useState(false);
-
-    // Setting animations
-    const previous = usePrevious(isOpen);
-    const [bind, { width: viewWidth }] = useMeasure();
-    console.log({ viewWidth });
-    const { width, opacity, transform } = useSpring({
-        from: { width: 0, opacity: 0, transform: "translate3d(20px,0,0)" },
-        to: {
-            width: isOpen ? viewWidth : 0,
-            opacity: isOpen ? 1 : 0,
-            transform: `translate3d(${isOpen ? 0 : 20}px,0,0)`,
-        },
-    });
-
-    const closeMenu = () => {
-        setIsOpen(false);
-        console.log("close");
-    };
-
-    const toggleMenu = () => {
-        setIsOpen(!isOpen);
-        console.log("toggle");
-    };
-
-    const menuRef = useRef(null);
-    const buttonRef = useRef(null);
-    useClickOutside(menuRef, [buttonRef], closeMenu);
-
-    return (
-        <div className="menu-button-wrapper">
-            <Button {...buttonProps} callback={toggleMenu} ref={buttonRef} />
-            <div className="menu-anchor">
-                <animated.div
-                    style={{
-                        opacity,
-                        width: isOpen && previous === isOpen ? "auto" : width,
-                    }}
-                >
-                    <animated.div
-                        className="menu-container"
-                        style={{ transform }}
-                        {...bind}
-                    >
-                        {content}
-                    </animated.div>
-                </animated.div>
-            </div>
-        </div>
-    );
-    */
 };

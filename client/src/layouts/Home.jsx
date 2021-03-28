@@ -1,7 +1,11 @@
+import { BUTTON_TYPES, Button } from "../components/button";
 import React, { useState } from "react";
 
-import { Button, BUTTON_TYPES } from "../components/button";
+import { translateCommon } from "../helpers/translation-helpers";
+import { useTranslation } from "react-i18next";
+
 export const Home = ({ joinExistingGame, startNewGame }) => {
+    const { t } = useTranslation();
     const [newUrl, setNewUrl] = useState("");
 
     function handleKeyDown(event) {
@@ -25,17 +29,17 @@ export const Home = ({ joinExistingGame, startNewGame }) => {
     return (
         <div className="home-wrapper">
             <h1 className="welcome-text">
-                Tervetuloa pelaamaan kortteja ihmiskuntaa vastaan!
+                {translateCommon("welcomeToPlayCardsAgainstHumankind", t)}!
             </h1>
 
             <div className="create-or-join-game-buttons">
                 <div className="container">
                     <div className="text">
-                        Luo uusi peli, johon voit kutsua kaverisi mukaan
+                        {translateCommon("createNewGame", t)}
                     </div>
                     <div className="input-and-button-container">
                         <Button
-                            text="Luo peli"
+                            text={translateCommon("createGame", t)}
                             type={BUTTON_TYPES.PRIMARY}
                             callback={startNewGameCallback}
                             icon="add_circle_outline"
@@ -44,7 +48,7 @@ export const Home = ({ joinExistingGame, startNewGame }) => {
                 </div>
                 <div className="container border">
                     <div className="text">
-                        Liity olemassa olevaan peliin syöttämällä pelin nimi
+                        {translateCommon("joinExistingGame", t)}
                     </div>
                     <div className="input-and-button-container">
                         <input
@@ -56,7 +60,7 @@ export const Home = ({ joinExistingGame, startNewGame }) => {
                             onKeyDown={(e) => handleKeyDown(e)}
                         />
                         <Button
-                            text="Liity peliin"
+                            text={translateCommon("joinToGame", t)}
                             type={BUTTON_TYPES.PRIMARY}
                             callback={joinExistingGameCallback}
                             callbackParams={{}}
