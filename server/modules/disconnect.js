@@ -25,6 +25,7 @@ import {
 } from "./game.js";
 
 import { INACTIVE_GAME_DELETE_TIME } from "../consts/gameSettings.js";
+import { punishCardCzar } from "./delayedStateChange.js";
 import { setPlayer } from "./join.js";
 import { startReading } from "./card.js";
 
@@ -89,8 +90,16 @@ export const setPlayerDisconnected = (io, socketID, removePlayer) => {
     handleSpecialCases(io, game, player);
 };
 
-export const handleSpecialCases = (io, game, player) => {
+export const handleSpecialCases = (
+    io,
+    game,
+    player,
+    shouldPunishCardCzar = true
+) => {
     if (shouldSkipRound(game)) {
+        if (player.isCardCzar && shouldPunishCardCzar) {
+            game.players = punishCardCzar(game);
+        }
         game.players = appointNextCardCzar(game, getCardCzar(game.players)?.id);
         const nextCardCzar = getCardCzar(game.players);
         skipRound(io, game, nextCardCzar);
@@ -108,7 +117,7 @@ export const handleSpecialCases = (io, game, player) => {
     }
 
     if (player.isCardCzar) {
-        handleCardCzarLeaving(io, game, player);
+        handleCardCzarLeaving(io, game, player, shouldPunishCardCzar);
         return;
     }
 
@@ -130,7 +139,15 @@ const handlePlayerLeavingDuringWhiteCardSelection = (io, game) => {
     }
 };
 
-const handleCardCzarLeaving = (io, game, cardCzar) => {
+const handleCardCzarLeaving = (
+    io,
+    game,
+    cardCzar,
+    shouldPunishCardCzar = true
+) => {
+    if (shouldPunishCardCzar) {
+        game.players = punishCardCzar(game);
+    }
     game.players = appointNextCardCzar(game, cardCzar.id);
     skipRound(io, game, getCardCzar(game.players));
 };
