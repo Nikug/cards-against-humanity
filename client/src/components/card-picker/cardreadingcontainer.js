@@ -9,12 +9,13 @@ import {
 import { CardPicker } from "./cardpicker";
 import { socket } from "../sockets/socket";
 import { socketOn } from "../../helpers/communicationhelpers";
+import { translateCommon } from "../../helpers/translation-helpers";
 import { useGameContext } from "../../contexts/GameContext";
-import { useNotification } from "../../contexts/NotificationContext";
+import { useTranslation } from "react-i18next";
 
 export const CardReadingContainer = () => {
+    const { t } = useTranslation();
     const { game, player } = useGameContext();
-    const notificationParams = useNotification();
 
     const [whiteCards, setWhiteCards] = useState([]);
     const [whiteCardIndex, setWhiteCardIndex] = useState(0);
@@ -100,8 +101,11 @@ export const CardReadingContainer = () => {
 
     const topText =
         outOf !== 0
-            ? `Luetaan kortit (${whiteCardIndex}/${outOf}):`
-            : "Luetaan kortit:";
+            ? `${translateCommon(
+                  "letsReadTheCards",
+                  t
+              )} (${whiteCardIndex}/${outOf}):`
+            : `${translateCommon("letsReadTheCards", t)}:`;
 
     return (
         <div className="blackcardpicker">
@@ -115,8 +119,14 @@ export const CardReadingContainer = () => {
                 description={""}
                 customButtonTexts={
                     whiteCards.length === 0
-                        ? ["Aloita", "Ladataan..."]
-                        : ["Seuraava", "Ladataan..."]
+                        ? [
+                              translateCommon("start", t),
+                              `${translateCommon("loading", t)}...`,
+                          ]
+                        : [
+                              translateCommon("next", t),
+                              `${translateCommon("loading", t)}...`,
+                          ]
                 }
                 customButtonIcons={["arrow_forward", "cached"]}
                 noActionButton={player?.isCardCzar ? false : true}
@@ -126,7 +136,7 @@ export const CardReadingContainer = () => {
             {player?.isCardCzar && (
                 <div className="cardreading-settings">
                     <Setting
-                        text={"Lue kortit puolestani"}
+                        text={translateCommon("readCardsForMe", t)}
                         controlType={CONTROL_TYPES.toggle}
                         onChangeCallback={() => toggleTextToSpeech()}
                         currentValue={textToSpeechInUse}

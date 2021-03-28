@@ -1,12 +1,14 @@
 import React, { useState } from "react";
-import { socket } from "../sockets/socket";
-
-import { CardPicker } from "./cardpicker";
-import { mergeWhiteCardsByplayer } from "./cardformathelpers.js/mergeWhiteCardsByplayer";
 import {
     containsObjectWithMatchingFieldIndex,
     emptyFn,
 } from "../../helpers/generalhelpers";
+
+import { CardPicker } from "./cardpicker";
+import { mergeWhiteCardsByplayer } from "./cardformathelpers.js/mergeWhiteCardsByplayer";
+import { socket } from "../sockets/socket";
+import { translateCommon } from "../../helpers/translation-helpers";
+import { useTranslation } from "react-i18next";
 
 export const WinnerCardPickerContainer = ({
     game,
@@ -14,6 +16,7 @@ export const WinnerCardPickerContainer = ({
     givePopularVote,
     popularVotedCardsIDs,
 }) => {
+    const { t } = useTranslation();
     const [selectedCards, setSelectedCards] = useState([]);
     const [confirmedCards, setConfirmedCards] = useState([]);
 
@@ -76,15 +79,18 @@ export const WinnerCardPickerContainer = ({
                 confirmCards={isCardCzar ? confirmCard : emptyFn}
                 description={
                     isCardCzar
-                        ? "Valitse voittaja"
+                        ? translateCommon("chooseTheWinner", t)
                         : hasPopularVote
-                        ? "Anna ääni suosikeillesi"
-                        : "Valkoiset kortit"
+                        ? translateCommon("voteYourFavouriteCards", t)
+                        : translateCommon("whiteCards", t)
                 }
                 alternativeText={
                     isCardCzar
                         ? undefined
-                        : "Korttikuningas valitsee voittajaa..."
+                        : `${translateCommon(
+                              "cardCzarIsChoosingTheWinner",
+                              t
+                          )}...`
                 }
                 noActionButton={!isCardCzar}
                 selectDisabled={selectedCards.length !== 1}

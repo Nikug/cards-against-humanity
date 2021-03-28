@@ -1,11 +1,15 @@
-import React, { useState, useEffect } from "react";
-import { socket } from "../sockets/socket";
+import React, { useState } from "react";
+
 import { CardPicker } from "./cardpicker";
+import Confetti from "react-confetti";
 import { emptyFn } from "../../helpers/generalhelpers";
 import { renderBlackCardwithWhiteCards } from "./cardformathelpers.js/renderBlackcardWithWhiteCards";
-import Confetti from "react-confetti";
+import { socket } from "../sockets/socket";
+import { translateCommon } from "../../helpers/translation-helpers";
+import { useTranslation } from "react-i18next";
 
 export const GameEndContainer = ({ game, player }) => {
+    const { t } = useTranslation();
     const [returningBackToLobby, setReturningBackToLobby] = useState(false);
 
     const playersSorted = game.players.sort(function (a, b) {
@@ -72,13 +76,19 @@ export const GameEndContainer = ({ game, player }) => {
                     selectCard={emptyFn}
                     confirmCards={returnBackToLobby}
                     customButtonState={returningBackToLobby ? 1 : 0}
-                    customButtonTexts={["Palaa aulaan", "Palataan aulaan..."]}
+                    customButtonTexts={[
+                        translateCommon("returnToLobby", t),
+                        `${translateCommon("returningToLobby", t)}...`,
+                    ]}
                     centerActionButton={true}
                     noActionButton={!player?.isHost}
                     topText={`🎉🎉🎉 ${
-                        playersSorted[0].name ?? "Joku"
-                    } voitti pelin! 🎉🎉🎉`}
-                    description={"Tämän pelin voittajakortit:"}
+                        playersSorted[0].name ?? translateCommon("someone", t)
+                    } ${translateCommon("wonTheGame", t)}! 🎉🎉🎉`}
+                    description={`${translateCommon(
+                        "theWinnerCardsOfThisGame",
+                        t
+                    )}:`}
                     preRenderedCards={sortedWinnerCards}
                 />
             </div>

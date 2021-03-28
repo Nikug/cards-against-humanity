@@ -3,13 +3,15 @@ import React, { Component } from "react";
 
 import Icon from "./icon";
 import { deleteCookie } from "../helpers/cookies";
-import { isNullOrUndefined } from "../helpers/generalhelpers";
 import logo from "./../assets/images/korttipeli_favicon.png";
 import { socket } from "./sockets/socket";
 import thinkingIcon from "./../assets/svgicons/thinking.svg";
+import { translateCommon } from "../helpers/translation-helpers";
+import { useTranslation } from "react-i18next";
 
 export const Header = (props) => {
-    const text = "Kortit ihmiskuntaa vastaan";
+    const { t } = useTranslation();
+    const text = translateCommon("cardsAgainstHumankind", t);
     const { game, player } = props;
 
     const history = useHistory();
@@ -42,7 +44,9 @@ export const Header = (props) => {
                 <Link to="/instructions">
                     <span className="header-button">
                         <Icon className="header-icon" name="help_center" />
-                        <span className="header-button-text">Ohjeet</span>
+                        <span className="header-button-text">
+                            {translateCommon("instructions", t)}
+                        </span>
                     </span>
                 </Link>
                 <span
@@ -52,7 +56,9 @@ export const Header = (props) => {
                     }
                 >
                     <Icon className="header-icon" name="settings" />
-                    <span className="header-button-text">Asetukset</span>
+                    <span className="header-button-text">
+                        {translateCommon("settings", t)}
+                    </span>
                 </span>
                 {pathName !== "/" && (
                     <Link to="/">
@@ -62,7 +68,9 @@ export const Header = (props) => {
                             onClick={leaveGame}
                         >
                             <Icon className="header-icon" name="logout" />
-                            <span className="header-button-text">Poistu</span>
+                            <span className="header-button-text">
+                                {translateCommon("leave", t)}
+                            </span>
                         </span>
                     </Link>
                 )}

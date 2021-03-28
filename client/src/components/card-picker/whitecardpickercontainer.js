@@ -1,11 +1,13 @@
 import React, { useState } from "react";
-import { socket } from "../sockets/socket";
 
 import { CardPicker } from "./cardpicker";
 import { containsObjectWithMatchingFieldIndex } from "../../helpers/generalhelpers";
+import { socket } from "../sockets/socket";
+import { translateCommon } from "../../helpers/translation-helpers";
+import { useTranslation } from "react-i18next";
 
-export function WhiteCardPickerContainer(props) {
-    const { game, player } = props;
+export function WhiteCardPickerContainer({ game, player }) {
+    const { t } = useTranslation();
     const whiteCards = player?.whiteCards;
     const [selectedCards, setSelectedCards] = useState([]);
     const [confirmedCards, setConfirmedCards] = useState([]);
@@ -40,8 +42,8 @@ export function WhiteCardPickerContainer(props) {
 
     const confirmCard = () => {
         if (selectedCards.length === pickLimit) {
-            const gameID = props.game.id;
-            const playerID = props.player.id;
+            const gameID = game.id;
+            const playerID = player.id;
             socket.emit("play_white_cards", {
                 gameID: gameID,
                 playerID: playerID,
@@ -50,7 +52,7 @@ export function WhiteCardPickerContainer(props) {
 
             setConfirmedCards(selectedCards);
         } else {
-            console.log("There was not enough white cards to confirm");
+            console.log("ERROR: There was not enough white cards to confirm");
         }
     };
 
@@ -61,7 +63,10 @@ export function WhiteCardPickerContainer(props) {
             <CardPicker
                 alternativeText={
                     confirmedCards.length > 0
-                        ? "Muut pelaajat valitsevat vielä korttejaan"
+                        ? translateCommon(
+                              "otherPlayersAreStillChoosingCards",
+                              t
+                          )
                         : null
                 }
                 mainCard={blackCard}
@@ -70,7 +75,7 @@ export function WhiteCardPickerContainer(props) {
                 confirmedCards={confirmedCards}
                 selectCard={selectCard}
                 confirmCards={confirmCard}
-                description={"Valitse valkoinen kortti"}
+                description={translateCommon("chooseWhiteCard", t)}
                 selectDisabled={selectedCards.length !== pickLimit}
                 noBigMainCard={false}
             />

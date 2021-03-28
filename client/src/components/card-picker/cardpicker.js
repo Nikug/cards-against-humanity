@@ -1,15 +1,17 @@
-import React from "react";
-
-import Card from "./card";
+import { BUTTON_TYPES, Button } from "../button";
 import {
     containsObjectWithMatchingField,
     emptyFn,
     isNullOrUndefined,
 } from "../../helpers/generalhelpers";
-import { Button, BUTTON_TYPES } from "../button";
-import { renderBlackCardwithWhiteCards } from "./cardformathelpers.js/renderBlackcardWithWhiteCards";
+
+import Card from "./card";
+import React from "react";
 import { isPlayerJoining } from "../../helpers/player-helpers";
+import { renderBlackCardwithWhiteCards } from "./cardformathelpers.js/renderBlackcardWithWhiteCards";
+import { translateCommon } from "../../helpers/translation-helpers";
 import { useGameContext } from "../../contexts/GameContext";
+import { useTranslation } from "react-i18next";
 
 /**
  * Everything given via props
@@ -24,30 +26,31 @@ import { useGameContext } from "../../contexts/GameContext";
 
 export function CardPicker(props) {
     const {
-        isForInstructions,
         alternativeText,
-        disableConfirmButton,
-        mainCard,
-        selectableCards = [],
-        selectedCards = [],
-        confirmedCards = [],
-        selectCard,
+        centerActionButton,
         confirmCards,
-        pickingBlackCard,
-        description,
-        selectDisabled,
-        customButtonTexts,
+        confirmedCards = [],
         customButtonIcons,
         customButtonState,
-        centerActionButton,
-        noActionButton,
-        topText,
-        showPopularVote,
-        noBigMainCard,
+        customButtonTexts,
+        description,
+        disableConfirmButton,
         givePopularVote,
+        isForInstructions,
+        mainCard,
+        noActionButton,
+        noBigMainCard,
+        pickingBlackCard,
         popularVotedCardsIDs,
         preRenderedCards = [],
+        selectableCards = [],
+        selectCard,
+        selectDisabled,
+        selectedCards = [],
+        showPopularVote,
+        topText,
     } = props;
+    const { t } = useTranslation();
     const { player } = useGameContext();
 
     const renderedCards = preRenderedCards.slice();
@@ -150,7 +153,7 @@ export function CardPicker(props) {
         if (isPlayerJoining(player)) {
             content.push(
                 <div className="alternativetext" key="joining-text">
-                    Pääset pelaamaan seuraavalla kierroksella!
+                    {translateCommon("youGetToPlayOnNextRound", t)}!
                 </div>
             );
         }

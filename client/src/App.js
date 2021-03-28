@@ -1,9 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Route, Switch, useHistory, useLocation } from "react-router-dom";
-import {
-    containsObjectWithMatchingFieldIndex,
-    isNullOrUndefined,
-} from "./helpers/generalhelpers";
+import { isNullOrUndefined } from "./helpers/generalhelpers";
 import { deleteCookie, getCookie, setCookie } from "./helpers/cookies";
 
 import { Button } from "./components/button";
@@ -16,11 +13,15 @@ import Music from "./components/music";
 import { Notification } from "./components/notification/notification";
 import { NotificationContextProvider } from "./contexts/NotificationContext";
 import axios from "axios";
-import { getRandomSpinner } from "./components/spinner";
+import {
+    translateNotification,
+    translateCommon,
+} from "./helpers/translation-helpers";
 import { socket } from "./components/sockets/socket";
 import { socketOn } from "./helpers/communicationhelpers";
 import { WholePageLoader } from "./components/WholePageLoader";
 import { useTranslation } from "react-i18next";
+import i18n from "./i18n";
 
 export const App = () => {
     /*****************************************************************/ // Purely for hiding dev things from the production.
@@ -35,7 +36,6 @@ export const App = () => {
         }
     };
     /*****************************************************************/
-    const { t } = useTranslation();
 
     const [game, setGame] = useState(undefined);
     const [player, setPlayer] = useState(undefined);
@@ -44,6 +44,13 @@ export const App = () => {
     const [notificationCount, setNotificationCount] = useState(0);
 
     const history = useHistory();
+    const { t } = useTranslation();
+
+    useEffect(() => {
+        setTimeout(() => {
+            i18n.changeLanguage("en");
+        }, 5000);
+    }, []);
 
     function startNewGame() {
         axios.post("/g").then((res) => {

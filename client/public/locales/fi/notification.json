@@ -1,0 +1,27 @@
+{
+    "forbiddenCardCzarAction": "Yritit tehdä asioita, jotka kuuluvat vain korttikuninkaalle!",
+    "forbiddenHostAction": "Yritit tehdä asioita, jotka kuuluvat vain isännälle!",
+    "forbiddenPlayerAction": "Yritit tehdä asioita, jotka kuuluvat vain pelaajalle!",
+    "incorrectGameState": "Väärä pelitila.",
+
+    "lobbyIsFullJoinAsSpectator": "Aula on täynnä, liity katsojana.",
+    "lobbyAndSpectatorsAreFull": "Aula ja katsomo ovat täynnä, et voi liittyä peliin tällä hetkellä.",
+    "spectatorsAreFull": "Katsomo on täynnä, et voi vaihtaa tilaasi juuri nyt.",
+    "playersAreFull": "Pelaajamäärä on täynnä, et voi vaihtaa tilaasi juuri nyt.",
+    "gameWasNotFound": "Peliä johon yritit liittyä ei löytynyt.",
+    "joinedToDifferentGame": "Yritit liittyä uuteen peliin samalla kun olit vielä edellisessä pelissä. Jos haluat liittyä uuteen peliin, sinun täytyy ensin poistua nykyisestä pelistä.",
+
+    "invalidSocketMessage": "Jokin meni pieleen: Invalid socket message.",
+    "missingFields": "Jokin meni pieleen: Missing fields.",
+
+    "notEnoughPlayers": "Pelissä ei ole tarpeeksi pelaajia sen aloittamiseksi.",
+    "tooManyPlayers": "Pelissä on liian monta pelaajaa sen aloittamiseksi.",
+    "notEnoughBlackCards": "Pelissä ei ole tarpeeksi mustia kortteja pelin aloittamiseksi. Lisää korttipakkoja, joissa on mustia kortteja.",
+    "notEnoughWhiteCards": "Pelissä ei ole tarpeeksi valkoisia kortteja pelin aloittamiseksi. Lisää korttipakkoja, joissa on valkoisia kortteja.",
+
+    "otherError": "Jokin meni nyt pieleen ja emme tiedä mikä... :( Koita kestää! Sivun päivittäminen SAATTAA auttaa (tai pahentaa tilannetta).",
+    "cardPackWasNotFound": "Korttipakkaa jota yritit lisätä ei löytynyt.",
+    "promotedToHost": "Sinut ylennettiin isännäksi!",
+    "kickedByHost": "Isäntä poisti sinut pelistä.",
+    "movedToSpectators": "Sinut siirrettiin katsomoon."
+}

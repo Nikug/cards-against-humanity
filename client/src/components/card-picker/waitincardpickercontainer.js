@@ -1,19 +1,20 @@
-import React from "react";
-
 import { CardPicker } from "./cardpicker";
-import { emptyFn } from "../../helpers/generalhelpers";
 import { GAME_STATES } from "../../consts/gamestates";
+import React from "react";
+import { emptyFn } from "../../helpers/generalhelpers";
 import { isPlayerSpectatorOrJoining } from "../../helpers/player-helpers";
+import { translateCommon } from "../../helpers/translation-helpers";
+import { useTranslation } from "react-i18next";
 
-export function WaitingCardPickerContainer(props) {
-    const {
-        game,
-        player,
-        alternativeText,
-        showMainCard,
-        gameState,
-        noBigMainCard,
-    } = props;
+export function WaitingCardPickerContainer({
+    game,
+    player,
+    alternativeText,
+    showMainCard,
+    gameState,
+    noBigMainCard,
+}) {
+    const { t } = useTranslation();
 
     const isSpectator = isPlayerSpectatorOrJoining(player);
     let whiteCards;
@@ -43,7 +44,9 @@ export function WaitingCardPickerContainer(props) {
                 confirmedCards={[]}
                 selectCard={emptyFn}
                 confirmCards={emptyFn}
-                description={isSpectator ? null : "Valkoiset korttisi"}
+                description={
+                    isSpectator ? null : translateCommon("yourWhiteCards", t)
+                }
                 noActionButton={true}
                 noBigMainCard={noBigMainCard}
             />

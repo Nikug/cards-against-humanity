@@ -1,5 +1,7 @@
 @import "./colors.scss";
 
+$lgd: 180deg; // linear-gradient degree
+
 .button {
     font-weight: 600;
     font-size: 1.3rem;
@@ -11,17 +13,16 @@
     padding: 0.4rem 1rem;
     height: fit-content;
     width: fit-content;
-    //min-width: 5rem;
     text-align: center;
-    background: linear-gradient(180deg, $button-shadow, $button-background)
+    background: linear-gradient($lgd, $button-shadow, $button-background)
         $button-background;
     border: 1px solid $button-border;
     cursor: pointer;
     user-select: none;
     white-space: nowrap;
-    box-shadow: 0 1.1px 1.1px 0 rgba(0, 0, 0, 0.25);
-    border-radius: 4px;
-    line-height: 29px;
+    //box-shadow: 0 1.1px 1.1px 0 rgba(0, 0, 0, 0.12);
+    border-radius: 6px;
+    line-height: 24px;
     backface-visibility: hidden;
     outline: none;
     box-sizing: border-box;
@@ -36,7 +37,7 @@
 
     &:hover {
         background: linear-gradient(
-                180deg,
+                $lgd,
                 $button-shadow-hover,
                 $button-background-hover
             )
@@ -45,7 +46,7 @@
 
     &:focus {
         background: linear-gradient(
-                180deg,
+                $lgd,
                 $button-background-hover,
                 $button-shadow-hover
             )
@@ -56,7 +57,7 @@
         color: $button-text-primary;
         border: 1px solid $button-border-primary;
         background: linear-gradient(
-                180deg,
+                $lgd,
                 $button-shadow-primary,
                 $button-background-primary
             )
@@ -68,7 +69,7 @@
 
         &:hover {
             background: linear-gradient(
-                    180deg,
+                    $lgd,
                     $button-shadow-primary-hover,
                     $button-background-primary-hover
                 )
@@ -77,7 +78,7 @@
 
         &:focus {
             background: linear-gradient(
-                    180deg,
+                    $lgd,
                     $button-background-primary-hover,
                     $button-shadow-primary-hover
                 )
@@ -89,7 +90,7 @@
         color: $button-text-green;
         border: 1px solid $button-border-green;
         background: linear-gradient(
-                180deg,
+                $lgd,
                 $button-shadow-green,
                 $button-background-green
             )
@@ -101,7 +102,7 @@
 
         &:hover {
             background: linear-gradient(
-                    180deg,
+                    $lgd,
                     $button-shadow-green-hover,
                     $button-background-green-hover
                 )
@@ -110,7 +111,7 @@
 
         &:focus {
             background: linear-gradient(
-                    180deg,
+                    $lgd,
                     $button-background-green-hover,
                     $button-shadow-green-hover
                 )
@@ -120,13 +121,13 @@
 
     &.disabled {
         cursor: default;
-        background: linear-gradient(180deg, $button-shadow, $button-background)
+        background: linear-gradient($lgd, $button-shadow, $button-background)
             $button-background;
         border: 1px solid $button-border;
 
         &:hover {
             background: linear-gradient(
-                    180deg,
+                    $lgd,
                     $button-shadow,
                     $button-background
                 )
@@ -136,7 +137,7 @@
 
         &:focus {
             background: linear-gradient(
-                    180deg,
+                    $lgd,
                     $button-shadow,
                     $button-background
                 )

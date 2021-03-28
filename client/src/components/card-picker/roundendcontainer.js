@@ -1,15 +1,18 @@
-import React, { useState, useEffect } from "react";
-import { socket } from "../sockets/socket";
+import React, { useState } from "react";
 
 import { CardPicker } from "./cardpicker";
-import { emptyFn } from "../../helpers/generalhelpers";
-
 import Confetti from "react-confetti";
+import { emptyFn } from "../../helpers/generalhelpers";
+import { isPlayerCardCzar } from "../../helpers/player-helpers";
 import { mergeWhiteCardsByplayer } from "./cardformathelpers.js/mergeWhiteCardsByplayer";
+import { socket } from "../sockets/socket";
+import { translateCommon } from "../../helpers/translation-helpers";
+import { useTranslation } from "react-i18next";
 
 const TIMEOUT = 10000;
 
 export function RoundEndContainer(props) {
+    const { t } = useTranslation();
     const { game, player, popularVotedCardsIDs, givePopularVote } = props;
 
     let timeout = TIMEOUT;
@@ -68,21 +71,39 @@ export function RoundEndContainer(props) {
                     confirmCards={startNewRound}
                     description={
                         showPopularVote
-                            ? "Anna ääni suosikeillesi"
-                            : "Valkoiset kortit"
+                            ? translateCommon("voteYourFavouriteCards", t)
+                            : translateCommon("whiteCards", t)
                     }
                     alternativeText={
-                        startingNewRound
-                            ? `Odotetaan, että ${cardCzarName} aloittaa uuden kierroksen...`
+                        isPlayerCardCzar(player)
+                            ? `${translateCommon(
+                                  "waitingFor_player_ToStartNextRound",
+                                  t,
+                                  { player: cardCzarName }
+                              )}...`
                             : undefined
                     }
-                    customButtonTexts={["Seuraava kierros", "Ladataan"]}
+                    customButtonTexts={[
+                        translateCommon("nextRound", t),
+                        `${translateCommon("loading", t)}...`,
+                    ]}
                     customButtonIcons={["arrow_forward", "cached"]}
                     customButtonState={startingNewRound ? 1 : 0}
                     topText={
                         winningWhiteCardsByPlayer?.playerName
-                            ? `🎉 ${winningWhiteCardsByPlayer?.playerName} voitti kierroksen! 🎉`
-                            : `${cardCzarName} ei valinnut voittajaa ja menetti pisteen...`
+                            ? `🎉 ${
+                                  ("_player_WonTheRound",
+                                  t,
+                                  {
+                                      player:
+                                          winningWhiteCardsByPlayer?.playerName,
+                                  })
+                              }! 🎉`
+                            : `${translateCommon(
+                                  "_player_DidNotChooseAWinnerAndLostOnePoint",
+                                  t,
+                                  { player: cardCzarName }
+                              )}...`
                     }
                     showPopularVote={showPopularVote}
                     givePopularVote={givePopularVote}

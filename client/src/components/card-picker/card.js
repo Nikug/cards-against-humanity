@@ -1,8 +1,9 @@
-import React from "react";
 import { emptyFn, isNullOrUndefined } from "../../helpers/generalhelpers.js";
 
-import Button, { BUTTON_TYPES } from "../button";
 import Icon from "../icon";
+import React from "react";
+import { translateCommon } from "../../helpers/translation-helpers.js";
+import { useTranslation } from "react-i18next";
 
 const CARD_TYPES = {
     WHITE: 1,
@@ -59,17 +60,18 @@ export default function Card(props) {
     const card = props.card;
     const { cardPackID, text, whiteCardsToPlay, whiteCardsToDraw, id } = card;
     const {
-        blankTexts,
-        selected,
-        confirmed,
         bigCard,
-        selectCard,
-        showPopularVote,
+        blankTexts,
+        confirmed,
         givePopularVote,
         hasBeenPopularVoted,
-        popularVoteScore,
         playerName,
+        popularVoteScore,
+        selectCard,
+        selected,
+        showPopularVote,
     } = props;
+    const { t } = useTranslation();
     let type = CARD_TYPES.BLACK;
 
     if (isNullOrUndefined(whiteCardsToPlay)) {
@@ -118,7 +120,13 @@ export default function Card(props) {
                             <span className="draw-and-play">
                                 {isNullOrUndefined(cardPackID)
                                     ? ""
-                                    : `Nosta ${whiteCardsToDraw}, Pelaa ${whiteCardsToPlay}`}
+                                    : `${translateCommon(
+                                          "draw",
+                                          t
+                                      )} ${whiteCardsToDraw}, Pelaa ${translateCommon(
+                                          "play",
+                                          t
+                                      )}`}
                             </span>
                         )}
                     {playerName && (

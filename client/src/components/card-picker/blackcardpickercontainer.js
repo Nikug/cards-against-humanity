@@ -1,14 +1,17 @@
 import React, { useEffect, useState } from "react";
-import { socket } from "../sockets/socket";
-
-import { CardPicker } from "./cardpicker";
 import {
-    isNullOrUndefined,
     containsObjectWithMatchingFieldIndex,
     emptyFn,
+    isNullOrUndefined,
 } from "../../helpers/generalhelpers";
 
+import { CardPicker } from "./cardpicker";
+import { socket } from "../sockets/socket";
+import { translateCommon } from "../../helpers/translation-helpers";
+import { useTranslation } from "react-i18next";
+
 export const BlackCardPickerContainer = (props) => {
+    const { t } = useTranslation();
     const [selectedCards, setSelectedCards] = useState([]);
     const [confirmedCards, setConfirmedCards] = useState([]);
     const { blackCards } = props;
@@ -55,7 +58,7 @@ export const BlackCardPickerContainer = (props) => {
 
             setConfirmedCards(selectedCards.slice());
         } else {
-            console.log("There was no black card to confirm");
+            console.log("Error: There was no black card to confirm");
         }
     };
 
@@ -68,8 +71,7 @@ export const BlackCardPickerContainer = (props) => {
                 confirmedCards={confirmedCards}
                 selectCard={confirmedCards.length > 0 ? emptyFn : selectCard}
                 confirmCards={confirmCard}
-                description={"Valitse musta kortti"}
-                //alternativeText={"Korttikuningas valitsee mustaa korttia"}
+                description={translateCommon("chooseBlackCard", t)}
                 disableConfirmButton={
                     confirmedCards.length > 0 || selectedCards.length !== 1
                 }

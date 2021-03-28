@@ -1,6 +1,7 @@
-import React from "react";
-
 import Icon from "./../icon";
+import React from "react";
+import { translateCommon } from "../../helpers/translation-helpers";
+import { useTranslation } from "react-i18next";
 
 export function CardPack({
     id,
@@ -10,16 +11,23 @@ export function CardPack({
     blackCards,
     removeCardpack,
 }) {
+    const { t } = useTranslation();
+
+    console.log({ whiteCards });
     return (
         <div className="cardpack-container">
             <div className="setting cardpack">
                 <span className="name">{name}</span>
                 <span className="cardcount">
-                    {whiteCards} valkoista korttia
+                    {translateCommon("whiteCard", t, { count: whiteCards })}
                 </span>
-                <span className="cardcount">{blackCards} mustaa korttia</span>
+                <span className="cardcount">
+                    {translateCommon("blackCard", t, { count: blackCards })}
+                </span>
                 <span className="nsfw">
-                    {isNSFW ? "NSFW" : "Perheystävällinen"}
+                    {isNSFW
+                        ? translateCommon("NSFW", t)
+                        : translateCommon("familyFriendly", t)}
                 </span>
             </div>
             <div className="remove" onClick={() => removeCardpack(id)}>
