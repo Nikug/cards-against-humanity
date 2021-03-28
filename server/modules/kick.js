@@ -51,7 +51,7 @@ export const hostKick = (
             }
         );
     }
-    handleSpecialCases(io, game, target);
+    handleSpecialCases(io, game, target, false);
 };
 
 const getPlayerByPublicID = (players, targetID) => {

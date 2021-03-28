@@ -3,22 +3,22 @@ import { getCookie, setCookie } from "../../helpers/cookies";
 
 import { GAME_STATES } from "../../consts/gamestates";
 import { GameMenu } from "./components/GameMenu/GameMenu";
+import { GameSettingsContainer } from "../../components/game-settings/gamesettingscontainer";
+import { HistoryContainer } from "./components/GameMenu/history/HistoryContainer";
+import { LayerMenu } from "../../components/layer-menu/LayerMenu";
 import { NOTIFICATION_TYPES } from "../../components/notification/notification";
+import { PLAYER_STATES } from "../../consts/playerstates";
 import { PlayersWidget } from "../../components/players-widget/playerswidget";
 import { SpectatorsInfo } from "./components/SpectatorsInfo/SpectatorsInfo";
 import { Timer } from "../../components/timer";
+import { TimerV2 } from "../../components/Timer/timerV2";
 import { WholePageLoader } from "../../components/WholePageLoader";
 import { getGamePhaseContent } from "./getGamePhaseContent";
+import { isNullOrUndefined } from "../../helpers/generalhelpers";
 import { socket } from "../../components/sockets/socket";
 import { socketOn } from "../../helpers/communicationhelpers";
 import { useGameContext } from "../../contexts/GameContext";
 import { useNotification } from "../../contexts/NotificationContext";
-import { TimerV2 } from "../../components/Timer/timerV2";
-import { PLAYER_STATES } from "../../consts/playerstates";
-import { LayerMenu } from "../../components/layer-menu/LayerMenu";
-import { GameSettingsContainer } from "../../components/game-settings/gamesettingscontainer";
-import { HistoryContainer } from "./components/GameMenu/history/HistoryContainer";
-import { isNullOrUndefined } from "../../helpers/generalhelpers";
 
 export const NAME_CHAR_LIMIT = 50;
 export const ICON_CLASSNAMES = "md-36 icon-margin-right";

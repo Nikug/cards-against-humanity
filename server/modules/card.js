@@ -326,7 +326,11 @@ export const showWhiteCard = (io, socket, gameID, playerID) => {
 
     const { error } = validateShowingWhiteCard(game, playerID);
     if (!!error) {
-        sendNotification(error, NOTIFICATION_TYPES.error, { socket: socket });
+        if (socket !== null) {
+            sendNotification(error, NOTIFICATION_TYPES.error, {
+                socket: socket,
+            });
+        }
         return;
     }
 

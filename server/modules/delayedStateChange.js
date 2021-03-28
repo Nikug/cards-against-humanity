@@ -12,7 +12,7 @@ export const changeGameStateAfterTime = (io, game, transition) => {
     clearTimeout(game.timeout);
 
     const delay = getTimeoutTime(game);
-    if (delay === 0) {
+    if (delay === undefined) {
         game.client.timers.duration = undefined;
         game.client.timers.passedTime = undefined;
         game.timeout = undefined;
@@ -59,6 +59,7 @@ const gameStateChange = (io, gameID, transition) => {
         return;
     } else if (transition === "startPlayingWhiteCards") {
         // Cardczar didn't pick a blackcard, appoint next cardczar
+        game.players = punishCardCzar(game);
         restartRound(io, game);
         return;
     } else if (transition === "startReading") {
@@ -78,11 +79,11 @@ const gameStateChange = (io, gameID, transition) => {
         // Check if all whitecards have been showed, otherwise show next whitecards
         const cardCzar = currentCardCzar(game.players);
         if (!cardCzar) return;
-        showWhiteCard(io, gameID, cardCzar.id);
+        showWhiteCard(io, null, gameID, cardCzar.id);
         return;
     } else if (transition === "endRound") {
         // Nothing was voted, remove points from card czar as punishment
-        game.players = punishCardCzar(game.players);
+        game.players = punishCardCzar(game);
         setNewTimeout = "startRound";
     }
 
@@ -120,9 +121,9 @@ const restartRound = (io, game) => {
     skipRound(io, game, nextCardCzar);
 };
 
-const punishCardCzar = (players) => {
-    return players.map((player) => {
-        if (player.isCardCzar) {
+export const punishCardCzar = (game) => {
+    return game.players.map((player) => {
+        if (player.isCardCzar && game.stateMachine.state !== "roundEnd") {
             player.score -= gameOptions.notSelectingWinnerPunishment;
         }
         return player;
