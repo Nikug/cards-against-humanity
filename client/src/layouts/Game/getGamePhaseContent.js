@@ -1,22 +1,23 @@
-import React from "react";
-
-import { GAME_STATES } from "../../consts/gamestates";
-import { canStartGame } from "./helpers/canStartGame";
-
-import { BlackCardPickerContainer } from "../../components/card-picker/blackcardpickercontainer";
-import { WaitingCardPickerContainer } from "../../components/card-picker/waitincardpickercontainer";
-import { CardReadingContainer } from "../../components/card-picker/cardreadingcontainer";
-import { WinnerCardPickerContainer } from "../../components/card-picker/winnercardpickercontainer";
-import { RoundEndContainer } from "../../components/card-picker/roundendcontainer";
-import { GameEndContainer } from "../../components/card-picker/gameendcontainer";
-import { LobbyContent } from "./phases/lobby/LobbyContent";
-import { NamePicker } from "./phases/lobby/NamePicker";
-import { ErrorContainer } from "./components/ErrorContainer";
-import { WhiteCardPickerContainer } from "../../components/card-picker/whitecardpickercontainer";
 import {
     isPlayerCardCzar,
     isPlayerSpectatorOrJoining,
 } from "../../helpers/player-helpers";
+
+import { BlackCardPickerContainer } from "../../components/card-picker/blackcardpickercontainer";
+import { CardReadingContainer } from "../../components/card-picker/cardreadingcontainer";
+import { ErrorContainer } from "./components/ErrorContainer";
+import { GAME_STATES } from "../../consts/gamestates";
+import { GameEndContainer } from "../../components/card-picker/gameendcontainer";
+import { LobbyContent } from "./phases/lobby/LobbyContent";
+import { NamePicker } from "./phases/lobby/NamePicker";
+import React from "react";
+import { RoundEndContainer } from "../../components/card-picker/roundendcontainer";
+import { WaitingCardPickerContainer } from "../../components/card-picker/waitincardpickercontainer";
+import { WhiteCardPickerContainer } from "../../components/card-picker/whitecardpickercontainer";
+import { WinnerCardPickerContainer } from "../../components/card-picker/winnercardpickercontainer";
+import { canStartGame } from "./helpers/canStartGame";
+import { getRandomSpinner } from "../../components/spinner";
+import { useTranslation } from "react-i18next";
 
 export const getGamePhaseContent = ({
     callbacks: { setPlayerName, givePopularVote, togglePlayerMode, startGame },
@@ -25,6 +26,7 @@ export const getGamePhaseContent = ({
     blackCards,
     popularVotedCardsIDs,
 }) => {
+    const { t } = useTranslation;
     const gameState = game?.state;
     const playerState = player?.state;
     const disableStartGameButton = !canStartGame(game);
@@ -32,7 +34,17 @@ export const getGamePhaseContent = ({
     const isSpectator = isPlayerSpectatorOrJoining(player);
 
     if (!game || !player) {
-        return <div>ladataan...</div>;
+        return (
+            <div
+                style={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                }}
+            >
+                {getRandomSpinner()}
+            </div>
+        );
     }
 
     if (gameState !== "lobby" && playerState === "pickingName") {

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import {
     Route,
     BrowserRouter as Router,
@@ -6,18 +6,22 @@ import {
     useHistory,
     useLocation,
 } from "react-router-dom";
-import { Button } from "../components/button";
 
-const NOT_READY = false;
+import { Button } from "../components/button";
+import { translateCommon } from "../helpers/translation-helpers";
+import { useTranslation } from "react-i18next";
+
+const NOT_READY = true;
 
 export const Instructions = ({ path }) => {
+    const { t } = useTranslation();
     const history = useHistory();
     const currentPath = history.location.pathname;
 
     if (NOT_READY) {
         return (
             <div className="instructions-wrapper">
-                Ohjeita rakennetaan... Tässä voi mennä hetki!
+                {translateCommon("instructionsUnderConstruction", t)}!
             </div>
         );
     }

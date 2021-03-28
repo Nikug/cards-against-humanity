@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { Route, Switch, useHistory, useLocation } from "react-router-dom";
-import { isNullOrUndefined } from "./helpers/generalhelpers";
 import { deleteCookie, getCookie, setCookie } from "./helpers/cookies";
 
 import { Button } from "./components/button";
@@ -12,16 +11,14 @@ import { Instructions } from "./layouts/Instructions";
 import Music from "./components/music";
 import { Notification } from "./components/notification/notification";
 import { NotificationContextProvider } from "./contexts/NotificationContext";
+import { WholePageLoader } from "./components/WholePageLoader";
 import axios from "axios";
-import {
-    translateNotification,
-    translateCommon,
-} from "./helpers/translation-helpers";
+import i18n from "./i18n";
+import { isNullOrUndefined } from "./helpers/generalhelpers";
 import { socket } from "./components/sockets/socket";
 import { socketOn } from "./helpers/communicationhelpers";
-import { WholePageLoader } from "./components/WholePageLoader";
+import { translateCommon } from "./helpers/translation-helpers";
 import { useTranslation } from "react-i18next";
-import i18n from "./i18n";
 
 export const App = () => {
     /*****************************************************************/ // Purely for hiding dev things from the production.
@@ -285,7 +282,10 @@ export const App = () => {
                                         >
                                             Hmmmm...?
                                             <Button
-                                                text={"Takaisin"}
+                                                text={translateCommon(
+                                                    "back",
+                                                    t
+                                                )}
                                                 callback={navigate}
                                                 callbackParams={"/"}
                                             />

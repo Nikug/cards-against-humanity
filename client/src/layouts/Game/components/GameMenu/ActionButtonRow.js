@@ -1,6 +1,7 @@
-import React from "react";
 import { a, useTrail } from "react-spring";
+
 import { Button } from "../../../../components/button";
+import React from "react";
 
 export const ActionButtonRow = ({ buttons }) => {
     const renderedButtons = [];
@@ -12,19 +13,23 @@ export const ActionButtonRow = ({ buttons }) => {
     }
 
     const trail = useTrail(renderedButtons.length, {
-        from: { transform: "translate3d(-20px,0,0)" },
-        to: {
-            transform: "translate3d(20px,0,0)",
-        },
+        //from: { transform: "translate3d(-20px,0,0)" },
+        //to: {
+        //    transform: "translate3d(20px,0,0)",
+        //},
     });
 
     if (!trail || trail.length < 1) {
         return null;
     }
 
-    return trail.map((styles, index) => (
-        <a.span key={index} style={styles}>
-            {renderedButtons[index]}
-        </a.span>
-    ));
+    return (
+        <div className="button-row-container">
+            {trail.map((styles, index) => (
+                <a.span key={index} style={styles}>
+                    {renderedButtons[index]}
+                </a.span>
+            ))}
+        </div>
+    );
 };

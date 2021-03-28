@@ -1,8 +1,11 @@
 import React from "react";
-import { useGameContext } from "../../../../contexts/GameContext";
 import { isPlayerSpectator } from "../../../../helpers/player-helpers";
+import { translateCommon } from "../../../../helpers/translation-helpers";
+import { useGameContext } from "../../../../contexts/GameContext";
+import { useTranslation } from "react-i18next";
 
 export const SpectatorsInfo = () => {
+    const { t } = useTranslation();
     const { game, player } = useGameContext();
 
     const isSpectator = isPlayerSpectator(player);
@@ -14,12 +17,16 @@ export const SpectatorsInfo = () => {
         <div className="spectator-info">
             {spectatorCount > 0 && (
                 <div className="anchor">
-                    <div className="spectators">Katsojia: {spectatorCount}</div>
+                    <div className="spectators">
+                        {translateCommon("spectators", t)}: {spectatorCount}
+                    </div>
                 </div>
             )}
             {isSpectator && (
                 <div className="anchor">
-                    <div className="spectator-indicator">Olet katsomossa</div>
+                    <div className="spectator-indicator">
+                        {translateCommon("youAreInTheAudience", t)}
+                    </div>
                 </div>
             )}
         </div>

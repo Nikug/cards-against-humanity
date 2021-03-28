@@ -1,9 +1,12 @@
-import React from "react";
-import { useGameContext } from "../../../../../contexts/GameContext";
 import { OneRoundHistory } from "./OneRoundHistory";
+import React from "react";
 import { renderBlackCardwithWhiteCards } from "../../../../../components/card-picker/cardformathelpers.js/renderBlackcardWithWhiteCards";
+import { translateCommon } from "../../../../../helpers/translation-helpers";
+import { useGameContext } from "../../../../../contexts/GameContext";
+import { useTranslation } from "react-i18next";
 
 export const HistoryContainer = () => {
+    const { t } = useTranslation();
     const { game } = useGameContext();
     const rounds = game?.rounds;
     const roundContainers = [];
@@ -41,7 +44,9 @@ export const HistoryContainer = () => {
 
     return (
         <div className="history-container">
-            <div className="title">Aikaisemmin pelatut kortit:</div>
+            <div className="title">
+                {translateCommon("previouslyPlayedCards", t)}:
+            </div>
             <div className="container">{roundContainers}</div>
         </div>
     );

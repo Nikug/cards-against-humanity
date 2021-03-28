@@ -1,0 +1,8 @@
+.button-row-container {
+    display: flex;
+    flex-direction: column;
+
+    .button {
+        margin-top: 0.2em;
+    }
+}

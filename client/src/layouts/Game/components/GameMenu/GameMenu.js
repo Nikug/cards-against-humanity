@@ -1,15 +1,17 @@
-import React from "react";
-import { useGameContext } from "../../../../contexts/GameContext";
-import { GAME_STATES } from "../../../../consts/gamestates";
-import { SocketMessenger } from "../../../../components/socket-messenger/socket-messenger";
-import { PopOverMenu } from "../../../../components/popover-menu/PopoverMenu";
-import { ActionButtonRow } from "./ActionButtonRow";
 import {
     isPlayerHost,
     isPlayerSpectator,
 } from "../../../../helpers/player-helpers";
+
+import { ActionButtonRow } from "./ActionButtonRow";
 import { BUTTON_TYPES } from "../../../../components/button";
-import { emptyFn } from "../../../../helpers/generalhelpers";
+import { GAME_STATES } from "../../../../consts/gamestates";
+import { PopOverMenu } from "../../../../components/popover-menu/PopoverMenu";
+import React from "react";
+import { SocketMessenger } from "../../../../components/socket-messenger/socket-messenger";
+import { translateCommon } from "../../../../helpers/translation-helpers";
+import { useGameContext } from "../../../../contexts/GameContext";
+import { useTranslation } from "react-i18next";
 
 export const GameMenu = ({
     callbacks: {
@@ -20,6 +22,7 @@ export const GameMenu = ({
     },
     showDebug,
 }) => {
+    const { t } = useTranslation();
     const { game, player } = useGameContext();
 
     const isLobby = game?.state === GAME_STATES.LOBBY;
@@ -31,38 +34,44 @@ export const GameMenu = ({
                 buttonProps={{ icon: "menu" }}
                 content={
                     <>
-                        Valikko
+                        {translateCommon("menu", t)}
                         <ActionButtonRow
                             buttons={[
                                 isSpectator
                                     ? {
                                           icon: "login",
-                                          text: "Liity peliin",
+                                          text: translateCommon(
+                                              "joinToGame",
+                                              t
+                                          ),
                                           callback: togglePlayerMode,
                                           type: BUTTON_TYPES.PRIMARY,
                                       }
                                     : {
                                           icon: "groups",
-                                          text: "Siirry katsomoon",
+                                          text: translateCommon(
+                                              "goToAudience",
+                                              t
+                                          ),
                                           callback: togglePlayerMode,
                                           type: BUTTON_TYPES.PRIMARY,
                                       },
                                 {
                                     icon: "home",
-                                    text: "Takaisin aulaan",
+                                    text: translateCommon("returnToLobby", t),
                                     callback: returnBackToLobby,
                                     type: BUTTON_TYPES.PRIMARY,
                                     disabled: !isPlayerHost(player) || isLobby,
                                 },
                                 {
                                     icon: "settings",
-                                    text: "Pelin asetukset",
+                                    text: translateCommon("gameSettings", t),
                                     callback: openGameSettings,
                                     type: BUTTON_TYPES.PRIMARY,
                                 },
                                 {
                                     icon: "history",
-                                    text: "Historia",
+                                    text: translateCommon("history", t),
                                     callback: openHistory,
                                     type: BUTTON_TYPES.PRIMARY,
                                     disabled: !(game?.rounds?.length > 0),
