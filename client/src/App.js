@@ -43,12 +43,6 @@ export const App = () => {
     const history = useHistory();
     const { t } = useTranslation();
 
-    useEffect(() => {
-        setTimeout(() => {
-            i18n.changeLanguage("en");
-        }, 5000);
-    }, []);
-
     function startNewGame() {
         axios.post("/g").then((res) => {
             history.push(`/g/${res.data.url}`);
