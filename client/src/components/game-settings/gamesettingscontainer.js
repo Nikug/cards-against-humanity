@@ -1,9 +1,11 @@
 import { CONTROL_TYPES, Setting } from "./../settings/setting";
-import React, { Component } from "react";
 
 import { CardPack } from "./cardpack";
 import { CollabsibelSettingsSection } from "../settings/collabsiblesettingssection";
+import React from "react";
 import { socket } from "../sockets/socket";
+import { translateCommon } from "../../helpers/translation-helpers";
+import { useTranslation } from "react-i18next";
 
 export const GameSettingsContainer = ({
     options,
@@ -11,6 +13,7 @@ export const GameSettingsContainer = ({
     isDisabled,
     playerID,
 }) => {
+    const { t } = useTranslation();
     const updateOptions = (key, value) => {
         if (!playerID || !gameID) return;
         if (value === undefined) return;
@@ -180,17 +183,19 @@ export const GameSettingsContainer = ({
             <div>
                 <div className="game-settings">
                     <div className="settings-block">
-                        <h2 className="game-settings-title">Pelin asetukset</h2>
+                        <h2 className="game-settings-title">
+                            {translateCommon("gameSettings", t)}
+                        </h2>
                         <CollabsibelSettingsSection
                             isDisabled={isDisabled}
                             title={{
-                                titleText: "Voittoehto",
+                                titleText: translateCommon("winCondition", t),
                                 titleIconName: "emoji_events",
                             }}
                             content={
                                 <>
                                     <Setting
-                                        text={"Pisteraja"}
+                                        text={translateCommon("scoreLimit", t)}
                                         controlType={[
                                             CONTROL_TYPES.toggle,
                                             CONTROL_TYPES.number,
@@ -204,7 +209,7 @@ export const GameSettingsContainer = ({
                                         isDisabled={isDisabled}
                                     />
                                     <Setting
-                                        text={"Kierrostaja"}
+                                        text={translateCommon("roundLimit", t)}
                                         controlType={[
                                             CONTROL_TYPES.toggle,
                                             CONTROL_TYPES.number,
@@ -222,7 +227,7 @@ export const GameSettingsContainer = ({
                         />
 
                         <Setting
-                            text={"Pelaajien enimmäismäärä"}
+                            text={translateCommon("playerLimit", t)}
                             controlType={[CONTROL_TYPES.number]}
                             onChangeCallback={changeMaxPlayers}
                             currentValue={[maximumPlayers]}
@@ -236,13 +241,16 @@ export const GameSettingsContainer = ({
                         <CollabsibelSettingsSection
                             isDisabled={isDisabled}
                             title={{
-                                titleText: "Aikarajat",
+                                titleText: translateCommon("timers", t),
                                 titleIconName: "hourglass_bottom",
                             }}
                             content={
                                 <>
                                     <Setting
-                                        text={"Mustan kortin valinta"}
+                                        text={translateCommon(
+                                            "choosingBlackCard",
+                                            t
+                                        )}
                                         controlType={[
                                             CONTROL_TYPES.toggle,
                                             CONTROL_TYPES.number,
@@ -259,7 +267,10 @@ export const GameSettingsContainer = ({
                                         isDisabled={isDisabled}
                                     />
                                     <Setting
-                                        text={"Valkoisen kortin valinta"}
+                                        text={translateCommon(
+                                            "choosingWhiteCard",
+                                            t
+                                        )}
                                         controlType={[
                                             CONTROL_TYPES.toggle,
                                             CONTROL_TYPES.number,
@@ -276,7 +287,7 @@ export const GameSettingsContainer = ({
                                         isDisabled={isDisabled}
                                     />
                                     <Setting
-                                        text={"Kortin lukeminen"}
+                                        text={translateCommon("readingCard", t)}
                                         controlType={[
                                             CONTROL_TYPES.toggle,
                                             CONTROL_TYPES.number,
@@ -293,7 +304,10 @@ export const GameSettingsContainer = ({
                                         isDisabled={isDisabled}
                                     />
                                     <Setting
-                                        text={"Voittajan valinta"}
+                                        text={translateCommon(
+                                            "choosingWinner",
+                                            t
+                                        )}
                                         controlType={[
                                             CONTROL_TYPES.toggle,
                                             CONTROL_TYPES.number,
@@ -310,7 +324,10 @@ export const GameSettingsContainer = ({
                                         isDisabled={isDisabled}
                                     />
                                     <Setting
-                                        text={"Uuden kierroksen aloittaminen"}
+                                        text={translateCommon(
+                                            "startingNextRound",
+                                            t
+                                        )}
                                         controlType={[
                                             CONTROL_TYPES.toggle,
                                             CONTROL_TYPES.number,
@@ -324,7 +341,7 @@ export const GameSettingsContainer = ({
                             }
                         />
                         <Setting
-                            text={"Yleisöäänet käytössä"}
+                            text={translateCommon("popularVoteInUse", t)}
                             controlType={[CONTROL_TYPES.toggle]}
                             onChangeCallback={() => toggleValue("popularVote")}
                             currentValue={[popularVote ? popularVote : false]}
@@ -336,7 +353,10 @@ export const GameSettingsContainer = ({
                             }}
                         />
                         <Setting
-                            text={"Voittajasta tulee seuraava korttikuningas"}
+                            text={translateCommon(
+                                "winnerBecomesNextCardCzar",
+                                t
+                            )}
                             controlType={[CONTROL_TYPES.toggle]}
                             onChangeCallback={() =>
                                 toggleValue("winnerBecomesCardCzar")
@@ -350,9 +370,10 @@ export const GameSettingsContainer = ({
                             }}
                         />
                         <Setting
-                            text={
-                                "Potkitut pelaajat voivat liittyä takaisin peliin"
-                            }
+                            text={translateCommon(
+                                "kickedPlayersCanJoinBack",
+                                t
+                            )}
                             controlType={[CONTROL_TYPES.toggle]}
                             onChangeCallback={() =>
                                 toggleValue("allowKickedPlayerJoin")
@@ -367,10 +388,12 @@ export const GameSettingsContainer = ({
                         />
                     </div>
                     <div className="settings-block divider">
-                        <h2 className="game-settings-title">Korttipakat</h2>
+                        <h2 className="game-settings-title">
+                            {translateCommon("cardDecks", t)}
+                        </h2>
                         <Setting
                             DEV_CARD_PACK_AUTOFILL={true}
-                            text={"Lisää korttipakka"}
+                            text={translateCommon("addCardDeck", t)}
                             placeholderText={"rAnD0MchArs"}
                             controlType={[CONTROL_TYPES.textWithConfirm]}
                             onChangeCallback={addCardPack}
@@ -382,7 +405,7 @@ export const GameSettingsContainer = ({
                             }}
                         />
                         <div className="imported-card-packs">
-                            Lisätyt korttipakat
+                            {translateCommon("addedCardDecks", t)}
                             {renderedCardPacks}
                         </div>
                     </div>

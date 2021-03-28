@@ -1,14 +1,16 @@
-import React, { useState, useCallback } from "react";
-import { useTransition } from "react-spring";
-import { animated } from "react-spring";
+import React, { useCallback, useState } from "react";
+
+import { ActionButtonRow } from "../../layouts/Game/components/GameMenu/ActionButtonRow";
 import Icon from "../icon";
 import { PopOverMenu } from "../popover-menu/PopoverMenu";
+import { animated } from "react-spring";
 import crownIcon from "./../../assets/svgicons/crown-svgrepo-com.svg";
-import { ActionButtonRow } from "../../layouts/Game/components/GameMenu/ActionButtonRow";
-import { emptyFn } from "../../helpers/generalhelpers";
-import { useGameContext } from "../../contexts/GameContext";
 import { isPlayerHost } from "../../helpers/player-helpers";
 import { socket } from "./../sockets/socket";
+import { translateCommon } from "../../helpers/translation-helpers";
+import { useGameContext } from "../../contexts/GameContext";
+import { useTransition } from "react-spring";
+import { useTranslation } from "react-i18next";
 
 export const Player = ({
     name,
@@ -20,6 +22,8 @@ export const Player = ({
     isSelf,
     publicID,
 }) => {
+    const { t } = useTranslation();
+
     const { player, game } = useGameContext();
     const noName = name === null || name === undefined;
     const [showTitle, setShowTitle] = useState(false);
@@ -171,12 +175,12 @@ export const Player = ({
                             buttons={[
                                 {
                                     icon: "logout",
-                                    text: "Poista pelistä",
+                                    text: translateCommon("removeFromGame", t),
                                     callback: removePlayer,
                                 },
                                 {
                                     icon: "groups",
-                                    text: "Siirrä katsomoon",
+                                    text: translateCommon("moveToAudience", t),
                                     callback: makePlayerSpectator,
                                 },
                             ]}

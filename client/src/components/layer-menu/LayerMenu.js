@@ -1,6 +1,10 @@
 import React from "react";
+import { translateCommon } from "../../helpers/translation-helpers";
+import { useTranslation } from "react-i18next";
 
 export const LayerMenu = ({ content, closeLayerMenu }) => {
+    const { t } = useTranslation();
+
     const handleClick = (event) => {
         event.stopPropagation();
     };
@@ -9,7 +13,7 @@ export const LayerMenu = ({ content, closeLayerMenu }) => {
         <div className="layermenu" onClick={handleClick}>
             <div className="anchor">
                 <span className="close-icon" onClick={closeLayerMenu}>
-                    Sulje
+                    {translateCommon("close", t)}
                 </span>
             </div>
             <div className="content"></div>

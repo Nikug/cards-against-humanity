@@ -1,15 +1,19 @@
 import "./../../styles/playerswidget.scss";
 
-import React from "react";
+import { animated, useTransition } from "react-spring";
 
+import Icon from "../icon";
 import { PLAYER_STATES } from "../../consts/playerstates";
 import { Player } from "./player";
-import { isNullOrUndefined } from "../../helpers/generalhelpers";
+import React from "react";
 import { Spinner } from "../spinner";
-import { animated, useTransition } from "react-spring";
-import Icon from "../icon";
+import { isNullOrUndefined } from "../../helpers/generalhelpers";
+import { translateCommon } from "../../helpers/translation-helpers";
+import { useTranslation } from "react-i18next";
 
 export const PlayersWidget = ({ game, player }) => {
+    const { t } = useTranslation();
+
     let otherContent = null;
 
     const renderPlayers = (players, self) => {
@@ -20,27 +24,27 @@ export const PlayersWidget = ({ game, player }) => {
             const player = players[i];
             const {
                 id,
-                name,
-                state,
-                score,
                 isCardCzar,
                 isHost,
                 isPopularVoteKing,
+                name,
                 publicID,
+                score,
+                state,
             } = player;
 
             renderedPlayers.push(
                 <Player
-                    player={player}
-                    key={publicID}
-                    publicID={publicID}
-                    name={state === PLAYER_STATES.PICKING_NAME ? null : name}
-                    state={state}
-                    score={score}
                     isCardCzar={isCardCzar}
                     isHost={isHost}
                     isPopularVoteKing={isPopularVoteKing}
                     isSelf={!isNullOrUndefined(ownId) && id === ownId}
+                    key={publicID}
+                    name={state === PLAYER_STATES.PICKING_NAME ? null : name}
+                    player={player}
+                    publicID={publicID}
+                    score={score}
+                    state={state}
                 />
             );
         }
@@ -68,7 +72,7 @@ export const PlayersWidget = ({ game, player }) => {
         otherContent = (
             <div className="players-widget no-active-players">
                 <Icon name="sentiment_dissatisfied" />
-                <div>Ei yhtään aktiivista pelaajaa</div>
+                <div>{translateCommon("noActivePlayers", t)}</div>
             </div>
         );
     }
