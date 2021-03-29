@@ -13,7 +13,6 @@ export function CardPack({
 }) {
     const { t } = useTranslation();
 
-    console.log({ whiteCards });
     return (
         <div className="cardpack-container">
             <div className="setting cardpack">

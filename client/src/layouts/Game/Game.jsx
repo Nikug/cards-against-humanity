@@ -133,25 +133,6 @@ export const Game = ({ showDebug }) => {
         );
 
         socketOn(
-            "upgrade_to_host",
-            (data) => {
-                const notification = {
-                    text:
-                        "Pelin edellinen isäntä lähti, joten sinä olet nyt uusi isäntä!",
-                    type: NOTIFICATION_TYPES.DEFAULT,
-                    icon: {
-                        name: "info",
-                        color: "blue",
-                        className: "type-icon",
-                    },
-                };
-
-                fireNotification(notification, 5);
-            },
-            notificationParams
-        );
-
-        socketOn(
             "update_timers",
             (data) => {
                 updateData({ timers: data.timers });
@@ -174,7 +155,6 @@ export const Game = ({ showDebug }) => {
             socket.off("update_players");
             socket.off("update_game_options");
             socket.off("deal_black_cards");
-            socket.off("upgrade_to_host");
             socket.off("send_popular_voted_cards");
         };
     }, [notificationParams, fireNotification, notificationCount]);
@@ -321,9 +301,10 @@ export const Game = ({ showDebug }) => {
                     {true && (
                         <Timer
                             width={100}
-                            percent={isLobby ? 0 : timerIsOn ? 1 : 0}
-                            startingPercent={isLobby ? 0 : startingProgress}
+                            percent={!hasTimer ? 0 : timerIsOn ? 1 : 0}
+                            startingPercent={!hasTimer ? 0 : startingProgress}
                             time={game?.timers.duration ?? 0}
+                            empty={!hasTimer}
                         />
                     )}
                     {false &&

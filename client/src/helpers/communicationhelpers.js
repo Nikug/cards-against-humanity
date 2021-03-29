@@ -16,6 +16,7 @@ export const socketOn = (eventName, callback, notificationParams = {}) => {
         let notification = data?.notification;
 
         if (notification && fireNotification) {
+            console.log({ notification });
             const text = notification?.text;
 
             if (text && t) {
@@ -23,7 +24,10 @@ export const socketOn = (eventName, callback, notificationParams = {}) => {
                     notification?.text,
                     t
                 );
-                notification = { ...notification, text: translatedText };
+                if (translatedText.length > 0) {
+                    // If there was translation available
+                    notification = { ...notification, text: translatedText };
+                }
             }
             fireNotification(notification, notification.time);
         }
