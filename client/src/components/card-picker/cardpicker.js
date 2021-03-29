@@ -166,7 +166,10 @@ export function CardPicker(props) {
     }
 
     const cardsAreSelected = confirmedCards.length > 0;
-    let buttonTexts = ["Valitse", "Valinta tehty"];
+    let buttonTexts = [
+        translateCommon("choose", t),
+        translateCommon("cardChosen", t),
+    ];
     let buttonIcons = ["send", "done"];
 
     if (!isNullOrUndefined(customButtonTexts) && customButtonTexts.length > 0) {

@@ -82,6 +82,7 @@ export const App = () => {
         fireNotification,
         notificationCount,
         setNotificationCount,
+        t,
     };
 
     const hideNotification = (id) => {

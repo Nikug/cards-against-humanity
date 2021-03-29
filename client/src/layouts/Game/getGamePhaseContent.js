@@ -17,16 +17,16 @@ import { WhiteCardPickerContainer } from "../../components/card-picker/whitecard
 import { WinnerCardPickerContainer } from "../../components/card-picker/winnercardpickercontainer";
 import { canStartGame } from "./helpers/canStartGame";
 import { getRandomSpinner } from "../../components/spinner";
-import { useTranslation } from "react-i18next";
+import { translateCommon } from "../../helpers/translation-helpers";
 
 export const getGamePhaseContent = ({
+    t,
     callbacks: { setPlayerName, givePopularVote, togglePlayerMode, startGame },
     game,
     player,
     blackCards,
     popularVotedCardsIDs,
 }) => {
-    const { t } = useTranslation;
     const gameState = game?.state;
     const playerState = player?.state;
     const disableStartGameButton = !canStartGame(game);
@@ -80,7 +80,11 @@ export const getGamePhaseContent = ({
                 <WaitingCardPickerContainer
                     player={player}
                     game={game}
-                    alternativeText={`${cardCzarName} valitsee mustaa korttia...`}
+                    alternativeText={translateCommon(
+                        "_player_isChoosingBlackCard",
+                        t,
+                        { player: cardCzarName }
+                    )}
                     showMainCard={false}
                 />
             );
@@ -90,9 +94,10 @@ export const getGamePhaseContent = ({
                     <WaitingCardPickerContainer
                         player={player}
                         game={game}
-                        alternativeText={
-                            "Pelaajat valitsevat valkoisia korttejaan..."
-                        }
+                        alternativeText={`${translateCommon(
+                            "playersAreChoosingWhiteCards",
+                            t
+                        )}...`}
                         showMainCard={true}
                         noBigMainCard={true}
                     />

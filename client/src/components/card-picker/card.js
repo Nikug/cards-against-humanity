@@ -123,10 +123,10 @@ export default function Card(props) {
                                     : `${translateCommon(
                                           "draw",
                                           t
-                                      )} ${whiteCardsToDraw}, Pelaa ${translateCommon(
+                                      )} ${whiteCardsToDraw}, ${translateCommon(
                                           "play",
                                           t
-                                      )}`}
+                                      )} ${whiteCardsToPlay}`}
                             </span>
                         )}
                     {playerName && (

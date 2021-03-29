@@ -19,6 +19,7 @@ import { socket } from "../../components/sockets/socket";
 import { socketOn } from "../../helpers/communicationhelpers";
 import { useGameContext } from "../../contexts/GameContext";
 import { useNotification } from "../../contexts/NotificationContext";
+import { useTranslation } from "react-i18next";
 
 export const NAME_CHAR_LIMIT = 50;
 export const ICON_CLASSNAMES = "md-36 icon-margin-right";
@@ -52,6 +53,7 @@ const hasTimerInUse = (game) => {
 };
 
 export const Game = ({ showDebug }) => {
+    const { t } = useTranslation();
     // Contexts
     const { game, player, updateData } = useGameContext();
     const notificationParams = useNotification();
@@ -271,6 +273,7 @@ export const Game = ({ showDebug }) => {
     }
 
     const contentProps = {
+        t,
         callbacks: {
             setPlayerName,
             givePopularVote,
