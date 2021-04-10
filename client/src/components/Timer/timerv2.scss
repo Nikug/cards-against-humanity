@@ -2,9 +2,11 @@
 
 @keyframes progress-bar-animation {
     0% {
+        opacity: 1;
         transform: scaleX(0);
     }
     100% {
+        opacity: 1;
         transform: scaleX(1);
     }
 }
@@ -54,8 +56,8 @@
     display: flex;
 
     &.blink-animation {
-        animation-fill-mode: forwards;
-        animation: blink-red linear;
+        //animation-fill-mode: forwards;
+        //animation: blink-red linear;
     }
 }
 
@@ -74,6 +76,6 @@
     transform-origin: 0% 50%; // Will start scaleX from left side and move only right side further. Default 50% 50%;
 
     &.timer-continuing {
-        border-radius: 0 0 2px 0;
+        border-radius: 0 0 2px 2px;
     }
 }

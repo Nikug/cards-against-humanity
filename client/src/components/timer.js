@@ -8,6 +8,7 @@ export function Timer({ width, percent = 1, startingPercent, time }) {
     const [timeLeft, setTimeLeft] = React.useState(0);
 
     React.useEffect(() => {
+        console.log("percent", percent);
         const newValue = percent * width - startingPercent * width;
         setValue(newValue < 0 ? 0 : newValue);
         setStartingValue(startingPercent * width);

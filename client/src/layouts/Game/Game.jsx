@@ -267,8 +267,8 @@ export const Game = ({ showDebug }) => {
     };
 
     const renderedContent = getGamePhaseContent(contentProps);
-    const hasProgressInTimer = !isLobby && timerIsOn;
     const hasTimer = hasTimerInUse(game);
+    const hasProgressInTimer = hasTimer && timerIsOn;
 
     return (
         <>
@@ -298,16 +298,23 @@ export const Game = ({ showDebug }) => {
             </div>
             <div>
                 <div className={`info ${hasTimer ? "sticky" : ""}`}>
-                    {true && (
+                    {true && hasProgressInTimer && (
                         <Timer
                             width={100}
                             percent={!hasTimer ? 0 : timerIsOn ? 1 : 0}
                             startingPercent={!hasTimer ? 0 : startingProgress}
                             time={game?.timers.duration ?? 0}
-                            empty={!hasTimer}
                         />
                     )}
-                    {false &&
+                    {true && !hasProgressInTimer && (
+                        <Timer
+                            width={100}
+                            percent={0}
+                            startingPercent={0}
+                            time={0}
+                        />
+                    )}
+                    {true &&
                         !hasProgressInTimer && ( // Because life is not easy and css animations are fun, we have to unmount the whole timer component and remount it again to restart the animation (:
                             <TimerV2
                                 key={"without-progress"}
@@ -317,7 +324,7 @@ export const Game = ({ showDebug }) => {
                                 time={0}
                             />
                         )}
-                    {false && hasProgressInTimer && (
+                    {true && hasProgressInTimer && (
                         <TimerV2
                             key={"with-progress"}
                             width={100}
