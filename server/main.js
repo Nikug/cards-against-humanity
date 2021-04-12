@@ -1,8 +1,10 @@
 import path, { dirname } from "path";
 
+import { createTableQuery } from "./db/table.js";
 import express from "express";
 import { fileURLToPath } from "url";
 import http from "http";
+import { query } from "./db/database.js";
 import { router } from "./routes/routes.js";
 import socketIo from "socket.io";
 import { sockets } from "./routes/sockets.js";
@@ -12,6 +14,7 @@ const __dirname = dirname(__filename);
 
 const port = process.env.PORT || 4000;
 const PRODUCTION = process.env.PRODUCTION;
+const USE_DB = process.env.USE_DB;
 
 const app = express();
 const server = http.createServer(app);
@@ -24,6 +27,11 @@ app.use(express.static(path.join(__dirname, "/../client/build")));
 
 app.use(router());
 sockets(io);
+
+if (USE_DB) {
+    console.log("Using database!");
+    query(createTableQuery);
+}
 
 if (PRODUCTION) {
     console.log("Running production environment!");

@@ -1,7 +1,6 @@
 import { ERROR_TYPES, NOTIFICATION_TYPES } from "../consts/error.js";
 import {
     appointNextCardCzar,
-    getActiveAndJoiningPlayers,
     getActivePlayers,
     getPlayersWithState,
     getRoundWinner,
