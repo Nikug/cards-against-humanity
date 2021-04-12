@@ -4,7 +4,7 @@ import { createTableQuery } from "./db/table.js";
 import express from "express";
 import { fileURLToPath } from "url";
 import http from "http";
-import { query } from "./db/database.js";
+import { queryDB } from "./db/database.js";
 import { router } from "./routes/routes.js";
 import socketIo from "socket.io";
 import { sockets } from "./routes/sockets.js";
@@ -30,7 +30,7 @@ sockets(io);
 
 if (USE_DB) {
     console.log("Using database!");
-    query(createTableQuery);
+    queryDB(createTableQuery);
 }
 
 if (PRODUCTION) {
