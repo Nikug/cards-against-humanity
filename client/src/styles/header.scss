@@ -57,6 +57,10 @@
         padding-left: 0;
     }
 
+    &.language {
+        flex-direction: column;
+    }
+
     &:hover {
         transition: 0.1s ease;
         color: $header-button-text-hover;
@@ -77,6 +81,10 @@
             0.5px -2px $header-button-hover, 0px -2px $header-button-hover,
             -0.5px -2px $header-button-hover, -1px -2px $header-button-hover,
             -1.5px -2px $header-button-hover;
+
+            .menu-container {
+                text-shadow: none;
+            }
     }
 }
 

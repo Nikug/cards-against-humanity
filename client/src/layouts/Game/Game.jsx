@@ -157,7 +157,7 @@ export const Game = ({ showDebug }) => {
             socket.off("deal_black_cards");
             socket.off("send_popular_voted_cards");
         };
-    }, [notificationParams, fireNotification, notificationCount]);
+    }, [notificationParams, fireNotification, notificationCount, updateData]);
 
     useEffect(() => {
         if (game?.timers.passedTime && game?.timers.duration) {
@@ -194,7 +194,7 @@ export const Game = ({ showDebug }) => {
 
         setTimeout(() => {
             setTimerIsOn(true);
-        }, 1);
+        }, 300);
     };
 
     // Send data to server

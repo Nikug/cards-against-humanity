@@ -50,3 +50,23 @@ export function textToSpeech(text) {
         window.speechSynthesis.speak(msg);
     }
 }
+
+export const sortByProperty = (list, property) => {
+    if (!list) {
+        return [];
+    }
+
+    if (property == null) {
+        return list.sort(function(a, b){
+            if(a < b) { return -1; }
+            if(a > b) { return 1; }
+            return 0;
+        })
+    }
+
+    return list.sort(function(a, b){
+        if(a[property] < b[property]) { return -1; }
+        if(a[property] > b[property]) { return 1; }
+        return 0;
+    })
+}

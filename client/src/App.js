@@ -19,6 +19,12 @@ import { socket } from "./components/sockets/socket";
 import { socketOn } from "./helpers/communicationhelpers";
 import { translateCommon } from "./helpers/translation-helpers";
 import { useTranslation } from "react-i18next";
+import {
+    getItemFromLocalStorage,
+    LOCAL_STORAGE_FIELDS,
+    removeItemFromLocalStorage,
+    setItemToLocalStorage,
+} from "./helpers/localstoragehelpers";
 
 export const App = () => {
     /*****************************************************************/ // Purely for hiding dev things from the production.
@@ -38,6 +44,7 @@ export const App = () => {
     const [player, setPlayer] = useState(undefined);
     const [notifications, setNotifications] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [hasAcceptedCookies, setHasAcceptedCookies] = useState(true);
     const [notificationCount, setNotificationCount] = useState(0);
 
     const history = useHistory();
@@ -101,6 +108,40 @@ export const App = () => {
     };
 
     useEffect(() => {
+        const language = getItemFromLocalStorage(LOCAL_STORAGE_FIELDS.LANGUAGE);
+
+        if (language) {
+            i18n.changeLanguage(language);
+        }
+
+        setTimeout(() => {
+            //removeItemFromLocalStorage(LOCAL_STORAGE_FIELDS.HAS_ACCEPTED_COOKIES);
+            const hasAcceptedCookies = getItemFromLocalStorage(
+                LOCAL_STORAGE_FIELDS.HAS_ACCEPTED_COOKIES
+            );
+
+            if (hasAcceptedCookies !== "true") {
+                const answer = window.confirm(
+                    translateCommon("doYouAcceptCookies", t)
+                );
+
+                if (answer) {
+                    setItemToLocalStorage(
+                        LOCAL_STORAGE_FIELDS.HAS_ACCEPTED_COOKIES,
+                        "true"
+                    );
+                } else {
+                    setItemToLocalStorage(
+                        LOCAL_STORAGE_FIELDS.HAS_ACCEPTED_COOKIES,
+                        "false"
+                    );
+                    setHasAcceptedCookies(false);
+                }
+            }
+        }, 3000);
+    }, []);
+
+    useEffect(() => {
         socketOn(
             "update_game_and_players",
             (data) => {
@@ -151,14 +192,14 @@ export const App = () => {
     }, [notificationParams, fireNotification, notificationCount]);
 
     useEffect(() => {
-        const cookie = getCookie("playerID");
+        const playerID = getItemFromLocalStorage(LOCAL_STORAGE_FIELDS.PLAYER_ID);
 
-        if (!isNullOrUndefined(cookie)) {
+        if (!isNullOrUndefined(player)) {
             socket.emit("join_game", {
-                playerID: cookie,
+                playerID
             });
         } else {
-            deleteCookie("playerID");
+            removeItemFromLocalStorage(LOCAL_STORAGE_FIELDS.PLAYER_ID);
             setLoading(false);
         }
     }, []);
@@ -300,6 +341,27 @@ export const App = () => {
                     </div>
                 </div>
             </NotificationContextProvider>
+        );
+    }
+
+    if (hasAcceptedCookies === false) {
+        return (
+            <div className="App mono-background" style={{display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column'}}>
+                <div>{translateCommon("doYouAcceptCookies", t)}</div>
+                <div>
+                    <Button
+                        text={translateCommon('accept', t)}
+                        callback={() => {
+                            setItemToLocalStorage(
+                                LOCAL_STORAGE_FIELDS.HAS_ACCEPTED_COOKIES,
+                                "true"
+                            );
+                            setHasAcceptedCookies(true);
+                        }
+                        }
+                    />
+                </div>
+            </div>
         );
     }
 

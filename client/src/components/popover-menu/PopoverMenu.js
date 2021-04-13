@@ -52,7 +52,9 @@ export const PopOverMenu = ({
         <div
             style={{
                 width: containerWidth + 2, // I am not sure why it needs those 2 extra pixels, but it does. EDIT: 2 pixels might be buttons borders?
+                height: 0
             }}
+            className={noControl ? 'no-control' : ''}
         >
             {!noControl && (
                 <Button
