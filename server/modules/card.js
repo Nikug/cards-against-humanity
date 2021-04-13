@@ -396,7 +396,7 @@ export const anonymizedGameClient = (game) => {
         ...game.client,
         timers: {
             ...game.client.timers,
-            passedTime: getPassedTime(game.timeout),
+            passedTime: getPassedTime(game.id),
         },
     };
 };

@@ -1,3 +1,4 @@
+import { addTimeout, getTimeout, removeTimeout } from "./timeout.js";
 import {
     appointNextCardCzar,
     setPlayersActive,
@@ -9,32 +10,31 @@ import { showWhiteCard, shuffleCardsBackToDeck } from "./card.js";
 import { gameOptions } from "../consts/gameSettings.js";
 
 export const changeGameStateAfterTime = (io, game, transition) => {
-    clearTimeout(game.timeout);
+    removeTimeout(game.id);
 
     const delay = getTimeoutTime(game);
     if (delay === undefined) {
         game.client.timers.duration = undefined;
         game.client.timers.passedTime = undefined;
-        game.timeout = undefined;
         return game;
     }
 
     game.client.timers.duration = delay;
     game.client.timers.passedTime = 0;
 
-    game.timeout = setTimeout(
+    const timeout = setTimeout(
         gameStateChange,
         (delay + gameOptions.defaultGracePeriod) * 1000,
         io,
         game.id,
         transition
     );
+    addTimeout(game.id, timeout);
     return game;
 };
 
 export const clearGameTimer = (game) => {
-    clearTimeout(game.timeout);
-    game.timeout = undefined;
+    removeTimeout(game.id);
     game.client.timers.duration = undefined;
     game.client.timers.passedTime = undefined;
     return game;
@@ -152,7 +152,8 @@ const getTimeoutTime = (game) => {
     }
 };
 
-export const getPassedTime = (timeout) => {
+export const getPassedTime = (id) => {
+    const timeout = getTimeout(id);
     if (!timeout) return undefined;
     return process.uptime() - timeout._idleStart / 1000;
 };

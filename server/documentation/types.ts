@@ -9,7 +9,6 @@ interface Game {
     stateMachine: typeof StateMachine;
     client: ClientGame;
     currentRound: Round;
-    timeout: NodeJS.Timeout;
 }
 
 interface ClientGame {

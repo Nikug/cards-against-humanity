@@ -18,6 +18,7 @@ import {
     createDBGame,
     deleteDBGame,
     getDBGame,
+    getDBGameBySocketId,
     setDBGame,
 } from "../db/database.js";
 import {
@@ -61,7 +62,7 @@ export const getGame = async (gameID) => {
         const game = await getDBGame(gameID);
         return game;
     } else {
-        game = games.find((game) => game.id === gameID);
+        const game = games.find((game) => game.id === gameID);
         return game;
     }
 };
@@ -194,8 +195,6 @@ export const startGame = async (io, socket, gameID, playerID) => {
         gameWithStartingHands
     );
 
-    console.log("new game", newGame.stateMachine);
-
     const updatedGame = changeGameStateAfterTime(
         io,
         newGame,
@@ -315,8 +314,13 @@ export const skipRound = (io, game, newCardCzar) => {
     updatePlayersIndividually(io, updatedGame);
 };
 
-export const findGameAndPlayerBySocketID = (socketID) => {
+export const findGameAndPlayerBySocketID = async (socketID) => {
     if (process.env.USE_DB) {
+        const game = await getDBGameBySocketId(socketID);
+        const player = game.players.find((player) =>
+            player.sockets.includes(socketID)
+        );
+        return { game, player };
     } else {
         for (let i = 0, gameCount = games.length; i < gameCount; i++) {
             for (
@@ -457,7 +461,7 @@ export const updateTimers = (io, game) => {
     io.in(game.id).emit("update_timers", {
         timers: {
             duration: game.client.timers.duration,
-            passedTime: getPassedTime(game.timeout),
+            passedTime: getPassedTime(game.id),
         },
     });
 };

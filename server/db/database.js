@@ -35,7 +35,13 @@ export const createDBGame = (game) => {
 export const deleteDBGame = (gameID) =>
     pool.query("DELETE FROM games WHERE gameid = $1", [gameID]);
 
-export const getBySocketId = (socketID) =>
-    pool.query(
-        `SELECT game FROM games, jsonb_to_recordset(games.game.players) as items()`
+export const getDBGameBySocketId = async (socketID) => {
+    console.log("Looked for a game with socket id", socketID);
+    const result = await pool.query(
+        `SELECT game
+        FROM games, jsonb_to_recordset(game -> 'players') as players(sockets varchar[])
+        WHERE  $1 = ANY(players.sockets)`,
+        [socketID]
     );
+    return restoreFromDB(result);
+};
