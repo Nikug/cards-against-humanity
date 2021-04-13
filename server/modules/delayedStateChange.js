@@ -40,8 +40,8 @@ export const clearGameTimer = (game) => {
     return game;
 };
 
-const gameStateChange = (io, gameID, transition) => {
-    const game = getGame(gameID);
+const gameStateChange = async (io, gameID, transition) => {
+    const game = await getGame(gameID);
     if (!game) return;
 
     console.log("Handling state change to", transition);

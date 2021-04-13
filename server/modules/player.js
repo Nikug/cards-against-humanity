@@ -19,8 +19,8 @@ export const emitToAllPlayerSockets = (io, player, message, data) => {
     });
 };
 
-export const updatePlayerName = (io, gameID, playerID, newName) => {
-    const game = getGame(gameID);
+export const updatePlayerName = async (io, gameID, playerID, newName) => {
+    const game = await getGame(gameID);
     if (!game) return;
 
     const trimmedName = newName.trim();
@@ -52,8 +52,13 @@ export const setPlayerName = (game, newPlayer, newName) => {
     }
 };
 
-export const changePlayerTextToSpeech = (io, gameID, playerID, useTTS) => {
-    const game = getGame(gameID);
+export const changePlayerTextToSpeech = async (
+    io,
+    gameID,
+    playerID,
+    useTTS
+) => {
+    const game = await getGame(gameID);
     if (!game) return;
 
     const player = getPlayer(game, playerID);

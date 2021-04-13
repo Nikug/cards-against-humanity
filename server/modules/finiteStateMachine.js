@@ -1,8 +1,9 @@
 import StateMachine from "javascript-state-machine";
 
-export const createStateMachine = () => {
+export const createStateMachine = (initialState) => {
+    console.log("Setting initial state to", initialState)
     const fsm = new StateMachine({
-        init: "lobby",
+        init: initialState ?? "lobby",
         transitions: [
             { name: "startGame",                from: "lobby",              to: "pickingBlackCard"  },
             { name: "startPlayingWhiteCards",   from: "pickingBlackCard",   to: "playingWhiteCards" },

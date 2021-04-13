@@ -31,8 +31,14 @@ import { gameOptions } from "../consts/gameSettings.js";
 import { randomBetween } from "./util.js";
 import { sendNotification } from "./socket.js";
 
-export const playWhiteCards = (io, socket, gameID, playerID, whiteCardIDs) => {
-    let game = getGame(gameID);
+export const playWhiteCards = async (
+    io,
+    socket,
+    gameID,
+    playerID,
+    whiteCardIDs
+) => {
+    let game = await getGame(gameID);
     if (!game) return;
 
     const { error } = validatePlayerPlayingWhiteCards(
@@ -90,7 +96,7 @@ export const startReading = (io, game) => {
     updatePlayersIndividually(io, updatedGame);
 };
 
-export const selectBlackCard = (
+export const selectBlackCard = async (
     io,
     socket,
     gameID,
@@ -98,7 +104,7 @@ export const selectBlackCard = (
     selectedCardID,
     discardedCardIDs
 ) => {
-    const game = getGame(gameID);
+    const game = await getGame(gameID);
     if (!game) return;
 
     if (!validateState(game, "pickingBlackCard")) {
@@ -164,8 +170,8 @@ export const selectBlackCard = (
     updatePlayersIndividually(io, updatedGame);
 };
 
-export const sendBlackCards = (socket, gameID, playerID) => {
-    const game = getGame(gameID);
+export const sendBlackCards = async (socket, gameID, playerID) => {
+    const game = await getGame(gameID);
     if (!game) return;
 
     if (!validateCardCzar(game, playerID)) {
@@ -320,8 +326,8 @@ export const shuffleCards = (cards) => {
     return cards;
 };
 
-export const showWhiteCard = (io, socket, gameID, playerID) => {
-    const game = getGame(gameID);
+export const showWhiteCard = async (io, socket, gameID, playerID) => {
+    const game = await getGame(gameID);
     if (!game) return;
 
     const { error } = validateShowingWhiteCard(game, playerID);
@@ -395,8 +401,14 @@ export const anonymizedGameClient = (game) => {
     };
 };
 
-export const selectWinner = (io, socket, gameID, playerID, whiteCardIDs) => {
-    const game = getGame(gameID);
+export const selectWinner = async (
+    io,
+    socket,
+    gameID,
+    playerID,
+    whiteCardIDs
+) => {
+    const game = await getGame(gameID);
     if (!game) return;
 
     const { result, error } = validatePickingWinner(

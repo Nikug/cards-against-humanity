@@ -7,8 +7,8 @@ import { handleSpecialCases } from "./disconnect.js";
 import { playerName } from "../consts/gameSettings.js";
 import { sendNotification } from "./socket.js";
 
-export const togglePlayerMode = (io, socket, gameID, playerID) => {
-    const game = getGame(gameID);
+export const togglePlayerMode = async (io, socket, gameID, playerID) => {
+    const game = await getGame(gameID);
     if (!game) return;
 
     const player = getPlayer(game, playerID);

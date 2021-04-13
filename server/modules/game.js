@@ -15,6 +15,12 @@ import {
     getPassedTime,
 } from "./delayedStateChange.js";
 import {
+    createDBGame,
+    deleteDBGame,
+    getDBGame,
+    setDBGame,
+} from "../db/database.js";
+import {
     dealBlackCards,
     dealStartingWhiteCards,
     dealWhiteCards,
@@ -38,27 +44,41 @@ import { setPopularVoteLeader } from "./popularVote.js";
 
 let games = [];
 
-export const createGame = () => {
+export const createGame = async () => {
     const gameURL = hri.hri.random();
     const newGame = newGameTemplate(gameURL);
-    games = [...games, newGame];
+
+    if (process.env.USE_DB) {
+        await createDBGame(newGame);
+    } else {
+        games = [...games, newGame];
+    }
     return newGame;
 };
 
-export const getGame = (gameID) => {
-    const game = games.filter((game) => game.id === gameID);
-    return game.length > 0 ? game[0] : null;
+export const getGame = async (gameID) => {
+    if (process.env.USE_DB) {
+        const game = await getDBGame(gameID);
+        return game;
+    } else {
+        game = games.find((game) => game.id === gameID);
+        return game;
+    }
 };
 
-export const setGame = (newGame) => {
-    games = games.map((game) => {
-        return game.id === newGame.id ? newGame : game;
-    });
+export const setGame = async (newGame) => {
+    if (process.env.USE_DB) {
+        await setDBGame(newGame);
+    } else {
+        games = games.map((game) => {
+            return game.id === newGame.id ? newGame : game;
+        });
+    }
     return newGame;
 };
 
-export const removeGameIfNoActivePlayers = (gameID) => {
-    const game = getGame(gameID);
+export const removeGameIfNoActivePlayers = async (gameID) => {
+    const game = await getGame(gameID);
     if (!game) return;
 
     if (!game.players) removeGame(gameID);
@@ -71,7 +91,11 @@ export const removeGameIfNoActivePlayers = (gameID) => {
 
 export const removeGame = (gameID) => {
     console.log("Game was removed");
-    games = games.filter((game) => game.id !== gameID);
+    if (process.env.USE_DB) {
+        deleteDBGame(gameID);
+    } else {
+        games = games.filter((game) => game.id !== gameID);
+    }
 };
 
 export const createRound = (roundNumber, blackCard, cardCzarID) => {
@@ -91,8 +115,14 @@ export const everyoneHasPlayedTurn = (game) => {
     return waitingPlayers.length === getActivePlayers(game.players).length - 1; // Remove card czar with -1
 };
 
-export const updateGameOptions = (io, socket, gameID, playerID, newOptions) => {
-    const game = getGame(gameID);
+export const updateGameOptions = async (
+    io,
+    socket,
+    gameID,
+    playerID,
+    newOptions
+) => {
+    const game = await getGame(gameID);
 
     if (!game) return;
     if (!validateHost(game, playerID)) {
@@ -108,15 +138,16 @@ export const updateGameOptions = (io, socket, gameID, playerID, newOptions) => {
         ...game.client.options,
         ...newOptions,
     });
-    const updatedGame = setGame(game);
+
+    setGame(game);
 
     io.in(gameID).emit("update_game_options", {
-        options: updatedGame.client.options,
+        options: game.client.options,
     });
 };
 
-export const startGame = (io, socket, gameID, playerID) => {
-    const game = getGame(gameID);
+export const startGame = async (io, socket, gameID, playerID) => {
+    const game = await getGame(gameID);
     if (!game) return undefined;
 
     if (!validateHost(game, playerID)) return undefined;
@@ -127,8 +158,10 @@ export const startGame = (io, socket, gameID, playerID) => {
         return;
     }
 
+    console.log("Before transition", game.stateMachine.state);
     game.stateMachine.startGame();
     game.client.state = game.stateMachine.state;
+    console.log("After transition", game.stateMachine.state);
 
     const activePlayers = getActivePlayers(game.players);
     const cardCzarIndex = randomBetween(0, activePlayers.length - 1);
@@ -142,10 +175,17 @@ export const startGame = (io, socket, gameID, playerID) => {
     game.cards.whiteCards = shuffleCards([...game.cards.whiteCards]);
     game.cards.blackCards = shuffleCards([...game.cards.blackCards]);
 
+    console.log("Before dealing starting hands", game.stateMachine.state);
+
     const gameWithStartingHands = dealStartingWhiteCards(
         io,
         game,
         gameOptions.startingWhiteCardCount
+    );
+
+    console.log(
+        "Before dealing black cards",
+        gameWithStartingHands.stateMachine.state
     );
 
     const newGame = dealBlackCards(
@@ -154,17 +194,20 @@ export const startGame = (io, socket, gameID, playerID) => {
         gameWithStartingHands
     );
 
+    console.log("new game", newGame.stateMachine);
+
     const updatedGame = changeGameStateAfterTime(
         io,
         newGame,
         "startPlayingWhiteCards"
     );
+
     setGame(updatedGame);
     updatePlayersIndividually(io, updatedGame);
 };
 
-export const startNewRound = (io, socket, gameID, playerID) => {
-    const game = getGame(gameID);
+export const startNewRound = async (io, socket, gameID, playerID) => {
+    const game = await getGame(gameID);
     if (!game) return undefined;
 
     if (!validateCardCzar(game, playerID)) {
@@ -273,17 +316,20 @@ export const skipRound = (io, game, newCardCzar) => {
 };
 
 export const findGameAndPlayerBySocketID = (socketID) => {
-    for (let i = 0, gameCount = games.length; i < gameCount; i++) {
-        for (
-            let j = 0, playerCount = games[i].players.length;
-            j < playerCount;
-            j++
-        ) {
-            if (games[i].players[j].sockets.includes(socketID)) {
-                return {
-                    game: { ...games[i] },
-                    player: { ...games[i].players[j] },
-                };
+    if (process.env.USE_DB) {
+    } else {
+        for (let i = 0, gameCount = games.length; i < gameCount; i++) {
+            for (
+                let j = 0, playerCount = games[i].players.length;
+                j < playerCount;
+                j++
+            ) {
+                if (games[i].players[j].sockets.includes(socketID)) {
+                    return {
+                        game: { ...games[i] },
+                        player: { ...games[i].players[j] },
+                    };
+                }
             }
         }
     }
@@ -353,8 +399,13 @@ export const returnToLobby = (io, game) => {
     updatePlayersIndividually(io, initialGame);
 };
 
-export const validateHostAndReturnToLobby = (io, socket, gameID, playerID) => {
-    const game = getGame(gameID);
+export const validateHostAndReturnToLobby = async (
+    io,
+    socket,
+    gameID,
+    playerID
+) => {
+    const game = await getGame(gameID);
     if (!game) return;
 
     if (!validateHost(game, playerID)) {

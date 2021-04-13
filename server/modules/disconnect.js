@@ -29,8 +29,8 @@ import { punishCardCzar } from "./delayedStateChange.js";
 import { setPlayer } from "./join.js";
 import { startReading } from "./card.js";
 
-export const setPlayerDisconnected = (io, socketID, removePlayer) => {
-    const result = findGameAndPlayerBySocketID(socketID);
+export const setPlayerDisconnected = async (io, socketID, removePlayer) => {
+    const result = await findGameAndPlayerBySocketID(socketID);
     if (!result) return;
 
     const { game, player } = result;

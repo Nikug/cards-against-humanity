@@ -33,9 +33,9 @@ export const joinGame = (io, socket, gameID, playerID) => {
     }
 };
 
-const handleGameID = (io, socket, gameID) => {
+const handleGameID = async (io, socket, gameID) => {
     if (!!gameID) {
-        const game = getGame(gameID);
+        const game = await getGame(gameID);
         if (!!game) {
             addPlayerToGame(io, socket, gameID, null);
         } else {
@@ -57,8 +57,8 @@ const handleGameID = (io, socket, gameID) => {
     }
 };
 
-const addPlayerToGame = (io, socket, gameID, playerID) => {
-    const game = getGame(gameID);
+const addPlayerToGame = async (io, socket, gameID, playerID) => {
+    const game = await getGame(gameID);
     if (!game) return;
 
     const isHost = game.players.length === 0;

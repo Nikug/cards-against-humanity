@@ -10,8 +10,14 @@ import { gameOptions } from "../consts/gameSettings.js";
 import { sendNotification } from "./socket.js";
 import { validatePopularVote } from "./validate.js";
 
-export const popularVote = (io, socket, gameID, playerID, whiteCardIDs) => {
-    const game = getGame(gameID);
+export const popularVote = async (
+    io,
+    socket,
+    gameID,
+    playerID,
+    whiteCardIDs
+) => {
+    const game = await getGame(gameID);
     if (!game) return;
 
     const { error } = validatePopularVote(game, playerID);

@@ -7,7 +7,7 @@ import { handleSpecialCases } from "./disconnect.js";
 import { setPlayerState } from "./togglePlayerMode.js";
 import { validateHost } from "./validate.js";
 
-export const hostKick = (
+export const hostKick = async (
     io,
     socket,
     gameID,
@@ -15,7 +15,7 @@ export const hostKick = (
     targetID,
     removeFromGame
 ) => {
-    const game = getGame(gameID);
+    const game = await getGame(gameID);
     if (!game) return;
 
     if (!validateHost(game, playerID)) {

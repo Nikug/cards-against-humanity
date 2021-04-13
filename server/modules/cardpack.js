@@ -49,7 +49,7 @@ export const addCardPack = async (io, socket, gameID, cardPackID, playerID) => {
         blackCards: json.definition.quantity.black,
     };
 
-    const newOptions = addCardPackToGame(
+    const newOptions = await addCardPackToGame(
         gameID,
         playerID,
         cardPack,
@@ -62,8 +62,14 @@ export const addCardPack = async (io, socket, gameID, cardPackID, playerID) => {
     }
 };
 
-export const removeCardPack = (io, socket, gameID, cardPackID, playerID) => {
-    const newOptions = removeCardPackFromGame(
+export const removeCardPack = async (
+    io,
+    socket,
+    gameID,
+    cardPackID,
+    playerID
+) => {
+    const newOptions = await removeCardPackFromGame(
         socket,
         gameID,
         cardPackID,
@@ -74,14 +80,14 @@ export const removeCardPack = (io, socket, gameID, cardPackID, playerID) => {
     }
 };
 
-export const addCardPackToGame = (
+export const addCardPackToGame = async (
     gameID,
     playerID,
     cardPack,
     whiteCards,
     blackCards
 ) => {
-    const game = getGame(gameID);
+    const game = await getGame(gameID);
     if (!game) return undefined;
 
     if (!validateHost(game, playerID)) return undefined;
@@ -104,13 +110,13 @@ export const addCardPackToGame = (
     return game.client.options;
 };
 
-export const removeCardPackFromGame = (
+export const removeCardPackFromGame = async (
     socket,
     gameID,
     cardPackID,
     playerID
 ) => {
-    const game = getGame(gameID);
+    const game = await getGame(gameID);
     if (!game) return undefined;
 
     if (!validateState(game, "lobby")) {

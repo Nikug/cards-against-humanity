@@ -1,8 +1,4 @@
-import {
-    ERROR_TYPES,
-    NOTIFICATION_TIME,
-    NOTIFICATION_TYPES,
-} from "../consts/error.js";
+import { ERROR_TYPES, NOTIFICATION_TYPES } from "../consts/error.js";
 import { addCardPack, removeCardPack } from "../modules/cardpack.js";
 import {
     changePlayerTextToSpeech,

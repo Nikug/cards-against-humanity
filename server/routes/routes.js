@@ -8,8 +8,8 @@ export const router = () => {
         res.send("This is server").status(200);
     });
 
-    expressRouter.post("/g", (req, res) => {
-        const game = createGame();
+    expressRouter.post("/g", async (req, res) => {
+        const game = await createGame();
         res.send({ url: game.id });
     });
 
