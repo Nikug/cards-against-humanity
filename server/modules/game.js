@@ -60,6 +60,7 @@ export const createGame = async () => {
 export const getGame = async (gameID) => {
     if (process.env.USE_DB) {
         const game = await getDBGame(gameID);
+        console.log("Getting game!", game.stateMachine.state);
         return game;
     } else {
         const game = games.find((game) => game.id === gameID);
@@ -69,6 +70,7 @@ export const getGame = async (gameID) => {
 
 export const setGame = async (newGame) => {
     if (process.env.USE_DB) {
+        console.log("Setting game!", newGame.stateMachine.state);
         await setDBGame(newGame);
     } else {
         games = games.map((game) => {
@@ -159,10 +161,8 @@ export const startGame = async (io, socket, gameID, playerID) => {
         return;
     }
 
-    console.log("Before transition", game.stateMachine.state);
     game.stateMachine.startGame();
     game.client.state = game.stateMachine.state;
-    console.log("After transition", game.stateMachine.state);
 
     const activePlayers = getActivePlayers(game.players);
     const cardCzarIndex = randomBetween(0, activePlayers.length - 1);
@@ -176,17 +176,10 @@ export const startGame = async (io, socket, gameID, playerID) => {
     game.cards.whiteCards = shuffleCards([...game.cards.whiteCards]);
     game.cards.blackCards = shuffleCards([...game.cards.blackCards]);
 
-    console.log("Before dealing starting hands", game.stateMachine.state);
-
     const gameWithStartingHands = dealStartingWhiteCards(
         io,
         game,
         gameOptions.startingWhiteCardCount
-    );
-
-    console.log(
-        "Before dealing black cards",
-        gameWithStartingHands.stateMachine.state
     );
 
     const newGame = dealBlackCards(
@@ -201,6 +194,7 @@ export const startGame = async (io, socket, gameID, playerID) => {
         "startPlayingWhiteCards"
     );
 
+    console.log("Start game setting game!");
     setGame(updatedGame);
     updatePlayersIndividually(io, updatedGame);
 };

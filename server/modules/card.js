@@ -346,6 +346,10 @@ export const showWhiteCard = async (io, socket, gameID, playerID) => {
     ) {
         game.stateMachine.showCards();
         game.client.state = game.stateMachine.state;
+
+        const rounds = game.client.rounds.length;
+        game.client.rounds[rounds - 1] = game.currentRound;
+
         const updatedGame = changeGameStateAfterTime(io, game, "endRound");
         setGame(updatedGame);
 
