@@ -18,6 +18,7 @@ import {
     createDBGame,
     deleteDBGame,
     getDBGame,
+    getDBGameByPlayerId,
     getDBGameBySocketId,
     setDBGame,
 } from "../db/database.js";
@@ -142,6 +143,7 @@ export const updateGameOptions = async (
         ...newOptions,
     });
 
+    console.log("Updating game options setting game");
     setGame(game);
 
     io.in(gameID).emit("update_game_options", {
@@ -334,15 +336,20 @@ export const findGameAndPlayerBySocketID = async (socketID) => {
     return undefined;
 };
 
-export const findGameByPlayerID = (playerID) => {
-    for (let i = 0, gameCount = games.length; i < gameCount; i++) {
-        for (
-            let j = 0, playerCount = games[i].players.length;
-            j < playerCount;
-            j++
-        ) {
-            if (games[i].players[j].id === playerID) {
-                return { ...games[i] };
+export const findGameByPlayerID = async (playerID) => {
+    if (process.env.USE_DB) {
+        const game = await getDBGameByPlayerId(playerID);
+        return game;
+    } else {
+        for (let i = 0, gameCount = games.length; i < gameCount; i++) {
+            for (
+                let j = 0, playerCount = games[i].players.length;
+                j < playerCount;
+                j++
+            ) {
+                if (games[i].players[j].id === playerID) {
+                    return { ...games[i] };
+                }
             }
         }
     }

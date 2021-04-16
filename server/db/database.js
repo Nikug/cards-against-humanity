@@ -45,3 +45,14 @@ export const getDBGameBySocketId = async (socketID) => {
     );
     return restoreFromDB(result);
 };
+
+export const getDBGameByPlayerId = async (playerID) => {
+    console.log("Looked for a game with player id", playerID);
+    const result = await pool.query(
+        `SELECT game
+        FROM games, jsonb_to_recordset(game -> 'players') as players(id varchar)
+        WHERE  $1 = players.id`,
+        [playerID]
+    );
+    return restoreFromDB(result);
+};

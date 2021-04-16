@@ -5,10 +5,10 @@ import { gameOptions, playerName } from "../consts/gameSettings.js";
 
 import { sendNotification } from "./socket.js";
 
-export const joinGame = (io, socket, gameID, playerID) => {
+export const joinGame = async (io, socket, gameID, playerID) => {
     console.log(`Joining game! gameID: ${gameID} playerID: ${playerID}`);
     if (!!playerID) {
-        const game = findGameByPlayerID(playerID);
+        const game = await findGameByPlayerID(playerID);
         if (!!game) {
             if (!!gameID) {
                 if (gameID === game.id) {
