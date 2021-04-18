@@ -18,10 +18,7 @@ const USE_DB = process.env.USE_DB;
 
 const app = express();
 const server = http.createServer(app);
-const io = socketIo(server, {
-    pingTimeout: 10 * 1000,
-    pingInterval: 30 * 1000,
-});
+const io = socketIo(server);
 
 app.use(express.static(path.join(__dirname, "/../client/build")));
 

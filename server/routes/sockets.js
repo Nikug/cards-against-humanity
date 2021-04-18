@@ -4,6 +4,7 @@ import {
     changePlayerTextToSpeech,
     updatePlayerName,
 } from "../modules/player.js";
+import { endTransaction, startTransaction } from "../db/database.js";
 import {
     playWhiteCards,
     selectBlackCard,
@@ -24,25 +25,35 @@ import { popularVote } from "../modules/popularVote.js";
 import { sendNotification } from "../modules/socket.js";
 import { setPlayerDisconnected } from "../modules/disconnect.js";
 import { togglePlayerMode } from "../modules/togglePlayerMode.js";
+import { transactionize } from "../db/util.js";
 import { updateAvatar } from "../modules/avatar.js";
 
 export const sockets = (io) => {
     io.on("connection", (socket) => {
         console.log(`Client joined! socket ID: ${socket.id}`);
 
-        socket.on("join_game", (data) => {
-            joinGame(io, socket, data?.gameID, data?.playerID);
+        socket.on("join_game", async (data) => {
+            transactionize(joinGame, [
+                io,
+                socket,
+                data?.gameID,
+                data?.playerID,
+            ]);
         });
 
         socket.on("disconnect", (reason) => {
             if (reason === "server namespace disconnect") return;
             console.log(`Client left: ${reason}, Socket ID: ${socket.id}`);
-            setPlayerDisconnected(io, socket.id, false);
+            transactionize(setPlayerDisconnected, [io, socket.id, false]);
         });
 
-        socket.on("leave_game", (data) => {
+        socket.on("leave_game", async (data) => {
             if (validateFields(socket, ["gameID", "playerID"], data)) {
-                setPlayerDisconnected(io, socket.id, true);
+                await transactionize(setPlayerDisconnected, [
+                    io,
+                    socket.id,
+                    true,
+                ]);
                 socket.disconnect(true);
             }
         });
@@ -53,13 +64,13 @@ export const sockets = (io) => {
                     ...data,
                 })
             ) {
-                updateGameOptions(
+                transactionize(updateGameOptions, [
                     io,
                     socket,
                     data.gameID,
                     data.playerID,
-                    data.options
-                );
+                    data.options,
+                ]);
             }
         });
 
@@ -71,12 +82,12 @@ export const sockets = (io) => {
                     data
                 )
             ) {
-                updatePlayerName(
+                transactionize(updatePlayerName, [
                     io,
                     data.gameID,
                     data.playerID,
-                    data.playerName
-                );
+                    data.playerName,
+                ]);
             }
         });
 
@@ -84,7 +95,12 @@ export const sockets = (io) => {
             if (
                 validateFields(socket, ["gameID", "playerID", "avatar"], data)
             ) {
-                updateAvatar(io, data.gameID, data.playerID, data.avatar);
+                transactionize(updateAvatar, [
+                    io,
+                    data.gameID,
+                    data.playerID,
+                    data.avatar,
+                ]);
             }
         });
 
@@ -96,12 +112,12 @@ export const sockets = (io) => {
                     data
                 )
             ) {
-                changePlayerTextToSpeech(
+                transactionize(changePlayerTextToSpeech, [
                     io,
                     data.gameID,
                     data.playerID,
-                    data.useTextToSpeech
-                );
+                    data.useTextToSpeech,
+                ]);
             }
         });
 
@@ -113,13 +129,13 @@ export const sockets = (io) => {
                     data
                 )
             ) {
-                addCardPack(
+                transactionize(addCardPack, [
                     io,
                     socket,
                     data.gameID,
                     data.cardPackID,
-                    data.playerID
-                );
+                    data.playerID,
+                ]);
             }
         });
 
@@ -131,25 +147,34 @@ export const sockets = (io) => {
                     data
                 )
             ) {
-                removeCardPack(
+                transactionize(removeCardPack, [
                     io,
                     socket,
                     data.gameID,
                     data.cardPackID,
-                    data.playerID
-                );
+                    data.playerID,
+                ]);
             }
         });
 
         socket.on("start_game", (data) => {
             if (validateFields(socket, ["gameID", "playerID"], data)) {
-                startGame(io, socket, data.gameID, data.playerID);
+                transactionize(startGame, [
+                    io,
+                    socket,
+                    data.gameID,
+                    data.playerID,
+                ]);
             }
         });
 
         socket.on("draw_black_cards", (data) => {
             if (validateFields(socket, ["gameID", "playerID"], data)) {
-                sendBlackCards(socket, data.gameID, data.playerID);
+                transactionize(sendBlackCards, [
+                    socket,
+                    data.gameID,
+                    data.playerID,
+                ]);
             }
         });
 
@@ -166,14 +191,14 @@ export const sockets = (io) => {
                     data
                 )
             ) {
-                selectBlackCard(
+                transactionize(selectBlackCard, [
                     io,
                     socket,
                     data.gameID,
                     data.playerID,
                     data.selectedCardID,
-                    data.discardedCardIDs
-                );
+                    data.discardedCardIDs,
+                ]);
             }
         });
 
@@ -185,19 +210,24 @@ export const sockets = (io) => {
                     data
                 )
             ) {
-                playWhiteCards(
+                transactionize(playWhiteCards, [
                     io,
                     socket,
                     data.gameID,
                     data.playerID,
-                    data.whiteCardIDs
-                );
+                    data.whiteCardIDs,
+                ]);
             }
         });
 
         socket.on("show_next_white_card", (data) => {
             if (validateFields(socket, ["gameID", "playerID"], data)) {
-                showWhiteCard(io, socket, data.gameID, data.playerID);
+                transactionize(showWhiteCard, [
+                    io,
+                    socket,
+                    data.gameID,
+                    data.playerID,
+                ]);
             }
         });
 
@@ -209,30 +239,35 @@ export const sockets = (io) => {
                     data
                 )
             ) {
-                selectWinner(
+                transactionize(selectWinner, [
                     io,
                     socket,
                     data.gameID,
                     data.playerID,
-                    data.whiteCardIDs
-                );
+                    data.whiteCardIDs,
+                ]);
             }
         });
 
         socket.on("start_round", (data) => {
             if (validateFields(socket, ["gameID", "playerID"], data)) {
-                startNewRound(io, socket, data.gameID, data.playerID);
+                transactionize(startNewRound, [
+                    io,
+                    socket,
+                    data.gameID,
+                    data.playerID,
+                ]);
             }
         });
 
         socket.on("return_to_lobby", (data) => {
             if (validateFields(socket, ["gameID", "playerID"], data)) {
-                validateHostAndReturnToLobby(
+                transactionize(validateHostAndReturnToLobby, [
                     io,
                     socket,
                     data.gameID,
-                    data.playerID
-                );
+                    data.playerID,
+                ]);
             }
         });
 
@@ -244,19 +279,24 @@ export const sockets = (io) => {
                     data
                 )
             ) {
-                popularVote(
+                transactionize(popularVote, [
                     io,
                     socket,
                     data.gameID,
                     data.playerID,
-                    data.whiteCardIDs
-                );
+                    data.whiteCardIDs,
+                ]);
             }
         });
 
         socket.on("toggle_player_mode", (data) => {
             if (validateFields(socket, ["gameID", "playerID"], data)) {
-                togglePlayerMode(io, socket, data.gameID, data.playerID);
+                transactionize(togglePlayerMode, [
+                    io,
+                    socket,
+                    data.gameID,
+                    data.playerID,
+                ]);
             }
         });
 
@@ -268,14 +308,14 @@ export const sockets = (io) => {
                     data
                 )
             ) {
-                hostKick(
+                transactionize(hostKick, [
                     io,
                     socket,
                     data.gameID,
                     data.playerID,
                     data.targetID,
-                    data.removeFromGame
-                );
+                    data.removeFromGame,
+                ]);
             }
         });
     });

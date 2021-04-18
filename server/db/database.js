@@ -6,38 +6,63 @@ const { Pool } = postgres;
 
 const pool = new Pool();
 
+export const startTransaction = async () => {
+    const client = await pool.connect();
+    await client.query("BEGIN");
+    return client;
+};
+
+export const endTransaction = async (client) => {
+    await client.query("COMMIT");
+    client.release();
+};
+
+export const rollbackTransaction = async (client) => {
+    await client.query("ROLLBACK");
+};
+
 export const queryDB = (query, params) => pool.query(query, params);
 
-export const getDBGame = async (gameID) => {
-    const result = await pool.query(
-        "SELECT game FROM games WHERE gameid = $1",
-        [gameID]
-    );
+export const getDBGame = async (gameID, client) => {
+    const query = `SELECT game FROM games WHERE gameid = $1`;
+    let result = undefined;
+    if (!client) {
+        result = await pool.query(query, [gameID]);
+    } else {
+        result = await client.query(query, [gameID]);
+    }
+
     return restoreFromDB(result);
 };
 
-export const setDBGame = (game) => {
+export const setDBGame = (game, client) => {
     const formattedGame = formatToDB(game);
-    pool.query("UPDATE games SET game = $1 WHERE gameid = $2", [
+    client.query("UPDATE games SET game = $1 WHERE gameid = $2", [
         formattedGame,
         formattedGame.id,
     ]);
 };
 
-export const createDBGame = (game) => {
+export const createDBGame = (game, client) => {
     const formattedGame = formatToDB(game);
-    pool.query("INSERT INTO games(gameid, game) VALUES ($1, $2)", [
+    client.query("INSERT INTO games(gameid, game) VALUES ($1, $2)", [
         formattedGame.id,
         formattedGame,
     ]);
 };
 
-export const deleteDBGame = (gameID) =>
-    pool.query("DELETE FROM games WHERE gameid = $1", [gameID]);
+export const deleteDBGame = (gameID, client) => {
+    const query = `DELETE FROM games WHERE gameid = $1`;
+    if (!client) {
+        pool.query(query, [gameID]);
+    } else {
+        client.query(query, [gameID]);
+    }
+};
 
-export const getDBGameBySocketId = async (socketID) => {
+export const getDBGameBySocketId = async (socketID, client) => {
     console.log("Looked for a game with socket id", socketID);
-    const result = await pool.query(
+    const result = await client.query(
         `SELECT game
         FROM games, jsonb_to_recordset(game -> 'players') as players(sockets varchar[])
         WHERE  $1 = ANY(players.sockets)`,
@@ -46,9 +71,9 @@ export const getDBGameBySocketId = async (socketID) => {
     return restoreFromDB(result);
 };
 
-export const getDBGameByPlayerId = async (playerID) => {
+export const getDBGameByPlayerId = async (playerID, client) => {
     console.log("Looked for a game with player id", playerID);
-    const result = await pool.query(
+    const result = await client.query(
         `SELECT game
         FROM games, jsonb_to_recordset(game -> 'players') as players(id varchar)
         WHERE  $1 = players.id`,

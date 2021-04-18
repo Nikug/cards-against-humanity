@@ -22,13 +22,7 @@ import {
     getDBGameBySocketId,
     setDBGame,
 } from "../db/database.js";
-import {
-    dealBlackCards,
-    dealStartingWhiteCards,
-    dealWhiteCards,
-    replenishWhiteCards,
-    shuffleCards,
-} from "./card.js";
+import { dealBlackCards, replenishWhiteCards, shuffleCards } from "./card.js";
 import {
     validateCardCzar,
     validateGameEnding,
@@ -46,22 +40,22 @@ import { setPopularVoteLeader } from "./popularVote.js";
 
 let games = [];
 
-export const createGame = async () => {
+export const createGame = async (client) => {
     const gameURL = hri.hri.random();
     const newGame = newGameTemplate(gameURL);
 
     if (process.env.USE_DB) {
-        await createDBGame(newGame);
+        await createDBGame(newGame, client);
     } else {
         games = [...games, newGame];
     }
     return newGame;
 };
 
-export const getGame = async (gameID) => {
+export const getGame = async (gameID, client) => {
     if (process.env.USE_DB) {
-        const game = await getDBGame(gameID);
-        console.log("Getting game!", game.stateMachine.state);
+        const game = await getDBGame(gameID, client);
+        console.log("Getting game!", game?.stateMachine.state);
         return game;
     } else {
         const game = games.find((game) => game.id === gameID);
@@ -69,10 +63,10 @@ export const getGame = async (gameID) => {
     }
 };
 
-export const setGame = async (newGame) => {
-    if (process.env.USE_DB) {
+export const setGame = async (newGame, client) => {
+    if (process.env.USE_DB && client) {
         console.log("Setting game!", newGame.stateMachine.state);
-        await setDBGame(newGame);
+        await setDBGame(newGame, client);
     } else {
         games = games.map((game) => {
             return game.id === newGame.id ? newGame : game;
@@ -85,18 +79,16 @@ export const removeGameIfNoActivePlayers = async (gameID) => {
     const game = await getGame(gameID);
     if (!game) return;
 
-    if (!game.players) removeGame(gameID);
-
-    if (getActivePlayers(game.players).length === 0) {
+    if (!game.players || getActivePlayers(game.players).length === 0) {
         console.log("Removed inactive game", gameID);
-        removeGame(gameID);
+        await removeGame(gameID);
     }
 };
 
-export const removeGame = (gameID) => {
+export const removeGame = async (gameID, client) => {
     console.log("Game was removed");
     if (process.env.USE_DB) {
-        deleteDBGame(gameID);
+        await deleteDBGame(gameID, client);
     } else {
         games = games.filter((game) => game.id !== gameID);
     }
@@ -124,9 +116,10 @@ export const updateGameOptions = async (
     socket,
     gameID,
     playerID,
-    newOptions
+    newOptions,
+    client
 ) => {
-    const game = await getGame(gameID);
+    const game = await getGame(gameID, client);
 
     if (!game) return;
     if (!validateHost(game, playerID)) {
@@ -144,15 +137,15 @@ export const updateGameOptions = async (
     });
 
     console.log("Updating game options setting game");
-    setGame(game);
+    await setGame(game, client);
 
     io.in(gameID).emit("update_game_options", {
         options: game.client.options,
     });
 };
 
-export const startGame = async (io, socket, gameID, playerID) => {
-    const game = await getGame(gameID);
+export const startGame = async (io, socket, gameID, playerID, client) => {
+    const game = await getGame(gameID, client);
     if (!game) return undefined;
 
     if (!validateHost(game, playerID)) return undefined;
@@ -178,11 +171,7 @@ export const startGame = async (io, socket, gameID, playerID) => {
     game.cards.whiteCards = shuffleCards([...game.cards.whiteCards]);
     game.cards.blackCards = shuffleCards([...game.cards.blackCards]);
 
-    const gameWithStartingHands = dealStartingWhiteCards(
-        io,
-        game,
-        gameOptions.startingWhiteCardCount
-    );
+    const gameWithStartingHands = replenishWhiteCards(game, io);
 
     const newGame = dealBlackCards(
         io,
@@ -197,12 +186,12 @@ export const startGame = async (io, socket, gameID, playerID) => {
     );
 
     console.log("Start game setting game!");
-    setGame(updatedGame);
+    await setGame(updatedGame, client);
     updatePlayersIndividually(io, updatedGame);
 };
 
-export const startNewRound = async (io, socket, gameID, playerID) => {
-    const game = await getGame(gameID);
+export const startNewRound = async (io, socket, gameID, playerID, client) => {
+    let game = await getGame(gameID, client);
     if (!game) return undefined;
 
     if (!validateCardCzar(game, playerID)) {
@@ -217,7 +206,7 @@ export const startNewRound = async (io, socket, gameID, playerID) => {
     }
 
     if (validateGameEnding(game)) {
-        endGame(io, game);
+        await endGame(io, game);
         return;
     }
 
@@ -235,10 +224,7 @@ export const startNewRound = async (io, socket, gameID, playerID) => {
     game.stateMachine.startRound();
     game.client.state = game.stateMachine.state;
 
-    game.players = dealWhiteCards(
-        game,
-        game.currentRound.blackCard.whiteCardsToPlay
-    );
+    game = replenishWhiteCards(game);
 
     game.players = handleJoiningPlayers(io, game);
 
@@ -253,66 +239,48 @@ export const startNewRound = async (io, socket, gameID, playerID) => {
     game.players = setPlayersWaiting(game.players);
 
     const cardCzar = game.players.find((player) => player.isCardCzar);
-    const newGame = dealBlackCards(io, cardCzar.sockets, game);
+    game = dealBlackCards(io, cardCzar.sockets, game);
 
-    const updatedGame = changeGameStateAfterTime(
-        io,
-        newGame,
-        "startPlayingWhiteCards"
-    );
-    setGame(updatedGame);
-    updatePlayersIndividually(io, updatedGame);
+    game = changeGameStateAfterTime(io, game, "startPlayingWhiteCards");
+    await setGame(game, client);
+    updatePlayersIndividually(io, game);
 };
 
-export const endGame = (io, game) => {
+export const endGame = async (io, game) => {
     if (game.stateMachine.can("endGame")) {
         game.stateMachine.endGame();
         game.client.state = game.stateMachine.state;
 
         const updatedGame = clearGameTimer(game);
 
-        setGame(updatedGame);
+        await setGame(updatedGame);
         updatePlayersIndividually(io, updatedGame);
     }
 };
 
-export const skipRound = (io, game, newCardCzar) => {
-    if (game.stateMachine.state === "pickingBlackCard") {
-    } else if (game.stateMachine.state === "endRound") {
-    } else if (game.stateMachine.state === "playingWhiteCards") {
-        const playerCards = game.currentRound.whiteCardsByPlayer.map(
-            (player) => ({ id: player.playerID, whiteCards: player.whiteCards })
-        );
-        game.players = replenishWhiteCards(game, playerCards);
-    } else {
-        if (game.currentRound.blackCard) {
-            game.players = dealWhiteCards(
-                game,
-                game.currentRound.blackCard.whiteCardsToPlay
-            );
-        }
-    }
+export const skipRound = async (io, game, newCardCzar, client) => {
+    const newGame = replenishWhiteCards(game);
 
-    game.stateMachine.skipRound();
-    game.client.state = game.stateMachine.state;
+    newGame.stateMachine.skipRound();
+    newGame.client.state = newGame.stateMachine.state;
 
-    game.players = handleJoiningPlayers(io, game);
-    game.players = setPlayersWaiting(game.players);
+    newGame.players = handleJoiningPlayers(io, newGame);
+    newGame.players = setPlayersWaiting(newGame.players);
 
-    const newGame = dealBlackCards(io, newCardCzar.sockets, game);
+    const newerGame = dealBlackCards(io, newCardCzar.sockets, newGame);
 
     const updatedGame = changeGameStateAfterTime(
         io,
-        newGame,
+        newerGame,
         "startPlayingWhiteCards"
     );
-    setGame(updatedGame);
+    await setGame(updatedGame, client);
     updatePlayersIndividually(io, updatedGame);
 };
 
-export const findGameAndPlayerBySocketID = async (socketID) => {
+export const findGameAndPlayerBySocketID = async (socketID, client) => {
     if (process.env.USE_DB) {
-        const game = await getDBGameBySocketId(socketID);
+        const game = await getDBGameBySocketId(socketID, client);
         const player = game.players.find((player) =>
             player.sockets.includes(socketID)
         );
@@ -336,9 +304,9 @@ export const findGameAndPlayerBySocketID = async (socketID) => {
     return undefined;
 };
 
-export const findGameByPlayerID = async (playerID) => {
-    if (process.env.USE_DB) {
-        const game = await getDBGameByPlayerId(playerID);
+export const findGameByPlayerID = async (playerID, client) => {
+    if (process.env.USE_DB && client) {
+        const game = await getDBGameByPlayerId(playerID, client);
         return game;
     } else {
         for (let i = 0, gameCount = games.length; i < gameCount; i++) {
@@ -394,12 +362,12 @@ export const shouldSkipRound = (game) => {
     }
 };
 
-export const returnToLobby = (io, game) => {
+export const returnToLobby = async (io, game, client) => {
     game.stateMachine.returnToLobby();
     game.client.state = game.stateMachine.state;
 
     const initialGame = resetGame(game);
-    setGame(initialGame);
+    await setGame(initialGame, client);
 
     updatePlayersIndividually(io, initialGame);
 };
@@ -408,9 +376,10 @@ export const validateHostAndReturnToLobby = async (
     io,
     socket,
     gameID,
-    playerID
+    playerID,
+    client
 ) => {
-    const game = await getGame(gameID);
+    const game = await getGame(gameID, client);
     if (!game) return;
 
     if (!validateHost(game, playerID)) {
@@ -422,7 +391,7 @@ export const validateHostAndReturnToLobby = async (
         return;
     }
 
-    returnToLobby(io, game);
+    await returnToLobby(io, game, client);
 };
 
 export const resetGame = (game) => {

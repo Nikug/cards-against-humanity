@@ -8,6 +8,7 @@ import { getGame, setGame, skipRound, startNewRound } from "./game.js";
 import { showWhiteCard, shuffleCardsBackToDeck } from "./card.js";
 
 import { gameOptions } from "../consts/gameSettings.js";
+import { transactionize } from "../db/util.js";
 
 export const changeGameStateAfterTime = (io, game, transition) => {
     removeTimeout(game.id);
@@ -23,11 +24,8 @@ export const changeGameStateAfterTime = (io, game, transition) => {
     game.client.timers.passedTime = 0;
 
     const timeout = setTimeout(
-        gameStateChange,
-        (delay + gameOptions.defaultGracePeriod) * 1000,
-        io,
-        game.id,
-        transition
+        () => transactionize(gameStateChange, [io, game.id, transition]),
+        (delay + gameOptions.defaultGracePeriod) * 1000
     );
     addTimeout(game.id, timeout);
     return game;
@@ -40,8 +38,8 @@ export const clearGameTimer = (game) => {
     return game;
 };
 
-const gameStateChange = async (io, gameID, transition) => {
-    const game = await getGame(gameID);
+const gameStateChange = async (io, gameID, transition, client) => {
+    const game = await getGame(gameID, client);
     if (!game) return;
 
     console.log("Handling state change to", transition);
@@ -55,12 +53,12 @@ const gameStateChange = async (io, gameID, transition) => {
     if (transition === "startRound") {
         const cardCzar = currentCardCzar(game.players);
         if (!cardCzar) return;
-        startNewRound(io, null, gameID, cardCzar.id);
+        startNewRound(io, null, gameID, cardCzar.id, client);
         return;
     } else if (transition === "startPlayingWhiteCards") {
         // Cardczar didn't pick a blackcard, appoint next cardczar
         game.players = punishCardCzar(game);
-        restartRound(io, game);
+        await restartRound(io, game, client);
         return;
     } else if (transition === "startReading") {
         // There might not be any cards to read, in which case skip round
@@ -71,7 +69,7 @@ const gameStateChange = async (io, gameID, transition) => {
             game.players = appointNextCardCzar(game, cardCzar.id);
             const nextCardCzar = currentCardCzar(game.players);
 
-            skipRound(io, game, nextCardCzar);
+            await skipRound(io, game, nextCardCzar, client);
             return;
         }
         setNewTimeout = "showCards";
@@ -79,7 +77,7 @@ const gameStateChange = async (io, gameID, transition) => {
         // Check if all whitecards have been showed, otherwise show next whitecards
         const cardCzar = currentCardCzar(game.players);
         if (!cardCzar) return;
-        showWhiteCard(io, null, gameID, cardCzar.id);
+        await showWhiteCard(io, null, gameID, cardCzar.id, client);
         return;
     } else if (transition === "endRound") {
         // Nothing was voted, remove points from card czar as punishment
@@ -93,11 +91,11 @@ const gameStateChange = async (io, gameID, transition) => {
 
     if (setNewTimeout != "") {
         const updatedGame = changeGameStateAfterTime(io, game, setNewTimeout);
-        setGame(updatedGame);
+        await setGame(updatedGame);
         updatePlayersIndividually(io, updatedGame);
     } else {
+        await setGame(game);
         updatePlayersIndividually(io, game);
-        setGame(game);
     }
 };
 
@@ -105,7 +103,7 @@ const currentCardCzar = (players) => {
     return players.find((player) => player.isCardCzar);
 };
 
-const restartRound = (io, game) => {
+const restartRound = async (io, game, client) => {
     const cardCzar = currentCardCzar(game.players);
     if (!cardCzar) return;
 
@@ -118,7 +116,7 @@ const restartRound = (io, game) => {
     game.players = appointNextCardCzar(game, cardCzar.id);
     const nextCardCzar = currentCardCzar(game.players);
 
-    skipRound(io, game, nextCardCzar);
+    await skipRound(io, game, nextCardCzar, client);
 };
 
 export const punishCardCzar = (game) => {

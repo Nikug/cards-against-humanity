@@ -8,7 +8,14 @@ import { sendNotification } from "./socket.js";
 
 const sanitizer = sanitize();
 
-export const addCardPack = async (io, socket, gameID, cardPackID, playerID) => {
+export const addCardPack = async (
+    io,
+    socket,
+    gameID,
+    cardPackID,
+    playerID,
+    client
+) => {
     const cleanID = sanitizer.value(cardPackID, "str");
     const url = `https://allbad.cards/api/pack/get?pack=${cleanID}`;
     let json = undefined;
@@ -54,7 +61,8 @@ export const addCardPack = async (io, socket, gameID, cardPackID, playerID) => {
         playerID,
         cardPack,
         whiteCards,
-        blackCards
+        blackCards,
+        client
     );
 
     if (!!newOptions) {
@@ -67,13 +75,15 @@ export const removeCardPack = async (
     socket,
     gameID,
     cardPackID,
-    playerID
+    playerID,
+    client
 ) => {
     const newOptions = await removeCardPackFromGame(
         socket,
         gameID,
         cardPackID,
-        playerID
+        playerID,
+        client
     );
     if (!!newOptions) {
         io.in(gameID).emit("update_game_options", { options: newOptions });
@@ -85,9 +95,10 @@ export const addCardPackToGame = async (
     playerID,
     cardPack,
     whiteCards,
-    blackCards
+    blackCards,
+    client
 ) => {
-    const game = await getGame(gameID);
+    const game = await getGame(gameID, client);
     if (!game) return undefined;
 
     if (!validateHost(game, playerID)) return undefined;
@@ -105,7 +116,7 @@ export const addCardPackToGame = async (
     ];
     game.cards.whiteCards = [...game.cards.whiteCards, ...whiteCards];
     game.cards.blackCards = [...game.cards.blackCards, ...blackCards];
-    setGame(game);
+    await setGame(game, client);
 
     return game.client.options;
 };
@@ -114,9 +125,10 @@ export const removeCardPackFromGame = async (
     socket,
     gameID,
     cardPackID,
-    playerID
+    playerID,
+    client
 ) => {
-    const game = await getGame(gameID);
+    const game = await getGame(gameID, client);
     if (!game) return undefined;
 
     if (!validateState(game, "lobby")) {
@@ -146,6 +158,6 @@ export const removeCardPackFromGame = async (
         (card) => card.cardPackID !== cardPackID
     );
 
-    setGame(game);
+    await setGame(game, client);
     return game.client.options;
 };

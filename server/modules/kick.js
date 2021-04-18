@@ -13,9 +13,10 @@ export const hostKick = async (
     gameID,
     playerID,
     targetID,
-    removeFromGame
+    removeFromGame,
+    client
 ) => {
-    const game = await getGame(gameID);
+    const game = await getGame(gameID, client);
     if (!game) return;
 
     if (!validateHost(game, playerID)) {
@@ -51,7 +52,7 @@ export const hostKick = async (
             }
         );
     }
-    handleSpecialCases(io, game, target, false);
+    handleSpecialCases(io, game, target, false, client);
 };
 
 const getPlayerByPublicID = (players, targetID) => {

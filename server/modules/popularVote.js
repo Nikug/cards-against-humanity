@@ -15,9 +15,10 @@ export const popularVote = async (
     socket,
     gameID,
     playerID,
-    whiteCardIDs
+    whiteCardIDs,
+    client
 ) => {
-    const game = await getGame(gameID);
+    const game = await getGame(gameID, client);
     if (!game) return;
 
     const { error } = validatePopularVote(game, playerID);
@@ -48,7 +49,7 @@ export const popularVote = async (
         1
     );
 
-    setGame(newGame);
+    await setGame(newGame, client);
     updatePlayersIndividually(io, newGame);
 
     const votedCardIDs = getAllVotedCardsForPlayer(
