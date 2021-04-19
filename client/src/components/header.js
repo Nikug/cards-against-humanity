@@ -27,6 +27,8 @@ export const Header = (props) => {
     const history = useHistory();
     const pathName = useLocation().pathname;
 
+    console.log({id: game?.id, pathName});
+
     const leaveGame = () => {
         deleteCookie("playerID");
         socket.emit("leave_game", {
@@ -83,7 +85,7 @@ export const Header = (props) => {
                         {translateCommon("settings", t)}
                     </span>
                 </span>
-                {pathName !== "/" && (
+                {game && pathName === `/g/${game.id}` && (
                     <Link to="/">
                         <span
                             href="/"
