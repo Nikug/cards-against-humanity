@@ -114,6 +114,7 @@ export const App = () => {
             i18n.changeLanguage(language);
         }
 
+        /*
         setTimeout(() => {
             //removeItemFromLocalStorage(LOCAL_STORAGE_FIELDS.HAS_ACCEPTED_COOKIES);
             const hasAcceptedCookies = getItemFromLocalStorage(
@@ -139,6 +140,7 @@ export const App = () => {
                 }
             }
         }, 3000);
+        */
     }, []);
 
     useEffect(() => {
