@@ -281,6 +281,8 @@ export const skipRound = async (io, game, newCardCzar, client) => {
 export const findGameAndPlayerBySocketID = async (socketID, client) => {
     if (process.env.USE_DB) {
         const game = await getDBGameBySocketId(socketID, client);
+        if (!game) return undefined;
+
         const player = game.players.find((player) =>
             player.sockets.includes(socketID)
         );

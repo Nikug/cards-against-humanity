@@ -10,7 +10,11 @@ import {
     getAllActivePlayers,
     updatePlayersIndividually,
 } from "./player.js";
-import { closeSocketWithID, sendNotification } from "./socket.js";
+import {
+    closeSocketWithID,
+    removeDisconnectedSockets,
+    sendNotification,
+} from "./socket.js";
 import {
     everyoneHasPlayedTurn,
     findGameAndPlayerBySocketID,
@@ -39,7 +43,9 @@ export const setPlayerDisconnected = async (
     if (!result) return;
 
     const { game, player } = result;
-    if (!player) return;
+    if (!player || !game) return;
+
+    player.sockets = removeDisconnectedSockets(io, player.sockets);
 
     const remainingSockets = player.sockets.filter(
         (socket) => socket !== socketID
