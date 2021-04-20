@@ -91,10 +91,10 @@ const gameStateChange = async (io, gameID, transition, client) => {
 
     if (setNewTimeout != "") {
         const updatedGame = changeGameStateAfterTime(io, game, setNewTimeout);
-        await setGame(updatedGame);
+        await setGame(updatedGame, client);
         updatePlayersIndividually(io, updatedGame);
     } else {
-        await setGame(game);
+        await setGame(game, client);
         updatePlayersIndividually(io, game);
     }
 };
