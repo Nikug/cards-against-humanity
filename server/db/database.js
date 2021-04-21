@@ -61,7 +61,6 @@ export const deleteDBGame = (gameID, client) => {
 };
 
 export const getDBGameBySocketId = async (socketID, client) => {
-    console.log("Looked for a game with socket id", socketID);
     const result = await client.query(
         `SELECT game
         FROM games, jsonb_to_recordset(game -> 'players') as players(sockets varchar[])
@@ -72,7 +71,6 @@ export const getDBGameBySocketId = async (socketID, client) => {
 };
 
 export const getDBGameByPlayerId = async (playerID, client) => {
-    console.log("Looked for a game with player id", playerID);
     const result = await client.query(
         `SELECT game
         FROM games, jsonb_to_recordset(game -> 'players') as players(id varchar)
@@ -80,4 +78,8 @@ export const getDBGameByPlayerId = async (playerID, client) => {
         [playerID]
     );
     return restoreFromDB(result);
+};
+
+export const getDBGameIds = (client) => {
+    return client.query("SELECT gameid FROM games");
 };

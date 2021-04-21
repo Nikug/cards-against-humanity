@@ -1,5 +1,9 @@
 import { ERROR_TYPES, NOTIFICATION_TYPES } from "../consts/error.js";
 import {
+    GAME_NAME_GENERATOR_MAX_RUNS,
+    gameOptions,
+} from "../consts/gameSettings.js";
+import {
     appointNextCardCzar,
     getActivePlayers,
     getPlayersWithState,
@@ -20,6 +24,7 @@ import {
     getDBGame,
     getDBGameByPlayerId,
     getDBGameBySocketId,
+    getDBGameIds,
     setDBGame,
 } from "../db/database.js";
 import { dealBlackCards, replenishWhiteCards, shuffleCards } from "./card.js";
@@ -31,7 +36,6 @@ import {
     validateOptions,
 } from "./validate.js";
 
-import { gameOptions } from "../consts/gameSettings.js";
 import hri from "human-readable-ids";
 import { newGameTemplate } from "./newGame.js";
 import { randomBetween } from "./util.js";
@@ -41,7 +45,17 @@ import { setPopularVoteLeader } from "./popularVote.js";
 let games = [];
 
 export const createGame = async (client) => {
-    const gameURL = hri.hri.random();
+    const gameNames = await getGameIds(client);
+    let gameURL = undefined;
+    for (let i = 0, limit = GAME_NAME_GENERATOR_MAX_RUNS; i < limit; i++) {
+        const newURL = hri.hri.random();
+        if (!gameNames.includes(newURL)) {
+            gameURL = newURL;
+            break;
+        }
+    }
+
+    if (!gameURL) return undefined;
     const newGame = newGameTemplate(gameURL);
 
     if (process.env.USE_DB) {
@@ -52,10 +66,19 @@ export const createGame = async (client) => {
     return newGame;
 };
 
+export const getGameIds = async (client) => {
+    if (process.env.USE_DB) {
+        const result = await getDBGameIds(client);
+        const gameNames = result.rows.map((row) => row.gameid);
+        return gameNames;
+    } else {
+        return games.map((game) => game.id);
+    }
+};
+
 export const getGame = async (gameID, client) => {
     if (process.env.USE_DB) {
         const game = await getDBGame(gameID, client);
-        console.log("Getting game!", game?.stateMachine.state);
         return game;
     } else {
         const game = games.find((game) => game.id === gameID);
@@ -65,7 +88,6 @@ export const getGame = async (gameID, client) => {
 
 export const setGame = async (newGame, client) => {
     if (process.env.USE_DB && client) {
-        console.log("Setting game!", newGame.stateMachine.state);
         await setDBGame(newGame, client);
     } else {
         games = games.map((game) => {
@@ -80,13 +102,11 @@ export const removeGameIfNoActivePlayers = async (gameID) => {
     if (!game) return;
 
     if (!game.players || getActivePlayers(game.players).length === 0) {
-        console.log("Removed inactive game", gameID);
         await removeGame(gameID);
     }
 };
 
 export const removeGame = async (gameID, client) => {
-    console.log("Game was removed");
     if (process.env.USE_DB) {
         await deleteDBGame(gameID, client);
     } else {
@@ -136,7 +156,6 @@ export const updateGameOptions = async (
         ...newOptions,
     });
 
-    console.log("Updating game options setting game");
     await setGame(game, client);
 
     io.in(gameID).emit("update_game_options", {
@@ -185,7 +204,6 @@ export const startGame = async (io, socket, gameID, playerID, client) => {
         "startPlayingWhiteCards"
     );
 
-    console.log("Start game setting game!");
     await setGame(updatedGame, client);
     updatePlayersIndividually(io, updatedGame);
 };

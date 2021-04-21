@@ -42,11 +42,7 @@ const gameStateChange = async (io, gameID, transition, client) => {
     const game = await getGame(gameID, client);
     if (!game) return;
 
-    console.log("Handling state change to", transition);
-
     if (game.stateMachine.cannot(transition)) return;
-
-    console.log("Change was legal", transition);
 
     let setNewTimeout = "";
 

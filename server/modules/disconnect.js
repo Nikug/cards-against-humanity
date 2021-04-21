@@ -190,7 +190,6 @@ const handleHostLeaving = (game, host, client) => {
                 : player
         );
     } else {
-        console.log("Host left and no one to make new host, removing game...");
         removeGame(game.id, client);
         return undefined;
     }

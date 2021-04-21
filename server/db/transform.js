@@ -7,7 +7,6 @@ export const formatToDB = (game) => {
 
 export const restoreFromDB = (result) => {
     if (result.rows.length < 1) {
-        console.log("No rows!", result.fields);
         return undefined;
     }
 
