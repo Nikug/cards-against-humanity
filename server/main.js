@@ -27,7 +27,11 @@ sockets(io);
 
 if (USE_DB) {
     console.log("Using database!");
-    queryDB(createTableQuery);
+    queryDB(createTableQuery).catch((e) => {
+        console.log("Couldn't connect to database. Shutting down...");
+        console.error(e);
+        process.exit();
+    });
 }
 
 if (PRODUCTION) {

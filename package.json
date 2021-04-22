@@ -4,6 +4,7 @@
   },
   "scripts": {
     "start": "cd server && npm run start",
+    "start:db": "cd server && npm run start:db",
     "install": "cd server && npm ci && cd ../client && npm ci",
     "build": "cd client && npm run build",
     "dev": "cd server && npm run dev",

@@ -9,6 +9,7 @@
     },
     "scripts": {
         "start": "cross-env PRODUCTION=true node main.js",
+        "start:db": "cross-env PRODUCTION=true USE_DB=true node -r dotenv/config main.js",
         "client": "cd ../client && npm start",
         "server": "nodemon main.js",
         "server:db": "cross-env USE_DB=true nodemon -r dotenv/config main.js",
