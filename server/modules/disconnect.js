@@ -10,7 +10,11 @@ import {
     getAllActivePlayers,
     updatePlayersIndividually,
 } from "./player.js";
-import { closeSocketWithID, sendNotification } from "./socket.js";
+import {
+    closeSocketWithID,
+    removeDisconnectedSockets,
+    sendNotification,
+} from "./socket.js";
 import {
     everyoneHasPlayedTurn,
     findGameAndPlayerBySocketID,
@@ -29,12 +33,19 @@ import { punishCardCzar } from "./delayedStateChange.js";
 import { setPlayer } from "./join.js";
 import { startReading } from "./card.js";
 
-export const setPlayerDisconnected = (io, socketID, removePlayer) => {
-    const result = findGameAndPlayerBySocketID(socketID);
+export const setPlayerDisconnected = async (
+    io,
+    socketID,
+    removePlayer,
+    client
+) => {
+    const result = await findGameAndPlayerBySocketID(socketID, client);
     if (!result) return;
 
     const { game, player } = result;
-    if (!player) return;
+    if (!player || !game) return;
+
+    player.sockets = removeDisconnectedSockets(io, player.sockets);
 
     const remainingSockets = player.sockets.filter(
         (socket) => socket !== socketID
@@ -42,7 +53,7 @@ export const setPlayerDisconnected = (io, socketID, removePlayer) => {
     if (remainingSockets.length > 0 && !removePlayer) {
         player.sockets = remainingSockets;
         game.players = setPlayer(game.players, player);
-        setGame(game);
+        await setGame(game, client);
         return;
     }
 
@@ -61,20 +72,20 @@ export const setPlayerDisconnected = (io, socketID, removePlayer) => {
 
     if (shouldGameBeDeleted(game)) {
         if (removePlayer) {
-            removeGame(game.id);
+            removeGame(game.id, client);
             return;
         } else {
             setTimeout(
                 () => removeGameIfNoActivePlayers(game.id),
                 INACTIVE_GAME_DELETE_TIME
             );
-            setGame(game);
+            await setGame(game, client);
             return;
         }
     }
 
     if (player.isHost) {
-        game.players = handleHostLeaving(game, player);
+        game.players = handleHostLeaving(game, player, client);
         if (!game.players) return;
 
         const newHost = game.players.find((player) => player.isHost);
@@ -87,14 +98,15 @@ export const setPlayerDisconnected = (io, socketID, removePlayer) => {
         });
     }
 
-    handleSpecialCases(io, game, player);
+    handleSpecialCases(io, game, player, true, client);
 };
 
-export const handleSpecialCases = (
+export const handleSpecialCases = async (
     io,
     game,
     player,
-    shouldPunishCardCzar = true
+    shouldPunishCardCzar = true,
+    client
 ) => {
     if (shouldSkipRound(game)) {
         if (player.isCardCzar && shouldPunishCardCzar) {
@@ -102,12 +114,12 @@ export const handleSpecialCases = (
         }
         game.players = appointNextCardCzar(game, getCardCzar(game.players)?.id);
         const nextCardCzar = getCardCzar(game.players);
-        skipRound(io, game, nextCardCzar);
+        await skipRound(io, game, nextCardCzar, client);
         return;
     }
 
     if (shouldReturnToLobby(game)) {
-        returnToLobby(io, game);
+        await returnToLobby(io, game, client);
         sendNotification(
             ERROR_TYPES.notEnoughPlayers,
             NOTIFICATION_TYPES.default,
@@ -117,24 +129,27 @@ export const handleSpecialCases = (
     }
 
     if (player.isCardCzar) {
-        handleCardCzarLeaving(io, game, player, shouldPunishCardCzar);
+        handleCardCzarLeaving(io, game, player, shouldPunishCardCzar, client);
         return;
     }
 
     if (game.stateMachine.state === "playingWhiteCards") {
-        handlePlayerLeavingDuringWhiteCardSelection(io, game, player);
+        handlePlayerLeavingDuringWhiteCardSelection(io, game, client);
         return;
     }
-
-    setGame(game);
+    await setGame(game, client);
     updatePlayersIndividually(io, game);
 };
 
-const handlePlayerLeavingDuringWhiteCardSelection = (io, game) => {
+const handlePlayerLeavingDuringWhiteCardSelection = async (
+    io,
+    game,
+    client
+) => {
     if (everyoneHasPlayedTurn(game)) {
-        startReading(io, game);
+        await startReading(io, game, client);
     } else {
-        setGame(game);
+        await setGame(game, client);
         updatePlayersIndividually(io, game);
     }
 };
@@ -143,16 +158,17 @@ const handleCardCzarLeaving = (
     io,
     game,
     cardCzar,
-    shouldPunishCardCzar = true
+    shouldPunishCardCzar = true,
+    client
 ) => {
     if (shouldPunishCardCzar) {
         game.players = punishCardCzar(game);
     }
     game.players = appointNextCardCzar(game, cardCzar.id);
-    skipRound(io, game, getCardCzar(game.players));
+    skipRound(io, game, getCardCzar(game.players), client);
 };
 
-const handleHostLeaving = (game, host) => {
+const handleHostLeaving = (game, host, client) => {
     const hostIndex = game.players.findIndex((player) => player.id === host.id);
     if (hostIndex !== -1) {
         game.players[hostIndex].isHost = false;
@@ -174,8 +190,7 @@ const handleHostLeaving = (game, host) => {
                 : player
         );
     } else {
-        console.log("Host left and no one to make new host, removing game...");
-        removeGame(game.id);
+        removeGame(game.id, client);
         return undefined;
     }
     return [...game.players];

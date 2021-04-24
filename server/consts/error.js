@@ -29,6 +29,7 @@ export const ERROR_TYPES = {
     promotedToHost: "promotedToHost",
     kickedByHost: "kickedByHost",
     movedToSpectators: "movedToSpectators",
+    couldntCreateGame: "couldntCreateGame",
 };
 
 export const NOTIFICATION_TYPES = {

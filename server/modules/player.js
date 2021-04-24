@@ -19,8 +19,14 @@ export const emitToAllPlayerSockets = (io, player, message, data) => {
     });
 };
 
-export const updatePlayerName = (io, gameID, playerID, newName) => {
-    const game = getGame(gameID);
+export const updatePlayerName = async (
+    io,
+    gameID,
+    playerID,
+    newName,
+    client
+) => {
+    const game = await getGame(gameID, client);
     if (!game) return;
 
     const trimmedName = newName.trim();
@@ -36,7 +42,7 @@ export const updatePlayerName = (io, gameID, playerID, newName) => {
             game.stateMachine.state === "lobby" ? "active" : "joining";
     }
     const newGame = setPlayerName(game, player, cleanName);
-    setGame(newGame);
+    await setGame(newGame, client);
 
     updatePlayersIndividually(io, newGame);
 };
@@ -52,8 +58,14 @@ export const setPlayerName = (game, newPlayer, newName) => {
     }
 };
 
-export const changePlayerTextToSpeech = (io, gameID, playerID, useTTS) => {
-    const game = getGame(gameID);
+export const changePlayerTextToSpeech = async (
+    io,
+    gameID,
+    playerID,
+    useTTS,
+    client
+) => {
+    const game = await getGame(gameID, client);
     if (!game) return;
 
     const player = getPlayer(game, playerID);
@@ -63,7 +75,7 @@ export const changePlayerTextToSpeech = (io, gameID, playerID, useTTS) => {
     game.players = game.players.map((gamePlayer) =>
         gamePlayer.id === player.id ? player : gamePlayer
     );
-    setGame(game);
+    await setGame(game, client);
 
     updatePlayersIndividually(io, game);
 };

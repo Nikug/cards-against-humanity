@@ -8,7 +8,14 @@ import { sendNotification } from "./socket.js";
 
 const sanitizer = sanitize();
 
-export const addCardPack = async (io, socket, gameID, cardPackID, playerID) => {
+export const addCardPack = async (
+    io,
+    socket,
+    gameID,
+    cardPackID,
+    playerID,
+    client
+) => {
     const cleanID = sanitizer.value(cardPackID, "str");
     const url = `https://allbad.cards/api/pack/get?pack=${cleanID}`;
     let json = undefined;
@@ -49,12 +56,13 @@ export const addCardPack = async (io, socket, gameID, cardPackID, playerID) => {
         blackCards: json.definition.quantity.black,
     };
 
-    const newOptions = addCardPackToGame(
+    const newOptions = await addCardPackToGame(
         gameID,
         playerID,
         cardPack,
         whiteCards,
-        blackCards
+        blackCards,
+        client
     );
 
     if (!!newOptions) {
@@ -62,26 +70,35 @@ export const addCardPack = async (io, socket, gameID, cardPackID, playerID) => {
     }
 };
 
-export const removeCardPack = (io, socket, gameID, cardPackID, playerID) => {
-    const newOptions = removeCardPackFromGame(
+export const removeCardPack = async (
+    io,
+    socket,
+    gameID,
+    cardPackID,
+    playerID,
+    client
+) => {
+    const newOptions = await removeCardPackFromGame(
         socket,
         gameID,
         cardPackID,
-        playerID
+        playerID,
+        client
     );
     if (!!newOptions) {
         io.in(gameID).emit("update_game_options", { options: newOptions });
     }
 };
 
-export const addCardPackToGame = (
+export const addCardPackToGame = async (
     gameID,
     playerID,
     cardPack,
     whiteCards,
-    blackCards
+    blackCards,
+    client
 ) => {
-    const game = getGame(gameID);
+    const game = await getGame(gameID, client);
     if (!game) return undefined;
 
     if (!validateHost(game, playerID)) return undefined;
@@ -99,18 +116,19 @@ export const addCardPackToGame = (
     ];
     game.cards.whiteCards = [...game.cards.whiteCards, ...whiteCards];
     game.cards.blackCards = [...game.cards.blackCards, ...blackCards];
-    setGame(game);
+    await setGame(game, client);
 
     return game.client.options;
 };
 
-export const removeCardPackFromGame = (
+export const removeCardPackFromGame = async (
     socket,
     gameID,
     cardPackID,
-    playerID
+    playerID,
+    client
 ) => {
-    const game = getGame(gameID);
+    const game = await getGame(gameID, client);
     if (!game) return undefined;
 
     if (!validateState(game, "lobby")) {
@@ -140,6 +158,6 @@ export const removeCardPackFromGame = (
         (card) => card.cardPackID !== cardPackID
     );
 
-    setGame(game);
+    await setGame(game, client);
     return game.client.options;
 };
