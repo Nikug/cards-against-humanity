@@ -27,6 +27,7 @@ import {
     validateState,
 } from "./validate.js";
 
+import { addStreak } from "./streak.js";
 import { gameOptions } from "../consts/gameSettings.js";
 import { randomBetween } from "./util.js";
 import { sendNotification } from "./socket.js";
@@ -392,6 +393,9 @@ export const anonymizedGameClient = (game) => {
             ...game.client.timers,
             passedTime: getPassedTime(game.timeout),
         },
+        streak: game.streak
+            ? { name: game.streak.name, wins: game.streak.wins }
+            : undefined,
     };
 };
 
@@ -410,6 +414,8 @@ export const selectWinner = (io, socket, gameID, playerID, whiteCardIDs) => {
     }
 
     const winnerID = getPlayerByWhiteCards(game, whiteCardIDs);
+    const winner = getPlayer(game, winnerID);
+    game.streak = addStreak(game.streak, winner);
     if (!winnerID) return;
     game.players = addScore(game.players, winnerID, 1);
 

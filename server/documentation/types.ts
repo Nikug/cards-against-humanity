@@ -10,6 +10,7 @@ interface Game {
     client: ClientGame;
     currentRound: Round;
     timeout: NodeJS.Timeout;
+    streak?: Streak;
 }
 
 interface ClientGame {
@@ -18,6 +19,7 @@ interface ClientGame {
     options: Options;
     rounds: Round[];
     timers: ClientTimers;
+    streak?: PublicStreak;
 }
 
 interface ClientTimers {
@@ -53,6 +55,15 @@ interface PlayerPublic {
     isPopularVoteKing: boolean;
     useTextToSpeech: boolean;
     avatar: Avatar;
+}
+
+interface Streak extends PublicStreak {
+    id: string;
+}
+
+interface PublicStreak {
+    name: string;
+    wins: number;
 }
 
 interface Avatar {
