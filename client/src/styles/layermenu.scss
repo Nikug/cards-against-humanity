@@ -1,10 +1,10 @@
 .layermenu {
     box-sizing: border-box;
-    position: fixed;
+    position: absolute;
+    top: 0;
     width: 100%;
-    height: calc(100% - 2.7rem);
+    height: 100%;
     background-color: rgba(20, 20, 20, 0.829);
-    top: 2.7rem;
     z-index: 300;
     padding: 2rem;
     display: flex;
@@ -12,11 +12,12 @@
     justify-content: center;
     user-select: none;
     cursor: default;
-    overflow: auto;
+    overflow-x: auto;
 
     .content {
         width: fit-content;
         height: fit-content;
+        max-height: 100%;
     }
 
     .anchor {

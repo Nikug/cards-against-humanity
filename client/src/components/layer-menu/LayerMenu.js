@@ -7,6 +7,7 @@ export const LayerMenu = ({ content, closeLayerMenu }) => {
 
     const handleClick = (event) => {
         event.stopPropagation();
+        event.preventDefault();
     };
 
     return (
@@ -16,8 +17,7 @@ export const LayerMenu = ({ content, closeLayerMenu }) => {
                     {translateCommon("close", t)}
                 </span>
             </div>
-            <div className="content"></div>
-            {content}
+            <div className="content">{content}</div>
         </div>
     );
 };

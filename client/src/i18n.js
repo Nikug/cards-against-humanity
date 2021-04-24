@@ -16,8 +16,7 @@ i18n
         react: {
             useSuspense: true,
         },
-        lang: "en",
-        fallbackLng: ["en", "fi"],
+        fallbackLng: ["fi", "en"],
         debug: false,
 
         interpolation: {
