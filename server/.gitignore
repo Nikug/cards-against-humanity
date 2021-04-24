@@ -3,6 +3,7 @@
 
 # Built files
 /client/build
+/server/build
 
 # environment
 .env
