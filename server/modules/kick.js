@@ -7,15 +7,16 @@ import { handleSpecialCases } from "./disconnect.js";
 import { setPlayerState } from "./togglePlayerMode.js";
 import { validateHost } from "./validate.js";
 
-export const hostKick = (
+export const hostKick = async (
     io,
     socket,
     gameID,
     playerID,
     targetID,
-    removeFromGame
+    removeFromGame,
+    client
 ) => {
-    const game = getGame(gameID);
+    const game = await getGame(gameID, client);
     if (!game) return;
 
     if (!validateHost(game, playerID)) {
@@ -51,7 +52,7 @@ export const hostKick = (
             }
         );
     }
-    handleSpecialCases(io, game, target, false);
+    handleSpecialCases(io, game, target, false, client);
 };
 
 const getPlayerByPublicID = (players, targetID) => {

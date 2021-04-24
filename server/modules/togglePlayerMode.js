@@ -7,8 +7,14 @@ import { handleSpecialCases } from "./disconnect.js";
 import { playerName } from "../consts/gameSettings.js";
 import { sendNotification } from "./socket.js";
 
-export const togglePlayerMode = (io, socket, gameID, playerID) => {
-    const game = getGame(gameID);
+export const togglePlayerMode = async (
+    io,
+    socket,
+    gameID,
+    playerID,
+    client
+) => {
+    const game = await getGame(gameID, client);
     if (!game) return;
 
     const player = getPlayer(game, playerID);
@@ -17,7 +23,7 @@ export const togglePlayerMode = (io, socket, gameID, playerID) => {
     if (player.state !== "spectating") {
         if (checkSpectatorLimit(game)) {
             game.players = setPlayerState(game.players, playerID, "spectating");
-            handleSpecialCases(io, game, player);
+            await handleSpecialCases(io, game, player, true, client);
             return;
         } else {
             sendNotification(
@@ -51,7 +57,7 @@ export const togglePlayerMode = (io, socket, gameID, playerID) => {
             return;
         }
     }
-    setGame(game);
+    await setGame(game, client);
     updatePlayersIndividually(io, game);
 };
 

@@ -5,17 +5,17 @@ import { gameOptions, playerName } from "../consts/gameSettings.js";
 
 import { sendNotification } from "./socket.js";
 
-export const joinGame = (io, socket, gameID, playerID) => {
+export const joinGame = async (io, socket, gameID, playerID, client) => {
     console.log(`Joining game! gameID: ${gameID} playerID: ${playerID}`);
     if (!!playerID) {
-        const game = findGameByPlayerID(playerID);
+        const game = await findGameByPlayerID(playerID, client);
         if (!!game) {
             if (!!gameID) {
                 if (gameID === game.id) {
-                    addPlayerToGame(io, socket, gameID, playerID);
+                    addPlayerToGame(io, socket, gameID, playerID, client);
                 } else {
                     // Join the game but send also warning about joining a different game than expected
-                    addPlayerToGame(io, socket, game.id, playerID);
+                    addPlayerToGame(io, socket, game.id, playerID, client);
                     sendNotification(
                         ERROR_TYPES.joinedToDifferentGame,
                         NOTIFICATION_TYPES.default,
@@ -23,21 +23,21 @@ export const joinGame = (io, socket, gameID, playerID) => {
                     );
                 }
             } else {
-                addPlayerToGame(io, socket, game.id, playerID);
+                addPlayerToGame(io, socket, game.id, playerID, client);
             }
         } else {
-            handleGameID(io, socket, gameID);
+            handleGameID(io, socket, gameID, client);
         }
     } else {
-        handleGameID(io, socket, gameID);
+        handleGameID(io, socket, gameID, client);
     }
 };
 
-const handleGameID = (io, socket, gameID) => {
+const handleGameID = async (io, socket, gameID, client) => {
     if (!!gameID) {
-        const game = getGame(gameID);
+        const game = await getGame(gameID, client);
         if (!!game) {
-            addPlayerToGame(io, socket, gameID, null);
+            addPlayerToGame(io, socket, gameID, null, client);
         } else {
             // Can't find a game with the id, return error
             returnError(socket);
@@ -57,8 +57,8 @@ const handleGameID = (io, socket, gameID) => {
     }
 };
 
-const addPlayerToGame = (io, socket, gameID, playerID) => {
-    const game = getGame(gameID);
+const addPlayerToGame = async (io, socket, gameID, playerID, client) => {
+    const game = await getGame(gameID, client);
     if (!game) return;
 
     const isHost = game.players.length === 0;
@@ -99,7 +99,7 @@ const addPlayerToGame = (io, socket, gameID, playerID) => {
         game.players = setPlayer(game.players, player);
     }
     socket.join(gameID);
-    setGame(game);
+    await setGame(game, client);
     updatePlayersIndividually(io, game);
 };
 

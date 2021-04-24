@@ -1,13 +1,13 @@
 import { emitToAllPlayerSockets, publicPlayersObject } from "./player.js";
 import { getGame, setGame } from "./game.js";
 
-export const updateAvatar = (io, gameID, playerID, avatar) => {
+export const updateAvatar = async (io, gameID, playerID, avatar, client) => {
     if (!validateAvatar(avatar)) return;
-    const game = getGame(gameID);
+    const game = await getGame(gameID, client);
     if (!game) return;
 
     game.players = setAvatar(game.players, playerID, avatar);
-    setGame(game);
+    await setGame(game, client);
 
     updatePlayers(io, game);
 };

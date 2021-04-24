@@ -43,3 +43,9 @@ export const sendNotification = (message, type, options) => {
         throw new Error("Incorrect parameters in sendNotification");
     }
 };
+
+export const removeDisconnectedSockets = (io, socketIDs) => {
+    return socketIDs.filter(
+        (socket) => io.of("/").sockets[socket] !== undefined
+    );
+};

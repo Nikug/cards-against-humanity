@@ -32,8 +32,15 @@ import { gameOptions } from "../consts/gameSettings.js";
 import { randomBetween } from "./util.js";
 import { sendNotification } from "./socket.js";
 
-export const playWhiteCards = (io, socket, gameID, playerID, whiteCardIDs) => {
-    let game = getGame(gameID);
+export const playWhiteCards = async (
+    io,
+    socket,
+    gameID,
+    playerID,
+    whiteCardIDs,
+    client
+) => {
+    let game = await getGame(gameID, client);
     if (!game) return;
 
     const { error } = validatePlayerPlayingWhiteCards(
@@ -73,33 +80,34 @@ export const playWhiteCards = (io, socket, gameID, playerID, whiteCardIDs) => {
     ];
 
     if (everyoneHasPlayedTurn(game)) {
-        startReading(io, game);
+        await startReading(io, game, client);
     } else {
-        setGame(game);
+        await setGame(game, client);
         updatePlayersIndividually(io, game);
     }
 };
 
-export const startReading = (io, game) => {
+export const startReading = async (io, game, client) => {
     game.stateMachine.startReading();
     game.client.state = game.stateMachine.state;
     game.currentRound.whiteCardsByPlayer = shuffleCards([
         ...game.currentRound.whiteCardsByPlayer,
     ]);
     const updatedGame = changeGameStateAfterTime(io, game, "showCards");
-    setGame(updatedGame);
+    await setGame(updatedGame, client);
     updatePlayersIndividually(io, updatedGame);
 };
 
-export const selectBlackCard = (
+export const selectBlackCard = async (
     io,
     socket,
     gameID,
     playerID,
     selectedCardID,
-    discardedCardIDs
+    discardedCardIDs,
+    client
 ) => {
-    const game = getGame(gameID);
+    const game = await getGame(gameID, client);
     if (!game) return;
 
     if (!validateState(game, "pickingBlackCard")) {
@@ -161,12 +169,12 @@ export const selectBlackCard = (
     game.players = setPlayersPlaying(game.players);
 
     const updatedGame = changeGameStateAfterTime(io, game, "startReading");
-    setGame(updatedGame);
+    await setGame(updatedGame, client);
     updatePlayersIndividually(io, updatedGame);
 };
 
-export const sendBlackCards = (socket, gameID, playerID) => {
-    const game = getGame(gameID);
+export const sendBlackCards = async (socket, gameID, playerID, client) => {
+    const game = await getGame(gameID, client);
     if (!game) return;
 
     if (!validateCardCzar(game, playerID)) {
@@ -204,52 +212,28 @@ export const dealBlackCards = (io, socketIDs, game) => {
     return newGame;
 };
 
-export const dealStartingWhiteCards = (io, game, count) => {
-    const players = game.players.map((player) => {
-        if (["active", "playing", "waiting"].includes(player.state)) {
-            player.whiteCards = drawWhiteCards(game, count);
-            emitToAllPlayerSockets(io, player, "update_player", {
-                player: player,
-            });
+export const replenishWhiteCards = (game, io = null) => {
+    for (let i = 0, limit = game.players.length; i < limit; i++) {
+        const player = game.players[i];
+        if (!["active", "playing", "waiting"].includes(player.state)) continue;
+
+        const missingCards =
+            gameOptions.startingWhiteCardCount - player.whiteCards.length;
+
+        if (missingCards > 0) {
+            const { game: newGame, cards } = drawWhiteCards(game, missingCards);
+            player.whiteCards = [...player.whiteCards, ...cards];
+            game.cards = newGame.cards;
+            game.players[i] = player;
+
+            if (io) {
+                emitToAllPlayerSockets(io, player, "update_player", {
+                    player: player,
+                });
+            }
         }
-        return player;
-    });
-    game.players = players;
+    }
     return game;
-};
-
-export const dealWhiteCards = (game, count) => {
-    const playerIDs = game.currentRound.whiteCardsByPlayer.map(
-        (player) => player.playerID
-    );
-    const updatedPlayers = game.players.map((player) => {
-        if (playerIDs.includes(player.id)) {
-            player.whiteCards = [
-                ...player.whiteCards,
-                ...drawWhiteCards(game, count),
-            ];
-        }
-        return player;
-    });
-    return updatedPlayers;
-};
-
-export const replenishWhiteCards = (game, playersToUpdate) => {
-    const idsToUpdate = playersToUpdate.map((player) => player.id);
-    const updatedPlayers = game.players.map((player) => {
-        const index = idsToUpdate.indexOf(player.id);
-        if (index >= 0) {
-            player.whiteCards = [
-                ...player.whiteCards,
-                ...drawWhiteCards(
-                    game,
-                    playersToUpdate[index].whiteCards.length
-                ),
-            ];
-        }
-        return player;
-    });
-    return updatedPlayers;
 };
 
 export const drawWhiteCards = (game, count) => {
@@ -264,12 +248,10 @@ export const drawWhiteCards = (game, count) => {
             ...cards,
             game.cards.whiteCards.splice(0, count - cards.length),
         ];
-        setGame(game);
-        return cards;
+        return { game, cards };
     } else {
         const drawnCards = game.cards.whiteCards.splice(0, count);
-        setGame(game);
-        return drawnCards;
+        return { game, cards: drawnCards };
     }
 };
 
@@ -321,8 +303,8 @@ export const shuffleCards = (cards) => {
     return cards;
 };
 
-export const showWhiteCard = (io, socket, gameID, playerID) => {
-    const game = getGame(gameID);
+export const showWhiteCard = async (io, socket, gameID, playerID, client) => {
+    const game = await getGame(gameID, client);
     if (!game) return;
 
     const { error } = validateShowingWhiteCard(game, playerID);
@@ -341,8 +323,12 @@ export const showWhiteCard = (io, socket, gameID, playerID) => {
     ) {
         game.stateMachine.showCards();
         game.client.state = game.stateMachine.state;
+
+        const rounds = game.client.rounds.length;
+        game.client.rounds[rounds - 1] = game.currentRound;
+
         const updatedGame = changeGameStateAfterTime(io, game, "endRound");
-        setGame(updatedGame);
+        await setGame(updatedGame, client);
 
         updatePlayersIndividually(io, updatedGame);
     } else {
@@ -351,7 +337,7 @@ export const showWhiteCard = (io, socket, gameID, playerID) => {
                 .whiteCards;
         game.currentRound.cardIndex = game.currentRound.cardIndex + 1;
         const updatedGame = changeGameStateAfterTime(io, game, "showCards");
-        setGame(updatedGame);
+        await setGame(updatedGame, client);
 
         io.in(gameID).emit("show_white_card", {
             whiteCards: whiteCards,
@@ -391,7 +377,7 @@ export const anonymizedGameClient = (game) => {
         ...game.client,
         timers: {
             ...game.client.timers,
-            passedTime: getPassedTime(game.timeout),
+            passedTime: getPassedTime(game.id),
         },
         streak: game.streak
             ? { name: game.streak.name, wins: game.streak.wins }
@@ -399,8 +385,15 @@ export const anonymizedGameClient = (game) => {
     };
 };
 
-export const selectWinner = (io, socket, gameID, playerID, whiteCardIDs) => {
-    const game = getGame(gameID);
+export const selectWinner = async (
+    io,
+    socket,
+    gameID,
+    playerID,
+    whiteCardIDs,
+    client
+) => {
+    const game = await getGame(gameID, client);
     if (!game) return;
 
     const { result, error } = validatePickingWinner(
@@ -439,6 +432,6 @@ export const selectWinner = (io, socket, gameID, playerID, whiteCardIDs) => {
     game.players = setPlayersActive(game.players);
 
     const updatedGame = changeGameStateAfterTime(io, game, "startRound");
-    setGame(updatedGame);
+    await setGame(updatedGame, client);
     updatePlayersIndividually(io, updatedGame);
 };
