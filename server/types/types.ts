@@ -162,7 +162,7 @@ export interface CardPack {
 
 export interface Notification {
     text: string;
-    type?: "default" | "error" | "success";
+    type?: NotificationType;
     time?: number; // seconds
 }
 
