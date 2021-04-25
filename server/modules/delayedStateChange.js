@@ -1,14 +1,14 @@
-import { addTimeout, getTimeout, removeTimeout } from "./timeout.js";
+import { addTimeout, getTimeout, removeTimeout } from "./timeout";
 import {
     appointNextCardCzar,
     setPlayersActive,
     updatePlayersIndividually,
 } from "./player.js";
-import { getGame, setGame, skipRound, startNewRound } from "./game.js";
-import { showWhiteCard, shuffleCardsBackToDeck } from "./card.js";
+import { getGame, setGame, skipRound, startNewRound } from "./game";
+import { showWhiteCard, shuffleCardsBackToDeck } from "./card";
 
-import { gameOptions } from "../consts/gameSettings.js";
-import { transactionize } from "../db/util.js";
+import { gameOptions } from "../consts/gameSettings";
+import { transactionize } from "../db/util";
 
 export const changeGameStateAfterTime = (io, game, transition) => {
     removeTimeout(game.id);

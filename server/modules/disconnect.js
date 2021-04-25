@@ -2,19 +2,19 @@ import {
     ERROR_TYPES,
     NOTIFICATION_TIME,
     NOTIFICATION_TYPES,
-} from "../consts/error.js";
+} from "../consts/error";
 import {
     appointNextCardCzar,
     emitToAllPlayerSockets,
     getActivePlayers,
     getAllActivePlayers,
     updatePlayersIndividually,
-} from "./player.js";
+} from "./player";
 import {
     closeSocketWithID,
     removeDisconnectedSockets,
     sendNotification,
-} from "./socket.js";
+} from "./socket";
 import {
     everyoneHasPlayedTurn,
     findGameAndPlayerBySocketID,
@@ -26,12 +26,12 @@ import {
     shouldReturnToLobby,
     shouldSkipRound,
     skipRound,
-} from "./game.js";
+} from "./game";
 
-import { INACTIVE_GAME_DELETE_TIME } from "../consts/gameSettings.js";
-import { punishCardCzar } from "./delayedStateChange.js";
-import { setPlayer } from "./join.js";
-import { startReading } from "./card.js";
+import { INACTIVE_GAME_DELETE_TIME } from "../consts/gameSettings";
+import { punishCardCzar } from "./delayedStateChange";
+import { setPlayer } from "./join";
+import { startReading } from "./card";
 
 export const setPlayerDisconnected = async (
     io,

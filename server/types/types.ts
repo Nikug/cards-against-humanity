@@ -9,7 +9,7 @@ export interface Game {
     stateMachine: StateMachine.StateMachine;
     client: ClientGame;
     currentRound: Round;
-    timeout: NodeJS.Timeout;
+    timeout?: NodeJS.Timeout;
     streak?: Streak;
 }
 
@@ -28,25 +28,17 @@ export interface ClientTimers {
 }
 
 // This information is only shown to each player separately
-export interface Player {
+export interface Player extends PlayerPublic {
     id: string;
-    publicID: string;
     sockets: string;
-    name: string;
-    state: PlayerState;
-    score: number;
-    isCardCzar: boolean;
-    isHost: boolean;
-    isPopularVoteKing: boolean;
     popularVoteScore: number;
     whiteCards: WhiteCard[];
-    useTextToSpeech: boolean;
-    avatar: Avatar;
 }
 
 // This information about a player is shown to other players
 // It is a subset of the playerObject
 export interface PlayerPublic {
+    publicID: string;
     name: string;
     state: PlayerState;
     score: number;
@@ -95,20 +87,29 @@ export interface BlackCard {
     whiteCardsToDraw: number;
 }
 
-export interface Round {
+export interface Round extends PublicRound {
+    cardCzar: string | null;
+    cardIndex: number;
+}
+
+export interface PublicRound {
     round: number;
-    blackCard: BlackCard;
-    cardCzar: string; // Not shown in client
-    cardIndex: number; // Used to show cards one by one
-    whiteCardsByPlayer: {
-        wonRound: boolean;
-        playerID: string; // Not shown in client
-        playerName: String | null; // Always null unless is winner in client
-        popularVote: number;
-        popularVotes: string[]; // List of player ids who voted for this player
-        whiteCards: WhiteCard[];
-        isOwn: boolean;
-    }[];
+    blackCard: BlackCard | null;
+    whiteCardsByPlayer: WhiteCardsByPlayer[];
+}
+
+export interface WhiteCardsByPlayer extends WhiteCardsByPlayerPublic {
+    playerID: string; // Not shown in client
+    playerName: String; // Always null unless is winner in client
+    popularVotes: string[]; // List of player ids who voted for this player
+}
+
+export interface WhiteCardsByPlayerPublic {
+    wonRound: boolean;
+    playerName: String | null;
+    popularVote: number;
+    whiteCards: WhiteCard[];
+    isOwn: boolean;
 }
 
 export interface Options {
@@ -119,8 +120,6 @@ export interface Options {
     allowCardCzarPopularVote: boolean;
     popularVote: boolean;
     cardPacks: CardPack[];
-    selectWhiteCardTimeLimit: number;
-    selectBlackCardTimeLimit: number;
     timers: Timers;
 }
 

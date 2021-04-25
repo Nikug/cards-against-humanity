@@ -2,7 +2,7 @@ import {
     endTransaction,
     rollbackTransaction,
     startTransaction,
-} from "./database.js";
+} from "./database";
 
 export const transactionize = async (callback, params) => {
     if (!process.env.USE_DB) {

@@ -1,7 +1,7 @@
 import { formatToDB, restoreFromDB } from "./transform";
+import postgres, { QueryResult } from "pg";
 
 import type { Game } from "../types/types";
-import postgres from "pg";
 
 const { Pool } = postgres;
 
@@ -30,7 +30,7 @@ export const getDBGame = async (
     client: postgres.PoolClient
 ) => {
     const query = `SELECT game FROM games WHERE gameid = $1`;
-    let result = undefined;
+    let result: QueryResult;
     if (!client) {
         result = await pool.query(query, [gameID]);
     } else {

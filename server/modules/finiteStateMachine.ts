@@ -1,8 +1,8 @@
 import StateMachine from "javascript-state-machine";
 
-export const createStateMachine = (initialState: string) => {
+export const createStateMachine = (initialState?: string) => {
     // @ts-ignore
-    const fsm = new StateMachine({
+    const fsm: StateMachine.StateMachine = new StateMachine({
         init: initialState ?? "lobby",
         transitions: [
             { name: "startGame", from: "lobby", to: "pickingBlackCard" },
@@ -25,5 +25,6 @@ export const createStateMachine = (initialState: string) => {
             { name: "skipRound", from: "*", to: "pickingBlackCard" },
         ],
     });
+    console.log("Current state", fsm.state);
     return fsm;
 };

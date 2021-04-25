@@ -4,6 +4,7 @@ export const gameOptions = {
     spectatorLimit: 20,
     defaultPlayers: 8,
 
+    allowPopularVote: true,
     // If no one has votes, no point in making anyone king
     // Required minimum score is thus at least 1
     defaultScoreForShowingPopularVoteLeader: 1,

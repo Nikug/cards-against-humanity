@@ -1,7 +1,8 @@
-import { createStateMachine } from "./finiteStateMachine.js";
-import { gameOptions } from "../consts/gameSettings.js";
+import { Game } from "types";
+import { createStateMachine } from "./finiteStateMachine";
+import { gameOptions } from "../consts/gameSettings";
 
-export const newGameTemplate = (url) => {
+export const newGameTemplate = (url: string): Game => {
     const fsm = createStateMachine();
     const game = {
         id: url,
@@ -16,6 +17,7 @@ export const newGameTemplate = (url) => {
                     roundLimit: gameOptions.winConditions.roundLimit.default,
                     useRoundLimit: gameOptions.winConditions.roundLimit.use,
                 },
+                popularVote: gameOptions.allowPopularVote,
                 winnerBecomesCardCzar: gameOptions.defaultWinnerBecomesCardCzar,
                 allowKickedPlayerJoin: gameOptions.defaultAllowKickedPlayerJoin,
                 allowCardCzarPopularVote:
@@ -46,6 +48,7 @@ export const newGameTemplate = (url) => {
         cards: {
             whiteCards: [],
             blackCards: [],
+            sentBlackCards: [],
             playedWhiteCards: [],
             playedBlackCards: [],
         },
@@ -57,6 +60,7 @@ export const newGameTemplate = (url) => {
             cardIndex: 0,
             whiteCardsByPlayer: [],
         },
+        timeout: undefined,
     };
     return game;
 };

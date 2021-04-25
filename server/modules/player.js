@@ -1,14 +1,10 @@
-import {
-    anonymizeRounds,
-    anonymizedGameClient,
-    drawWhiteCards,
-} from "./card.js";
-import { gameOptions, playerName } from "../consts/gameSettings.js";
-import { getGame, setGame } from "./game.js";
+import { anonymizeRounds, anonymizedGameClient } from "./card";
+import { getGame, setGame } from "./game";
 
-import { defaultAvatar } from "./avatar.js";
-import { joiningPlayerStates } from "../consts/states.js";
+import { defaultAvatar } from "./avatar";
+import { joiningPlayerStates } from "../consts/states";
 import { nanoid } from "nanoid";
+import { playerName } from "../consts/gameSettings";
 import sanitize from "sanitize";
 
 const sanitizer = sanitize();
@@ -279,24 +275,4 @@ export const getJoiningPlayerState = (gameState, hasName) => {
     } else {
         return joiningPlayerStates[gameState];
     }
-};
-
-export const handleJoiningPlayers = (io, game) => {
-    return game.players.map((player) => {
-        if (player.state !== "joining") return player;
-
-        player.state = "active";
-        const numberOfMissingCards =
-            gameOptions.startingWhiteCardCount - player.whiteCards.length;
-        if (numberOfMissingCards > 0) {
-            player.whiteCards = [
-                ...player.whiteCards,
-                ...drawWhiteCards(game, numberOfMissingCards),
-            ];
-        }
-        emitToAllPlayerSockets(io, player, "update_player", {
-            player: player,
-        });
-        return player;
-    });
 };

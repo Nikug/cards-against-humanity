@@ -3,7 +3,7 @@ import { createStateMachine } from "../modules/finiteStateMachine";
 import type postgres from "pg";
 
 export const formatToDB = (game: Game) => {
-    const newGame = { ...game, stateMachine: game.stateMachine.current };
+    const newGame = { ...game, stateMachine: game.stateMachine.state };
     return newGame;
 };
 

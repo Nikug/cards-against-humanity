@@ -1,34 +1,31 @@
-import { ERROR_TYPES, NOTIFICATION_TYPES } from "../consts/error.js";
-import { addCardPack, removeCardPack } from "../modules/cardpack.js";
-import {
-    changePlayerTextToSpeech,
-    updatePlayerName,
-} from "../modules/player.js";
-import { endTransaction, startTransaction } from "../db/database.js";
+import { ERROR_TYPES, NOTIFICATION_TYPES } from "../consts/error";
+import { addCardPack, removeCardPack } from "../modules/cardpack";
+import { changePlayerTextToSpeech, updatePlayerName } from "../modules/player";
 import {
     playWhiteCards,
     selectBlackCard,
     selectWinner,
     sendBlackCards,
     showWhiteCard,
-} from "../modules/card.js";
+} from "../modules/card";
 import {
     startGame,
     startNewRound,
     updateGameOptions,
     validateHostAndReturnToLobby,
-} from "../modules/game.js";
+} from "../modules/game";
 
-import { hostKick } from "../modules/kick.js";
-import { joinGame } from "../modules/join.js";
-import { popularVote } from "../modules/popularVote.js";
-import { sendNotification } from "../modules/socket.js";
-import { setPlayerDisconnected } from "../modules/disconnect.js";
-import { togglePlayerMode } from "../modules/togglePlayerMode.js";
-import { transactionize } from "../db/util.js";
-import { updateAvatar } from "../modules/avatar.js";
+import type SocketIO from "socket.io";
+import { hostKick } from "../modules/kick";
+import { joinGame } from "../modules/join";
+import { popularVote } from "../modules/popularVote";
+import { sendNotification } from "../modules/socket";
+import { setPlayerDisconnected } from "../modules/disconnect";
+import { togglePlayerMode } from "../modules/togglePlayerMode";
+import { transactionize } from "../db/util";
+import { updateAvatar } from "../modules/avatar";
 
-export const sockets = (io) => {
+export const sockets = (io: SocketIO.Server) => {
     io.on("connection", (socket) => {
         console.log(`Client joined! socket ID: ${socket.id}`);
 
@@ -321,7 +318,7 @@ export const sockets = (io) => {
     });
 };
 
-const sendError = (socket, data) => {
+const sendError = (socket: SocketIO.Socket, data: any) => {
     sendNotification(
         `${ERROR_TYPES.missingFields}: ${data}`,
         NOTIFICATION_TYPES.error,
@@ -331,7 +328,11 @@ const sendError = (socket, data) => {
     );
 };
 
-const validateFields = (socket, fields, data) => {
+const validateFields = (
+    socket: SocketIO.Socket,
+    fields: string[],
+    data: any
+) => {
     const missingFields = fields
         .map((field) => {
             return data[field] == null ? field : null;

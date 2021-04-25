@@ -1,12 +1,12 @@
 import path, { dirname } from "path";
 
+import { Server } from "socket.io";
 import { createTableQuery } from "./db/table";
 import express from "express";
 import { fileURLToPath } from "url";
 import http from "http";
 import { queryDB } from "./db/database";
 import { router } from "./routes/routes";
-import socketIo from "socket.io";
 import { sockets } from "./routes/sockets";
 
 // const __filename = fileURLToPath(import.meta.url);
@@ -20,7 +20,7 @@ const USE_DB = process.env.USE_DB;
 
 const app = express();
 const server = http.createServer(app);
-const io = socketIo(server);
+const io = new Server(server);
 
 app.use(express.static(path.join(__dirname, "/../client/build")));
 

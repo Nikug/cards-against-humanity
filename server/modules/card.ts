@@ -1,4 +1,5 @@
-import { ERROR_TYPES, NOTIFICATION_TYPES } from "../consts/error.js";
+import { ERROR_TYPES, NOTIFICATION_TYPES } from "../consts/error";
+import { Game, WhiteCard } from "types";
 import {
     addScore,
     emitToAllPlayerSockets,
@@ -7,30 +8,27 @@ import {
     setPlayersActive,
     setPlayersPlaying,
     updatePlayersIndividually,
-} from "./player.js";
-import {
-    changeGameStateAfterTime,
-    getPassedTime,
-} from "./delayedStateChange.js";
+} from "./player";
+import { changeGameStateAfterTime, getPassedTime } from "./delayedStateChange";
 import {
     createRound,
     everyoneHasPlayedTurn,
     getGame,
     setGame,
     updateTimers,
-} from "./game.js";
+} from "./game";
 import {
     validateCardCzar,
     validatePickingWinner,
     validatePlayerPlayingWhiteCards,
     validateShowingWhiteCard,
     validateState,
-} from "./validate.js";
+} from "./validate";
 
-import { addStreak } from "./streak.js";
-import { gameOptions } from "../consts/gameSettings.js";
-import { randomBetween } from "./util.js";
-import { sendNotification } from "./socket.js";
+import { addStreak } from "./streak";
+import { gameOptions } from "../consts/gameSettings";
+import { randomBetween } from "./util";
+import { sendNotification } from "./socket";
 
 export const playWhiteCards = async (
     io,
@@ -236,17 +234,21 @@ export const replenishWhiteCards = (game, io = null) => {
     return game;
 };
 
-export const drawWhiteCards = (game, count) => {
+export const drawWhiteCards = (
+    game: Game,
+    count: number
+): { game: Game; cards: WhiteCard[] } => {
     if (game.cards.whiteCards.length < count) {
         let cards = [...game.cards.whiteCards];
-        if (game.cards.playedWhiteCards.length === 0) return [];
+        if (game.cards.playedWhiteCards.length === 0)
+            return { game, cards: [] };
 
         game.cards.whiteCards = shuffleCards([...game.cards.playedWhiteCards]);
         game.cards.playedWhiteCards = [];
 
         cards = [
             ...cards,
-            game.cards.whiteCards.splice(0, count - cards.length),
+            ...game.cards.whiteCards.splice(0, count - cards.length),
         ];
         return { game, cards };
     } else {

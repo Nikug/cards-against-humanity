@@ -1,23 +1,22 @@
-import { ERROR_TYPES, NOTIFICATION_TYPES } from "../consts/error.js";
+import { ERROR_TYPES, NOTIFICATION_TYPES } from "../consts/error";
 import {
     GAME_NAME_GENERATOR_MAX_RUNS,
     gameOptions,
-} from "../consts/gameSettings.js";
+} from "../consts/gameSettings";
 import {
     appointNextCardCzar,
     getActivePlayers,
     getPlayersWithState,
     getRoundWinner,
-    handleJoiningPlayers,
     resetPlayers,
     setPlayersWaiting,
     updatePlayersIndividually,
-} from "./player.js";
+} from "./player";
 import {
     changeGameStateAfterTime,
     clearGameTimer,
     getPassedTime,
-} from "./delayedStateChange.js";
+} from "./delayedStateChange";
 import {
     createDBGame,
     deleteDBGame,
@@ -26,21 +25,21 @@ import {
     getDBGameBySocketId,
     getDBGameIds,
     setDBGame,
-} from "../db/database.js";
-import { dealBlackCards, replenishWhiteCards, shuffleCards } from "./card.js";
+} from "../db/database";
+import { dealBlackCards, replenishWhiteCards, shuffleCards } from "./card";
 import {
     validateCardCzar,
     validateGameEnding,
     validateGameStartRequirements,
     validateHost,
     validateOptions,
-} from "./validate.js";
+} from "./validate";
 
 import hri from "human-readable-ids";
-import { newGameTemplate } from "./newGame.js";
-import { randomBetween } from "./util.js";
-import { sendNotification } from "./socket.js";
-import { setPopularVoteLeader } from "./popularVote.js";
+import { newGameTemplate } from "./newGame";
+import { randomBetween } from "./util";
+import { sendNotification } from "./socket";
+import { setPopularVoteLeader } from "./popularVote";
 
 let games = [];
 
@@ -244,8 +243,6 @@ export const startNewRound = async (io, socket, gameID, playerID, client) => {
 
     game = replenishWhiteCards(game);
 
-    game.players = handleJoiningPlayers(io, game);
-
     if (game.client.options.winnerBecomesCardCzar && game.currentRound) {
         const winnerID = getRoundWinner(game.currentRound);
         game.players = appointNextCardCzar(game, playerID, winnerID);
@@ -282,7 +279,6 @@ export const skipRound = async (io, game, newCardCzar, client) => {
     newGame.stateMachine.skipRound();
     newGame.client.state = newGame.stateMachine.state;
 
-    newGame.players = handleJoiningPlayers(io, newGame);
     newGame.players = setPlayersWaiting(newGame.players);
 
     const newerGame = dealBlackCards(io, newCardCzar.sockets, newGame);
