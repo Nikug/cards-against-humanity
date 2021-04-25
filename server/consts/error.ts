@@ -1,3 +1,5 @@
+import { NotificationTypes } from "types";
+
 export const ERROR_TYPES = {
     // Actions
     forbiddenCardCzarAction: "forbiddenCardCzarAction",
@@ -32,7 +34,7 @@ export const ERROR_TYPES = {
     couldntCreateGame: "couldntCreateGame",
 };
 
-export const NOTIFICATION_TYPES = {
+export const NOTIFICATION_TYPES: NotificationTypes = {
     default: "default",
     error: "error",
     success: "success",

@@ -1,6 +1,10 @@
+import type * as CAH from "types";
+import type * as SocketIO from "socket.io";
+
 import { anonymizeRounds, anonymizedGameClient } from "./card";
 import { getGame, setGame } from "./game";
 
+import { PoolClient } from "pg";
 import { defaultAvatar } from "./avatar";
 import { joiningPlayerStates } from "../consts/states";
 import { nanoid } from "nanoid";
@@ -16,11 +20,11 @@ export const emitToAllPlayerSockets = (io, player, message, data) => {
 };
 
 export const updatePlayerName = async (
-    io,
-    gameID,
-    playerID,
-    newName,
-    client
+    io: SocketIO.Server,
+    gameID: string,
+    playerID: string,
+    newName: string,
+    client?: PoolClient
 ) => {
     const game = await getGame(gameID, client);
     if (!game) return;
@@ -32,18 +36,25 @@ export const updatePlayerName = async (
     const cleanName = sanitizer.value(shortenedName, "str");
 
     const player = getPlayer(game, playerID);
+    if (!player) return;
 
     if (player.state === "pickingName") {
         player.state =
             game.stateMachine.state === "lobby" ? "active" : "joining";
     }
     const newGame = setPlayerName(game, player, cleanName);
+    if (!newGame) return;
+
     await setGame(newGame, client);
 
     updatePlayersIndividually(io, newGame);
 };
 
-export const setPlayerName = (game, newPlayer, newName) => {
+export const setPlayerName = (
+    game: CAH.Game,
+    newPlayer: CAH.Player,
+    newName: string
+) => {
     if (game) {
         game.players = game.players.map((player) => {
             return player.id === newPlayer.id
@@ -55,11 +66,11 @@ export const setPlayerName = (game, newPlayer, newName) => {
 };
 
 export const changePlayerTextToSpeech = async (
-    io,
-    gameID,
-    playerID,
-    useTTS,
-    client
+    io: SocketIO.Server,
+    gameID: string,
+    playerID: string,
+    useTTS: boolean,
+    client?: PoolClient
 ) => {
     const game = await getGame(gameID, client);
     if (!game) return;
@@ -76,8 +87,12 @@ export const changePlayerTextToSpeech = async (
     updatePlayersIndividually(io, game);
 };
 
-export const createNewPlayer = (socketID, isHost, state = "pickingName") => {
-    const player = {
+export const createNewPlayer = (
+    socketID: string,
+    isHost: boolean,
+    state: CAH.PlayerState = "pickingName"
+): CAH.Player => {
+    const player: CAH.Player = {
         id: nanoid(),
         publicID: nanoid(),
         sockets: [socketID],
@@ -90,11 +105,15 @@ export const createNewPlayer = (socketID, isHost, state = "pickingName") => {
         whiteCards: [],
         useTextToSpeech: false,
         avatar: defaultAvatar(),
+        isPopularVoteKing: false,
     };
     return player;
 };
 
-export const publicPlayersObject = (players, playerID) => {
+export const publicPlayersObject = (
+    players: CAH.Player[],
+    playerID: string
+) => {
     return players?.map((player) => {
         const { id, sockets, whiteCards, popularVoteScore, ...rest } = player;
         if (player.id === playerID) {
@@ -105,7 +124,7 @@ export const publicPlayersObject = (players, playerID) => {
     });
 };
 
-export const setPlayersPlaying = (players) => {
+export const setPlayersPlaying = (players: CAH.Player[]) => {
     return players.map((player) => {
         if (player.isCardCzar) {
             return { ...player, state: "waiting" };
@@ -117,7 +136,7 @@ export const setPlayersPlaying = (players) => {
     });
 };
 
-export const setPlayersActive = (players) => {
+export const setPlayersActive = (players: CAH.Player[]) => {
     return players.map((player) =>
         player.state === "playing" || player.state === "waiting"
             ? { ...player, state: "active" }
@@ -125,7 +144,7 @@ export const setPlayersActive = (players) => {
     );
 };
 
-export const setPlayersWaiting = (players) => {
+export const setPlayersWaiting = (players: CAH.Player[]): CAH.Player[] => {
     return players.map((player) => {
         if (player.isCardCzar) {
             return { ...player, state: "playing" };
@@ -137,18 +156,23 @@ export const setPlayersWaiting = (players) => {
     });
 };
 
-export const getPlayer = (game, playerID) => {
+export const getPlayer = (game: CAH.Game, playerID?: string) => {
     return game.players.find((player) => player.id === playerID);
 };
 
-export const getRoundWinner = (round) => {
+export const getRoundWinner = (round: CAH.Round) => {
     if (!round?.whiteCardsByPlayer) return undefined;
 
     const cards = round.whiteCardsByPlayer.find((cards) => cards.wonRound);
     return cards?.playerID;
 };
 
-export const getPlayerByWhiteCards = (game, whiteCardIDs) => {
+export const getPlayerByWhiteCards = (
+    game: CAH.Game,
+    whiteCardIDs: string[]
+) => {
+    if (!game.currentRound) return undefined;
+
     const players = game.currentRound.whiteCardsByPlayer.filter(
         (whiteCardByPlayer) => {
             if (whiteCardIDs.length !== whiteCardByPlayer.whiteCards.length)
@@ -166,7 +190,10 @@ export const getPlayerByWhiteCards = (game, whiteCardIDs) => {
     return players.length === 1 ? players[0].playerID : undefined;
 };
 
-export const getNextCardCzar = (players, previousCardCzarID) => {
+export const getNextCardCzar = (
+    players: CAH.Player[],
+    previousCardCzarID?: string
+) => {
     const activePlayerIndexes = players
         .map((player, index) =>
             ["active", "playing", "waiting", "joining"].includes(player.state)
@@ -180,17 +207,21 @@ export const getNextCardCzar = (players, previousCardCzarID) => {
     );
 
     const nextCardCzars = activePlayerIndexes.filter(
-        (index) => index > cardCzarIndex
+        (index) => index && index > cardCzarIndex
     );
 
     if (nextCardCzars.length > 0) {
-        return players[nextCardCzars[0]].id;
+        return players[nextCardCzars[0]!].id;
     } else {
-        return players[activePlayerIndexes[0]].id;
+        return players[activePlayerIndexes[0]!].id;
     }
 };
 
-export const appointNextCardCzar = (game, previousCardCzarID, winnerID) => {
+export const appointNextCardCzar = (
+    game: CAH.Game,
+    previousCardCzarID?: string,
+    winnerID?: string
+) => {
     const nextCardCzarID =
         winnerID ?? getNextCardCzar(game.players, previousCardCzarID);
     const players = game.players.map((player) => {
@@ -205,7 +236,11 @@ export const appointNextCardCzar = (game, previousCardCzarID, winnerID) => {
     return players;
 };
 
-export const addScore = (players, playerID, scoreToAdd) => {
+export const addScore = (
+    players: CAH.Player[],
+    playerID: string,
+    scoreToAdd: number
+) => {
     return players.map((player) =>
         player.id === playerID
             ? { ...player, score: player.score + scoreToAdd }
@@ -213,7 +248,10 @@ export const addScore = (players, playerID, scoreToAdd) => {
     );
 };
 
-export const updatePlayersIndividually = (io, game) => {
+export const updatePlayersIndividually = (
+    io: SocketIO.Server,
+    game: CAH.Game
+) => {
     const anonymousClient = { ...anonymizedGameClient(game) };
 
     game.players.map((player) => {
@@ -229,28 +267,31 @@ export const updatePlayersIndividually = (io, game) => {
     });
 };
 
-export const getActivePlayers = (players) => {
+export const getActivePlayers = (players: CAH.Player[]) => {
     return players.filter((player) =>
         ["active", "playing", "waiting"].includes(player.state)
     );
 };
 
-export const getPlayersWithState = (players, state) => {
+export const getPlayersWithState = (
+    players: CAH.Player[],
+    state: CAH.PlayerState
+) => {
     return players.filter((player) => player.state === state);
 };
 
-export const getActiveAndJoiningPlayers = (players) => {
+export const getActiveAndJoiningPlayers = (players: CAH.Player[]) => {
     return players.filter((player) =>
         ["active", "playing", "waiting", "joining"].includes(player.state)
     );
 };
 
-export const getAllActivePlayers = (players) =>
+export const getAllActivePlayers = (players: CAH.Player[]) =>
     players.filter((player) =>
         ["active", "playing", "waiting", "pickingName"].includes(player.state)
     );
 
-const resetPlayerState = (player) => {
+const resetPlayerState = (player: CAH.Player) => {
     if (player.state === "disconnected" || player.state === "spectating")
         return player.state;
     return player.name.length > playerName.minimumLength
@@ -258,7 +299,7 @@ const resetPlayerState = (player) => {
         : "pickingName";
 };
 
-export const resetPlayers = (players) => {
+export const resetPlayers = (players: CAH.Player[]): CAH.Player[] => {
     return players.map((player) => ({
         ...player,
         score: 0,
@@ -269,7 +310,10 @@ export const resetPlayers = (players) => {
     }));
 };
 
-export const getJoiningPlayerState = (gameState, hasName) => {
+export const getJoiningPlayerState = (
+    gameState: CAH.GameState,
+    hasName: boolean
+) => {
     if (gameState === "lobby" && hasName) {
         return "active";
     } else {

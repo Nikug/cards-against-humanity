@@ -1,4 +1,6 @@
-export const addStreak = (streak, player) => {
+import { Player, Streak } from "types";
+
+export const addStreak = (streak: Streak | undefined, player: Player) => {
     if (streak && streak.id === player.id) {
         streak.wins += 1;
         return streak;
@@ -7,7 +9,7 @@ export const addStreak = (streak, player) => {
     }
 };
 
-const createStreak = (player) => {
+const createStreak = (player: Player): Streak => {
     return {
         id: player.id,
         name: player.name,

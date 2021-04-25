@@ -1,16 +1,24 @@
+import type * as CAH from "types";
+import type * as SocketIO from "socket.io";
+
 import { addTimeout, getTimeout, removeTimeout } from "./timeout";
 import {
     appointNextCardCzar,
     setPlayersActive,
     updatePlayersIndividually,
-} from "./player.js";
+} from "./player";
 import { getGame, setGame, skipRound, startNewRound } from "./game";
 import { showWhiteCard, shuffleCardsBackToDeck } from "./card";
 
+import { PoolClient } from "pg";
 import { gameOptions } from "../consts/gameSettings";
 import { transactionize } from "../db/util";
 
-export const changeGameStateAfterTime = (io, game, transition) => {
+export const changeGameStateAfterTime = (
+    io: SocketIO.Server,
+    game: CAH.Game,
+    transition: string
+) => {
     removeTimeout(game.id);
 
     const delay = getTimeoutTime(game);
@@ -31,14 +39,19 @@ export const changeGameStateAfterTime = (io, game, transition) => {
     return game;
 };
 
-export const clearGameTimer = (game) => {
+export const clearGameTimer = (game: CAH.Game) => {
     removeTimeout(game.id);
     game.client.timers.duration = undefined;
     game.client.timers.passedTime = undefined;
     return game;
 };
 
-const gameStateChange = async (io, gameID, transition, client) => {
+const gameStateChange = async (
+    io: SocketIO.Server,
+    gameID: string,
+    transition: string,
+    client?: PoolClient
+) => {
     const game = await getGame(gameID, client);
     if (!game) return;
 
@@ -65,7 +78,7 @@ const gameStateChange = async (io, gameID, transition, client) => {
             game.players = appointNextCardCzar(game, cardCzar.id);
             const nextCardCzar = currentCardCzar(game.players);
 
-            await skipRound(io, game, nextCardCzar, client);
+            await skipRound(io, game, nextCardCzar!, client);
             return;
         }
         setNewTimeout = "showCards";
@@ -95,11 +108,15 @@ const gameStateChange = async (io, gameID, transition, client) => {
     }
 };
 
-const currentCardCzar = (players) => {
+const currentCardCzar = (players: CAH.Player[]) => {
     return players.find((player) => player.isCardCzar);
 };
 
-const restartRound = async (io, game, client) => {
+const restartRound = async (
+    io: SocketIO.Server,
+    game: CAH.Game,
+    client?: PoolClient
+) => {
     const cardCzar = currentCardCzar(game.players);
     if (!cardCzar) return;
 
@@ -112,10 +129,10 @@ const restartRound = async (io, game, client) => {
     game.players = appointNextCardCzar(game, cardCzar.id);
     const nextCardCzar = currentCardCzar(game.players);
 
-    await skipRound(io, game, nextCardCzar, client);
+    await skipRound(io, game, nextCardCzar!, client);
 };
 
-export const punishCardCzar = (game) => {
+export const punishCardCzar = (game: CAH.Game) => {
     return game.players.map((player) => {
         if (player.isCardCzar && game.stateMachine.state !== "roundEnd") {
             player.score -= gameOptions.notSelectingWinnerPunishment;
@@ -124,7 +141,7 @@ export const punishCardCzar = (game) => {
     });
 };
 
-const getTimeoutTime = (game) => {
+const getTimeoutTime = (game: CAH.Game) => {
     const timers = game.client.options.timers;
     switch (game.stateMachine.state) {
         case "pickingBlackCard":
@@ -146,8 +163,9 @@ const getTimeoutTime = (game) => {
     }
 };
 
-export const getPassedTime = (id) => {
+export const getPassedTime = (id: string) => {
     const timeout = getTimeout(id);
     if (!timeout) return undefined;
+    // @ts-ignore
     return process.uptime() - timeout._idleStart / 1000;
 };

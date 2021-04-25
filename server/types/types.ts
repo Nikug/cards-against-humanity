@@ -1,5 +1,7 @@
 // Documentation for different types used
 
+import { Server, Socket } from "socket.io";
+
 import type StateMachine from "javascript-state-machine";
 
 export interface Game {
@@ -8,7 +10,7 @@ export interface Game {
     cards: Cards;
     stateMachine: StateMachine.StateMachine;
     client: ClientGame;
-    currentRound: Round;
+    currentRound?: Round;
     timeout?: NodeJS.Timeout;
     streak?: Streak;
 }
@@ -30,7 +32,7 @@ export interface ClientTimers {
 // This information is only shown to each player separately
 export interface Player extends PlayerPublic {
     id: string;
-    sockets: string;
+    sockets: string[];
     popularVoteScore: number;
     whiteCards: WhiteCard[];
 }
@@ -89,13 +91,14 @@ export interface BlackCard {
 
 export interface Round extends PublicRound {
     cardCzar: string | null;
-    cardIndex: number;
+    whiteCardsByPlayer: WhiteCardsByPlayer[];
 }
 
 export interface PublicRound {
     round: number;
+    cardIndex: number;
     blackCard: BlackCard | null;
-    whiteCardsByPlayer: WhiteCardsByPlayer[];
+    whiteCardsByPlayer: WhiteCardsByPlayerPublic[];
 }
 
 export interface WhiteCardsByPlayer extends WhiteCardsByPlayerPublic {
@@ -109,7 +112,7 @@ export interface WhiteCardsByPlayerPublic {
     playerName: String | null;
     popularVote: number;
     whiteCards: WhiteCard[];
-    isOwn: boolean;
+    isOwn?: boolean;
 }
 
 export interface Options {
@@ -182,3 +185,12 @@ export type PlayerState =
     | "pickingName"
     | "disconnected"
     | "spectating";
+
+export type NotificationType = "default" | "error" | "success";
+export type NotificationTypes = { [key: string]: NotificationType };
+export type NotificationOptions = {
+    io?: Server;
+    socket?: Socket;
+    sockets?: string[];
+    gameID?: string;
+};

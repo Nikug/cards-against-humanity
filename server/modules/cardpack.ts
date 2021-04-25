@@ -1,28 +1,37 @@
-import { ERROR_TYPES, NOTIFICATION_TYPES } from "../consts/error.js";
-import { getGame, setGame } from "./game.js";
-import { validateHost, validateState } from "./validate.js";
+import type * as CAH from "types";
+import type * as SocketIO from "socket.io";
+import type * as pg from "pg";
+
+import { ERROR_TYPES, NOTIFICATION_TYPES } from "../consts/error";
+import { getGame, setGame } from "./game";
+import { validateHost, validateState } from "./validate";
 
 import fetch from "node-fetch";
 import sanitize from "sanitize";
-import { sendNotification } from "./socket.js";
+import { sendNotification } from "./socket";
 
 const sanitizer = sanitize();
 
 export const addCardPack = async (
-    io,
-    socket,
-    gameID,
-    cardPackID,
-    playerID,
-    client
+    io: SocketIO.Server,
+    socket: SocketIO.Socket,
+    gameID: string,
+    cardPackID: string,
+    playerID: string,
+    client?: pg.PoolClient
 ) => {
     const cleanID = sanitizer.value(cardPackID, "str");
     const url = `https://allbad.cards/api/pack/get?pack=${cleanID}`;
-    let json = undefined;
+    let json;
     try {
         const res = await fetch(url);
         json = await res.json();
     } catch (error) {
+        sendNotification(
+            ERROR_TYPES.cardPackWasNotFound,
+            NOTIFICATION_TYPES.error,
+            { socket: socket }
+        );
         return;
     }
 
@@ -71,12 +80,12 @@ export const addCardPack = async (
 };
 
 export const removeCardPack = async (
-    io,
-    socket,
-    gameID,
-    cardPackID,
-    playerID,
-    client
+    io: SocketIO.Server,
+    socket: SocketIO.Socket,
+    gameID: string,
+    cardPackID: string,
+    playerID: string,
+    client?: pg.PoolClient
 ) => {
     const newOptions = await removeCardPackFromGame(
         socket,
@@ -91,12 +100,12 @@ export const removeCardPack = async (
 };
 
 export const addCardPackToGame = async (
-    gameID,
-    playerID,
-    cardPack,
-    whiteCards,
-    blackCards,
-    client
+    gameID: string,
+    playerID: string,
+    cardPack: CAH.CardPack,
+    whiteCards: CAH.WhiteCard[],
+    blackCards: CAH.BlackCard[],
+    client?: pg.PoolClient
 ) => {
     const game = await getGame(gameID, client);
     if (!game) return undefined;
@@ -122,11 +131,11 @@ export const addCardPackToGame = async (
 };
 
 export const removeCardPackFromGame = async (
-    socket,
-    gameID,
-    cardPackID,
-    playerID,
-    client
+    socket: SocketIO.Socket,
+    gameID: string,
+    cardPackID: string,
+    playerID: string,
+    client?: pg.PoolClient
 ) => {
     const game = await getGame(gameID, client);
     if (!game) return undefined;

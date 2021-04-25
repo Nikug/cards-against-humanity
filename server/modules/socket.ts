@@ -1,20 +1,27 @@
-import { NOTIFICATION_TIME } from "../consts/error.js";
-import { sockets } from "../routes/sockets.js";
+import type * as CAH from "types";
+import type * as SocketIO from "socket.io";
 
-export const closeSocketWithID = (io, socketID) => {
+import { NOTIFICATION_TIME } from "../consts/error";
+import { PoolClient } from "pg";
+
+export const closeSocketWithID = (io: SocketIO.Server, socketID: string) => {
     const socket = io.of("/").sockets[socketID];
     if (socket) {
         socket.disconnect(true);
     }
 };
 
-export const getSocketsWithIDs = (io, socketIDs) => {
+export const getSocketsWithIDs = (io: SocketIO.Server, socketIDs: string[]) => {
     const sockets = io.of("/").sockets;
     const playerSockets = socketIDs.map((id) => sockets[id]);
     return playerSockets;
 };
 
-export const sendNotification = (message, type, options) => {
+export const sendNotification = (
+    message: string,
+    type: CAH.NotificationType,
+    options: CAH.NotificationOptions
+) => {
     if (options.io && options.gameID) {
         options.io.in(options.gameID).emit("notification", {
             notification: message,
@@ -44,7 +51,10 @@ export const sendNotification = (message, type, options) => {
     }
 };
 
-export const removeDisconnectedSockets = (io, socketIDs) => {
+export const removeDisconnectedSockets = (
+    io: SocketIO.Server,
+    socketIDs: string[]
+) => {
     return socketIDs.filter(
         (socket) => io.of("/").sockets[socket] !== undefined
     );

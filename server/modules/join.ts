@@ -1,11 +1,21 @@
-import { ERROR_TYPES, NOTIFICATION_TYPES } from "../consts/error.js";
-import { createNewPlayer, updatePlayersIndividually } from "./player.js";
-import { findGameByPlayerID, getGame, setGame } from "./game.js";
-import { gameOptions, playerName } from "../consts/gameSettings.js";
+import type * as CAH from "types";
+import type * as SocketIO from "socket.io";
 
-import { sendNotification } from "./socket.js";
+import { ERROR_TYPES, NOTIFICATION_TYPES } from "../consts/error";
+import { createNewPlayer, updatePlayersIndividually } from "./player";
+import { findGameByPlayerID, getGame, setGame } from "./game";
+import { gameOptions, playerName } from "../consts/gameSettings";
 
-export const joinGame = async (io, socket, gameID, playerID, client) => {
+import { PoolClient } from "pg";
+import { sendNotification } from "./socket";
+
+export const joinGame = async (
+    io: SocketIO.Server,
+    socket: SocketIO.Socket,
+    gameID: string,
+    playerID: string,
+    client?: PoolClient
+) => {
     console.log(`Joining game! gameID: ${gameID} playerID: ${playerID}`);
     if (!!playerID) {
         const game = await findGameByPlayerID(playerID, client);
@@ -33,7 +43,12 @@ export const joinGame = async (io, socket, gameID, playerID, client) => {
     }
 };
 
-const handleGameID = async (io, socket, gameID, client) => {
+const handleGameID = async (
+    io: SocketIO.Server,
+    socket: SocketIO.Socket,
+    gameID: string,
+    client?: PoolClient
+) => {
     if (!!gameID) {
         const game = await getGame(gameID, client);
         if (!!game) {
@@ -57,7 +72,13 @@ const handleGameID = async (io, socket, gameID, client) => {
     }
 };
 
-const addPlayerToGame = async (io, socket, gameID, playerID, client) => {
+const addPlayerToGame = async (
+    io: SocketIO.Server,
+    socket: SocketIO.Socket,
+    gameID: string,
+    playerID: string | null,
+    client?: PoolClient
+) => {
     const game = await getGame(gameID, client);
     if (!game) return;
 
@@ -103,34 +124,34 @@ const addPlayerToGame = async (io, socket, gameID, playerID, client) => {
     updatePlayersIndividually(io, game);
 };
 
-const findPlayer = (players, playerID) => {
+const findPlayer = (players: CAH.Player[], playerID: string | null) => {
     return players.find((player) => player.id === playerID);
 };
 
-const addPlayer = (players, player) => {
+const addPlayer = (players: CAH.Player[], player: CAH.Player) => {
     return [...players, player];
 };
 
-export const setPlayer = (players, newPlayer) => {
+export const setPlayer = (players: CAH.Player[], newPlayer: CAH.Player) => {
     return players.map((player) =>
         player.id === newPlayer.id ? newPlayer : player
     );
 };
 
-const returnError = (socket) => {
+const returnError = (socket: SocketIO.Socket) => {
     sendNotification(ERROR_TYPES.gameWasNotFound, NOTIFICATION_TYPES.error, {
         socket: socket,
     });
 };
 
-export const checkPlayerLimit = (game) => {
+export const checkPlayerLimit = (game: CAH.Game) => {
     const nonSpectators = game.players.filter(
         (player) => player.state !== "spectating"
     );
     return game.client.options.maximumPlayers > nonSpectators.length;
 };
 
-export const checkSpectatorLimit = (game) => {
+export const checkSpectatorLimit = (game: CAH.Game) => {
     const spectators = game.players.filter(
         (player) => player.state === "spectating"
     );

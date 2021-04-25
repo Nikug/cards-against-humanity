@@ -4,7 +4,7 @@ import {
     startTransaction,
 } from "./database";
 
-export const transactionize = async (callback, params) => {
+export const transactionize = async (callback: any, params: any[]) => {
     if (!process.env.USE_DB) {
         return callback(...params);
     }

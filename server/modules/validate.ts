@@ -1,28 +1,32 @@
-import { ERROR_TYPES } from "../consts/error.js";
-import { clamp } from "./util.js";
-import { gameOptions } from "../consts/gameSettings.js";
-import { getPlayer } from "./player.js";
+import type * as CAH from "types";
+import type * as SocketIO from "socket.io";
 
-export const validateHost = (game, playerID) => {
+import { ERROR_TYPES } from "../consts/error";
+import { PoolClient } from "pg";
+import { clamp } from "./util";
+import { gameOptions } from "../consts/gameSettings";
+import { getPlayer } from "./player";
+
+export const validateHost = (game: CAH.Game, playerID: string) => {
     return game.players.find(
         (player) => player.id === playerID && player.isHost
     );
 };
 
-export const validateCardCzar = (game, playerID) => {
+export const validateCardCzar = (game: CAH.Game, playerID: string) => {
     return game.players.find(
         (player) => player.id === playerID && player.isCardCzar
     );
 };
 
-export const validateRoundCardCzar = (game, playerID) => {
-    return game.currentRound.cardCzar === playerID;
+export const validateRoundCardCzar = (game: CAH.Game, playerID: string) => {
+    return game.currentRound?.cardCzar === playerID;
 };
 
 export const validatePlayerPlayingWhiteCards = (
-    game,
-    playerID,
-    whiteCardIDs
+    game: CAH.Game,
+    playerID: string,
+    whiteCardIDs: string[]
 ) => {
     if (!validateState(game, "playingWhiteCards")) {
         return {
@@ -65,7 +69,7 @@ export const validatePlayerPlayingWhiteCards = (
     };
 };
 
-export const validateOptions = (newOptions) => {
+export const validateOptions = (newOptions: CAH.Options): CAH.Options => {
     validateTimers(newOptions.timers);
     const validatedOptions = {
         ...newOptions,
@@ -97,7 +101,7 @@ export const validateOptions = (newOptions) => {
     return validatedOptions;
 };
 
-const validateTimers = (timers) => {
+const validateTimers = (timers: CAH.Timers): CAH.Timers => {
     const keys = [
         ...Object.keys(gameOptions.timers),
         "useSelectBlackCard",
@@ -121,10 +125,10 @@ const validateTimers = (timers) => {
             newTimers[key] = !!value;
         }
     }
-    return newTimers;
+    return newTimers as CAH.Timers;
 };
 
-export const validateGameStartRequirements = (game) => {
+export const validateGameStartRequirements = (game: CAH.Game) => {
     if (!validateState(game, "lobby")) {
         return {
             result: false,
@@ -169,7 +173,7 @@ export const validateGameStartRequirements = (game) => {
     };
 };
 
-export const validateShowingWhiteCard = (game, playerID) => {
+export const validateShowingWhiteCard = (game: CAH.Game, playerID: string) => {
     if (!validateCardCzar(game, playerID))
         return {
             error: ERROR_TYPES.forbiddenCardCzarAction,
@@ -183,7 +187,7 @@ export const validateShowingWhiteCard = (game, playerID) => {
     };
 };
 
-export const validatePickingWinner = (game, playerID, whiteCardIDs) => {
+export const validatePickingWinner = (game: CAH.Game, playerID: string) => {
     if (!validateCardCzar(game, playerID)) {
         return { error: ERROR_TYPES.forbiddenCardCzarAction };
     } else if (!validateState(game, "showingCards")) {
@@ -193,7 +197,7 @@ export const validatePickingWinner = (game, playerID, whiteCardIDs) => {
     }
 };
 
-export const validatePopularVote = (game, playerID) => {
+export const validatePopularVote = (game: CAH.Game, playerID: string) => {
     if (!game.client.options.allowCardCzarPopularVote) {
         if (validateCardCzar(game, playerID))
             return { error: ERROR_TYPES.forbiddenPlayerAction };
@@ -204,7 +208,7 @@ export const validatePopularVote = (game, playerID) => {
     return { result: true };
 };
 
-export const validateGameEnding = (game) => {
+export const validateGameEnding = (game: CAH.Game) => {
     let gameOver = false;
     if (game.client.options.winConditions.useScoreLimit) {
         const highestScore = game.players.reduce(
@@ -226,7 +230,10 @@ export const validateGameEnding = (game) => {
     return gameOver;
 };
 
-export const validateState = (game, states) => {
+export const validateState = (
+    game: CAH.Game,
+    states: CAH.GameState | CAH.GameState[]
+) => {
     if (Array.isArray(states)) {
         return states.includes(game.stateMachine.state);
     } else {
@@ -234,7 +241,10 @@ export const validateState = (game, states) => {
     }
 };
 
-export const validatePlayerState = (player, states) => {
+export const validatePlayerState = (
+    player: CAH.Player,
+    states: CAH.PlayerState | CAH.PlayerState[]
+) => {
     if (Array.isArray(states)) {
         return states.includes(player.state);
     } else {

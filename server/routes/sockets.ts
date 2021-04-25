@@ -29,7 +29,7 @@ export const sockets = (io: SocketIO.Server) => {
     io.on("connection", (socket) => {
         console.log(`Client joined! socket ID: ${socket.id}`);
 
-        socket.on("join_game", async (data) => {
+        socket.on("join_game", async (data: any) => {
             transactionize(joinGame, [
                 io,
                 socket,
@@ -38,13 +38,13 @@ export const sockets = (io: SocketIO.Server) => {
             ]);
         });
 
-        socket.on("disconnect", (reason) => {
+        socket.on("disconnect", (reason: string) => {
             if (reason === "server namespace disconnect") return;
             console.log(`Client left: ${reason}, Socket ID: ${socket.id}`);
             transactionize(setPlayerDisconnected, [io, socket.id, false]);
         });
 
-        socket.on("leave_game", async (data) => {
+        socket.on("leave_game", async (data: any) => {
             if (validateFields(socket, ["gameID", "playerID"], data)) {
                 await transactionize(setPlayerDisconnected, [
                     io,
@@ -55,7 +55,7 @@ export const sockets = (io: SocketIO.Server) => {
             }
         });
 
-        socket.on("update_game_options", (data) => {
+        socket.on("update_game_options", (data: any) => {
             if (
                 validateFields(socket, ["gameID", "playerID", "options"], {
                     ...data,
@@ -71,7 +71,7 @@ export const sockets = (io: SocketIO.Server) => {
             }
         });
 
-        socket.on("set_player_name", (data) => {
+        socket.on("set_player_name", (data: any) => {
             if (
                 validateFields(
                     socket,
@@ -88,7 +88,7 @@ export const sockets = (io: SocketIO.Server) => {
             }
         });
 
-        socket.on("set_player_avatar", (data) => {
+        socket.on("set_player_avatar", (data: any) => {
             if (
                 validateFields(socket, ["gameID", "playerID", "avatar"], data)
             ) {
@@ -101,7 +101,7 @@ export const sockets = (io: SocketIO.Server) => {
             }
         });
 
-        socket.on("change_text_to_speech", (data) => {
+        socket.on("change_text_to_speech", (data: any) => {
             if (
                 validateFields(
                     socket,
@@ -118,7 +118,7 @@ export const sockets = (io: SocketIO.Server) => {
             }
         });
 
-        socket.on("add_card_pack", (data) => {
+        socket.on("add_card_pack", (data: any) => {
             if (
                 validateFields(
                     socket,
@@ -136,7 +136,7 @@ export const sockets = (io: SocketIO.Server) => {
             }
         });
 
-        socket.on("remove_card_pack", (data) => {
+        socket.on("remove_card_pack", (data: any) => {
             if (
                 validateFields(
                     socket,
@@ -154,7 +154,7 @@ export const sockets = (io: SocketIO.Server) => {
             }
         });
 
-        socket.on("start_game", (data) => {
+        socket.on("start_game", (data: any) => {
             if (validateFields(socket, ["gameID", "playerID"], data)) {
                 transactionize(startGame, [
                     io,
@@ -165,7 +165,7 @@ export const sockets = (io: SocketIO.Server) => {
             }
         });
 
-        socket.on("draw_black_cards", (data) => {
+        socket.on("draw_black_cards", (data: any) => {
             if (validateFields(socket, ["gameID", "playerID"], data)) {
                 transactionize(sendBlackCards, [
                     socket,
@@ -175,7 +175,7 @@ export const sockets = (io: SocketIO.Server) => {
             }
         });
 
-        socket.on("select_black_card", (data) => {
+        socket.on("select_black_card", (data: any) => {
             if (
                 validateFields(
                     socket,
@@ -199,7 +199,7 @@ export const sockets = (io: SocketIO.Server) => {
             }
         });
 
-        socket.on("play_white_cards", (data) => {
+        socket.on("play_white_cards", (data: any) => {
             if (
                 validateFields(
                     socket,
@@ -217,7 +217,7 @@ export const sockets = (io: SocketIO.Server) => {
             }
         });
 
-        socket.on("show_next_white_card", (data) => {
+        socket.on("show_next_white_card", (data: any) => {
             if (validateFields(socket, ["gameID", "playerID"], data)) {
                 transactionize(showWhiteCard, [
                     io,
@@ -228,7 +228,7 @@ export const sockets = (io: SocketIO.Server) => {
             }
         });
 
-        socket.on("pick_winning_card", (data) => {
+        socket.on("pick_winning_card", (data: any) => {
             if (
                 validateFields(
                     socket,
@@ -246,7 +246,7 @@ export const sockets = (io: SocketIO.Server) => {
             }
         });
 
-        socket.on("start_round", (data) => {
+        socket.on("start_round", (data: any) => {
             if (validateFields(socket, ["gameID", "playerID"], data)) {
                 transactionize(startNewRound, [
                     io,
@@ -257,7 +257,7 @@ export const sockets = (io: SocketIO.Server) => {
             }
         });
 
-        socket.on("return_to_lobby", (data) => {
+        socket.on("return_to_lobby", (data: any) => {
             if (validateFields(socket, ["gameID", "playerID"], data)) {
                 transactionize(validateHostAndReturnToLobby, [
                     io,
@@ -268,7 +268,7 @@ export const sockets = (io: SocketIO.Server) => {
             }
         });
 
-        socket.on("give_popular_vote", (data) => {
+        socket.on("give_popular_vote", (data: any) => {
             if (
                 validateFields(
                     socket,
@@ -286,7 +286,7 @@ export const sockets = (io: SocketIO.Server) => {
             }
         });
 
-        socket.on("toggle_player_mode", (data) => {
+        socket.on("toggle_player_mode", (data: any) => {
             if (validateFields(socket, ["gameID", "playerID"], data)) {
                 transactionize(togglePlayerMode, [
                     io,
@@ -297,7 +297,7 @@ export const sockets = (io: SocketIO.Server) => {
             }
         });
 
-        socket.on("kick_player", (data) => {
+        socket.on("kick_player", (data: any) => {
             if (
                 validateFields(
                     socket,

@@ -1,7 +1,7 @@
 import * as CAH from "types";
 
-import { emitToAllPlayerSockets, publicPlayersObject } from "./player.js";
-import { getGame, setGame } from "./game.js";
+import { emitToAllPlayerSockets, publicPlayersObject } from "./player";
+import { getGame, setGame } from "./game";
 
 import { PoolClient } from "pg";
 import type SocketIO from "socket.io";

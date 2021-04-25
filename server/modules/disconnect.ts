@@ -1,3 +1,6 @@
+import type * as CAH from "types";
+import type * as SocketIO from "socket.io";
+
 import {
     ERROR_TYPES,
     NOTIFICATION_TIME,
@@ -29,15 +32,16 @@ import {
 } from "./game";
 
 import { INACTIVE_GAME_DELETE_TIME } from "../consts/gameSettings";
+import { PoolClient } from "pg";
 import { punishCardCzar } from "./delayedStateChange";
 import { setPlayer } from "./join";
 import { startReading } from "./card";
 
 export const setPlayerDisconnected = async (
-    io,
-    socketID,
-    removePlayer,
-    client
+    io: SocketIO.Server,
+    socketID: string,
+    removePlayer: boolean,
+    client?: PoolClient
 ) => {
     const result = await findGameAndPlayerBySocketID(socketID, client);
     if (!result) return;
@@ -102,11 +106,11 @@ export const setPlayerDisconnected = async (
 };
 
 export const handleSpecialCases = async (
-    io,
-    game,
-    player,
-    shouldPunishCardCzar = true,
-    client
+    io: SocketIO.Server,
+    game: CAH.Game,
+    player: CAH.Player,
+    shouldPunishCardCzar: boolean = true,
+    client?: PoolClient
 ) => {
     if (shouldSkipRound(game)) {
         if (player.isCardCzar && shouldPunishCardCzar) {
@@ -114,7 +118,7 @@ export const handleSpecialCases = async (
         }
         game.players = appointNextCardCzar(game, getCardCzar(game.players)?.id);
         const nextCardCzar = getCardCzar(game.players);
-        await skipRound(io, game, nextCardCzar, client);
+        await skipRound(io, game, nextCardCzar!, client);
         return;
     }
 
@@ -142,9 +146,9 @@ export const handleSpecialCases = async (
 };
 
 const handlePlayerLeavingDuringWhiteCardSelection = async (
-    io,
-    game,
-    client
+    io: SocketIO.Server,
+    game: CAH.Game,
+    client?: PoolClient
 ) => {
     if (everyoneHasPlayedTurn(game)) {
         await startReading(io, game, client);
@@ -155,26 +159,30 @@ const handlePlayerLeavingDuringWhiteCardSelection = async (
 };
 
 const handleCardCzarLeaving = (
-    io,
-    game,
-    cardCzar,
-    shouldPunishCardCzar = true,
-    client
+    io: SocketIO.Server,
+    game: CAH.Game,
+    cardCzar: CAH.Player,
+    shouldPunishCardCzar: boolean = true,
+    client?: PoolClient
 ) => {
     if (shouldPunishCardCzar) {
         game.players = punishCardCzar(game);
     }
     game.players = appointNextCardCzar(game, cardCzar.id);
-    skipRound(io, game, getCardCzar(game.players), client);
+    skipRound(io, game, getCardCzar(game.players)!, client);
 };
 
-const handleHostLeaving = (game, host, client) => {
+const handleHostLeaving = (
+    game: CAH.Game,
+    host: CAH.Player,
+    client?: PoolClient
+) => {
     const hostIndex = game.players.findIndex((player) => player.id === host.id);
     if (hostIndex !== -1) {
         game.players[hostIndex].isHost = false;
     }
 
-    let players = [];
+    let players: CAH.Player[] = [];
     if (game.stateMachine.state === "lobby") {
         players = getAllActivePlayers(game.players);
     } else {
@@ -196,4 +204,5 @@ const handleHostLeaving = (game, host, client) => {
     return [...game.players];
 };
 
-const getCardCzar = (players) => players.find((player) => player.isCardCzar);
+const getCardCzar = (players: CAH.Player[]) =>
+    players.find((player) => player.isCardCzar);

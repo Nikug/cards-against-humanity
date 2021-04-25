@@ -1,18 +1,22 @@
-import { ERROR_TYPES, NOTIFICATION_TYPES } from "../consts/error.js";
-import { checkPlayerLimit, checkSpectatorLimit } from "./join.js";
-import { getGame, setGame } from "./game.js";
-import { getPlayer, updatePlayersIndividually } from "./player.js";
+import type * as CAH from "types";
+import type * as SocketIO from "socket.io";
 
-import { handleSpecialCases } from "./disconnect.js";
-import { playerName } from "../consts/gameSettings.js";
-import { sendNotification } from "./socket.js";
+import { ERROR_TYPES, NOTIFICATION_TYPES } from "../consts/error";
+import { checkPlayerLimit, checkSpectatorLimit } from "./join";
+import { getGame, setGame } from "./game";
+import { getPlayer, updatePlayersIndividually } from "./player";
+
+import { PoolClient } from "pg";
+import { handleSpecialCases } from "./disconnect";
+import { playerName } from "../consts/gameSettings";
+import { sendNotification } from "./socket";
 
 export const togglePlayerMode = async (
-    io,
-    socket,
-    gameID,
-    playerID,
-    client
+    io: SocketIO.Server,
+    socket: SocketIO.Socket,
+    gameID: string,
+    playerID: string,
+    client?: PoolClient
 ) => {
     const game = await getGame(gameID, client);
     if (!game) return;
@@ -61,7 +65,11 @@ export const togglePlayerMode = async (
     updatePlayersIndividually(io, game);
 };
 
-export const setPlayerState = (players, playerID, state) => {
+export const setPlayerState = (
+    players: CAH.Player[],
+    playerID: string,
+    state: CAH.PlayerState
+) => {
     return players.map((player) =>
         player.id === playerID
             ? {

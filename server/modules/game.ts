@@ -1,3 +1,7 @@
+import type * as CAH from "types";
+import type * as SocketIO from "socket.io";
+import type * as pg from "pg";
+
 import { ERROR_TYPES, NOTIFICATION_TYPES } from "../consts/error";
 import {
     GAME_NAME_GENERATOR_MAX_RUNS,
@@ -41,9 +45,9 @@ import { randomBetween } from "./util";
 import { sendNotification } from "./socket";
 import { setPopularVoteLeader } from "./popularVote";
 
-let games = [];
+let games: CAH.Game[] = [];
 
-export const createGame = async (client) => {
+export const createGame = async (client: pg.PoolClient) => {
     const gameNames = await getGameIds(client);
     let gameURL = undefined;
     for (let i = 0, limit = GAME_NAME_GENERATOR_MAX_RUNS; i < limit; i++) {
@@ -65,7 +69,7 @@ export const createGame = async (client) => {
     return newGame;
 };
 
-export const getGameIds = async (client) => {
+export const getGameIds = async (client: pg.PoolClient) => {
     if (process.env.USE_DB) {
         const result = await getDBGameIds(client);
         const gameNames = result.rows.map((row) => row.gameid);
@@ -75,7 +79,7 @@ export const getGameIds = async (client) => {
     }
 };
 
-export const getGame = async (gameID, client) => {
+export const getGame = async (gameID: string, client?: pg.PoolClient) => {
     if (process.env.USE_DB) {
         const game = await getDBGame(gameID, client);
         return game;
@@ -85,7 +89,7 @@ export const getGame = async (gameID, client) => {
     }
 };
 
-export const setGame = async (newGame, client) => {
+export const setGame = async (newGame: CAH.Game, client?: pg.PoolClient) => {
     if (process.env.USE_DB && client) {
         await setDBGame(newGame, client);
     } else {
@@ -96,7 +100,7 @@ export const setGame = async (newGame, client) => {
     return newGame;
 };
 
-export const removeGameIfNoActivePlayers = async (gameID) => {
+export const removeGameIfNoActivePlayers = async (gameID: string) => {
     const game = await getGame(gameID);
     if (!game) return;
 
@@ -105,15 +109,19 @@ export const removeGameIfNoActivePlayers = async (gameID) => {
     }
 };
 
-export const removeGame = async (gameID, client) => {
-    if (process.env.USE_DB) {
+export const removeGame = async (gameID: string, client?: pg.PoolClient) => {
+    if (process.env.USE_DB && client) {
         await deleteDBGame(gameID, client);
     } else {
         games = games.filter((game) => game.id !== gameID);
     }
 };
 
-export const createRound = (roundNumber, blackCard, cardCzarID) => {
+export const createRound = (
+    roundNumber: number,
+    blackCard: CAH.BlackCard,
+    cardCzarID: string
+) => {
     return {
         round: roundNumber,
         blackCard: blackCard,
@@ -123,7 +131,7 @@ export const createRound = (roundNumber, blackCard, cardCzarID) => {
     };
 };
 
-export const everyoneHasPlayedTurn = (game) => {
+export const everyoneHasPlayedTurn = (game: CAH.Game) => {
     const waitingPlayers = game.players.filter(
         (player) => player.state === "waiting" && !player.isCardCzar
     );
@@ -131,12 +139,12 @@ export const everyoneHasPlayedTurn = (game) => {
 };
 
 export const updateGameOptions = async (
-    io,
-    socket,
-    gameID,
-    playerID,
-    newOptions,
-    client
+    io: SocketIO.Server,
+    socket: SocketIO.Socket,
+    gameID: string,
+    playerID: string,
+    newOptions: CAH.Options,
+    client?: pg.PoolClient
 ) => {
     const game = await getGame(gameID, client);
 
@@ -162,7 +170,13 @@ export const updateGameOptions = async (
     });
 };
 
-export const startGame = async (io, socket, gameID, playerID, client) => {
+export const startGame = async (
+    io: SocketIO.Server,
+    socket: SocketIO.Socket,
+    gameID: string,
+    playerID: string,
+    client?: pg.PoolClient
+) => {
     const game = await getGame(gameID, client);
     if (!game) return undefined;
 
@@ -207,7 +221,13 @@ export const startGame = async (io, socket, gameID, playerID, client) => {
     updatePlayersIndividually(io, updatedGame);
 };
 
-export const startNewRound = async (io, socket, gameID, playerID, client) => {
+export const startNewRound = async (
+    io: SocketIO.Server,
+    socket: SocketIO.Socket | null,
+    gameID: string,
+    playerID: string,
+    client?: pg.PoolClient
+) => {
     let game = await getGame(gameID, client);
     if (!game) return undefined;
 
@@ -261,7 +281,7 @@ export const startNewRound = async (io, socket, gameID, playerID, client) => {
     updatePlayersIndividually(io, game);
 };
 
-export const endGame = async (io, game) => {
+export const endGame = async (io: SocketIO.Server, game: CAH.Game) => {
     if (game.stateMachine.can("endGame")) {
         game.stateMachine.endGame();
         game.client.state = game.stateMachine.state;
@@ -273,7 +293,12 @@ export const endGame = async (io, game) => {
     }
 };
 
-export const skipRound = async (io, game, newCardCzar, client) => {
+export const skipRound = async (
+    io: SocketIO.Server,
+    game: CAH.Game,
+    newCardCzar: CAH.Player,
+    client?: pg.PoolClient
+) => {
     const newGame = replenishWhiteCards(game);
 
     newGame.stateMachine.skipRound();
@@ -292,8 +317,11 @@ export const skipRound = async (io, game, newCardCzar, client) => {
     updatePlayersIndividually(io, updatedGame);
 };
 
-export const findGameAndPlayerBySocketID = async (socketID, client) => {
-    if (process.env.USE_DB) {
+export const findGameAndPlayerBySocketID = async (
+    socketID: string,
+    client?: pg.PoolClient
+) => {
+    if (process.env.USE_DB && client) {
         const game = await getDBGameBySocketId(socketID, client);
         if (!game) return undefined;
 
@@ -320,7 +348,10 @@ export const findGameAndPlayerBySocketID = async (socketID, client) => {
     return undefined;
 };
 
-export const findGameByPlayerID = async (playerID, client) => {
+export const findGameByPlayerID = async (
+    playerID: string,
+    client?: pg.PoolClient
+) => {
     if (process.env.USE_DB && client) {
         const game = await getDBGameByPlayerId(playerID, client);
         return game;
@@ -340,7 +371,7 @@ export const findGameByPlayerID = async (playerID, client) => {
     return undefined;
 };
 
-export const shouldGameBeDeleted = (game) => {
+export const shouldGameBeDeleted = (game: CAH.Game) => {
     if (game.stateMachine.state === "lobby") {
         return game.players.every((player) =>
             ["disconnected", "spectating"].includes(player.state)
@@ -350,7 +381,7 @@ export const shouldGameBeDeleted = (game) => {
     }
 };
 
-export const shouldReturnToLobby = (game) => {
+export const shouldReturnToLobby = (game: CAH.Game) => {
     if (game.stateMachine.state !== "lobby") {
         const activePlayers = getActivePlayers(game.players);
         if (activePlayers.length < gameOptions.minimumPlayers) {
@@ -364,7 +395,7 @@ export const shouldReturnToLobby = (game) => {
     }
 };
 
-export const shouldSkipRound = (game) => {
+export const shouldSkipRound = (game: CAH.Game) => {
     if (game.stateMachine.state !== "lobby") {
         const activePlayerCount = getActivePlayers(game.players).length;
         const joiningPlayerCount = getPlayersWithState(game.players, "joining")
@@ -378,7 +409,11 @@ export const shouldSkipRound = (game) => {
     }
 };
 
-export const returnToLobby = async (io, game, client) => {
+export const returnToLobby = async (
+    io: SocketIO.Server,
+    game: CAH.Game,
+    client?: pg.PoolClient
+) => {
     game.stateMachine.returnToLobby();
     game.client.state = game.stateMachine.state;
 
@@ -389,11 +424,11 @@ export const returnToLobby = async (io, game, client) => {
 };
 
 export const validateHostAndReturnToLobby = async (
-    io,
-    socket,
-    gameID,
-    playerID,
-    client
+    io: SocketIO.Server,
+    socket: SocketIO.Socket,
+    gameID: string,
+    playerID: string,
+    client?: pg.PoolClient
 ) => {
     const game = await getGame(gameID, client);
     if (!game) return;
@@ -410,7 +445,7 @@ export const validateHostAndReturnToLobby = async (
     await returnToLobby(io, game, client);
 };
 
-export const resetGame = (game) => {
+export const resetGame = (game: CAH.Game) => {
     // Clear timeout
     const updatedGame = clearGameTimer(game);
 
@@ -432,8 +467,8 @@ export const resetGame = (game) => {
     ];
 
     // Reset timers
-    updatedGame.client.options.timers.duration = undefined;
-    updatedGame.client.options.timers.passedTime = undefined;
+    updatedGame.client.timers.duration = undefined;
+    updatedGame.client.timers.passedTime = undefined;
 
     // Reset game state if not in lobby
     if (updatedGame.stateMachine.state !== "lobby") {
@@ -443,7 +478,7 @@ export const resetGame = (game) => {
     return updatedGame;
 };
 
-export const updateTimers = (io, game) => {
+export const updateTimers = (io: SocketIO.Server, game: CAH.Game) => {
     io.in(game.id).emit("update_timers", {
         timers: {
             duration: game.client.timers.duration,

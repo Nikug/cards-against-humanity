@@ -1,22 +1,26 @@
+import type * as CAH from "types";
+import type * as SocketIO from "socket.io";
+
 import {
     emitToAllPlayerSockets,
     getPlayer,
     updatePlayersIndividually,
-} from "./player.js";
-import { getGame, setGame } from "./game.js";
+} from "./player";
+import { getGame, setGame } from "./game";
 
-import { NOTIFICATION_TYPES } from "../consts/error.js";
-import { gameOptions } from "../consts/gameSettings.js";
-import { sendNotification } from "./socket.js";
-import { validatePopularVote } from "./validate.js";
+import { NOTIFICATION_TYPES } from "../consts/error";
+import { PoolClient } from "pg";
+import { gameOptions } from "../consts/gameSettings";
+import { sendNotification } from "./socket";
+import { validatePopularVote } from "./validate";
 
 export const popularVote = async (
-    io,
-    socket,
-    gameID,
-    playerID,
-    whiteCardIDs,
-    client
+    io: SocketIO.Server,
+    socket: SocketIO.Socket,
+    gameID: string,
+    playerID: string,
+    whiteCardIDs: string[],
+    client?: PoolClient
 ) => {
     const game = await getGame(gameID, client);
     if (!game) return;
@@ -63,7 +67,12 @@ export const popularVote = async (
     });
 };
 
-const getWhiteCardsByIDs = (game, whiteCardIDs) => {
+const getWhiteCardsByIDs = (
+    game: CAH.Game,
+    whiteCardIDs: string[]
+): CAH.WhiteCardsByPlayer | undefined => {
+    if (!game.currentRound) return undefined;
+
     return game.currentRound.whiteCardsByPlayer.find((whiteCardByPlayer) => {
         if (whiteCardIDs.length !== whiteCardByPlayer.whiteCards.length)
             return false;
@@ -75,8 +84,14 @@ const getWhiteCardsByIDs = (game, whiteCardIDs) => {
     });
 };
 
-const setPlayerPopularVoteScore = (game, playerID, scoreToAdd) => {
+const setPlayerPopularVoteScore = (
+    game: CAH.Game,
+    playerID: string,
+    scoreToAdd: number
+) => {
     const player = getPlayer(game, playerID);
+    if (!player) return game;
+
     player.popularVoteScore = player.popularVoteScore + scoreToAdd;
     game.players.map((oldPlayer) =>
         oldPlayer.id === playerID ? player : oldPlayer
@@ -84,9 +99,9 @@ const setPlayerPopularVoteScore = (game, playerID, scoreToAdd) => {
     return game;
 };
 
-export const setPopularVoteLeader = (players) => {
+export const setPopularVoteLeader = (players: CAH.Player[]) => {
     let highestScore = gameOptions.defaultScoreForShowingPopularVoteLeader;
-    let highestScoringPlayers = [];
+    let highestScoringPlayers: CAH.Player[] = [];
 
     for (let i = 0, limit = players.length; i < limit; i++) {
         const score = players[i].popularVoteScore;
@@ -106,7 +121,10 @@ export const setPopularVoteLeader = (players) => {
     });
 };
 
-const getAllVotedCardsForPlayer = (whiteCardsByPlayer, playerID) => {
+const getAllVotedCardsForPlayer = (
+    whiteCardsByPlayer: CAH.WhiteCardsByPlayer[],
+    playerID: string
+) => {
     if (!whiteCardsByPlayer) return undefined;
     return whiteCardsByPlayer
         .filter((cards) => cards.popularVotes.includes(playerID))

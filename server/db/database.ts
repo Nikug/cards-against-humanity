@@ -27,7 +27,7 @@ export const queryDB = (query: string, params?: string[]) =>
 
 export const getDBGame = async (
     gameID: string,
-    client: postgres.PoolClient
+    client?: postgres.PoolClient
 ) => {
     const query = `SELECT game FROM games WHERE gameid = $1`;
     let result: QueryResult;

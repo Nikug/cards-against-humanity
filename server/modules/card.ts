@@ -1,5 +1,8 @@
+import type * as CAH from "types";
+import type * as SocketIO from "socket.io";
+import type * as pg from "pg";
+
 import { ERROR_TYPES, NOTIFICATION_TYPES } from "../consts/error";
-import { Game, WhiteCard } from "types";
 import {
     addScore,
     emitToAllPlayerSockets,
@@ -31,12 +34,12 @@ import { randomBetween } from "./util";
 import { sendNotification } from "./socket";
 
 export const playWhiteCards = async (
-    io,
-    socket,
-    gameID,
-    playerID,
-    whiteCardIDs,
-    client
+    io: SocketIO.Server,
+    socket: SocketIO.Socket,
+    gameID: string,
+    playerID: string,
+    whiteCardIDs: string[],
+    client?: pg.PoolClient
 ) => {
     let game = await getGame(gameID, client);
     if (!game) return;
@@ -54,9 +57,9 @@ export const playWhiteCards = async (
     const player = getPlayer(game, playerID);
     if (!player) return;
 
-    const whiteCards = whiteCardIDs.map((id) =>
-        player.whiteCards.find((whiteCard) => whiteCard.id === id)
-    );
+    const whiteCards = whiteCardIDs
+        .map((id) => player.whiteCards.find((whiteCard) => whiteCard.id === id))
+        .filter((whiteCards) => whiteCards) as CAH.WhiteCard[];
 
     player.whiteCards = player.whiteCards.filter(
         (whiteCard) => !whiteCardIDs.includes(whiteCard.id)
@@ -85,11 +88,15 @@ export const playWhiteCards = async (
     }
 };
 
-export const startReading = async (io, game, client) => {
+export const startReading = async (
+    io: SocketIO.Server,
+    game: CAH.Game,
+    client?: pg.PoolClient
+) => {
     game.stateMachine.startReading();
     game.client.state = game.stateMachine.state;
-    game.currentRound.whiteCardsByPlayer = shuffleCards([
-        ...game.currentRound.whiteCardsByPlayer,
+    game.currentRound!.whiteCardsByPlayer = shuffleCards([
+        ...game.currentRound!.whiteCardsByPlayer,
     ]);
     const updatedGame = changeGameStateAfterTime(io, game, "showCards");
     await setGame(updatedGame, client);
@@ -97,13 +104,13 @@ export const startReading = async (io, game, client) => {
 };
 
 export const selectBlackCard = async (
-    io,
-    socket,
-    gameID,
-    playerID,
-    selectedCardID,
-    discardedCardIDs,
-    client
+    io: SocketIO.Server,
+    socket: SocketIO.Socket,
+    gameID: string,
+    playerID: string,
+    selectedCardID: string,
+    discardedCardIDs: string[],
+    client?: pg.PoolClient
 ) => {
     const game = await getGame(gameID, client);
     if (!game) return;
@@ -171,7 +178,12 @@ export const selectBlackCard = async (
     updatePlayersIndividually(io, updatedGame);
 };
 
-export const sendBlackCards = async (socket, gameID, playerID, client) => {
+export const sendBlackCards = async (
+    socket: SocketIO.Socket,
+    gameID: string,
+    playerID: string,
+    client?: pg.PoolClient
+) => {
     const game = await getGame(gameID, client);
     if (!game) return;
 
@@ -197,7 +209,11 @@ export const sendBlackCards = async (socket, gameID, playerID, client) => {
     });
 };
 
-export const dealBlackCards = (io, socketIDs, game) => {
+export const dealBlackCards = (
+    io: SocketIO.Server,
+    socketIDs: string[],
+    game: CAH.Game
+) => {
     const { blackCards, game: newGame } = drawBlackCards(
         game,
         gameOptions.blackCardsToChooseFrom
@@ -210,7 +226,10 @@ export const dealBlackCards = (io, socketIDs, game) => {
     return newGame;
 };
 
-export const replenishWhiteCards = (game, io = null) => {
+export const replenishWhiteCards = (
+    game: CAH.Game,
+    io: SocketIO.Server | null = null
+) => {
     for (let i = 0, limit = game.players.length; i < limit; i++) {
         const player = game.players[i];
         if (!["active", "playing", "waiting"].includes(player.state)) continue;
@@ -235,9 +254,9 @@ export const replenishWhiteCards = (game, io = null) => {
 };
 
 export const drawWhiteCards = (
-    game: Game,
+    game: CAH.Game,
     count: number
-): { game: Game; cards: WhiteCard[] } => {
+): { game: CAH.Game; cards: CAH.WhiteCard[] } => {
     if (game.cards.whiteCards.length < count) {
         let cards = [...game.cards.whiteCards];
         if (game.cards.playedWhiteCards.length === 0)
@@ -257,7 +276,7 @@ export const drawWhiteCards = (
     }
 };
 
-export const drawBlackCards = (game, count) => {
+export const drawBlackCards = (game: CAH.Game, count: number) => {
     if (game.cards.blackCards.length < count) {
         let blackCards = [...game.cards.blackCards];
 
@@ -266,7 +285,7 @@ export const drawBlackCards = (game, count) => {
 
         blackCards = [
             ...blackCards,
-            game.cards.blackCards.splice(0, count - blackCards.length),
+            ...game.cards.blackCards.splice(0, count - blackCards.length),
         ];
 
         game.cards.sentBlackCards = [...blackCards];
@@ -278,15 +297,19 @@ export const drawBlackCards = (game, count) => {
     }
 };
 
-export const shuffleCardsBackToDeck = (cards, deck) => {
+export function shuffleCardsBackToDeck<T>(cards: T[], deck: T[]) {
     let newCards = [...deck];
     for (const card in cards) {
         newCards.splice(randomBetween(0, newCards.length), 0, cards[card]);
     }
     return [...newCards];
-};
+}
 
-export const createWhiteCardsByPlayer = (whiteCards, playerID, playerName) => {
+export const createWhiteCardsByPlayer = (
+    whiteCards: CAH.WhiteCard[],
+    playerID: string,
+    playerName: string
+): CAH.WhiteCardsByPlayer => {
     return {
         wonRound: false,
         playerID: playerID,
@@ -297,15 +320,21 @@ export const createWhiteCardsByPlayer = (whiteCards, playerID, playerName) => {
     };
 };
 
-export const shuffleCards = (cards) => {
+export function shuffleCards<T>(cards: T[]) {
     for (let i = cards.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
         [cards[i], cards[j]] = [cards[j], cards[i]];
     }
     return cards;
-};
+}
 
-export const showWhiteCard = async (io, socket, gameID, playerID, client) => {
+export const showWhiteCard = async (
+    io: SocketIO.Server,
+    socket: SocketIO.Socket | null,
+    gameID: string,
+    playerID: string,
+    client?: pg.PoolClient
+) => {
     const game = await getGame(gameID, client);
     if (!game) return;
 
@@ -343,14 +372,17 @@ export const showWhiteCard = async (io, socket, gameID, playerID, client) => {
 
         io.in(gameID).emit("show_white_card", {
             whiteCards: whiteCards,
-            index: updatedGame.currentRound.cardIndex,
-            outOf: updatedGame.currentRound.whiteCardsByPlayer.length,
+            index: updatedGame.currentRound!.cardIndex,
+            outOf: updatedGame.currentRound!.whiteCardsByPlayer.length,
         });
         updateTimers(io, updatedGame);
     }
 };
 
-export const anonymizePlayedWhiteCards = (playedWhiteCards, id) => {
+export const anonymizePlayedWhiteCards = (
+    playedWhiteCards: CAH.WhiteCardsByPlayer[],
+    id: string
+) => {
     return playedWhiteCards.map((card) => {
         const { popularVotes, playerID, ...rest } = card;
         return {
@@ -361,18 +393,25 @@ export const anonymizePlayedWhiteCards = (playedWhiteCards, id) => {
     });
 };
 
-export const anonymizeRounds = (rounds, playerID) => {
+export const anonymizeRounds = (
+    rounds: CAH.Round[],
+    playerID: string
+): CAH.PublicRound[] => {
     return rounds.map((round) => {
-        const { cardCzar, ...rest } = round;
-        rest.whiteCardsByPlayer = anonymizePlayedWhiteCards(
-            rest.whiteCardsByPlayer,
-            playerID
-        );
-        return rest;
+        const anonymized: CAH.PublicRound = {
+            cardIndex: round.cardIndex,
+            round: round.round,
+            whiteCardsByPlayer: anonymizePlayedWhiteCards(
+                round.whiteCardsByPlayer,
+                playerID
+            ),
+            blackCard: round.blackCard,
+        };
+        return anonymized;
     });
 };
 
-export const anonymizedGameClient = (game) => {
+export const anonymizedGameClient = (game: CAH.Game) => {
     if (!game.client?.rounds || !game.currentRound) return { ...game.client };
 
     return {
@@ -388,21 +427,17 @@ export const anonymizedGameClient = (game) => {
 };
 
 export const selectWinner = async (
-    io,
-    socket,
-    gameID,
-    playerID,
-    whiteCardIDs,
-    client
+    io: SocketIO.Server,
+    socket: SocketIO.Socket,
+    gameID: string,
+    playerID: string,
+    whiteCardIDs: string[],
+    client?: pg.PoolClient
 ) => {
     const game = await getGame(gameID, client);
     if (!game) return;
 
-    const { result, error } = validatePickingWinner(
-        game,
-        playerID,
-        whiteCardIDs
-    );
+    const { result, error } = validatePickingWinner(game, playerID);
     if (!!error) {
         sendNotification(error, NOTIFICATION_TYPES.error, { socket: socket });
         return;
@@ -410,6 +445,8 @@ export const selectWinner = async (
 
     const winnerID = getPlayerByWhiteCards(game, whiteCardIDs);
     const winner = getPlayer(game, winnerID);
+    if (!winner) return;
+
     game.streak = addStreak(game.streak, winner);
     if (!winnerID) return;
     game.players = addScore(game.players, winnerID, 1);
