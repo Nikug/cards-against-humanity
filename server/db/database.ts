@@ -5,7 +5,13 @@ import type { Game } from "../types/types";
 
 const { Pool } = postgres;
 
-const pool = new Pool();
+const pool = new Pool({
+    user: process.env.PGUSER,
+    host: process.env.PGHOST,
+    database: process.env.PGDATABASE,
+    password: process.env.PGPASSWORD,
+    port: parseInt(process.env.PGPORT || "3211"),
+});
 
 export const startTransaction = async () => {
     const client = await pool.connect();
@@ -22,8 +28,9 @@ export const rollbackTransaction = async (client: postgres.PoolClient) => {
     await client.query("ROLLBACK");
 };
 
-export const queryDB = (query: string, params?: string[]) =>
-    pool.query(query, params);
+export const queryDB = (query: string, params?: string[]) => {
+    return pool.query(query, params);
+};
 
 export const getDBGame = async (
     gameID: string,

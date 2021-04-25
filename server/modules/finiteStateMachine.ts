@@ -25,6 +25,5 @@ export const createStateMachine = (initialState?: string) => {
             { name: "skipRound", from: "*", to: "pickingBlackCard" },
         ],
     });
-    console.log("Current state", fsm.state);
     return fsm;
 };

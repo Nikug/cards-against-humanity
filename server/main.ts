@@ -1,18 +1,14 @@
-import path, { dirname } from "path";
+import dotenv from "dotenv";
+dotenv.config({ path: `${__dirname}/.env` });
 
 import { Server } from "socket.io";
 import { createTableQuery } from "./db/table";
 import express from "express";
-import { fileURLToPath } from "url";
 import http from "http";
+import path from "path";
 import { queryDB } from "./db/database";
 import { router } from "./routes/routes";
 import { sockets } from "./routes/sockets";
-
-// const __filename = fileURLToPath(import.meta.url);
-// const __dirname = dirname(__filename);
-
-console.log(__filename, __dirname);
 
 const port = process.env.PORT || 4000;
 const PRODUCTION = process.env.PRODUCTION;
@@ -28,12 +24,14 @@ app.use(router());
 sockets(io);
 
 if (USE_DB) {
-    console.log("Using database!");
-    queryDB(createTableQuery).catch((e: any) => {
-        console.log("Couldn't connect to database. Shutting down...");
-        console.error(e);
-        process.exit();
-    });
+    console.log("Trying to connect to database...");
+    queryDB(createTableQuery)
+        .then(() => console.log("Connected to database!"))
+        .catch((e: any) => {
+            console.log("Couldn't connect to database. Shutting down...");
+            console.error(e);
+            process.exit();
+        });
 }
 
 if (PRODUCTION) {
