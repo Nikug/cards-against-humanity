@@ -1,6 +1,7 @@
 import StateMachine from "javascript-state-machine";
 
-export const createStateMachine = (initialState) => {
+export const createStateMachine = (initialState: string) => {
+    // @ts-ignore
     const fsm = new StateMachine({
         init: initialState ?? "lobby",
         transitions: [

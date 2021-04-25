@@ -1,4 +1,6 @@
 {
     "watch": ["./"],
-    "exec": "ts-node ./main.js"
+    "ext": "ts,js,json",
+    "ignore": ["./build"],
+    "exec": "ts-node ./main.ts"
 }

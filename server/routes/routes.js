@@ -1,7 +1,7 @@
-import { ERROR_TYPES } from "../consts/error.js";
-import { createGame } from "../modules/game.js";
+import { ERROR_TYPES } from "../consts/error";
+import { createGame } from "../modules/game";
 import express from "express";
-import { transactionize } from "../db/util.js";
+import { transactionize } from "../db/util";
 
 const expressRouter = express.Router();
 

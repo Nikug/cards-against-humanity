@@ -1,19 +1,19 @@
 // Documentation for different types used
 
-import StateMachine from "javascript-state-machine";
+import type StateMachine from "javascript-state-machine";
 
-interface Game {
+export interface Game {
     id: string;
     players: Player[];
     cards: Cards;
-    stateMachine: typeof StateMachine;
+    stateMachine: StateMachine.StateMachine;
     client: ClientGame;
     currentRound: Round;
     timeout: NodeJS.Timeout;
     streak?: Streak;
 }
 
-interface ClientGame {
+export interface ClientGame {
     id: string;
     state: GameState;
     options: Options;
@@ -22,13 +22,13 @@ interface ClientGame {
     streak?: PublicStreak;
 }
 
-interface ClientTimers {
+export interface ClientTimers {
     duration: number | undefined; // Seconds
     passedTime: number | undefined; // Seconds
 }
 
 // This information is only shown to each player separately
-interface Player {
+export interface Player {
     id: string;
     publicID: string;
     sockets: string;
@@ -46,7 +46,7 @@ interface Player {
 
 // This information about a player is shown to other players
 // It is a subset of the playerObject
-interface PlayerPublic {
+export interface PlayerPublic {
     name: string;
     state: PlayerState;
     score: number;
@@ -57,23 +57,23 @@ interface PlayerPublic {
     avatar: Avatar;
 }
 
-interface Streak extends PublicStreak {
+export interface Streak extends PublicStreak {
     id: string;
 }
 
-interface PublicStreak {
+export interface PublicStreak {
     name: string;
     wins: number;
 }
 
-interface Avatar {
+export interface Avatar {
     hatType: number;
     eyeType: number;
     mouthType: number;
     skinType: number;
 }
 
-interface Cards {
+export interface Cards {
     whiteCards: WhiteCard[];
     blackCards: BlackCard[];
     sentBlackCards: BlackCard[];
@@ -81,13 +81,13 @@ interface Cards {
     playedBlackCards: BlackCard[];
 }
 
-interface WhiteCard {
+export interface WhiteCard {
     id: string;
     cardPackID: string;
     text: string;
 }
 
-interface BlackCard {
+export interface BlackCard {
     id: string;
     cardPackID: string;
     text: string;
@@ -95,7 +95,7 @@ interface BlackCard {
     whiteCardsToDraw: number;
 }
 
-interface Round {
+export interface Round {
     round: number;
     blackCard: BlackCard;
     cardCzar: string; // Not shown in client
@@ -111,7 +111,7 @@ interface Round {
     }[];
 }
 
-interface Options {
+export interface Options {
     maximumPlayers: number;
     winConditions: winConditions;
     winnerBecomesCardCzar: boolean;
@@ -124,7 +124,7 @@ interface Options {
     timers: Timers;
 }
 
-interface winConditions {
+export interface winConditions {
     scoreLimit: number;
     useScoreLimit: boolean;
 
@@ -133,7 +133,7 @@ interface winConditions {
 }
 
 // Values in seconds
-interface Timers {
+export interface Timers {
     selectBlackCard: number;
     useSelectBlackCard: boolean;
 
@@ -150,7 +150,7 @@ interface Timers {
     useRoundEnd: boolean;
 }
 
-interface CardPack {
+export interface CardPack {
     id: string;
     name: string;
     isNSFW: boolean;
@@ -158,13 +158,13 @@ interface CardPack {
     blackCards: number;
 }
 
-interface Notification {
+export interface Notification {
     text: string;
     type?: "default" | "error" | "success";
     time?: number; // seconds
 }
 
-type GameState =
+export type GameState =
     | "lobby"
     | "pickingBlackCard"
     | "playingWhiteCards"
@@ -173,7 +173,7 @@ type GameState =
     | "roundEnd"
     | "gameOver";
 
-type PlayerState =
+export type PlayerState =
     // Playing states
     | "active" // Default active state
     | "playing" // Picking a white card

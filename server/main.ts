@@ -1,16 +1,18 @@
 import path, { dirname } from "path";
 
-import { createTableQuery } from "./db/table.js";
+import { createTableQuery } from "./db/table";
 import express from "express";
 import { fileURLToPath } from "url";
 import http from "http";
-import { queryDB } from "./db/database.js";
-import { router } from "./routes/routes.js";
+import { queryDB } from "./db/database";
+import { router } from "./routes/routes";
 import socketIo from "socket.io";
-import { sockets } from "./routes/sockets.js";
+import { sockets } from "./routes/sockets";
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
+// const __filename = fileURLToPath(import.meta.url);
+// const __dirname = dirname(__filename);
+
+console.log(__filename, __dirname);
 
 const port = process.env.PORT || 4000;
 const PRODUCTION = process.env.PRODUCTION;
@@ -27,7 +29,7 @@ sockets(io);
 
 if (USE_DB) {
     console.log("Using database!");
-    queryDB(createTableQuery).catch((e) => {
+    queryDB(createTableQuery).catch((e: any) => {
         console.log("Couldn't connect to database. Shutting down...");
         console.error(e);
         process.exit();
