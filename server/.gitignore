@@ -2,8 +2,8 @@
 /node_modules
 
 # Built files
-/client/build
-/server/build
+../client/build
+/build
 
 # environment
 .env

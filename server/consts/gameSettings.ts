@@ -67,7 +67,7 @@ export const gameOptions = {
     },
 
     defaultGracePeriod: 1,
-};
+} as any;
 
 export const playerName = {
     minimumLength: 1,

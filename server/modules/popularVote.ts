@@ -23,7 +23,7 @@ export const popularVote = async (
     client?: PoolClient
 ) => {
     const game = await getGame(gameID, client);
-    if (!game) return;
+    if (!game || !game.currentRound) return;
 
     const { error } = validatePopularVote(game, playerID);
     if (!!error) {
@@ -46,7 +46,12 @@ export const popularVote = async (
     ];
     whiteCardsByPlayer.popularVote = whiteCardsByPlayer.popularVotes.length;
 
-    game.currentRound.whiteCardByPlayer = whiteCardsByPlayer;
+    game.currentRound.whiteCardsByPlayer = game.currentRound.whiteCardsByPlayer.map(
+        (cards: CAH.WhiteCardsByPlayer) =>
+            cards.playerID === whiteCardsByPlayer.playerID
+                ? whiteCardsByPlayer
+                : cards
+    );
     const newGame = setPlayerPopularVoteScore(
         game,
         whiteCardsByPlayer.playerID,
@@ -62,6 +67,7 @@ export const popularVote = async (
     );
 
     const player = getPlayer(newGame, playerID);
+    if (!player) return;
     emitToAllPlayerSockets(io, player, "send_popular_voted_cards", {
         whiteCardIDs: votedCardIDs || [],
     });

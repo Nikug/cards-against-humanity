@@ -52,7 +52,7 @@ export const setPlayerDisconnected = async (
     player.sockets = removeDisconnectedSockets(io, player.sockets);
 
     const remainingSockets = player.sockets.filter(
-        (socket) => socket !== socketID
+        (socket: string) => socket !== socketID
     );
     if (remainingSockets.length > 0 && !removePlayer) {
         player.sockets = remainingSockets;
@@ -63,9 +63,9 @@ export const setPlayerDisconnected = async (
 
     if (removePlayer || player.state === "spectating") {
         game.players = game.players.filter(
-            (gamePlayer) => gamePlayer.id !== player.id
+            (gamePlayer: CAH.Player) => gamePlayer.id !== player.id
         );
-        player.sockets.map((socket) => {
+        player.sockets.map((socket: string) => {
             closeSocketWithID(io, socket);
         });
     } else {
@@ -92,7 +92,9 @@ export const setPlayerDisconnected = async (
         game.players = handleHostLeaving(game, player, client);
         if (!game.players) return;
 
-        const newHost = game.players.find((player) => player.isHost);
+        const newHost = game.players.find(
+            (player: CAH.Player) => player.isHost
+        );
         emitToAllPlayerSockets(io, newHost, "upgraded_to_host", {
             notification: {
                 text: ERROR_TYPES.promotedToHost,

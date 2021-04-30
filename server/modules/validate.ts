@@ -110,7 +110,7 @@ const validateTimers = (timers: CAH.Timers): CAH.Timers => {
         "useSelectWinner",
         "useRoundEnd",
     ];
-    let newTimers = {};
+    let newTimers = {} as CAH.Timers;
 
     for (const [key, value] of Object.entries(timers)) {
         if (!keys.includes(key)) continue;

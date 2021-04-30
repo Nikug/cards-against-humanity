@@ -71,7 +71,10 @@ const gameStateChange = async (
         return;
     } else if (transition === "startReading") {
         // There might not be any cards to read, in which case skip round
-        if (game.currentRound.whiteCardsByPlayer.length === 0) {
+        if (
+            game.currentRound &&
+            game.currentRound.whiteCardsByPlayer.length === 0
+        ) {
             const cardCzar = currentCardCzar(game.players);
             if (!cardCzar) return;
 
@@ -94,6 +97,7 @@ const gameStateChange = async (
         setNewTimeout = "startRound";
     }
 
+    // @ts-ignore
     game.stateMachine[transition]();
     game.client.state = game.stateMachine.state;
     game.players = setPlayersActive(game.players);

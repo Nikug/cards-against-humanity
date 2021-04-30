@@ -150,6 +150,7 @@ export interface Timers {
 
     roundEnd: number;
     useRoundEnd: boolean;
+    [key: string]: number | boolean;
 }
 
 export interface CardPack {

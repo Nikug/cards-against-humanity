@@ -12,6 +12,12 @@ import { sendNotification } from "./socket";
 
 const sanitizer = sanitize();
 
+interface ApiBlackCard {
+    content: string;
+    pick: number;
+    draw: number;
+}
+
 export const addCardPack = async (
     io: SocketIO.Server,
     socket: SocketIO.Socket,
@@ -44,18 +50,20 @@ export const addCardPack = async (
         return;
     }
 
-    const whiteCards = json.definition.white.map((item, i) => ({
+    const whiteCards = json.definition.white.map((item: string, i: number) => ({
         id: `w-${cleanID}-${i.toString()}`,
         cardPackID: cleanID,
         text: item,
     }));
-    const blackCards = json.definition.black.map((item, i) => ({
-        id: `b-${cleanID}-${i.toString()}`,
-        cardPackID: cleanID,
-        text: item.content,
-        whiteCardsToPlay: item.pick,
-        whiteCardsToDraw: item.draw,
-    }));
+    const blackCards = json.definition.black.map(
+        (item: ApiBlackCard, i: number) => ({
+            id: `b-${cleanID}-${i.toString()}`,
+            cardPackID: cleanID,
+            text: item.content,
+            whiteCardsToPlay: item.pick,
+            whiteCardsToDraw: item.draw,
+        })
+    );
 
     const cardPack = {
         id: json.id,
@@ -114,7 +122,8 @@ export const addCardPackToGame = async (
 
     if (
         game.client.options.cardPacks.some(
-            (existingCardPack) => existingCardPack.id === cardPack.id
+            (existingCardPack: CAH.CardPack) =>
+                existingCardPack.id === cardPack.id
         )
     )
         return undefined;
@@ -158,13 +167,13 @@ export const removeCardPackFromGame = async (
     }
 
     game.client.options.cardPacks = game.client.options.cardPacks.filter(
-        (cardPack) => cardPack.id !== cardPackID
+        (cardPack: CAH.CardPack) => cardPack.id !== cardPackID
     );
     game.cards.whiteCards = game.cards.whiteCards.filter(
-        (card) => card.cardPackID !== cardPackID
+        (card: CAH.WhiteCard) => card.cardPackID !== cardPackID
     );
     game.cards.blackCards = game.cards.blackCards.filter(
-        (card) => card.cardPackID !== cardPackID
+        (card: CAH.BlackCard) => card.cardPackID !== cardPackID
     );
 
     await setGame(game, client);

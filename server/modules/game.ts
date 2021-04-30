@@ -79,7 +79,10 @@ export const getGameIds = async (client: pg.PoolClient) => {
     }
 };
 
-export const getGame = async (gameID: string, client?: pg.PoolClient) => {
+export const getGame = async (
+    gameID: string,
+    client?: pg.PoolClient
+): Promise<CAH.Game | undefined> => {
     if (process.env.USE_DB) {
         const game = await getDBGame(gameID, client);
         return game;
@@ -193,7 +196,7 @@ export const startGame = async (
 
     const activePlayers = getActivePlayers(game.players);
     const cardCzarIndex = randomBetween(0, activePlayers.length - 1);
-    game.players = game.players.map((player) =>
+    game.players = game.players.map((player: CAH.Player) =>
         player.id === activePlayers[cardCzarIndex].id
             ? { ...player, isCardCzar: true }
             : player
@@ -273,7 +276,10 @@ export const startNewRound = async (
     game.players = setPopularVoteLeader(game.players);
     game.players = setPlayersWaiting(game.players);
 
-    const cardCzar = game.players.find((player) => player.isCardCzar);
+    const cardCzar =
+        game.players.find((player: CAH.Player) => player.isCardCzar) ??
+        game.players[0];
+
     game = dealBlackCards(io, cardCzar.sockets, game);
 
     game = changeGameStateAfterTime(io, game, "startPlayingWhiteCards");
@@ -325,7 +331,7 @@ export const findGameAndPlayerBySocketID = async (
         const game = await getDBGameBySocketId(socketID, client);
         if (!game) return undefined;
 
-        const player = game.players.find((player) =>
+        const player = game.players.find((player: CAH.Player) =>
             player.sockets.includes(socketID)
         );
         return { game, player };

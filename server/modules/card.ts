@@ -42,7 +42,7 @@ export const playWhiteCards = async (
     client?: pg.PoolClient
 ) => {
     let game = await getGame(gameID, client);
-    if (!game) return;
+    if (!game || !game.currentRound) return;
 
     const { error } = validatePlayerPlayingWhiteCards(
         game,
@@ -71,7 +71,7 @@ export const playWhiteCards = async (
     ];
 
     player.state = "waiting";
-    game.players = game.players.map((oldPlayer) =>
+    game.players = game.players.map((oldPlayer: CAH.Player) =>
         oldPlayer.id === player.id ? player : oldPlayer
     );
 
@@ -134,21 +134,23 @@ export const selectBlackCard = async (
 
     if (
         !game.cards.sentBlackCards.some(
-            (blackCard) => blackCard.id === selectedCardID
+            (blackCard: CAH.BlackCard) => blackCard.id === selectedCardID
         )
     )
         return;
 
     if (discardedCardIDs.length !== gameOptions.blackCardsToChooseFrom - 1)
         return;
-    const discardedCards = game.cards.sentBlackCards.filter((blackCard) =>
-        discardedCardIDs.includes(blackCard.id)
+    const discardedCards = game.cards.sentBlackCards.filter(
+        (blackCard: CAH.BlackCard) => discardedCardIDs.includes(blackCard.id)
     );
     if (discardedCards.length !== discardedCardIDs.length) return;
 
     const selectedCard = game.cards.sentBlackCards.find(
-        (blackCard) => blackCard.id === selectedCardID
+        (blackCard: CAH.BlackCard) => blackCard.id === selectedCardID
     );
+    if (!selectedCard) return;
+
     game.cards.sentBlackCards = [];
 
     game.cards.playedBlackCards = [
@@ -336,7 +338,7 @@ export const showWhiteCard = async (
     client?: pg.PoolClient
 ) => {
     const game = await getGame(gameID, client);
-    if (!game) return;
+    if (!game || !game.currentRound) return;
 
     const { error } = validateShowingWhiteCard(game, playerID);
     if (!!error) {
@@ -435,7 +437,7 @@ export const selectWinner = async (
     client?: pg.PoolClient
 ) => {
     const game = await getGame(gameID, client);
-    if (!game) return;
+    if (!game || !game.currentRound) return;
 
     const { result, error } = validatePickingWinner(game, playerID);
     if (!!error) {
@@ -452,7 +454,7 @@ export const selectWinner = async (
     game.players = addScore(game.players, winnerID, 1);
 
     const updatedCardsByPlayer = game.currentRound.whiteCardsByPlayer.map(
-        (cardsByPlayer) =>
+        (cardsByPlayer: CAH.WhiteCardsByPlayer) =>
             cardsByPlayer.playerID === winnerID
                 ? { ...cardsByPlayer, wonRound: true }
                 : cardsByPlayer

@@ -13,7 +13,12 @@ import sanitize from "sanitize";
 
 const sanitizer = sanitize();
 
-export const emitToAllPlayerSockets = (io, player, message, data) => {
+export const emitToAllPlayerSockets = (
+    io: SocketIO.Server,
+    player: CAH.Player,
+    message: string,
+    data: Object
+) => {
     player.sockets.map((socket) => {
         io.to(socket).emit(message, data);
     });
@@ -124,7 +129,7 @@ export const publicPlayersObject = (
     });
 };
 
-export const setPlayersPlaying = (players: CAH.Player[]) => {
+export const setPlayersPlaying = (players: CAH.Player[]): CAH.Player[] => {
     return players.map((player) => {
         if (player.isCardCzar) {
             return { ...player, state: "waiting" };
@@ -136,7 +141,7 @@ export const setPlayersPlaying = (players: CAH.Player[]) => {
     });
 };
 
-export const setPlayersActive = (players: CAH.Player[]) => {
+export const setPlayersActive = (players: CAH.Player[]): CAH.Player[] => {
     return players.map((player) =>
         player.state === "playing" || player.state === "waiting"
             ? { ...player, state: "active" }

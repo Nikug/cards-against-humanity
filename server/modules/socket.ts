@@ -5,14 +5,16 @@ import { NOTIFICATION_TIME } from "../consts/error";
 import { PoolClient } from "pg";
 
 export const closeSocketWithID = (io: SocketIO.Server, socketID: string) => {
-    const socket = io.of("/").sockets[socketID];
+    // @ts-ignore
+    const socket = io.sockets[socketID];
     if (socket) {
         socket.disconnect(true);
     }
 };
 
 export const getSocketsWithIDs = (io: SocketIO.Server, socketIDs: string[]) => {
-    const sockets = io.of("/").sockets;
+    const sockets = io.sockets;
+    // @ts-ignore
     const playerSockets = socketIDs.map((id) => sockets[id]);
     return playerSockets;
 };
@@ -56,6 +58,7 @@ export const removeDisconnectedSockets = (
     socketIDs: string[]
 ) => {
     return socketIDs.filter(
-        (socket) => io.of("/").sockets[socket] !== undefined
+        // @ts-ignore
+        (socket) => io.sockets[socket] !== undefined
     );
 };
