@@ -6,6 +6,7 @@ import Icon from "./../icon";
 import { Button } from "./../button";
 import { BUTTON_TYPES } from "./../button";
 import { Toggle } from "./controls/toggle";
+import { TextControl } from "../TextControl";
 
 export const CONTROL_TYPES = {
     toggle: "toggle",
@@ -101,33 +102,40 @@ export const Setting = ({
         hasConfirm = false
     ) => {
         return (
-            <div className="text-control">
-                <input
-                    type="text"
-                    className="text-input"
-                    placeholder={placeholderText}
-                    value={currentValue}
-                    onChange={
-                        hasConfirm
-                            ? (e) => handleKeyDown(e, field)
-                            : (e) =>
-                                  handleTextFieldChange(
-                                      e,
-                                      onChangeCallback,
-                                      field
-                                  )
-                    }
-                />
-                {hasConfirm && (
-                    <Button
-                        type={BUTTON_TYPES.PRIMARY}
-                        callback={() =>
-                            handleTextFieldChange(null, onChangeCallback, field)
+            <>
+                <TextControl />
+                <div className="text-control">
+                    <input
+                        type="text"
+                        className="text-input"
+                        placeholder={placeholderText}
+                        value={currentValue}
+                        onChange={
+                            hasConfirm
+                                ? (e) => handleKeyDown(e, field)
+                                : (e) =>
+                                      handleTextFieldChange(
+                                          e,
+                                          onChangeCallback,
+                                          field
+                                      )
                         }
-                        icon={customButtonIcon || "add_circle_outline"}
-                    ></Button>
-                )}
-            </div>
+                    />
+                    {hasConfirm && (
+                        <Button
+                            type={BUTTON_TYPES.PRIMARY}
+                            callback={() =>
+                                handleTextFieldChange(
+                                    null,
+                                    onChangeCallback,
+                                    field
+                                )
+                            }
+                            icon={customButtonIcon || "add_circle_outline"}
+                        ></Button>
+                    )}
+                </div>
+            </>
         );
     };
 

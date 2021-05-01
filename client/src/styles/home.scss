@@ -6,57 +6,60 @@
     height: 100%;
     width: 100%;
 
+    box-sizing: border-box;
+    padding: 2em;
+
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
 
     .welcome-text {
-        display: block;
         color: $app-text;
         font-family: "Staatliches", cursive;
-        width: fit-content;
         font-size: 1.8em;
-        max-width: 16em;
         text-align: center;
-        margin-bottom: 8rem;
 
-        text-shadow: -2px -2px $header-button-hover,
-            -2px -1.5px $header-button-hover, -2px -1px $header-button-hover,
-            -2px -0.5px $header-button-hover, -2px 0px $header-button-hover,
-            -2px 0.5px $header-button-hover, -2px 1px $header-button-hover,
-            -2px 1.5px $header-button-hover, -2px 2px $header-button-hover,
-            -1.5px 2px $header-button-hover, -1px 2px $header-button-hover,
-            -0.5px 2px $header-button-hover, 0px 2px $header-button-hover,
-            0.5px 2px $header-button-hover, 1px 2px $header-button-hover,
-            1.5px 2px $header-button-hover, 2px 2px $header-button-hover,
-            2px 1.5px $header-button-hover, 2px 1px $header-button-hover,
-            2px 0.5px $header-button-hover, 2px 0px $header-button-hover,
-            2px -0.5px $header-button-hover, 2px -1px $header-button-hover,
-            2px -1.5px $header-button-hover, 2px -2px $header-button-hover,
-            1.5px -2px $header-button-hover, 1px -2px $header-button-hover,
-            0.5px -2px $header-button-hover, 0px -2px $header-button-hover,
-            -0.5px -2px $header-button-hover, -1px -2px $header-button-hover,
-            -1.5px -2px $header-button-hover;
+        width: fit-content;
+        max-width: 16em;
+
+        margin-bottom: 2em;
+
+        @include text-shadow;
     }
 
     .create-or-join-game-buttons {
         display: flex;
-        flex-direction: row;
+        flex-direction: column;
+        align-items: center;
         color: $app-text;
 
-        // All except the first child.
         .border {
-            border-left: $color-white 1px solid;
-            padding-left: 0.5rem;
+            border-top: $color-white 1px solid;
+            padding: 2em 0;
+            margin: 2em 0;
+        }
+
+        @include small-desktop {
+            flex-direction: row;
+
+            .border {
+                border-top: none;
+                border-left: $color-white 1px solid;
+                padding: 2em 2em;
+                margin: 2em 2em;
+            }
         }
 
         .container {
             display: flex;
             flex-direction: column;
             align-content: center;
-            width: 50%;
-            padding: 8rem 0 10rem 0;
+            width: 100%;
+
+            @include small-desktop {
+                flex: 1;
+            }
 
             .text {
                 align-self: center;
@@ -70,28 +73,7 @@
                 display: flex;
                 flex-direction: row;
                 justify-content: center;
-            }
-
-            .input {
-                align-self: center;
-                width: 20rem;
-                background-color: $input-background;
-                color: $input-text;
-                border: 0;
-                border-bottom: 1px solid $input-underline;
-                border-radius: 3px;
-                height: 1.3rem;
-                padding: 0.5rem;
-                margin: 0 0.5rem;
-                font-size: 1.3rem;
-
-                &:hover {
-                    background-color: $input-background-hover;
-                }
-
-                &:focus {
-                    background-color: $input-background-hover;
-                }
+                flex-wrap: wrap;
             }
         }
     }

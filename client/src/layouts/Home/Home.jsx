@@ -1,8 +1,9 @@
-import { BUTTON_TYPES, Button } from "../components/button";
+import { BUTTON_TYPES, Button } from "../../components/button";
 import React, { useState } from "react";
 
-import { translateCommon } from "../helpers/translation-helpers";
+import { translateCommon } from "../../helpers/translation-helpers";
 import { useTranslation } from "react-i18next";
+import { TextControl } from "../../components/TextControl";
 
 export const Home = ({ joinExistingGame, startNewGame }) => {
     const { t } = useTranslation();
@@ -46,26 +47,22 @@ export const Home = ({ joinExistingGame, startNewGame }) => {
                         ></Button>
                     </div>
                 </div>
-                <div className="container border">
+                <div className="container">
                     <div className="text">
                         {translateCommon("joinExistingGame", t)}
                     </div>
                     <div className="input-and-button-container">
-                        <input
-                            type="text"
+                        <TextControl
                             className="input"
                             placeholder="existing-game-69"
-                            onChange={(e) => newUrlChange(e)}
+                            onChange={newUrlChange}
+                            onKeyDown={handleKeyDown}
                             value={newUrl}
-                            onKeyDown={(e) => handleKeyDown(e)}
+                            hasConfirm={true}
+                            buttonText={translateCommon("joinToGame", t)}
+                            buttonOnClick={joinExistingGameCallback}
+                            buttonIcon={"login"}
                         />
-                        <Button
-                            text={translateCommon("joinToGame", t)}
-                            type={BUTTON_TYPES.PRIMARY}
-                            callback={joinExistingGameCallback}
-                            callbackParams={{}}
-                            icon="login"
-                        ></Button>
                     </div>
                 </div>
             </div>

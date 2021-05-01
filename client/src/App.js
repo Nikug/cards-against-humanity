@@ -8,7 +8,7 @@ import { Button } from "./components/button";
 import { Game } from "./layouts/Game/Game.jsx";
 import { GameContextProvider } from "./contexts/GameContext";
 import { Header } from "./components/header";
-import { Home } from "./layouts/Home";
+import { Home } from "./layouts/Home/Home.jsx";
 import { Instructions } from "./layouts/Instructions";
 import { Notification } from "./components/notification/notification";
 import { NotificationContextProvider } from "./contexts/NotificationContext";

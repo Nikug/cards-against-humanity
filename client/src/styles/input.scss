@@ -8,9 +8,8 @@
     border: 0;
     border-bottom: 1px solid $input-underline;
     border-radius: 3px;
-    height: 100%;
+    //height: 100%;
     padding: 0.5rem;
-    margin: 0 0.5rem;
     font-size: 1.3rem;
 
     &:hover {
@@ -20,4 +19,12 @@
     &:focus {
         background-color: $input-background-hover;
     }
+}
+
+.disabled .text-input {
+    background-color: lighten($input-background, 15%);
+    color: $settings-text-disabled;
+    border: none;
+
+    pointer-events: none;
 }

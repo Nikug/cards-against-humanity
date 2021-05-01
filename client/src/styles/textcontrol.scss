@@ -1,0 +1,16 @@
+.text-control {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    align-items: flex-start;
+    //gap: 1em;
+
+    .text-input {
+        flex: 1;
+        margin-bottom: 0.5em;
+    }
+
+    .button {
+        margin-left: 0.5em;
+    }
+}
