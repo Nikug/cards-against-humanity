@@ -1,5 +1,5 @@
 import { Link, useHistory, useLocation } from "react-router-dom";
-import React, { Component, useState } from "react";
+import React, { Component, useCallback, useState } from "react";
 
 import Icon from "./icon";
 import { deleteCookie } from "../helpers/cookies";
@@ -19,6 +19,30 @@ export const Header = (props) => {
     const { game, player } = props;
 
     const [menuIsOpen, setMenuIsOpen] = useState(false);
+    const [showTitle, setShowTitle] = useState(false);
+
+    const nameRef = useCallback(
+        (node) => {
+            if (node !== null) {
+                const playerNameElement = node;
+
+                if (playerNameElement) {
+                    const { clientWidth, scrollWidth } = playerNameElement;
+                    if (
+                        !showTitle &&
+                        playerNameElement &&
+                        clientWidth < scrollWidth
+                    ) {
+                        setShowTitle(true);
+                    } else if (showTitle && !(clientWidth < scrollWidth)) {
+                        setShowTitle(false);
+                    }
+                }
+            }
+            return node;
+        },
+        [text]
+    );
 
     const toggleMenu = () => {
         setMenuIsOpen(!menuIsOpen);
@@ -41,10 +65,18 @@ export const Header = (props) => {
 
     return (
         <div className="header">
-            <div className="header-logo-and-name">
-                <img className="logo" src={logo} />
-                <span className="name">{text.toUpperCase()}</span>
-            </div>
+            <Link
+                to="/"
+                className="header-link"
+                title={showTitle ? text : undefined}
+            >
+                <div className="header-logo-and-name">
+                    <img className="logo" src={logo} />
+                    <span ref={nameRef} className="name">
+                        {text.toUpperCase()}
+                    </span>
+                </div>
+            </Link>
             <div className="buttons">
                 <span className="header-button language">
                     <Icon

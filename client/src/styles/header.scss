@@ -1,8 +1,12 @@
 @import "./colors.scss";
 @import "./consts.scss";
 
+.header-link {
+    width: fit-content;
+}
+
 .header {
-    --burger-menu-width: 10em;
+    --burger-menu-width: 11em;
     display: flex;
     flex-shrink: 0;
     justify-content: space-between;
@@ -27,6 +31,11 @@
     }
 }
 
+.header-link {
+    width: 100%;
+    max-width: calc(100% - var(--burger-menu-width));
+}
+
 .header-logo-and-name {
     font-weight: 800;
 
@@ -36,7 +45,7 @@
     align-items: center;
 
     margin: 0 0.8rem;
-    max-width: calc(100% - var(--burger-menu-width));
+    width: 100%;
 
     user-select: none;
     cursor: pointer;
