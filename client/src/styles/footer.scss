@@ -2,6 +2,7 @@
 
 .music-player {
     user-select: auto;
+    display: flex;
 }
 
 .main-footer {
@@ -11,11 +12,20 @@
     bottom: 0;
     display: flex;
     flex-shrink: 0;
-    justify-content: space-between;
     align-items: flex-end;
 
     > * {
+        width: 100%;
         color: $copyright-text;
         user-select: none;
+        text-align: center;
+    }
+
+    :first-child {
+        text-align: start;
+    }
+
+    :last-child {
+        text-align: end;
     }
 }
