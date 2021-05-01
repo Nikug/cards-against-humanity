@@ -47,7 +47,7 @@ export const Home = ({ joinExistingGame, startNewGame }) => {
                         ></Button>
                     </div>
                 </div>
-                <div className="container">
+                <div className="container border">
                     <div className="text">
                         {translateCommon("joinExistingGame", t)}
                     </div>
