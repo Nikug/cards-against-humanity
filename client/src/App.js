@@ -270,73 +270,79 @@ export const App = () => {
                     }`}
                 >
                     <div>
-                        <div className="basic-grid">
+                        <div className="content">
                             <Header
                                 game={game}
                                 player={player}
                                 reset={resetData}
                             />
-                            <Switch>
-                                <Route
-                                    exact
-                                    path="/"
-                                    render={(props) => (
-                                        <Home
-                                            startNewGame={startNewGame}
-                                            joinExistingGame={joinExistingGame}
-                                            history={history}
-                                        />
-                                    )}
-                                />
-                                <Route
-                                    path="/instructions"
-                                    render={(props) => (
-                                        <Instructions path={"/instructions"} />
-                                    )}
-                                />
-                                <Route
-                                    exact
-                                    path="/g/:id"
-                                    render={(props) => (
-                                        <GameContextProvider
-                                            value={{
-                                                game,
-                                                player,
-                                                updateData,
-                                            }}
-                                        >
-                                            <Game
-                                                updateData={updateData}
-                                                showDebug={showDebug}
+                            <div className="main">
+                                <Switch>
+                                    <Route
+                                        exact
+                                        path="/"
+                                        render={(props) => (
+                                            <Home
+                                                startNewGame={startNewGame}
+                                                joinExistingGame={
+                                                    joinExistingGame
+                                                }
+                                                history={history}
                                             />
-                                        </GameContextProvider>
-                                    )}
-                                />
-                                <Route
-                                    exact
-                                    path="/support-us"
-                                    render={(props) => (
-                                        <div
-                                            style={{
-                                                display: "flex",
-                                                flexDirection: "column",
-                                            }}
-                                        >
-                                            Hmmmm...?
-                                            <Button
-                                                text={translateCommon(
-                                                    "back",
-                                                    t
-                                                )}
-                                                callback={navigate}
-                                                callbackParams={"/"}
+                                        )}
+                                    />
+                                    <Route
+                                        path="/instructions"
+                                        render={(props) => (
+                                            <Instructions
+                                                path={"/instructions"}
                                             />
-                                        </div>
-                                    )}
-                                />
-                            </Switch>
+                                        )}
+                                    />
+                                    <Route
+                                        exact
+                                        path="/g/:id"
+                                        render={(props) => (
+                                            <GameContextProvider
+                                                value={{
+                                                    game,
+                                                    player,
+                                                    updateData,
+                                                }}
+                                            >
+                                                <Game
+                                                    updateData={updateData}
+                                                    showDebug={showDebug}
+                                                />
+                                            </GameContextProvider>
+                                        )}
+                                    />
+                                    <Route
+                                        exact
+                                        path="/support-us"
+                                        render={(props) => (
+                                            <div
+                                                style={{
+                                                    display: "flex",
+                                                    flexDirection: "column",
+                                                }}
+                                            >
+                                                Hmmmm...?
+                                                <Button
+                                                    text={translateCommon(
+                                                        "back",
+                                                        t
+                                                    )}
+                                                    callback={navigate}
+                                                    callbackParams={"/"}
+                                                />
+                                            </div>
+                                        )}
+                                    />
+                                </Switch>
+                            </div>
+                            <Footer secretClick={secretClick} />
                         </div>
-                        <Footer secretClick={secretClick} />
                     </div>
                 </div>
             </NotificationContextProvider>

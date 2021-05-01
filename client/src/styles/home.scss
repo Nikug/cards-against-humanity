@@ -2,11 +2,14 @@
 
 .home-wrapper {
     user-select: none;
+
+    height: 100%;
+    width: 100%;
+
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    padding-top: 6rem;
 
     .welcome-text {
         display: block;
