@@ -10,7 +10,6 @@ import { WholePageLoader } from "./components/WholePageLoader";
 
 ReactDOM.render(
     <React.StrictMode>
-        <WholePageLoader />
         <Suspense fallback={<WholePageLoader />}>
             <Router>
                 <App />

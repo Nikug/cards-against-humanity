@@ -1,15 +1,7 @@
 @import "./colors.scss";
 
-.copyrights {
-    color: $copyright-text;
-    font-size: 0.6em;
-    user-select: none;
-}
-
 .music-player {
-    color: $music-player;
-    color: $copyright-text;
-    font-size: 0.6em;
+    user-select: auto;
 }
 
 .main-footer {
@@ -21,4 +13,10 @@
     display: flex;
     justify-content: space-between;
     align-items: flex-end;
+
+    > * {
+        color: $copyright-text;
+        font-size: 0.6em;
+        user-select: none;
+    }
 }

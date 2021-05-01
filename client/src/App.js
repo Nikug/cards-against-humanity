@@ -27,6 +27,7 @@ import {
     removeItemFromLocalStorage,
     setItemToLocalStorage,
 } from "./helpers/localstoragehelpers";
+import { Footer } from "./components/footer/Footer";
 
 export const App = () => {
     /*****************************************************************/ // Purely for hiding dev things from the production.
@@ -336,14 +337,7 @@ export const App = () => {
                                 />
                             </Switch>
                         </div>
-                        <div className="main-footer">
-                            <span className="music-player">
-                                <Music />
-                            </span>
-                            <span className="copyrights" onClick={secretClick}>
-                                &copy; {new Date().getFullYear()}
-                            </span>
-                        </div>
+                        <Footer secretClick={secretClick} />
                     </div>
                 </div>
             </NotificationContextProvider>
