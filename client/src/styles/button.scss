@@ -4,7 +4,7 @@ $lgd: 180deg; // linear-gradient degree
 
 .button {
     font-weight: 600;
-    font-size: 1.3rem;
+    font-size: 1.2em;
     color: $button-text;
     outline: 0;
     display: inline-flex;
@@ -152,11 +152,11 @@ $lgd: 180deg; // linear-gradient degree
 
     &.big-btn {
         font-weight: 600;
-        font-size: 2.2rem;
+        font-size: 2.2em;
         padding: 0.8rem 1.4rem;
 
         .button-icon {
-            font-size: 36px;
+            font-size: 2.2em;
         }
     }
 }

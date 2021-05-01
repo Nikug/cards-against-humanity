@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Route, Switch, useHistory, useLocation } from "react-router-dom";
-import { deleteCookie, getCookie, setCookie } from "./helpers/cookies";
+import { deleteCookie, setCookie } from "./helpers/cookies";
 
 import "./index.scss";
 
@@ -10,7 +10,6 @@ import { GameContextProvider } from "./contexts/GameContext";
 import { Header } from "./components/header";
 import { Home } from "./layouts/Home";
 import { Instructions } from "./layouts/Instructions";
-import Music from "./components/music";
 import { Notification } from "./components/notification/notification";
 import { NotificationContextProvider } from "./contexts/NotificationContext";
 import { WholePageLoader } from "./components/WholePageLoader";
