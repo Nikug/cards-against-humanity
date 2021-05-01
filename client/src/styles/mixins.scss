@@ -17,3 +17,9 @@
         -0.5px -2px $header-button-hover, -1px -2px $header-button-hover,
         -1.5px -2px $header-button-hover;
 }
+
+@mixin cut-text {
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+}

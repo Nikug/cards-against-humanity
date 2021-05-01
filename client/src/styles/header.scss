@@ -2,39 +2,56 @@
 @import "./consts.scss";
 
 .header {
+    --burger-menu-width: 10em;
     display: flex;
+    flex-shrink: 0;
     justify-content: space-between;
+
     width: 100%;
+    height: 2em;
+
+    box-sizing: border-box;
     padding: 0.3rem 0;
+
     color: $color-white;
     background: linear-gradient(180deg, $header-shadow, $header-background)
         $header-background;
     user-select: none;
+
     font-size: 1.5rem;
-    max-height: $header-height;
-    box-sizing: border-box;
 
     .logo {
-        width: 2rem;
-        height: 2rem;
+        width: 1.6em;
+        height: 1.6em;
         margin-right: 0.5rem;
     }
-
-    margin-bottom: 0.5em;
 }
 
-.header-text {
-    margin: 0 0.8rem;
+.header-logo-and-name {
     font-weight: 800;
-    cursor: pointer;
+
     display: flex;
+    flex: 1;
     flex-direction: row;
+    align-items: center;
+
+    margin: 0 0.8rem;
+    max-width: calc(100% - var(--burger-menu-width));
+
     user-select: none;
+    cursor: pointer;
+
+    .name {
+        white-space: nowrap;
+
+        @include cut-text;
+    }
 }
 
 .buttons {
     display: flex;
-    margin-right: 1.2rem;
+    flex-shrink: 0;
+    margin-right: 0.2em;
     justify-items: center;
     align-items: center;
 
@@ -51,6 +68,7 @@
     align-items: center;
     padding-right: 0.8rem;
     cursor: pointer;
+    flex-shrink: 1;
 
     :nth-child(n) {
         border-left: none;
@@ -64,23 +82,7 @@
     &:hover {
         transition: 0.1s ease;
         color: $header-button-text-hover;
-        text-shadow: -2px -2px $header-button-hover,
-            -2px -1.5px $header-button-hover, -2px -1px $header-button-hover,
-            -2px -0.5px $header-button-hover, -2px 0px $header-button-hover,
-            -2px 0.5px $header-button-hover, -2px 1px $header-button-hover,
-            -2px 1.5px $header-button-hover, -2px 2px $header-button-hover,
-            -1.5px 2px $header-button-hover, -1px 2px $header-button-hover,
-            -0.5px 2px $header-button-hover, 0px 2px $header-button-hover,
-            0.5px 2px $header-button-hover, 1px 2px $header-button-hover,
-            1.5px 2px $header-button-hover, 2px 2px $header-button-hover,
-            2px 1.5px $header-button-hover, 2px 1px $header-button-hover,
-            2px 0.5px $header-button-hover, 2px 0px $header-button-hover,
-            2px -0.5px $header-button-hover, 2px -1px $header-button-hover,
-            2px -1.5px $header-button-hover, 2px -2px $header-button-hover,
-            1.5px -2px $header-button-hover, 1px -2px $header-button-hover,
-            0.5px -2px $header-button-hover, 0px -2px $header-button-hover,
-            -0.5px -2px $header-button-hover, -1px -2px $header-button-hover,
-            -1.5px -2px $header-button-hover;
+        @include text-shadow;
 
         .menu-container {
             text-shadow: none;
@@ -89,14 +91,23 @@
 }
 
 .header-button-text {
+    display: none;
     margin-bottom: -0.3rem;
+
+    @include small-desktop {
+        display: block;
+    }
 }
 
 .header-icon {
     display: flex;
     justify-items: center;
     align-items: center;
-    margin-right: 0.5rem;
+    margin-right: 0;
+
+    @include small-desktop {
+        margin-right: 0.5rem;
+    }
 }
 
 .thinking-icon {

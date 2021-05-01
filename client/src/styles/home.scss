@@ -16,6 +16,7 @@
     justify-content: center;
 
     .welcome-text {
+        margin: 0;
         color: $app-text;
         font-family: "Staatliches", cursive;
         font-size: 1.8em;
@@ -24,7 +25,11 @@
         width: fit-content;
         max-width: 16em;
 
-        margin-bottom: 2em;
+        margin-bottom: 1em;
+
+        @include small-desktop {
+            margin-bottom: 2em;
+        }
 
         @include text-shadow;
     }

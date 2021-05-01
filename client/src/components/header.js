@@ -27,7 +27,7 @@ export const Header = (props) => {
     const history = useHistory();
     const pathName = useLocation().pathname;
 
-    console.log({id: game?.id, pathName});
+    console.log({ id: game?.id, pathName });
 
     const leaveGame = () => {
         deleteCookie("playerID");
@@ -41,12 +41,10 @@ export const Header = (props) => {
 
     return (
         <div className="header">
-            <Link to="/">
-                <div className="header-text">
-                    <img className="logo" src={logo} />
-                    {text.toUpperCase()}
-                </div>
-            </Link>
+            <div className="header-logo-and-name">
+                <img className="logo" src={logo} />
+                <span className="name">{text.toUpperCase()}</span>
+            </div>
             <div className="buttons">
                 <span className="header-button language">
                     <Icon
@@ -57,7 +55,7 @@ export const Header = (props) => {
                     <PopOverMenu
                         isDefaultOpen={menuIsOpen}
                         noControl={true}
-                        content={<LanguageSelector/>}
+                        content={<LanguageSelector />}
                     />
                 </span>
 
