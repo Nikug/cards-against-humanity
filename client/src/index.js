@@ -1,6 +1,6 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import "./index.scss";
+import "./styles/_loadingstyles.scss";
 import { App } from "./App";
 import * as serviceWorker from "./serviceWorker";
 import { BrowserRouter as Router } from "react-router-dom";
@@ -10,6 +10,7 @@ import { WholePageLoader } from "./components/WholePageLoader";
 
 ReactDOM.render(
     <React.StrictMode>
+        <WholePageLoader />
         <Suspense fallback={<WholePageLoader />}>
             <Router>
                 <App />

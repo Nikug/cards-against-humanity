@@ -40,25 +40,3 @@
         height: 100vh;
     }
 }
-
-.loading-page-spinner-container {
-    background: $app-background;
-    text-decoration: none;
-    font-family: "Teko", sans-serif;
-    font-size: 5em;
-    min-width: 100vw;
-    min-height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-direction: column;
-
-    .loading-text {
-        color: $app-text;
-        margin-bottom: 2em;
-    }
-
-    .loading-page-spinner {
-        width: 30%;
-    }
-}

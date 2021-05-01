@@ -1,0 +1,39 @@
+.loading-page-spinner-container {
+    background: $app-background;
+
+    text-decoration: none;
+    font-family: "Teko", sans-serif;
+    font-size: 2em;
+
+    @include small-desktop {
+        font-size: 3em;
+    }
+
+    width: 100vw;
+
+    height: 100vh;
+    overflow: hidden;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly;
+    flex-direction: column;
+
+    .texts {
+        text-align: center;
+        padding: 0.5em;
+    }
+
+    .loading-text {
+        color: $app-text;
+    }
+
+    .loading-page-spinner {
+        width: 20%;
+        margin: 0 auto;
+
+        @include small-desktop {
+            width: 15%;
+        }
+    }
+}

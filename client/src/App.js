@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import { Route, Switch, useHistory, useLocation } from "react-router-dom";
 import { deleteCookie, getCookie, setCookie } from "./helpers/cookies";
 
+import "./index.scss";
+
 import { Button } from "./components/button";
 import { Game } from "./layouts/Game/Game.jsx";
 import { GameContextProvider } from "./contexts/GameContext";
@@ -194,11 +196,13 @@ export const App = () => {
     }, [notificationParams, fireNotification, notificationCount]);
 
     useEffect(() => {
-        const playerID = getItemFromLocalStorage(LOCAL_STORAGE_FIELDS.PLAYER_ID);
+        const playerID = getItemFromLocalStorage(
+            LOCAL_STORAGE_FIELDS.PLAYER_ID
+        );
 
         if (!isNullOrUndefined(player)) {
             socket.emit("join_game", {
-                playerID
+                playerID,
             });
         } else {
             removeItemFromLocalStorage(LOCAL_STORAGE_FIELDS.PLAYER_ID);
@@ -348,19 +352,26 @@ export const App = () => {
 
     if (hasAcceptedCookies === false) {
         return (
-            <div className="App mono-background" style={{display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column'}}>
+            <div
+                className="App mono-background"
+                style={{
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    flexDirection: "column",
+                }}
+            >
                 <div>{translateCommon("doYouAcceptCookies", t)}</div>
                 <div>
                     <Button
-                        text={translateCommon('accept', t)}
+                        text={translateCommon("accept", t)}
                         callback={() => {
                             setItemToLocalStorage(
                                 LOCAL_STORAGE_FIELDS.HAS_ACCEPTED_COOKIES,
                                 "true"
                             );
                             setHasAcceptedCookies(true);
-                        }
-                        }
+                        }}
                     />
                 </div>
             </div>
