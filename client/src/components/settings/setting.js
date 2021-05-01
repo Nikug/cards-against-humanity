@@ -102,40 +102,33 @@ export const Setting = ({
         hasConfirm = false
     ) => {
         return (
-            <>
-                <TextControl />
-                <div className="text-control">
-                    <input
-                        type="text"
-                        className="text-input"
-                        placeholder={placeholderText}
-                        value={currentValue}
-                        onChange={
-                            hasConfirm
-                                ? (e) => handleKeyDown(e, field)
-                                : (e) =>
-                                      handleTextFieldChange(
-                                          e,
-                                          onChangeCallback,
-                                          field
-                                      )
+            <div className="text-control">
+                <input
+                    type="text"
+                    className="text-input"
+                    placeholder={placeholderText}
+                    value={currentValue}
+                    onChange={
+                        hasConfirm
+                            ? (e) => handleKeyDown(e, field)
+                            : (e) =>
+                                  handleTextFieldChange(
+                                      e,
+                                      onChangeCallback,
+                                      field
+                                  )
+                    }
+                />
+                {hasConfirm && (
+                    <Button
+                        type={BUTTON_TYPES.PRIMARY}
+                        callback={() =>
+                            handleTextFieldChange(null, onChangeCallback, field)
                         }
-                    />
-                    {hasConfirm && (
-                        <Button
-                            type={BUTTON_TYPES.PRIMARY}
-                            callback={() =>
-                                handleTextFieldChange(
-                                    null,
-                                    onChangeCallback,
-                                    field
-                                )
-                            }
-                            icon={customButtonIcon || "add_circle_outline"}
-                        ></Button>
-                    )}
-                </div>
-            </>
+                        icon={customButtonIcon || "add_circle_outline"}
+                    ></Button>
+                )}
+            </div>
         );
     };
 
