@@ -102,33 +102,19 @@ export const Setting = ({
         hasConfirm = false
     ) => {
         return (
-            <div className="text-control">
-                <input
-                    type="text"
-                    className="text-input"
-                    placeholder={placeholderText}
-                    value={currentValue}
-                    onChange={
-                        hasConfirm
-                            ? (e) => handleKeyDown(e, field)
-                            : (e) =>
-                                  handleTextFieldChange(
-                                      e,
-                                      onChangeCallback,
-                                      field
-                                  )
-                    }
-                />
-                {hasConfirm && (
-                    <Button
-                        type={BUTTON_TYPES.PRIMARY}
-                        callback={() =>
-                            handleTextFieldChange(null, onChangeCallback, field)
-                        }
-                        icon={customButtonIcon || "add_circle_outline"}
-                    ></Button>
-                )}
-            </div>
+            <TextControl
+                buttonIcon={customButtonIcon || "add_circle_outline"}
+                buttonOnClick={handleTextFieldChange}
+                buttonOnClickParams={[onChangeCallback]}
+                field={field}
+                hasConfirm={hasConfirm}
+                isDisabled={isDisabled}
+                onChange={hasConfirm ? handleKeyDown : handleTextFieldChange}
+                onChangeParams={hasConfirm ? [] : [onChangeCallback]}
+                onKeyDown={hasConfirm ? null : handleKeyDown}
+                placeholder={placeholderText}
+                value={currentValue}
+            />
         );
     };
 
@@ -140,8 +126,9 @@ export const Setting = ({
         setInputText(newInput);
     };
 
-    const handleTextFieldChange = (event, changeCallback, field) => {
-        if (event === null) {
+    const handleTextFieldChange = (event, field, changeCallback) => {
+        console.log({ changeCallback });
+        if (!event) {
             if (field) {
                 changeCallback({ field, value: inputText });
             } else {

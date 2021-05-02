@@ -1,4 +1,5 @@
 import React from "react";
+import { classNames } from "../helpers/classnames";
 
 import Icon from "./icon";
 
@@ -9,15 +10,15 @@ export const BUTTON_TYPES = {
 
 export const Button = React.forwardRef((props, ref) => {
     const {
-        text,
-        type,
-        icon,
-        iconPosition,
+        additionalClassname,
         callback,
         callbackParams,
-        additionalClassname,
         disabled,
         fill,
+        icon,
+        iconPosition,
+        text,
+        type,
     } = props;
     const noText = text === undefined || text === null || text.length === 0;
 
@@ -25,15 +26,12 @@ export const Button = React.forwardRef((props, ref) => {
         <>
             <button
                 ref={ref}
-                className={`button ${fill ? "fill" : ""} ${
-                    disabled ? "disabled" : ""
-                } ${additionalClassname ? additionalClassname : ""} ${
-                    type === BUTTON_TYPES.PRIMARY
-                        ? "primary"
-                        : type === BUTTON_TYPES.GREEN
-                        ? "green"
-                        : ""
-                }`}
+                className={classNames("button", additionalClassname, {
+                    fill,
+                    disabled,
+                    primary: type === BUTTON_TYPES.PRIMARY,
+                    green: type === BUTTON_TYPES.GREEN,
+                })}
                 onClick={(e) => {
                     if (disabled || !callback) {
                         return;

@@ -12,7 +12,10 @@ export const Home = ({ joinExistingGame, startNewGame }) => {
     function handleKeyDown(event) {
         if (event.key === "Enter") {
             joinExistingGame(newUrl);
+            return;
         }
+
+        setNewUrl(event.target.value);
     }
 
     function newUrlChange(event) {

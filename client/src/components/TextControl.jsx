@@ -1,37 +1,54 @@
 import React from "react";
-import { classNames } from "../helpers/classnames";
 import { Button, BUTTON_TYPES } from "./button";
+import { Input } from "./Input";
 
 export const TextControl = ({
     buttonIcon,
     buttonOnClick,
+    buttonOnClickParams = [],
     buttonText,
     buttonType,
     className,
     field,
     hasConfirm,
+    isDisabled,
     onChange,
+    onChangeParams,
     onKeyDown,
+    onKeyDownParams,
     placeholder,
     type,
     value,
 }) => {
+    const handleButtonCLick = (e) => {
+        console.log("bbbb");
+        if (buttonOnClick) {
+            console.log({ buttonOnClickParams });
+            buttonOnClick(e, field, ...buttonOnClickParams);
+        }
+    };
+
     return (
         <div className="text-control">
-            <input
-                type={type ?? "text"}
-                className={classNames("text-input", className)}
-                placeholder={placeholder ?? ""}
+            <Input
+                className={className}
+                disabled={isDisabled}
+                field={field}
+                onChange={onChange}
+                onChangeParams={onChangeParams}
+                onKeyDown={onKeyDown}
+                onKeyDownParams={onKeyDownParams}
+                placeholder={placeholder}
+                type={type}
                 value={value}
-                onChange={(e) => onChange(e, field)}
-                onKeyDown={(e) => onKeyDown(e, field)}
             />
             {hasConfirm && (
                 <Button
+                    callback={handleButtonCLick}
+                    disabled={isDisabled}
+                    icon={buttonIcon || undefined}
                     text={buttonText}
                     type={buttonType ?? BUTTON_TYPES.PRIMARY}
-                    callback={(e) => buttonOnClick(e, field)}
-                    icon={buttonIcon || undefined}
                 ></Button>
             )}
         </div>
