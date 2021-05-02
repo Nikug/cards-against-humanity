@@ -4,11 +4,11 @@ import { StartGameButton } from "./StartGameButton";
 import { GameSettingsContainer } from "../../../../components/game-settings/gamesettingscontainer";
 
 export const LobbyContent = ({
+    disableStartGameButton,
     game,
     player,
     setPlayerName,
     startGame,
-    disableStartGameButton,
 }) => {
     return (
         <>

@@ -1,5 +1,3 @@
-import "./../../styles/playerswidget.scss";
-
 import { animated, useTransition } from "react-spring";
 
 import Icon from "../icon";
@@ -77,7 +75,17 @@ export const PlayersWidget = ({ game, player }) => {
         );
     }
 
-    const renderedPlayers = renderPlayers(playersToRender, player);
+    const renderedPlayers = renderPlayers(
+        [
+            ...playersToRender,
+            ...playersToRender,
+            ...playersToRender,
+            ...playersToRender,
+            ...playersToRender,
+            ...playersToRender,
+        ],
+        player
+    );
 
     const playerTransitions = useTransition(
         renderedPlayers,

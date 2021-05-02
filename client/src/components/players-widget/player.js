@@ -148,11 +148,11 @@ export const Player = ({
                     )}
                 </span>
             </span>
-            <span className="player-scores">
+            <span className="🦄">
                 <span className="player-score">
                     <Icon name="emoji_events" className="win-icon" />
                     {scoreTransitions.map(({ item, props, key }) => (
-                        <animated.div key={key} style={props}>
+                        <animated.div className="score" key={key} style={props}>
                             {item}
                         </animated.div>
                     ))}
@@ -171,20 +171,29 @@ export const Player = ({
                     isDefaultOpen={menuIsOpen}
                     noControl={true}
                     content={
-                        <ActionButtonRow
-                            buttons={[
-                                {
-                                    icon: "logout",
-                                    text: translateCommon("removeFromGame", t),
-                                    callback: removePlayer,
-                                },
-                                {
-                                    icon: "groups",
-                                    text: translateCommon("moveToAudience", t),
-                                    callback: makePlayerSpectator,
-                                },
-                            ]}
-                        />
+                        <>
+                            {name}
+                            <ActionButtonRow
+                                buttons={[
+                                    {
+                                        icon: "logout",
+                                        text: translateCommon(
+                                            "removeFromGame",
+                                            t
+                                        ),
+                                        callback: removePlayer,
+                                    },
+                                    {
+                                        icon: "groups",
+                                        text: translateCommon(
+                                            "moveToAudience",
+                                            t
+                                        ),
+                                        callback: makePlayerSpectator,
+                                    },
+                                ]}
+                            />
+                        </>
                     }
                 />
             )}

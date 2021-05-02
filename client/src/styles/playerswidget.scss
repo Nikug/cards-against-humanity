@@ -1,5 +1,3 @@
-@import "./colors.scss";
-
 ::-webkit-scrollbar {
     width: 10px;
 }
@@ -20,7 +18,6 @@
 }
 
 .players-widget {
-    font-size: 1.5rem;
     background-color: $players-background-shadow;
     border-radius: 2px 2px 0 0;
 
@@ -28,11 +25,21 @@
 
     display: flex;
     flex-direction: row;
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
     gap: 0.4em;
 
     padding: 0.6rem;
-    min-height: 3.5em;
+    min-height: 1.8em;
+    max-height: 1.8em;
+    overflow-x: auto;
+    overflow-y: hidden;
+
+    @include small-desktop {
+        min-height: 3.3em;
+        max-height: 3.3em;
+        overflow-x: hidden;
+        overflow-y: auto;
+    }
 
     scrollbar-color: lighten($players-background-shadow, 10%)
         $players-background-shadow;
@@ -55,19 +62,45 @@
 
 .player {
     box-sizing: border-box;
-    height: 100%;
+
+    // Is there a legit way to do this???
+    :last-child:after {
+        content: "";
+        display: block;
+        position: absolute;
+        width: 0.6rem;
+        margin: 0.6rem;
+    }
 
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+
+    border-radius: 0.8em;
+    padding: 0.1em 0.4em;
+
+    @include small-desktop {
+        height: 100%;
+        border-radius: 1rem;
+        padding: 0.4rem 0.8rem;
+        flex-direction: column;
+    }
+
     align-items: center;
     justify-content: space-between;
 
-    padding: 0.4rem 0.8rem;
-    //margin: 0 0.2rem;
-
     background-color: $players-background-hover;
-    border-radius: 1rem;
     transition: width 2s, height 4s;
+
+    .score {
+        //padding-top: 0.12em;
+        //color: $icon-win;
+
+        @include small-desktop {
+            color: $app-text;
+        }
+    }
 
     .icon-anchor {
         width: 100%;
@@ -90,7 +123,11 @@
 
 .player-name {
     width: fit-content;
-    max-width: 6rem;
+    max-width: 3em;
+
+    @include small-desktop {
+        max-width: 4em;
+    }
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -127,11 +164,14 @@
     justify-content: center;
 }
 
-.player-scores {
+// Previously known as "player-scores"
+.🦄 {
     display: flex;
     align-content: center;
     justify-content: center;
     user-select: none;
+    margin-left: 0.2em;
+    width: fit-content;
 }
 
 .player-score {
@@ -147,7 +187,12 @@
 }
 
 .win-icon {
-    margin-right: 0.2rem;
+    display: none;
+    margin-right: 0.1em;
+
+    @include small-desktop {
+        display: block;
+    }
 }
 
 .popular-vote-icon {
@@ -202,16 +247,5 @@
 }
 
 .icon-with-border {
-    text-shadow: -2px -2px $icon-border, -2px -1.5px $icon-border,
-        -2px -1px $icon-border, -2px -0.5px $icon-border, -2px 0px $icon-border,
-        -2px 0.5px $icon-border, -2px 1px $icon-border, -2px 1.5px $icon-border,
-        -2px 2px $icon-border, -1.5px 2px $icon-border, -1px 2px $icon-border,
-        -0.5px 2px $icon-border, 0px 2px $icon-border, 0.5px 2px $icon-border,
-        1px 2px $icon-border, 1.5px 2px $icon-border, 2px 2px $icon-border,
-        2px 1.5px $icon-border, 2px 1px $icon-border, 2px 0.5px $icon-border,
-        2px 0px $icon-border, 2px -0.5px $icon-border, 2px -1px $icon-border,
-        2px -1.5px $icon-border, 2px -2px $icon-border, 1.5px -2px $icon-border,
-        1px -2px $icon-border, 0.5px -2px $icon-border, 0px -2px $icon-border,
-        -0.5px -2px $icon-border, -1px -2px $icon-border,
-        -1.5px -2px $icon-border;
+    @include text-shadow;
 }

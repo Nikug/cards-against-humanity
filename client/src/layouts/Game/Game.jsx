@@ -272,7 +272,7 @@ export const Game = ({ showDebug }) => {
 
     return (
         <>
-            <div>
+            <div className="game-wrapper-1">
                 {gameSettingsMenuOpen && (
                     <LayerMenu
                         content={
@@ -296,7 +296,7 @@ export const Game = ({ showDebug }) => {
                     <PlayersWidget game={game} player={player} />
                 </div>
             </div>
-            <div>
+            <div className="game-wrapper-2">
                 <div className={`info ${hasTimer ? "sticky" : ""}`}>
                     {true && (
                         <Timer
