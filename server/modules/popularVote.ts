@@ -3,14 +3,15 @@ import type * as SocketIO from "socket.io";
 
 import {
     emitToAllPlayerSockets,
-    getPlayer,
     updatePlayersIndividually,
-} from "./player";
-import { getGame, setGame } from "./game";
+} from "./emitPlayers";
+import { getGame, setGame } from "./gameUtil";
 
 import { NOTIFICATION_TYPES } from "../consts/error";
 import { PoolClient } from "pg";
+import { findPlayer } from "./playerUtil";
 import { gameOptions } from "../consts/gameSettings";
+import { getWhiteCardsByIDs } from "./cardUtil";
 import { sendNotification } from "./socket";
 import { validatePopularVote } from "./validate";
 
@@ -66,27 +67,10 @@ export const popularVote = async (
         playerID
     );
 
-    const player = getPlayer(newGame, playerID);
+    const player = findPlayer(newGame.players, playerID);
     if (!player) return;
     emitToAllPlayerSockets(io, player, "send_popular_voted_cards", {
         whiteCardIDs: votedCardIDs || [],
-    });
-};
-
-const getWhiteCardsByIDs = (
-    game: CAH.Game,
-    whiteCardIDs: string[]
-): CAH.WhiteCardsByPlayer | undefined => {
-    if (!game.currentRound) return undefined;
-
-    return game.currentRound.whiteCardsByPlayer.find((whiteCardByPlayer) => {
-        if (whiteCardIDs.length !== whiteCardByPlayer.whiteCards.length)
-            return false;
-
-        const ids = whiteCardByPlayer.whiteCards.map(
-            (whiteCard) => whiteCard.id
-        );
-        return !whiteCardIDs.some((id) => !ids.includes(id));
     });
 };
 
@@ -95,7 +79,7 @@ const setPlayerPopularVoteScore = (
     playerID: string,
     scoreToAdd: number
 ) => {
-    const player = getPlayer(game, playerID);
+    const player = findPlayer(game.players, playerID);
     if (!player) return game;
 
     player.popularVoteScore = player.popularVoteScore + scoreToAdd;

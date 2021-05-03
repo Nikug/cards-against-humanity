@@ -1,10 +1,10 @@
 import * as CAH from "types";
+import * as SocketIO from "socket.io";
 
-import { emitToAllPlayerSockets, publicPlayersObject } from "./player";
-import { getGame, setGame } from "./game";
+import { getGame, setGame } from "./gameUtil";
 
 import { PoolClient } from "pg";
-import type SocketIO from "socket.io";
+import { updatePlayers } from "./playerUtil";
 
 export const updateAvatar = async (
     io: SocketIO.Server,
@@ -48,12 +48,4 @@ const setAvatar = (
 const validateAvatar = (avatar: CAH.Avatar) => {
     const values = Object.values(avatar);
     return values.every((value) => typeof value === "number");
-};
-
-const updatePlayers = (io: SocketIO.Server, game: CAH.Game) => {
-    game.players.map((player) => {
-        emitToAllPlayerSockets(io, player, "update_players", {
-            players: publicPlayersObject(game.players, player.id),
-        });
-    });
 };

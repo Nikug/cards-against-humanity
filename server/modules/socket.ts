@@ -2,7 +2,6 @@ import type * as CAH from "types";
 import type * as SocketIO from "socket.io";
 
 import { NOTIFICATION_TIME } from "../consts/error";
-import { PoolClient } from "pg";
 
 export const closeSocketWithID = (io: SocketIO.Server, socketID: string) => {
     // @ts-ignore

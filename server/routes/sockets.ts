@@ -1,29 +1,26 @@
 import { ERROR_TYPES, NOTIFICATION_TYPES } from "../consts/error";
 import { addCardPack, removeCardPack } from "../modules/cardpack";
-import { changePlayerTextToSpeech, updatePlayerName } from "../modules/player";
-import {
-    playWhiteCards,
-    selectBlackCard,
-    selectWinner,
-    sendBlackCards,
-    showWhiteCard,
-} from "../modules/card";
-import {
-    startGame,
-    startNewRound,
-    updateGameOptions,
-    validateHostAndReturnToLobby,
-} from "../modules/game";
 
 import type SocketIO from "socket.io";
+import { changePlayerTextToSpeech } from "../modules/playerTextToSpeech";
 import { hostKick } from "../modules/kick";
 import { joinGame } from "../modules/join";
+import { playWhiteCards } from "../modules/playWhiteCards";
 import { popularVote } from "../modules/popularVote";
+import { selectBlackCard } from "../modules/selectBlackCard";
+import { selectWinner } from "../modules/selectWinner";
+import { sendBlackCards } from "../modules/drawCards";
 import { sendNotification } from "../modules/socket";
 import { setPlayerDisconnected } from "../modules/disconnect";
+import { showWhiteCard } from "../modules/showWhiteCard";
+import { startGame } from "../modules/startGame";
+import { startNewRound } from "../modules/startRound";
 import { togglePlayerMode } from "../modules/togglePlayerMode";
 import { transactionize } from "../db/util";
 import { updateAvatar } from "../modules/avatar";
+import { updateGameOptions } from "../modules/gameOptions";
+import { updatePlayerName } from "../modules/playerName";
+import { validateHostAndReturnToLobby } from "../modules/returnToLobby";
 
 export const sockets = (io: SocketIO.Server) => {
     io.on("connection", (socket) => {

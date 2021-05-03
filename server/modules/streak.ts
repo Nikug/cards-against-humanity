@@ -1,6 +1,9 @@
-import { Player, Streak } from "types";
+import * as CAH from "types";
 
-export const addStreak = (streak: Streak | undefined, player: Player) => {
+export const addStreak = (
+    streak: CAH.Streak | undefined,
+    player: CAH.Player
+) => {
     if (streak && streak.id === player.id) {
         streak.wins += 1;
         return streak;
@@ -9,7 +12,7 @@ export const addStreak = (streak: Streak | undefined, player: Player) => {
     }
 };
 
-const createStreak = (player: Player): Streak => {
+const createStreak = (player: CAH.Player): CAH.Streak => {
     return {
         id: player.id,
         name: player.name,

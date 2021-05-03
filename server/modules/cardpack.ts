@@ -3,7 +3,7 @@ import type * as SocketIO from "socket.io";
 import type * as pg from "pg";
 
 import { ERROR_TYPES, NOTIFICATION_TYPES } from "../consts/error";
-import { getGame, setGame } from "./game";
+import { getGame, setGame } from "./gameUtil";
 import { validateHost, validateState } from "./validate";
 
 import fetch from "node-fetch";

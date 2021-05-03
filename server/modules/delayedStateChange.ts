@@ -1,18 +1,19 @@
 import type * as CAH from "types";
 import type * as SocketIO from "socket.io";
 
-import { addTimeout, getTimeout, removeTimeout } from "./timeout";
-import {
-    appointNextCardCzar,
-    setPlayersActive,
-    updatePlayersIndividually,
-} from "./player";
-import { getGame, setGame, skipRound, startNewRound } from "./game";
-import { showWhiteCard, shuffleCardsBackToDeck } from "./card";
+import { addTimeout, getTimeoutTime, removeTimeout } from "./timeout";
+import { getCardCzar, punishCardCzar } from "./playerUtil";
+import { getGame, setGame } from "./gameUtil";
+import { restartRound, skipRound } from "./skipRound";
 
 import { PoolClient } from "pg";
+import { appointNextCardCzar } from "./cardCzar";
 import { gameOptions } from "../consts/gameSettings";
+import { setPlayersActive } from "./setPlayers";
+import { showWhiteCard } from "./showWhiteCard";
+import { startNewRound } from "./startRound";
 import { transactionize } from "../db/util";
+import { updatePlayersIndividually } from "./emitPlayers";
 
 export const changeGameStateAfterTime = (
     io: SocketIO.Server,
@@ -60,7 +61,7 @@ const gameStateChange = async (
     let setNewTimeout = "";
 
     if (transition === "startRound") {
-        const cardCzar = currentCardCzar(game.players);
+        const cardCzar = getCardCzar(game.players);
         if (!cardCzar) return;
         startNewRound(io, null, gameID, cardCzar.id, client);
         return;
@@ -75,11 +76,11 @@ const gameStateChange = async (
             game.currentRound &&
             game.currentRound.whiteCardsByPlayer.length === 0
         ) {
-            const cardCzar = currentCardCzar(game.players);
+            const cardCzar = getCardCzar(game.players);
             if (!cardCzar) return;
 
             game.players = appointNextCardCzar(game, cardCzar.id);
-            const nextCardCzar = currentCardCzar(game.players);
+            const nextCardCzar = getCardCzar(game.players);
 
             await skipRound(io, game, nextCardCzar!, client);
             return;
@@ -87,7 +88,7 @@ const gameStateChange = async (
         setNewTimeout = "showCards";
     } else if (transition === "showCards") {
         // Check if all whitecards have been showed, otherwise show next whitecards
-        const cardCzar = currentCardCzar(game.players);
+        const cardCzar = getCardCzar(game.players);
         if (!cardCzar) return;
         await showWhiteCard(io, null, gameID, cardCzar.id, client);
         return;
@@ -110,66 +111,4 @@ const gameStateChange = async (
         await setGame(game, client);
         updatePlayersIndividually(io, game);
     }
-};
-
-const currentCardCzar = (players: CAH.Player[]) => {
-    return players.find((player) => player.isCardCzar);
-};
-
-const restartRound = async (
-    io: SocketIO.Server,
-    game: CAH.Game,
-    client?: PoolClient
-) => {
-    const cardCzar = currentCardCzar(game.players);
-    if (!cardCzar) return;
-
-    game.cards.blackCards = shuffleCardsBackToDeck(
-        [...game.cards.sentBlackCards],
-        game.cards.blackCards
-    );
-    game.cards.sentBlackCards = [];
-
-    game.players = appointNextCardCzar(game, cardCzar.id);
-    const nextCardCzar = currentCardCzar(game.players);
-
-    await skipRound(io, game, nextCardCzar!, client);
-};
-
-export const punishCardCzar = (game: CAH.Game) => {
-    return game.players.map((player) => {
-        if (player.isCardCzar && game.stateMachine.state !== "roundEnd") {
-            player.score -= gameOptions.notSelectingWinnerPunishment;
-        }
-        return player;
-    });
-};
-
-const getTimeoutTime = (game: CAH.Game) => {
-    const timers = game.client.options.timers;
-    switch (game.stateMachine.state) {
-        case "pickingBlackCard":
-            return timers.useSelectBlackCard
-                ? timers.selectBlackCard
-                : undefined;
-        case "playingWhiteCards":
-            return timers.useSelectWhiteCards
-                ? timers.selectWhiteCards
-                : undefined;
-        case "readingCards":
-            return timers.useReadBlackCard ? timers.readBlackCard : undefined;
-        case "showingCards":
-            return timers.useSelectWinner ? timers.selectWinner : undefined;
-        case "roundEnd":
-            return timers.useRoundEnd ? timers.roundEnd : undefined;
-        default:
-            return timers.selectBlackCard;
-    }
-};
-
-export const getPassedTime = (id: string) => {
-    const timeout = getTimeout(id);
-    if (!timeout) return undefined;
-    // @ts-ignore
-    return process.uptime() - timeout._idleStart / 1000;
 };

@@ -1,5 +1,5 @@
 import { ERROR_TYPES } from "../consts/error";
-import { createGame } from "../modules/game";
+import { createGame } from "../modules/createGame";
 import express from "express";
 import { transactionize } from "../db/util";
 

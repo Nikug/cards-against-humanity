@@ -1,14 +1,17 @@
-import type * as CAH from "types";
 import type * as SocketIO from "socket.io";
 
 import { ERROR_TYPES, NOTIFICATION_TYPES } from "../consts/error";
 import { closeSocketWithID, sendNotification } from "./socket";
+import {
+    filterByPublicID,
+    getPlayerByPublicID,
+    setPlayerState,
+} from "./playerUtil";
 
 import { PoolClient } from "pg";
-import { checkSpectatorLimit } from "./join";
-import { getGame } from "./game";
+import { checkSpectatorLimit } from "./gameOptions";
+import { getGame } from "./gameUtil";
 import { handleSpecialCases } from "./disconnect";
-import { setPlayerState } from "./togglePlayerMode";
 import { validateHost } from "./validate";
 
 export const hostKick = async (
@@ -57,12 +60,4 @@ export const hostKick = async (
         );
     }
     handleSpecialCases(io, game, target, false, client);
-};
-
-const getPlayerByPublicID = (players: CAH.Player[], targetID: string) => {
-    return players.find((player) => player.publicID === targetID);
-};
-
-const filterByPublicID = (players: CAH.Player[], targetID: string) => {
-    return players.filter((player) => player.publicID !== targetID);
 };

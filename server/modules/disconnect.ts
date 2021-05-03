@@ -7,35 +7,31 @@ import {
     NOTIFICATION_TYPES,
 } from "../consts/error";
 import {
-    appointNextCardCzar,
-    emitToAllPlayerSockets,
-    getActivePlayers,
-    getAllActivePlayers,
-    updatePlayersIndividually,
-} from "./player";
-import {
     closeSocketWithID,
     removeDisconnectedSockets,
     sendNotification,
 } from "./socket";
 import {
-    everyoneHasPlayedTurn,
+    emitToAllPlayerSockets,
+    updatePlayersIndividually,
+} from "./emitPlayers";
+import { everyoneHasPlayedTurn, getCardCzar } from "./playerUtil";
+import {
     findGameAndPlayerBySocketID,
     removeGame,
     removeGameIfNoActivePlayers,
-    returnToLobby,
     setGame,
     shouldGameBeDeleted,
-    shouldReturnToLobby,
-    shouldSkipRound,
-    skipRound,
-} from "./game";
+} from "./gameUtil";
+import { getActivePlayers, getAllActivePlayers } from "./playerUtil";
+import { punishCardCzar, setPlayer } from "./playerUtil";
+import { returnToLobby, shouldReturnToLobby } from "./returnToLobby";
+import { shouldSkipRound, skipRound } from "./skipRound";
 
 import { INACTIVE_GAME_DELETE_TIME } from "../consts/gameSettings";
 import { PoolClient } from "pg";
-import { punishCardCzar } from "./delayedStateChange";
-import { setPlayer } from "./join";
-import { startReading } from "./card";
+import { appointNextCardCzar } from "./cardCzar";
+import { startReading } from "./startReading";
 
 export const setPlayerDisconnected = async (
     io: SocketIO.Server,
@@ -205,6 +201,3 @@ const handleHostLeaving = (
     }
     return [...game.players];
 };
-
-const getCardCzar = (players: CAH.Player[]) =>
-    players.find((player) => player.isCardCzar);

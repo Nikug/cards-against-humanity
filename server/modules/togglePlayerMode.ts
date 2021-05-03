@@ -1,15 +1,15 @@
-import type * as CAH from "types";
 import type * as SocketIO from "socket.io";
 
 import { ERROR_TYPES, NOTIFICATION_TYPES } from "../consts/error";
-import { checkPlayerLimit, checkSpectatorLimit } from "./join";
-import { getGame, setGame } from "./game";
-import { getPlayer, updatePlayersIndividually } from "./player";
+import { checkPlayerLimit, checkSpectatorLimit } from "./gameOptions";
+import { findPlayer, setPlayerState } from "./playerUtil";
+import { getGame, setGame } from "./gameUtil";
 
 import { PoolClient } from "pg";
 import { handleSpecialCases } from "./disconnect";
 import { playerName } from "../consts/gameSettings";
 import { sendNotification } from "./socket";
+import { updatePlayersIndividually } from "./emitPlayers";
 
 export const togglePlayerMode = async (
     io: SocketIO.Server,
@@ -21,7 +21,7 @@ export const togglePlayerMode = async (
     const game = await getGame(gameID, client);
     if (!game) return;
 
-    const player = getPlayer(game, playerID);
+    const player = findPlayer(game.players, playerID);
     if (!player) return;
 
     if (player.state !== "spectating") {
@@ -63,19 +63,4 @@ export const togglePlayerMode = async (
     }
     await setGame(game, client);
     updatePlayersIndividually(io, game);
-};
-
-export const setPlayerState = (
-    players: CAH.Player[],
-    playerID: string,
-    state: CAH.PlayerState
-) => {
-    return players.map((player) =>
-        player.id === playerID
-            ? {
-                  ...player,
-                  state: state,
-              }
-            : player
-    );
 };

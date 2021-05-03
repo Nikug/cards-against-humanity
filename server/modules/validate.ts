@@ -1,11 +1,9 @@
 import type * as CAH from "types";
-import type * as SocketIO from "socket.io";
 
 import { ERROR_TYPES } from "../consts/error";
-import { PoolClient } from "pg";
-import { clamp } from "./util";
+import { clamp } from "./mathUtil";
+import { findPlayer } from "./playerUtil";
 import { gameOptions } from "../consts/gameSettings";
-import { getPlayer } from "./player";
 
 export const validateHost = (game: CAH.Game, playerID: string) => {
     return game.players.find(
@@ -34,7 +32,7 @@ export const validatePlayerPlayingWhiteCards = (
         };
     }
 
-    const player = getPlayer(game, playerID);
+    const player = findPlayer(game.players, playerID);
     if (player === undefined) {
         return {
             result: false,
@@ -54,7 +52,7 @@ export const validatePlayerPlayingWhiteCards = (
         };
 
     if (
-        player.whiteCards.filter((whiteCard) =>
+        player.whiteCards.filter((whiteCard: CAH.WhiteCard) =>
             whiteCardIDs.includes(whiteCard.id)
         ).length !== whiteCardIDs.length
     ) {

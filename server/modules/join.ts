@@ -2,12 +2,16 @@ import type * as CAH from "types";
 import type * as SocketIO from "socket.io";
 
 import { ERROR_TYPES, NOTIFICATION_TYPES } from "../consts/error";
-import { createNewPlayer, updatePlayersIndividually } from "./player";
-import { findGameByPlayerID, getGame, setGame } from "./game";
-import { gameOptions, playerName } from "../consts/gameSettings";
+import { addPlayer, findPlayer, setPlayer } from "./playerUtil";
+import { checkPlayerLimit, checkSpectatorLimit } from "./gameOptions";
+import { findGameByPlayerID, getGame, setGame } from "./gameUtil";
 
 import { PoolClient } from "pg";
+import { createNewPlayer } from "./createPlayer";
+import { joiningPlayerStates } from "../consts/states";
+import { playerName } from "../consts/gameSettings";
 import { sendNotification } from "./socket";
+import { updatePlayersIndividually } from "./emitPlayers";
 
 export const joinGame = async (
     io: SocketIO.Server,
@@ -124,36 +128,19 @@ const addPlayerToGame = async (
     updatePlayersIndividually(io, game);
 };
 
-const findPlayer = (players: CAH.Player[], playerID: string | null) => {
-    return players.find((player) => player.id === playerID);
-};
-
-const addPlayer = (players: CAH.Player[], player: CAH.Player) => {
-    return [...players, player];
-};
-
-export const setPlayer = (players: CAH.Player[], newPlayer: CAH.Player) => {
-    return players.map((player) =>
-        player.id === newPlayer.id ? newPlayer : player
-    );
+export const getJoiningPlayerState = (
+    gameState: CAH.GameState,
+    hasName: boolean
+) => {
+    if (gameState === "lobby" && hasName) {
+        return "active";
+    } else {
+        return joiningPlayerStates[gameState];
+    }
 };
 
 const returnError = (socket: SocketIO.Socket) => {
     sendNotification(ERROR_TYPES.gameWasNotFound, NOTIFICATION_TYPES.error, {
         socket: socket,
     });
-};
-
-export const checkPlayerLimit = (game: CAH.Game) => {
-    const nonSpectators = game.players.filter(
-        (player) => player.state !== "spectating"
-    );
-    return game.client.options.maximumPlayers > nonSpectators.length;
-};
-
-export const checkSpectatorLimit = (game: CAH.Game) => {
-    const spectators = game.players.filter(
-        (player) => player.state === "spectating"
-    );
-    return gameOptions.spectatorLimit > spectators.length;
 };
