@@ -3,14 +3,14 @@ import React from "react";
 import { translateCommon } from "../../helpers/translation-helpers";
 import { useTranslation } from "react-i18next";
 
-export function CardPack({
+export const CardPack = ({
     id,
     name,
     isNSFW,
     whiteCards,
     blackCards,
     removeCardpack,
-}) {
+}) => {
     const { t } = useTranslation();
 
     return (
@@ -34,4 +34,4 @@ export function CardPack({
             </div>
         </div>
     );
-}
+};

@@ -5,6 +5,7 @@ export const Input = ({
     className,
     disabled,
     field,
+    minSizeByChars = 8,
     onChange,
     onChangeParams = [],
     onKeyDown,
@@ -31,6 +32,7 @@ export const Input = ({
             onChange={handleOnChange}
             onKeyDown={handleKeyDown}
             placeholder={placeholder ?? ""}
+            size={minSizeByChars}
             type={type}
             value={value}
         />

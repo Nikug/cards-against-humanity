@@ -21,9 +21,7 @@ export const TextControl = ({
     value,
 }) => {
     const handleButtonCLick = (e) => {
-        console.log("bbbb");
         if (buttonOnClick) {
-            console.log({ buttonOnClickParams });
             buttonOnClick(e, field, ...buttonOnClickParams);
         }
     };

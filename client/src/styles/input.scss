@@ -1,14 +1,11 @@
-@import "./colors.scss";
-
 .text-input {
     align-self: center;
-    width: 12rem;
     background-color: $input-background;
     color: $input-text;
     border: 0;
     border-bottom: 1px solid $input-underline;
     border-radius: 3px;
-    //height: 100%;
+    height: 100%;
     padding: 0.5rem;
     font-size: 1.3rem;
 

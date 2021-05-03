@@ -1,18 +1,23 @@
 .text-control {
-    width: 100%;
-
+    //width: 100%;
     display: flex;
     flex-wrap: wrap;
     justify-content: flex-end;
-    align-items: flex-start;
-    //gap: 1em;
+    align-items: center;
 
     .text-input {
-        flex: 1;
-        margin-bottom: 0.5em;
+        // This should fit on mobile still, I think...
+        //flex-basis: 10em;
+        flex-grow: 1;
     }
 
     .button {
-        margin-left: 0.5em;
+        flex-grow: 0;
+    }
+
+    gap: 0.1em;
+
+    @include small-desktop {
+        gap: 0.25em;
     }
 }

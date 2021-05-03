@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import "./../../styles/gamesettings.scss";
 import { CONTROL_TYPES, Setting } from "./setting";
 import { emptyFn } from "../../helpers/generalhelpers";
 import Icon from "../icon";

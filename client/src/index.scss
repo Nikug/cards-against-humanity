@@ -2,30 +2,47 @@ body {
     margin: 0;
 }
 
+// Consts and mixins
 @import "./styles/colors.scss";
 @import "./styles/consts.scss";
 @import "./styles/mediaqueries.scss";
 @import "./styles/mixins.scss";
+@import "./styles/general.scss";
+
+// App
 @import "./styles/App.scss";
-@import "./styles/button.scss";
-@import "./styles/textcontrol.scss";
-@import "./styles/card.scss";
-@import "./styles/cardpack.scss";
-@import "./styles/footer.scss";
-@import "./styles/game.scss";
-@import "./styles/gamesettings.scss";
-@import "./styles/header.scss";
-@import "./styles/home.scss";
+
+// Basic components
 @import "./styles/icons.scss";
 @import "./styles/input.scss";
-@import "./styles/instructions.scss";
-@import "./styles/music.scss";
-@import "./styles/notification.scss";
-@import "./styles/playerswidget.scss";
-@import "./styles/settings.scss";
-@import "./styles/timer.scss";
+@import "./styles/button.scss";
+@import "./styles/textcontrol.scss";
 @import "./styles/tooltip.scss";
-@import "./styles//layermenu.scss";
-@import "./styles/historycontainer.scss";
-@import "./styles/actionbuttonrow.scss";
+@import "./styles/notification.scss";
 @import "./styles/languageselector.scss";
+
+// Layouts
+@import "./styles/home.scss";
+@import "./styles/instructions.scss";
+
+// Basic elements
+@import "./styles/footer.scss";
+@import "./styles/header.scss";
+
+// Game components
+@import "./styles/card.scss";
+@import "./styles/cardpack.scss";
+@import "./styles/music.scss";
+@import "./styles/timer.scss";
+@import "./styles/avatarcreator.scss";
+
+// Game layouts
+@import "./styles/game.scss";
+@import "./styles/settings.scss";
+@import "./styles/gamesettings.scss";
+@import "./styles/historycontainer.scss";
+@import "./styles/playerswidget.scss";
+
+// Other
+@import "./styles//layermenu.scss";
+@import "./styles/actionbuttonrow.scss";

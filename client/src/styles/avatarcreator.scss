@@ -1,0 +1,14 @@
+.avatar-creator-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    flex-grow: 1;
+
+    padding: 0.6em;
+    background-color: rgba(110, 213, 231, 0.3);
+
+    border-radius: 2px;
+
+    font-size: 1.4rem;
+}

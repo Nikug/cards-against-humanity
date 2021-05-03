@@ -1,12 +1,9 @@
 import React, { useState, useEffect } from "react";
-import "./../../styles/gamesettings.scss";
-import "./../../styles/input.scss";
 
 import Icon from "./../icon";
-import { Button } from "./../button";
-import { BUTTON_TYPES } from "./../button";
 import { Toggle } from "./controls/toggle";
 import { TextControl } from "../TextControl";
+import { classNames } from "../../helpers/classnames";
 
 export const CONTROL_TYPES = {
     toggle: "toggle",
@@ -273,7 +270,11 @@ export const Setting = ({
 
     return (
         <div
-            className={`setting ${className ? className : ""}`}
+            className={classNames("setting", className, {
+                "text-control":
+                    controlType === CONTROL_TYPES.textWithConfirm ||
+                    controlType === CONTROL_TYPES.text,
+            })}
             onClick={onClick}
         >
             <div className="icon-and-text">
@@ -287,7 +288,7 @@ export const Setting = ({
                 )}
                 {text}
             </div>
-            <div className="control">{control}</div>
+            <div className={classNames("control")}>{control}</div>
         </div>
     );
 };

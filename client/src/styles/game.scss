@@ -30,29 +30,39 @@
     }
 }
 
+.lobby-container-grid {
+    @include small-desktop {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        grid-template-rows: auto auto;
+        gap: 1em;
+
+        > * {
+            justify-self: stretch;
+        }
+    }
+}
+
 .lobby-container {
-    height: 44rem;
     display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    margin-top: 4rem;
+    flex-direction: row;
+    justify-content: center;
 
     .nick-and-start-container {
+        width: 100%;
+        flex-direction: column;
         display: flex;
-        align-items: center;
         justify-content: space-between;
-        justify-self: center;
-        max-width: 80rem;
-
-        .nickname-selector {
-            width: 50%;
-            margin-right: 8rem;
-        }
     }
 
     .info {
         margin-top: 0;
         margin-bottom: 0;
+    }
+
+    @include small-desktop {
+        margin-top: 1em;
+        width: 100%;
     }
 }
 
