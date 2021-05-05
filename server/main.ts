@@ -2,13 +2,13 @@ import dotenv from "dotenv";
 dotenv.config({ path: `${__dirname}/.env` });
 
 import { Server } from "socket.io";
-import { createTableQuery } from "./db/table";
+import { createTableQuery } from "./modules/db/table";
 import express from "express";
 import http from "http";
 import path from "path";
-import { queryDB } from "./db/database";
-import { router } from "./routes/routes";
-import { sockets } from "./routes/sockets";
+import { queryDB } from "./modules/db/database";
+import { router } from "./modules/routes/routes";
+import { sockets } from "./modules/routes/sockets";
 
 const port = process.env.PORT || 4000;
 const PRODUCTION = process.env.PRODUCTION;
