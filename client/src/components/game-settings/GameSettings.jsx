@@ -1,6 +1,6 @@
 import { CONTROL_TYPES, Setting } from "./../settings/setting";
 
-import { CardPack } from "./cardpack";
+import { CardPack } from "./CardPack";
 import { CollabsibelSettingsSection } from "../settings/collabsiblesettingssection";
 import React from "react";
 import { socket } from "../sockets/socket";

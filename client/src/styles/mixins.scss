@@ -23,3 +23,9 @@
     overflow: hidden;
     white-space: nowrap;
 }
+
+@mixin left-side-border {
+    box-sizing: border-box;
+    border-left: 5px solid $settings-icon;
+    width: 90%;
+}

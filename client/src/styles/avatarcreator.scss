@@ -6,9 +6,11 @@
     flex-grow: 1;
 
     padding: 0.6em;
-    background-color: rgba(110, 213, 231, 0.3);
+    background-color: rgba(112, 144, 151, 0.3);
 
     border-radius: 2px;
 
     font-size: 1.4rem;
+
+    color: darken($app-text, 15%);
 }

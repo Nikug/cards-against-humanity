@@ -2,13 +2,12 @@ $lgd: 180deg; // linear-gradient degree
 
 .button {
     font-weight: 600;
-    font-size: 1em;
     color: $button-text;
     outline: 0;
     display: inline-flex;
     align-items: center;
     position: relative;
-    padding: 0.4rem 1rem;
+    padding: 0.6em 1em;
     height: fit-content;
     width: fit-content;
     text-align: center;
@@ -18,9 +17,8 @@ $lgd: 180deg; // linear-gradient degree
     cursor: pointer;
     user-select: none;
     white-space: nowrap;
-    //box-shadow: 0 1.1px 1.1px 0 rgba(0, 0, 0, 0.12);
     border-radius: 6px;
-    line-height: 24px;
+    line-height: 1rem;
     backface-visibility: hidden;
     outline: none;
     box-sizing: border-box;
@@ -150,12 +148,8 @@ $lgd: 180deg; // linear-gradient degree
 
     &.big-btn {
         font-weight: 600;
-        font-size: 1.4em;
-        padding: 0.4em 0.7em;
-
-        .button-icon {
-            font-size: 1.4em;
-        }
+        font-size: 2rem;
+        padding: 0.2em 0.7em;
     }
 }
 

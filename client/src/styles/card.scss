@@ -1,17 +1,22 @@
 .card-wrapper {
     font-family: "Ubuntu", sans-serif;
-    font-size: 1.3rem;
-    width: 20rem;
-    height: fit-content;
-    min-height: 10rem;
+    font-size: 1.2rem;
     text-align: left;
-    border-radius: 6px;
-    padding: 0.3rem;
+    line-height: 1.6em;
+
+    display: flex;
     justify-content: center;
     align-content: center;
-    display: flex;
-    line-height: 1.6em;
+
     box-sizing: border-box;
+
+    width: 16em;
+    min-height: 10rem;
+    height: fit-content;
+
+    padding: 0.3rem;
+
+    border-radius: 6px;
 
     .card {
         box-sizing: border-box;
@@ -85,7 +90,7 @@
 
                 > .popular-vote-score {
                     font-size: 1.2rem;
-                    margin-left: 0.5rem;
+                    margin-left: 0.5em;
                 }
             }
         }
@@ -200,7 +205,7 @@
 
                         > .popular-vote-score {
                             font-size: 1.2rem;
-                            margin-left: 0.5rem;
+                            margin-left: 0.5em;
                         }
                     }
                 }

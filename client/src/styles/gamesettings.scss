@@ -1,5 +1,4 @@
 .game-settings-container {
-    font-size: 1rem;
     color: $settings-text;
     background: $settings-container-background;
 
@@ -14,9 +13,7 @@
     flex-grow: 1;
 
     @include small-desktop {
-        //margin: 0 0 2rem 0;
         padding: 1.5rem 2rem 2rem 2rem;
-        font-size: 1.5rem;
         max-width: 60em;
     }
 
@@ -174,11 +171,13 @@
 
 .imported-card-packs {
     display: flex;
+    flex-direction: column;
     justify-content: flex-start;
+    align-items: flex-end;
 
-    margin-top: 0.8rem;
+    margin-top: 0.6em;
 
-    max-height: 20em;
+    max-height: 10em;
     overflow-y: auto;
 }
 
@@ -233,9 +232,7 @@
     z-index: 6;
 
     > .setting {
-        box-sizing: border-box;
-        border-left: 5px solid $settings-icon;
-        width: 90%;
+        @include left-side-border;
 
         &.title {
             cursor: pointer;

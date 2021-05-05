@@ -1,3 +1,8 @@
+html {
+    --font-size: calc(1.8 * 62.5%);
+    font-size: (var(--font-size)); // = 10px
+}
+
 .App {
     width: 100vw;
     height: 100vh;
@@ -10,11 +15,6 @@
 
     text-decoration: none;
     font-family: "Teko", sans-serif;
-    font-size: 18px;
-
-    @include small-desktop {
-        font-size: 24px;
-    }
 
     padding: 0;
     margin: 0;
@@ -25,6 +25,7 @@
     }
 
     input {
+        font-size: 1em;
         text-decoration: none;
     }
 
