@@ -12,7 +12,7 @@
         "i18next-browser-languagedetector": "^6.0.1",
         "i18next-http-backend": "^1.1.0",
         "material-design-icons": "^3.0.1",
-        "node-sass": "^4.0.0",
+        "node-sass": "^4.14.1",
         "normalize.css": "^8.0.1",
         "react": "^16.13.1",
         "react-confetti": "^6.0.0",
@@ -22,7 +22,7 @@
         "react-scripts": "3.4.3",
         "react-spring": "^8.0.27",
         "resize-observer-polyfill": "^1.5.1",
-        "socket.io-client": "^2.3.0",
+        "socket.io-client": "^4.0.1",
         "spinners-react": "^1.0.4"
     },
     "scripts": {

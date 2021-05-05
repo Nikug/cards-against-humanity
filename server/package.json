@@ -2,8 +2,7 @@
     "name": "cards-against-humanity",
     "version": "0.1.0",
     "description": "",
-    "main": "main.js",
-    "type": "module",
+    "main": "main.ts",
     "engines": {
         "node": ">= 14.0.0"
     },
@@ -11,7 +10,7 @@
         "start": "cross-env PRODUCTION=true node main.js",
         "start:db": "cross-env PRODUCTION=true USE_DB=true node -r dotenv/config main.js",
         "client": "cd ../client && npm start",
-        "server": "nodemon main.js",
+        "server": "nodemon",
         "server:db": "cross-env USE_DB=true nodemon -r dotenv/config main.js",
         "dev": "concurrently --kill-others-on-fail \"npm run server\" \"npm run client\"",
         "dev:db": "concurrently --kill-others-on-fail \"npm run server:db\" \"npm run client\"",
@@ -32,11 +31,20 @@
         "node-sass": "^4.14.1",
         "pg": "^8.5.1",
         "sanitize": "^2.1.0",
-        "socket.io": "^2.3.0"
+        "socket.io": "^4.0.1"
     },
     "devDependencies": {
+        "@types/express": "^4.17.11",
+        "@types/javascript-state-machine": "^2.4.2",
+        "@types/node": "^14.14.41",
+        "@types/node-fetch": "^2.5.10",
+        "@types/pg": "^7.14.11",
+        "@types/socket.io": "^2.1.13",
         "concurrently": "^5.3.0",
         "cross-env": "^7.0.3",
-        "nodemon": "^2.0.4"
+        "eslint": "^7.25.0",
+        "nodemon": "^2.0.4",
+        "ts-node": "^9.1.1",
+        "typescript": "^4.2.4"
     }
 }
