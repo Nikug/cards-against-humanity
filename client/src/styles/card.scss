@@ -1,6 +1,9 @@
 .card-wrapper {
+    --card-width: 16em;
+    --card-height: 9.2em; // Fits 3 lines of text, I guess?
+
     font-family: "Ubuntu", sans-serif;
-    //font-size: 1.2rem;
+    font-size: 0.75rem;
     text-align: left;
     line-height: 1.6em;
 
@@ -10,25 +13,29 @@
 
     box-sizing: border-box;
 
-    width: 16em;
-    min-height: 10rem;
+    width: var(--card-width);
+    min-height: var(--card-height);
     height: fit-content;
 
-    padding: 0.3rem;
+    padding: 0.25em;
 
     border-radius: 6px;
 
     .card {
-        box-sizing: border-box;
-        width: 20rem;
-        height: fit-content;
-        min-height: 10rem;
-        padding: 0.5rem 0.8rem;
         text-align: left;
-        border-radius: 6px;
+
         display: flex;
         flex-direction: column;
-        justify-content: space-between;
+
+        box-sizing: border-box;
+
+        width: 100%;
+        height: 100%;
+        min-height: var(--card-height);
+
+        padding: 0.8em 1em;
+
+        border-radius: 6px;
 
         &.white {
             background-color: $white-card-background;
@@ -36,7 +43,7 @@
 
             > .text {
                 :nth-child(n + 1) {
-                    margin-top: 0.8rem;
+                    margin-top: 0.6em;
                 }
             }
         }
@@ -51,31 +58,28 @@
             overflow-wrap: break-word;
 
             .blank {
-                //text-decoration: underline;
                 border-bottom: 1px solid $black-card-text;
             }
         }
 
         > .footer {
-            //font-size: 0.6rem;
+            font-size: 0.4rem;
             text-align: right;
             line-height: normal;
             display: flex;
             justify-content: space-between;
             align-items: flex-end;
-            margin-top: 0.2rem;
-
-            > .cardpackid {
-                height: 0.6rem;
-            }
+            margin-top: auto;
+            padding-top: 1em;
 
             > .draw-and-play {
-                //font-size: 0.8rem;
+                font-size: 0.6rem;
             }
         }
 
         .popularvote-btn {
             cursor: pointer;
+            font-size: 2.5em;
 
             &.no-action {
                 cursor: default;
@@ -89,7 +93,7 @@
                 flex-wrap: nowrap;
 
                 > .popular-vote-score {
-                    //font-size: 1.2rem;
+                    font-size: 2em;
                     margin-left: 0.5em;
                 }
             }
@@ -97,11 +101,7 @@
     }
 
     &.big-card {
-        width: 40rem;
-
-        .card {
-            width: 40rem;
-        }
+        width: 32em;
     }
 
     &.white {
@@ -128,7 +128,7 @@
 
     > .toptext {
         margin-bottom: 0.8rem;
-        //font-size: 3rem;
+        font-size: 1.8em;
     }
 
     > .main {
@@ -204,7 +204,7 @@
                         flex-wrap: nowrap;
 
                         > .popular-vote-score {
-                            //font-size: 1.2rem;
+                            font-size: 1rem;
                             margin-left: 0.5em;
                         }
                     }

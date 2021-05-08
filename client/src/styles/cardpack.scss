@@ -22,12 +22,12 @@
             flex-direction: column;
             justify-content: space-between;
 
-            &:not(card-amounts) {
+            &:not(.card-amounts) {
                 margin-right: 0.6em;
             }
 
-            > .name {
-                //font-size: 1.2rem;
+            > :not(.name) {
+                font-size: 0.8rem;
             }
         }
     }

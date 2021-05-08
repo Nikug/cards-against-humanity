@@ -20,7 +20,7 @@
     .start-game-button-container {
         width: 100%;
         display: flex;
-        justify-content: end;
+        justify-content: flex-end;
 
         .big-btn {
             position: absolute;
@@ -54,10 +54,14 @@
     }
 
     .game-settings-title {
-        //font-size: 1.6rem;
+        font-size: 1.4rem;
         padding: 0 0.6rem;
         margin: 0;
         margin-top: 0.5rem;
+
+        @include small-desktop {
+            padding: 0;
+        }
     }
 
     &.disabled {
@@ -136,7 +140,6 @@
 
     .icon-and-text {
         align-items: center;
-        //font-size: 1.4rem;
         width: fit-content;
         display: flex;
         flex-grow: 0;
@@ -150,7 +153,7 @@
         flex-grow: 1;
         margin: auto 0;
         align-items: center;
-        justify-content: end;
+        justify-content: flex-end;
 
         width: fit-content;
 

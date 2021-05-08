@@ -5,11 +5,13 @@
     align-items: center;
 
     --padding: 0.2em;
+    --height: 1.8em; // Browser handle things differently, so this fixes it.
 
     > .text-input {
         flex-grow: 1;
         padding-top: var(--padding);
         padding-bottom: var(--padding);
+        height: var(--height);
     }
 
     > .button {
@@ -19,6 +21,7 @@
         flex-grow: 0;
         padding-top: var(--button-padding);
         padding-bottom: var(--button-padding);
+        height: var(--height);
     }
 
     gap: 0.1em;

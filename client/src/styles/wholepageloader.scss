@@ -3,11 +3,7 @@
 
     text-decoration: none;
     font-family: "Teko", sans-serif;
-    //font-size: 2em;
-
-    @include small-desktop {
-        //font-size: 3em;
-    }
+    font-size: 1.4rem;
 
     width: 100vw;
 

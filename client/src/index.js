@@ -12,7 +12,8 @@ ReactDOM.render(
     <React.StrictMode>
         <Suspense fallback={<WholePageLoader />}>
             <Router>
-                <App />
+                <WholePageLoader />
+                {/*<App />*/}
             </Router>
         </Suspense>
     </React.StrictMode>,
