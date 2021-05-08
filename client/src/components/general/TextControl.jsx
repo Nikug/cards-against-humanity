@@ -1,5 +1,5 @@
 import React from 'react';
-import { classNames } from '../helpers/classnames';
+import { classNames } from '../../helpers/classnames';
 import { Button, BUTTON_TYPES } from './Button.jsx';
 import { Input } from './Input';
 

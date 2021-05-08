@@ -19,7 +19,7 @@ import { socket } from './components/sockets/socket';
 import { socketOn } from './helpers/communicationhelpers';
 import { translateCommon } from './helpers/translation-helpers';
 import { useTranslation } from 'react-i18next';
-import { WholePageLoader } from './components/WholePageLoader';
+import { WholePageLoader } from './components/WholePageLoader.jsx';
 import axios from 'axios';
 import i18n from './i18n';
 

@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react';
-import { classNames } from '../helpers/classnames';
-import { emptyFn, isNullOrUndefined } from '../helpers/generalhelpers';
+import { classNames } from '../../helpers/classnames';
+import { emptyFn, isNullOrUndefined } from '../../helpers/generalhelpers';
 
 const getIconClassNames = (className, color, onClick) => {
     return classNames('material-icons', className, color, { clickable: onClick != null });

@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import { classNames } from '../helpers/classnames';
+import { classNames } from '../../helpers/classnames';
 
 import Icon from './Icon.jsx';
 

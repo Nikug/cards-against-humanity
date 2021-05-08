@@ -6,7 +6,7 @@ import * as serviceWorker from './serviceWorker';
 import { BrowserRouter as Router } from 'react-router-dom';
 import './i18n';
 import { Suspense } from 'react';
-import { WholePageLoader } from './components/WholePageLoader';
+import { WholePageLoader } from './components/WholePageLoader.jsx';
 
 ReactDOM.render(
     <React.StrictMode>

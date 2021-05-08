@@ -1,5 +1,5 @@
-import React from "react";
-import { classNames } from "./../helpers/classnames.js";
+import React from 'react';
+import { classNames } from '../../helpers/classnames.js';
 
 export const Input = ({
     className,
@@ -11,7 +11,7 @@ export const Input = ({
     onKeyDown,
     onKeyDownParams = [],
     placeholder,
-    type = "text",
+    type = 'text',
     value,
 }) => {
     const handleOnChange = (e) => {
@@ -28,10 +28,10 @@ export const Input = ({
 
     return (
         <input
-            className={classNames("text-input", className, { disabled })}
+            className={classNames('text-input', className, { disabled })}
             onChange={handleOnChange}
             onKeyDown={handleKeyDown}
-            placeholder={placeholder ?? ""}
+            placeholder={placeholder ?? ''}
             size={minSizeByChars}
             type={type}
             value={value}
