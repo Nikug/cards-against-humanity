@@ -32,6 +32,7 @@ export const sockets = (io: SocketIO.Server) => {
                 socket,
                 data?.gameID,
                 data?.playerID,
+                data?.password,
             ]);
         });
 

@@ -2,6 +2,7 @@ import type * as CAH from "types";
 import type * as SocketIO from "socket.io";
 
 import { ERROR_TYPES, NOTIFICATION_TYPES } from "../../consts/error";
+import { Password, playerName } from "../../consts/gameSettings";
 import { addPlayer, findPlayer, setPlayer } from "../players/playerUtil";
 import { checkPlayerLimit, checkSpectatorLimit } from "../games/gameOptions";
 import { findGameByPlayerID, getGame, setGame } from "../games/gameUtil";
@@ -9,15 +10,16 @@ import { findGameByPlayerID, getGame, setGame } from "../games/gameUtil";
 import { PoolClient } from "pg";
 import { createNewPlayer } from "../players/createPlayer";
 import { joiningPlayerStates } from "../../consts/states";
-import { playerName } from "../../consts/gameSettings";
+import { sanitizeString } from "../utilities/sanitize";
 import { sendNotification } from "../utilities/socket";
 import { updatePlayersIndividually } from "../players/emitPlayers";
 
 export const joinGame = async (
     io: SocketIO.Server,
     socket: SocketIO.Socket,
-    gameID: string,
-    playerID: string,
+    gameID: string | undefined,
+    playerID: string | undefined,
+    password: string | undefined,
     client?: PoolClient
 ) => {
     console.log(`Joining game! gameID: ${gameID} playerID: ${playerID}`);
@@ -26,10 +28,24 @@ export const joinGame = async (
         if (!!game) {
             if (!!gameID) {
                 if (gameID === game.id) {
-                    addPlayerToGame(io, socket, gameID, playerID, client);
+                    addPlayerToGame(
+                        io,
+                        socket,
+                        gameID,
+                        playerID,
+                        password,
+                        client
+                    );
                 } else {
                     // Join the game but send also warning about joining a different game than expected
-                    addPlayerToGame(io, socket, game.id, playerID, client);
+                    addPlayerToGame(
+                        io,
+                        socket,
+                        game.id,
+                        playerID,
+                        password,
+                        client
+                    );
                     sendNotification(
                         ERROR_TYPES.joinedToDifferentGame,
                         NOTIFICATION_TYPES.default,
@@ -37,26 +53,34 @@ export const joinGame = async (
                     );
                 }
             } else {
-                addPlayerToGame(io, socket, game.id, playerID, client);
+                addPlayerToGame(
+                    io,
+                    socket,
+                    game.id,
+                    playerID,
+                    password,
+                    client
+                );
             }
         } else {
-            handleGameID(io, socket, gameID, client);
+            handleGameID(io, socket, gameID, password, client);
         }
     } else {
-        handleGameID(io, socket, gameID, client);
+        handleGameID(io, socket, gameID, password, client);
     }
 };
 
 const handleGameID = async (
     io: SocketIO.Server,
     socket: SocketIO.Socket,
-    gameID: string,
+    gameID: string | undefined,
+    password: string | undefined,
     client?: PoolClient
 ) => {
     if (!!gameID) {
         const game = await getGame(gameID, client);
         if (!!game) {
-            addPlayerToGame(io, socket, gameID, null, client);
+            addPlayerToGame(io, socket, gameID, undefined, password, client);
         } else {
             // Can't find a game with the id, return error
             returnError(socket);
@@ -80,11 +104,20 @@ const addPlayerToGame = async (
     io: SocketIO.Server,
     socket: SocketIO.Socket,
     gameID: string,
-    playerID: string | null,
+    playerID: string | undefined,
+    password: string | undefined,
     client?: PoolClient
 ) => {
     const game = await getGame(gameID, client);
     if (!game) return;
+
+    if (game.client.options.password) {
+        const match = handlePassword(game.client.options.password, password);
+        if (!match) {
+            socket.send("join_game", { password: false });
+            return;
+        }
+    }
 
     const isHost = game.players.length === 0;
     const player = findPlayer(game.players, playerID);
@@ -143,4 +176,16 @@ const returnError = (socket: SocketIO.Socket) => {
     sendNotification(ERROR_TYPES.gameWasNotFound, NOTIFICATION_TYPES.error, {
         socket: socket,
     });
+};
+
+const handlePassword = (
+    gamePassword: string,
+    playerPassword: string | undefined
+): boolean => {
+    if (!playerPassword) return false;
+    const cleanPlayerPassword = sanitizeString(
+        playerPassword,
+        Password.maximumLength
+    );
+    return cleanPlayerPassword === gamePassword;
 };
