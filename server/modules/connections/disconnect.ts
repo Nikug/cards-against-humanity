@@ -32,6 +32,7 @@ import { INACTIVE_GAME_DELETE_TIME } from "../../consts/gameSettings";
 import { PoolClient } from "pg";
 import { appointNextCardCzar } from "../players/cardCzar";
 import { startReading } from "../rounds/startReading";
+import { transactionize } from "../db/util";
 
 export const setPlayerDisconnected = async (
     io: SocketIO.Server,
@@ -76,7 +77,7 @@ export const setPlayerDisconnected = async (
             return;
         } else {
             setTimeout(
-                () => removeGameIfNoActivePlayers(game.id),
+                () => transactionize(removeGameIfNoActivePlayers, [game.id]),
                 INACTIVE_GAME_DELETE_TIME
             );
             await setGame(game, client);

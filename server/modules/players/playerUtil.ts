@@ -106,6 +106,9 @@ export const getAllActivePlayers = (players: CAH.Player[]) =>
         ["active", "playing", "waiting", "pickingName"].includes(player.state)
     );
 
+export const getAllButDisconnectedPlayers = (players: CAH.Player[]) =>
+    players.filter((player) => player.state !== "disconnected");
+
 export const getPlayerByWhiteCards = (
     game: CAH.Game,
     whiteCardIDs: string[]

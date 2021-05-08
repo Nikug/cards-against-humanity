@@ -75,6 +75,6 @@ export const playerName = {
 };
 
 // export const INACTIVE_GAME_DELETE_TIME = 10 * 60 * 1000; // 10 mins
-export const INACTIVE_GAME_DELETE_TIME = 10 * 1000; // 10 mins
+export const INACTIVE_GAME_DELETE_TIME = 5 * 60 * 1000; // 5 mins
 
 export const GAME_NAME_GENERATOR_MAX_RUNS = 100;

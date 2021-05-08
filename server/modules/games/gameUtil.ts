@@ -10,8 +10,10 @@ import {
     getDBGameIds,
     setDBGame,
 } from "../db/database";
-
-import { getActivePlayers } from "../players/playerUtil";
+import {
+    getActivePlayers,
+    getAllButDisconnectedPlayers,
+} from "../players/playerUtil";
 
 let games: CAH.Game[] = [];
 
@@ -57,12 +59,18 @@ export const setGame = async (newGame: CAH.Game, client?: pg.PoolClient) => {
     return newGame;
 };
 
-export const removeGameIfNoActivePlayers = async (gameID: string) => {
-    const game = await getGame(gameID);
+export const removeGameIfNoActivePlayers = async (
+    gameID: string,
+    client?: pg.PoolClient
+) => {
+    const game = await getGame(gameID, client);
     if (!game) return;
 
-    if (!game.players || getActivePlayers(game.players).length === 0) {
-        await removeGame(gameID);
+    if (
+        !game.players ||
+        getAllButDisconnectedPlayers(game.players).length === 0
+    ) {
+        await removeGame(gameID, client);
     }
 };
 
