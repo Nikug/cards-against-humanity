@@ -1,6 +1,6 @@
 import { emptyFn, isNullOrUndefined } from '../../helpers/generalhelpers.js';
 
-import Icon from '../Icon.jsx';
+import Icon from '../general/Icon';
 import React from 'react';
 import { translateCommon } from '../../helpers/translation-helpers.js';
 import { useTranslation } from 'react-i18next';

@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { animated, useSpring } from 'react-spring';
 import { useMeasure, usePrevious } from '../../helpers/animation-helpers';
 
-import { Button } from '../Button.jsx';
+import { Button } from '../general/Button';
 import { useClickOutside } from '../../helpers/useClickOutside';
 
 export const PopOverMenu = ({ content, buttonProps, noControl, isDefaultOpen = false }) => {

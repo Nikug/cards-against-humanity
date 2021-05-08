@@ -1,7 +1,7 @@
 import React, { useCallback, useState } from 'react';
 
 import { ActionButtonRow } from '../../layouts/Game/components/GameMenu/ActionButtonRow';
-import Icon from '../Icon.jsx';
+import Icon from '../general/Icon';
 import { PopOverMenu } from '../popover-menu/PopoverMenu';
 import { animated } from 'react-spring';
 import crownIcon from './../../assets/svgicons/crown-svgrepo-com.svg';

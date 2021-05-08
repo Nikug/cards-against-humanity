@@ -1,21 +1,13 @@
-import React, { useState } from "react";
-import {
-    containsObjectWithMatchingFieldIndex,
-    emptyFn,
-} from "../../helpers/generalhelpers";
+import React, { useState } from 'react';
+import { containsObjectWithMatchingFieldIndex, emptyFn } from '../../helpers/generalhelpers';
 
-import { CardPicker } from "./cardpicker";
-import { mergeWhiteCardsByplayer } from "./cardformathelpers.js/mergeWhiteCardsByplayer";
-import { socket } from "../sockets/socket";
-import { translateCommon } from "../../helpers/translation-helpers";
-import { useTranslation } from "react-i18next";
+import { CardPicker } from './cardpicker';
+import { mergeWhiteCardsByplayer } from './cardformathelpers/mergeWhiteCardsByplayer';
+import { socket } from '../sockets/socket';
+import { translateCommon } from '../../helpers/translation-helpers';
+import { useTranslation } from 'react-i18next';
 
-export const WinnerCardPickerContainer = ({
-    game,
-    player,
-    givePopularVote,
-    popularVotedCardsIDs,
-}) => {
+export const WinnerCardPickerContainer = ({ game, player, givePopularVote, popularVotedCardsIDs }) => {
     const { t } = useTranslation();
     const [selectedCards, setSelectedCards] = useState([]);
     const [confirmedCards, setConfirmedCards] = useState([]);
@@ -35,11 +27,7 @@ export const WinnerCardPickerContainer = ({
 
         const pickLimit = 1;
 
-        const i = containsObjectWithMatchingFieldIndex(
-            card,
-            newSelectedCards,
-            "id"
-        );
+        const i = containsObjectWithMatchingFieldIndex(card, newSelectedCards, 'id');
         if (i !== -1) {
             newSelectedCards.splice(i);
         } else if (newSelectedCards.length < pickLimit) {
@@ -58,7 +46,7 @@ export const WinnerCardPickerContainer = ({
             const gameID = game.id;
             const playerID = player.id;
 
-            socket.emit("pick_winning_card", {
+            socket.emit('pick_winning_card', {
                 gameID: gameID,
                 playerID: playerID,
                 whiteCardIDs: selectedCards[0].id,
@@ -79,19 +67,12 @@ export const WinnerCardPickerContainer = ({
                 confirmCards={isCardCzar ? confirmCard : emptyFn}
                 description={
                     isCardCzar
-                        ? translateCommon("chooseTheWinner", t)
+                        ? translateCommon('chooseTheWinner', t)
                         : hasPopularVote
-                        ? translateCommon("voteYourFavouriteCards", t)
-                        : translateCommon("whiteCards", t)
+                        ? translateCommon('voteYourFavouriteCards', t)
+                        : translateCommon('whiteCards', t)
                 }
-                alternativeText={
-                    isCardCzar
-                        ? undefined
-                        : `${translateCommon(
-                              "cardCzarIsChoosingTheWinner",
-                              t
-                          )}...`
-                }
+                alternativeText={isCardCzar ? undefined : `${translateCommon('cardCzarIsChoosingTheWinner', t)}...`}
                 noActionButton={!isCardCzar}
                 selectDisabled={selectedCards.length !== 1}
                 showPopularVote={hasPopularVote && !isCardCzar}

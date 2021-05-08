@@ -1,6 +1,6 @@
 import { animated, useTransition } from 'react-spring';
 
-import Icon from '../Icon.jsx';
+import Icon from '../general/Icon';
 import { PLAYER_STATES } from '../../consts/playerstates';
 import { Player } from './player';
 import React from 'react';

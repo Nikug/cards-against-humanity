@@ -1,7 +1,7 @@
 import { Link, useHistory, useLocation } from 'react-router-dom';
 import React, { useCallback, useState } from 'react';
 
-import Icon from './Icon.jsx';
+import Icon from './general/Icon';
 import { deleteCookie } from '../helpers/cookies';
 import logo from './../assets/images/korttipeli_favicon.png';
 import { socket } from './sockets/socket';

@@ -1,5 +1,6 @@
-import React from 'react';
-import Icon from '../../Icon.jsx';
+import React, { useMemo } from 'react';
+import { classNames } from '../../helpers/classnames';
+import Icon from '../general/Icon';
 
 const getOnclickFunction = (onChangeCallback, field, currentValue) => {
     return (e) => {

@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 
-import Icon from './../Icon.jsx';
-import { Toggle } from './controls/toggle';
-import { TextControl } from '../TextControl';
+import Icon from './../general/Icon';
+import { Toggle } from './../general/Toggle';
+import { TextControl } from '../general/TextControl';
 import { classNames } from '../../helpers/classnames';
 
 export const CONTROL_TYPES = {

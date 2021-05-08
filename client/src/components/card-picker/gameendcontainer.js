@@ -1,12 +1,12 @@
-import React, { useState } from "react";
+import React, { useState } from 'react';
 
-import { CardPicker } from "./cardpicker";
-import Confetti from "react-confetti";
-import { emptyFn } from "../../helpers/generalhelpers";
-import { renderBlackCardwithWhiteCards } from "./cardformathelpers.js/renderBlackcardWithWhiteCards";
-import { socket } from "../sockets/socket";
-import { translateCommon } from "../../helpers/translation-helpers";
-import { useTranslation } from "react-i18next";
+import { CardPicker } from './cardpicker';
+import Confetti from 'react-confetti';
+import { emptyFn } from '../../helpers/generalhelpers';
+import { renderBlackCardwithWhiteCards } from './cardformathelpers/renderBlackcardWithWhiteCards';
+import { socket } from '../sockets/socket';
+import { translateCommon } from '../../helpers/translation-helpers';
+import { useTranslation } from 'react-i18next';
 
 export const GameEndContainer = ({ game, player }) => {
     const { t } = useTranslation();
@@ -55,7 +55,7 @@ export const GameEndContainer = ({ game, player }) => {
 
     const returnBackToLobby = () => {
         setReturningBackToLobby(true);
-        socket.emit("return_to_lobby", {
+        socket.emit('return_to_lobby', {
             gameID: game?.id,
             playerID: player?.id,
         });
@@ -63,32 +63,17 @@ export const GameEndContainer = ({ game, player }) => {
 
     return (
         <>
-            <Confetti
-                tweenDuration={3000}
-                opacity={0.4}
-                numberOfPieces={3000}
-                recycle={false}
-                width={window.innerWidth}
-                height={window.innerHeight}
-            />
+            <Confetti tweenDuration={3000} opacity={0.4} numberOfPieces={3000} recycle={false} width={window.innerWidth} height={window.innerHeight} />
             <div className="blackcardpicker">
                 <CardPicker
                     selectCard={emptyFn}
                     confirmCards={returnBackToLobby}
                     customButtonState={returningBackToLobby ? 1 : 0}
-                    customButtonTexts={[
-                        translateCommon("returnToLobby", t),
-                        `${translateCommon("returningToLobby", t)}...`,
-                    ]}
+                    customButtonTexts={[translateCommon('returnToLobby', t), `${translateCommon('returningToLobby', t)}...`]}
                     centerActionButton={true}
                     noActionButton={!player?.isHost}
-                    topText={`🎉🎉🎉 ${
-                        playersSorted[0].name ?? translateCommon("someone", t)
-                    } ${translateCommon("wonTheGame", t)}! 🎉🎉🎉`}
-                    description={`${translateCommon(
-                        "theWinnerCardsOfThisGame",
-                        t
-                    )}:`}
+                    topText={`🎉🎉🎉 ${playersSorted[0].name ?? translateCommon('someone', t)} ${translateCommon('wonTheGame', t)}! 🎉🎉🎉`}
+                    description={`${translateCommon('theWinnerCardsOfThisGame', t)}:`}
                     preRenderedCards={sortedWinnerCards}
                 />
             </div>

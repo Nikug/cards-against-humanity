@@ -1,4 +1,4 @@
-import Icon from '../Icon.jsx';
+import Icon from '../general/Icon';
 import React from 'react';
 import { translateCommon } from '../../helpers/translation-helpers';
 import { useTranslation } from 'react-i18next';

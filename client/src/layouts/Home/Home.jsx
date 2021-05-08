@@ -1,9 +1,9 @@
-import { BUTTON_TYPES, Button } from '../../components/Button.jsx';
+import { BUTTON_TYPES, Button } from '../../components/general/Button.jsx';
 import React, { useState } from 'react';
 
 import { translateCommon } from '../../helpers/translation-helpers';
 import { useTranslation } from 'react-i18next';
-import { TextControl } from '../../components/TextControl';
+import { TextControl } from '../../components/general/TextControl';
 
 export const Home = ({ joinExistingGame, startNewGame }) => {
     const { t } = useTranslation();

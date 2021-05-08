@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { CONTROL_TYPES, Setting } from './setting';
 import { emptyFn } from '../../helpers/generalhelpers';
-import Icon from '../Icon.jsx';
+import Icon from '../general/Icon';
 
 export const CollabsibelSettingsSection = ({ content, isDisabled, title }) => {
     const [isOpen, setIsOpen] = useState(false);

@@ -1,13 +1,13 @@
-import React, { useState } from "react";
+import React, { useState } from 'react';
 
-import { CardPicker } from "./cardpicker";
-import Confetti from "react-confetti";
-import { emptyFn } from "../../helpers/generalhelpers";
-import { isPlayerCardCzar } from "../../helpers/player-helpers";
-import { mergeWhiteCardsByplayer } from "./cardformathelpers.js/mergeWhiteCardsByplayer";
-import { socket } from "../sockets/socket";
-import { translateCommon } from "../../helpers/translation-helpers";
-import { useTranslation } from "react-i18next";
+import { CardPicker } from './cardpicker';
+import Confetti from 'react-confetti';
+import { emptyFn } from '../../helpers/generalhelpers';
+import { isPlayerCardCzar } from '../../helpers/player-helpers';
+import { mergeWhiteCardsByplayer } from './cardformathelpers/mergeWhiteCardsByplayer';
+import { socket } from '../sockets/socket';
+import { translateCommon } from '../../helpers/translation-helpers';
+import { useTranslation } from 'react-i18next';
 
 const TIMEOUT = 10000;
 
@@ -26,42 +26,28 @@ export function RoundEndContainer(props) {
 
     const startNewRound = () => {
         setStartingNewRound(true);
-        socket.emit("start_round", {
+        socket.emit('start_round', {
             gameID: game.id,
             playerID: player.id,
         });
     };
 
-    const whiteCardsByPlayer =
-        game.rounds[game.rounds.length - 1].whiteCardsByPlayer;
-    const winningWhiteCardsByPlayer = whiteCardsByPlayer.find(
-        (card) => card.playerName != null
-    );
+    const whiteCardsByPlayer = game.rounds[game.rounds.length - 1].whiteCardsByPlayer;
+    const winningWhiteCardsByPlayer = whiteCardsByPlayer.find((card) => card.playerName != null);
 
-    const [whiteCards, confirmedCards] = mergeWhiteCardsByplayer(
-        whiteCardsByPlayer
-    );
+    const [whiteCards, confirmedCards] = mergeWhiteCardsByplayer(whiteCardsByPlayer);
 
     const blackCard = game.rounds[game.rounds.length - 1].blackCard;
     const showPopularVote = game?.options?.popularVote;
-    const cardCzarName = game.players.filter(
-        (player) => player.isCardCzar === true
-    )[0].name;
+    const cardCzarName = game.players.filter((player) => player.isCardCzar === true)[0].name;
 
-    console.log("ses", winningWhiteCardsByPlayer);
+    console.log('ses', winningWhiteCardsByPlayer);
 
     return (
         <>
             {winningWhiteCardsByPlayer?.playerName !== undefined && (
                 // https://www.npmjs.com/package/react-confetti
-                <Confetti
-                    tweenDuration={timeout}
-                    opacity={0.4}
-                    numberOfPieces={400}
-                    recycle={false}
-                    width={window.innerWidth}
-                    height={window.innerHeight}
-                />
+                <Confetti tweenDuration={timeout} opacity={0.4} numberOfPieces={400} recycle={false} width={window.innerWidth} height={window.innerHeight} />
             )}
             <div className="blackcardpicker">
                 <CardPicker
@@ -71,36 +57,19 @@ export function RoundEndContainer(props) {
                     confirmedCards={confirmedCards}
                     selectCard={emptyFn}
                     confirmCards={startNewRound}
-                    description={
-                        showPopularVote
-                            ? translateCommon("voteYourFavouriteCards", t)
-                            : translateCommon("whiteCards", t)
-                    }
+                    description={showPopularVote ? translateCommon('voteYourFavouriteCards', t) : translateCommon('whiteCards', t)}
                     alternativeText={
-                        isPlayerCardCzar(player)
-                            ? `${translateCommon(
-                                  "waitingFor_player_ToStartNextRound",
-                                  t,
-                                  { player: cardCzarName }
-                              )}...`
-                            : undefined
+                        isPlayerCardCzar(player) ? `${translateCommon('waitingFor_player_ToStartNextRound', t, { player: cardCzarName })}...` : undefined
                     }
-                    customButtonTexts={[
-                        translateCommon("nextRound", t),
-                        `${translateCommon("loading", t)}...`,
-                    ]}
-                    customButtonIcons={["arrow_forward", "cached"]}
+                    customButtonTexts={[translateCommon('nextRound', t), `${translateCommon('loading', t)}...`]}
+                    customButtonIcons={['arrow_forward', 'cached']}
                     customButtonState={startingNewRound ? 1 : 0}
                     topText={
                         winningWhiteCardsByPlayer?.playerName
-                            ? `🎉 ${translateCommon("_player_WonTheRound", t, {
+                            ? `🎉 ${translateCommon('_player_WonTheRound', t, {
                                   player: winningWhiteCardsByPlayer?.playerName,
                               })}! 🎉`
-                            : `${translateCommon(
-                                  "_player_DidNotChooseAWinnerAndLostOnePoint",
-                                  t,
-                                  { player: cardCzarName }
-                              )}...`
+                            : `${translateCommon('_player_DidNotChooseAWinnerAndLostOnePoint', t, { player: cardCzarName })}...`
                     }
                     showPopularVote={showPopularVote}
                     givePopularVote={givePopularVote}

@@ -1,4 +1,4 @@
-import { BUTTON_TYPES, Button } from '../../../../components/Button.jsx';
+import { BUTTON_TYPES, Button } from '../../../../components/general/Button.jsx';
 
 import React from 'react';
 import { translateCommon } from '../../../../helpers/translation-helpers';

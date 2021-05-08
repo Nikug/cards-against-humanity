@@ -1,10 +1,10 @@
-import { BUTTON_TYPES, Button } from '../Button.jsx';
+import { BUTTON_TYPES, Button } from '../general/Button';
 import { containsObjectWithMatchingField, emptyFn, isNullOrUndefined } from '../../helpers/generalhelpers';
 
 import Card from './card';
 import React from 'react';
 import { isPlayerJoining } from '../../helpers/player-helpers';
-import { renderBlackCardwithWhiteCards } from './cardformathelpers.js/renderBlackcardWithWhiteCards';
+import { renderBlackCardwithWhiteCards } from './cardformathelpers/renderBlackcardWithWhiteCards';
 import { translateCommon } from '../../helpers/translation-helpers';
 import { useGameContext } from '../../contexts/GameContext';
 import { useTranslation } from 'react-i18next';

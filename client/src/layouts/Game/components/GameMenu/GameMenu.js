@@ -1,7 +1,7 @@
 import { isPlayerHost, isPlayerSpectator } from '../../../../helpers/player-helpers';
 
 import { ActionButtonRow } from './ActionButtonRow';
-import { BUTTON_TYPES } from '../../../../components/Button.jsx';
+import { BUTTON_TYPES } from '../../../../components/general/Button.jsx';
 import { GAME_STATES } from '../../../../consts/gamestates';
 import { PopOverMenu } from '../../../../components/popover-menu/PopoverMenu';
 import React from 'react';

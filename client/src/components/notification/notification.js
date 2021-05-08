@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import Icon from '../Icon.jsx';
+import Icon from '../general/Icon';
 
 export const NOTIFICATION_TYPES = {
     DEFAULT: 'default',
