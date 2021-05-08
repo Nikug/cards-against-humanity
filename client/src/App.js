@@ -5,23 +5,23 @@ import { deleteCookie, setCookie } from './helpers/cookies';
 import './index.scss';
 
 import { Button } from './components/Button.jsx';
+import { Footer } from './components/footer/Footer';
 import { Game } from './layouts/Game/Game.jsx';
 import { GameContextProvider } from './contexts/GameContext';
+import { getItemFromLocalStorage, LOCAL_STORAGE_FIELDS, removeItemFromLocalStorage, setItemToLocalStorage } from './helpers/localstoragehelpers';
 import { Header } from './components/header';
 import { Home } from './layouts/Home/Home.jsx';
 import { Instructions } from './layouts/Instructions';
+import { isNullOrUndefined } from './helpers/generalhelpers';
 import { Notification } from './components/notification/notification';
 import { NotificationContextProvider } from './contexts/NotificationContext';
-import { WholePageLoader } from './components/WholePageLoader';
-import axios from 'axios';
-import i18n from './i18n';
-import { isNullOrUndefined } from './helpers/generalhelpers';
 import { socket } from './components/sockets/socket';
 import { socketOn } from './helpers/communicationhelpers';
 import { translateCommon } from './helpers/translation-helpers';
 import { useTranslation } from 'react-i18next';
-import { getItemFromLocalStorage, LOCAL_STORAGE_FIELDS, removeItemFromLocalStorage, setItemToLocalStorage } from './helpers/localstoragehelpers';
-import { Footer } from './components/footer/Footer';
+import { WholePageLoader } from './components/WholePageLoader';
+import axios from 'axios';
+import i18n from './i18n';
 
 export const App = () => {
     /*****************************************************************/ // Purely for hiding dev things from the production.
@@ -38,11 +38,11 @@ export const App = () => {
     /*****************************************************************/
 
     const [game, setGame] = useState(undefined);
-    const [player, setPlayer] = useState(undefined);
-    const [notifications, setNotifications] = useState([]);
-    const [loading, setLoading] = useState(true);
     const [hasAcceptedCookies, setHasAcceptedCookies] = useState(true);
+    const [loading, setLoading] = useState(true);
     const [notificationCount, setNotificationCount] = useState(0);
+    const [notifications, setNotifications] = useState([]);
+    const [player, setPlayer] = useState(undefined);
 
     const history = useHistory();
     const { t } = useTranslation();
@@ -107,34 +107,6 @@ export const App = () => {
         if (language) {
             i18n.changeLanguage(language);
         }
-
-        /*
-        setTimeout(() => {
-            //removeItemFromLocalStorage(LOCAL_STORAGE_FIELDS.HAS_ACCEPTED_COOKIES);
-            const hasAcceptedCookies = getItemFromLocalStorage(
-                LOCAL_STORAGE_FIELDS.HAS_ACCEPTED_COOKIES
-            );
-
-            if (hasAcceptedCookies !== "true") {
-                const answer = window.confirm(
-                    translateCommon("doYouAcceptCookies", t)
-                );
-
-                if (answer) {
-                    setItemToLocalStorage(
-                        LOCAL_STORAGE_FIELDS.HAS_ACCEPTED_COOKIES,
-                        "true"
-                    );
-                } else {
-                    setItemToLocalStorage(
-                        LOCAL_STORAGE_FIELDS.HAS_ACCEPTED_COOKIES,
-                        "false"
-                    );
-                    setHasAcceptedCookies(false);
-                }
-            }
-        }, 3000);
-        */
     }, []);
 
     useEffect(() => {

@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react';
 import { classNames } from '../helpers/classnames';
 
-import Icon from './icon';
+import Icon from './Icon.jsx';
 
 export const BUTTON_TYPES = {
     PRIMARY: 1,
@@ -45,7 +45,7 @@ export const Button = React.forwardRef(({ additionalClassname, callback, callbac
 
     const classNameString = useMemo(() => getClassNameString(additionalClassname, disabled, fill, type), [additionalClassname, disabled, fill, type]);
     const onClickFunction = useMemo(() => getOnclickFunction(callback, callbackParams, disabled), [callback, callbackParams, disabled]);
-    const buttonicon = useMemo(() => getButtonIcon(icon, iconPosition), [icon, iconAfterText, noText]);
+    const buttonicon = useMemo(() => getButtonIcon(icon, iconAfterText, noText), [icon, iconAfterText, noText]);
 
     return (
         <button ref={ref} className={classNameString} onClick={onClickFunction}>

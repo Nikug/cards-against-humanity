@@ -1,13 +1,13 @@
-import { animated, useTransition } from "react-spring";
+import { animated, useTransition } from 'react-spring';
 
-import Icon from "../icon";
-import { PLAYER_STATES } from "../../consts/playerstates";
-import { Player } from "./player";
-import React from "react";
-import { Spinner } from "../spinner";
-import { isNullOrUndefined } from "../../helpers/generalhelpers";
-import { translateCommon } from "../../helpers/translation-helpers";
-import { useTranslation } from "react-i18next";
+import Icon from '../Icon.jsx';
+import { PLAYER_STATES } from '../../consts/playerstates';
+import { Player } from './player';
+import React from 'react';
+import { Spinner } from '../spinner';
+import { isNullOrUndefined } from '../../helpers/generalhelpers';
+import { translateCommon } from '../../helpers/translation-helpers';
+import { useTranslation } from 'react-i18next';
 
 export const PlayersWidget = ({ game, player }) => {
     const { t } = useTranslation();
@@ -20,16 +20,7 @@ export const PlayersWidget = ({ game, player }) => {
 
         for (let i = 0, len = players.length; i < len; i++) {
             const player = players[i];
-            const {
-                id,
-                isCardCzar,
-                isHost,
-                isPopularVoteKing,
-                name,
-                publicID,
-                score,
-                state,
-            } = player;
+            const { id, isCardCzar, isHost, isPopularVoteKing, name, publicID, score, state } = player;
 
             renderedPlayers.push(
                 <Player
@@ -63,39 +54,35 @@ export const PlayersWidget = ({ game, player }) => {
     }
 
     playersToRender = playersToRender.filter((player) => {
-        return player.state !== "spectating";
+        return player.state !== 'spectating';
     });
 
     if (playersToRender.length === 0) {
         otherContent = (
             <div className="players-widget no-active-players">
                 <Icon name="sentiment_dissatisfied" />
-                <div>{translateCommon("noActivePlayers", t)}</div>
+                <div>{translateCommon('noActivePlayers', t)}</div>
             </div>
         );
     }
 
     const renderedPlayers = renderPlayers(playersToRender, player);
 
-    const playerTransitions = useTransition(
-        renderedPlayers,
-        (player) => player.key,
-        {
-            initial: {
-                opacity: 1,
-            },
-            from: {
-                opacity: 0,
-            },
-            enter: {
-                opacity: 1,
-            },
-            leave: {
-                opacity: 0,
-            },
-            unique: true,
-        }
-    );
+    const playerTransitions = useTransition(renderedPlayers, (player) => player.key, {
+        initial: {
+            opacity: 1,
+        },
+        from: {
+            opacity: 0,
+        },
+        enter: {
+            opacity: 1,
+        },
+        leave: {
+            opacity: 0,
+        },
+        unique: true,
+    });
 
     return otherContent ? (
         otherContent

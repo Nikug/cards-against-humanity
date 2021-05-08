@@ -1,9 +1,9 @@
-import { emptyFn, isNullOrUndefined } from "../../helpers/generalhelpers.js";
+import { emptyFn, isNullOrUndefined } from '../../helpers/generalhelpers.js';
 
-import Icon from "../icon";
-import React from "react";
-import { translateCommon } from "../../helpers/translation-helpers.js";
-import { useTranslation } from "react-i18next";
+import Icon from '../Icon.jsx';
+import React from 'react';
+import { translateCommon } from '../../helpers/translation-helpers.js';
+import { useTranslation } from 'react-i18next';
 
 const CARD_TYPES = {
     WHITE: 1,
@@ -11,14 +11,10 @@ const CARD_TYPES = {
 };
 
 function formatTextWithBlanks(text, blankTexts) {
-    const splittedText = text.split("_");
+    const splittedText = text.split('_');
     const piecesToRender = [];
 
-    for (
-        let i = 0, blankIterator = 0, len = splittedText.length;
-        i < len;
-        i++
-    ) {
+    for (let i = 0, blankIterator = 0, len = splittedText.length; i < len; i++) {
         const piece = splittedText[i];
         piecesToRender.push(
             <span key={`t-${i}`} className="text">
@@ -59,18 +55,7 @@ function formatTextWithBlanks(text, blankTexts) {
 export default function Card(props) {
     const card = props.card;
     const { cardPackID, text, whiteCardsToPlay, whiteCardsToDraw, id } = card;
-    const {
-        bigCard,
-        blankTexts,
-        confirmed,
-        givePopularVote,
-        hasBeenPopularVoted,
-        playerName,
-        popularVoteScore,
-        selectCard,
-        selected,
-        showPopularVote,
-    } = props;
+    const { bigCard, blankTexts, confirmed, givePopularVote, hasBeenPopularVoted, playerName, popularVoteScore, selectCard, selected, showPopularVote } = props;
     const { t } = useTranslation();
     let type = CARD_TYPES.BLACK;
 
@@ -83,7 +68,7 @@ export default function Card(props) {
     if (type === CARD_TYPES.BLACK) {
         textToRender = formatTextWithBlanks(text, blankTexts);
     } else {
-        if (typeof text === "string") {
+        if (typeof text === 'string') {
             textToRender = <div className="text">{text}</div>;
         } else if (Array.isArray(text)) {
             const texts = [];
@@ -99,73 +84,45 @@ export default function Card(props) {
 
     return (
         <div
-            className={`card-wrapper ${bigCard ? "big-card" : ""} ${
-                confirmed ? "confirmed" : selected ? "selected" : ""
-            } ${type === CARD_TYPES.BLACK ? "black" : "white"}`}
+            className={`card-wrapper ${bigCard ? 'big-card' : ''} ${confirmed ? 'confirmed' : selected ? 'selected' : ''} ${
+                type === CARD_TYPES.BLACK ? 'black' : 'white'
+            }`}
             onClick={() => {
                 if (!isNullOrUndefined(selectCard)) {
                     selectCard(card);
                 }
             }}
         >
-            <div
-                className={`card ${
-                    type === CARD_TYPES.BLACK ? "black" : "white"
-                }`}
-            >
+            <div className={`card ${type === CARD_TYPES.BLACK ? 'black' : 'white'}`}>
                 {textToRender}
                 <div className="footer">
-                    {type === CARD_TYPES.BLACK &&
-                        isNullOrUndefined(playerName) && (
-                            <span className="draw-and-play">
-                                {isNullOrUndefined(cardPackID)
-                                    ? ""
-                                    : `${translateCommon(
-                                          "draw",
-                                          t
-                                      )} ${whiteCardsToDraw}, ${translateCommon(
-                                          "play",
-                                          t
-                                      )} ${whiteCardsToPlay}`}
-                            </span>
-                        )}
-                    {playerName && (
-                        <span className="draw-and-play">{playerName}</span>
+                    {type === CARD_TYPES.BLACK && isNullOrUndefined(playerName) && (
+                        <span className="draw-and-play">
+                            {isNullOrUndefined(cardPackID)
+                                ? ''
+                                : `${translateCommon('draw', t)} ${whiteCardsToDraw}, ${translateCommon('play', t)} ${whiteCardsToPlay}`}
+                        </span>
                     )}
+                    {playerName && <span className="draw-and-play">{playerName}</span>}
                     <span>&nbsp;</span>
-                    {!isNullOrUndefined(cardPackID) &&
-                        isNullOrUndefined(popularVoteScore) &&
-                        !Array.isArray(cardPackID) && (
-                            <span className="cardpackid">{cardPackID}</span>
-                        )}
-                    {showPopularVote &&
-                        isNullOrUndefined(popularVoteScore) &&
-                        !isNullOrUndefined(cardPackID) &&
-                        Array.isArray(cardPackID) && (
-                            <span className="popularvote-btn">
-                                <Icon
-                                    name="thumb_up"
-                                    color={
-                                        hasBeenPopularVoted ? "blue" : "grey"
-                                    }
-                                    onClick={
-                                        isNullOrUndefined(givePopularVote) ||
-                                        hasBeenPopularVoted
-                                            ? emptyFn
-                                            : () => givePopularVote(id)
-                                    }
-                                />
-                            </span>
-                        )}
-                    {!isNullOrUndefined(popularVoteScore) &&
-                        popularVoteScore > 0 && (
-                            <span className="popularvote-btn no-action popular-vote-score">
-                                <Icon name="thumb_up" color={"blue"} />
-                                <span className="popular-vote-score">
-                                    {popularVoteScore}
-                                </span>
-                            </span>
-                        )}
+                    {!isNullOrUndefined(cardPackID) && isNullOrUndefined(popularVoteScore) && !Array.isArray(cardPackID) && (
+                        <span className="cardpackid">{cardPackID}</span>
+                    )}
+                    {showPopularVote && isNullOrUndefined(popularVoteScore) && !isNullOrUndefined(cardPackID) && Array.isArray(cardPackID) && (
+                        <span className="popularvote-btn">
+                            <Icon
+                                name="thumb_up"
+                                color={hasBeenPopularVoted ? 'blue' : 'grey'}
+                                onClick={isNullOrUndefined(givePopularVote) || hasBeenPopularVoted ? emptyFn : () => givePopularVote(id)}
+                            />
+                        </span>
+                    )}
+                    {!isNullOrUndefined(popularVoteScore) && popularVoteScore > 0 && (
+                        <span className="popularvote-btn no-action popular-vote-score">
+                            <Icon name="thumb_up" color={'blue'} />
+                            <span className="popular-vote-score">{popularVoteScore}</span>
+                        </span>
+                    )}
                 </div>
             </div>
         </div>

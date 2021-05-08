@@ -1,27 +1,18 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useState } from 'react';
 
-import { ActionButtonRow } from "../../layouts/Game/components/GameMenu/ActionButtonRow";
-import Icon from "../icon";
-import { PopOverMenu } from "../popover-menu/PopoverMenu";
-import { animated } from "react-spring";
-import crownIcon from "./../../assets/svgicons/crown-svgrepo-com.svg";
-import { isPlayerHost } from "../../helpers/player-helpers";
-import { socket } from "./../sockets/socket";
-import { translateCommon } from "../../helpers/translation-helpers";
-import { useGameContext } from "../../contexts/GameContext";
-import { useTransition } from "react-spring";
-import { useTranslation } from "react-i18next";
+import { ActionButtonRow } from '../../layouts/Game/components/GameMenu/ActionButtonRow';
+import Icon from '../Icon.jsx';
+import { PopOverMenu } from '../popover-menu/PopoverMenu';
+import { animated } from 'react-spring';
+import crownIcon from './../../assets/svgicons/crown-svgrepo-com.svg';
+import { isPlayerHost } from '../../helpers/player-helpers';
+import { socket } from './../sockets/socket';
+import { translateCommon } from '../../helpers/translation-helpers';
+import { useGameContext } from '../../contexts/GameContext';
+import { useTransition } from 'react-spring';
+import { useTranslation } from 'react-i18next';
 
-export const Player = ({
-    name,
-    state,
-    score,
-    isCardCzar,
-    isHost,
-    isPopularVoteKing,
-    isSelf,
-    publicID,
-}) => {
+export const Player = ({ name, state, score, isCardCzar, isHost, isPopularVoteKing, isSelf, publicID }) => {
     const { t } = useTranslation();
 
     const { player, game } = useGameContext();
@@ -42,11 +33,7 @@ export const Player = ({
 
                 if (playerNameElement) {
                     const { clientWidth, scrollWidth } = playerNameElement;
-                    if (
-                        !showTitle &&
-                        playerNameElement &&
-                        clientWidth < scrollWidth
-                    ) {
+                    if (!showTitle && playerNameElement && clientWidth < scrollWidth) {
                         setShowTitle(true);
                     } else if (showTitle && !(clientWidth < scrollWidth)) {
                         setShowTitle(false);
@@ -61,23 +48,23 @@ export const Player = ({
     // Score animation
     const scoreTransitions = useTransition(score, null, {
         initial: {
-            transform: "translate3d(0,0px,0)",
+            transform: 'translate3d(0,0px,0)',
             opacity: 1,
-            height: "auto",
-            width: "auto",
+            height: 'auto',
+            width: 'auto',
         },
         from: {
-            position: "relative",
-            transform: "translate3d(0,-20px,0)",
+            position: 'relative',
+            transform: 'translate3d(0,-20px,0)',
             opacity: 0,
             height: 0,
             width: 0,
         },
         enter: {
-            transform: "translate3d(0,0px,0)",
+            transform: 'translate3d(0,0px,0)',
             opacity: 1,
-            height: "auto",
-            width: "auto",
+            height: 'auto',
+            width: 'auto',
         },
         leave: {
             opacity: 0,
@@ -87,7 +74,7 @@ export const Player = ({
     });
 
     const removePlayer = (removeFromGame = true) => {
-        socket.emit("kick_player", {
+        socket.emit('kick_player', {
             gameID: game?.id,
             playerID: player?.id,
             targetID: publicID,
@@ -100,49 +87,31 @@ export const Player = ({
     };
 
     return (
-        <div
-            title={showTitle ? name : undefined}
-            className={`player ${isCardCzar ? "cardCzar" : ""}`}
-            onClick={toggleMenu}
-        >
+        <div title={showTitle ? name : undefined} className={`player ${isCardCzar ? 'cardCzar' : ''}`} onClick={toggleMenu}>
             {isCardCzar && (
                 <div className="icon-anchor">
                     <img className="crown-icon" src={crownIcon} />
                 </div>
             )}
-            <span
-                className={`player-name-and-status  ${
-                    isHost && false ? "host" : ""
-                }  ${isSelf ? "myself" : ""}`}
-            >
-                {state === "playing" && (
+            <span className={`player-name-and-status  ${isHost && false ? 'host' : ''}  ${isSelf ? 'myself' : ''}`}>
+                {state === 'playing' && (
                     <Icon
-                        name={"watch_later"}
+                        name={'watch_later'}
                         className={`player-status clock status-${state}
                     `}
                     />
                 )}
-                {(state === "disconnected" || state === "kicked") && (
+                {(state === 'disconnected' || state === 'kicked') && (
                     <Icon
-                        name={"error_outline"}
+                        name={'error_outline'}
                         className={`player-status clock status-${state}
                     `}
                     />
                 )}
-                {isHost && (
-                    <Icon name={"home"} className={`player-status white`} />
-                )}
-                <span
-                    ref={nameRef}
-                    className={`player-name ${noName ? "no-name" : ""}`}
-                >
+                {isHost && <Icon name={'home'} className={`player-status white`} />}
+                <span ref={nameRef} className={`player-name ${noName ? 'no-name' : ''}`}>
                     {name}
-                    {noName && (
-                        <i
-                            className="fa fa-spinner fa-spin"
-                            style={{ fontSize: "24px" }}
-                        />
-                    )}
+                    {noName && <i className="fa fa-spinner fa-spin" style={{ fontSize: '24px' }} />}
                 </span>
             </span>
             <span className="🦄">
@@ -156,10 +125,7 @@ export const Player = ({
                 </span>
                 {isPopularVoteKing && (
                     <span className="player-popularVoteScore">
-                        <Icon
-                            name="thumb_up_alt"
-                            className="popular-vote-icon"
-                        />
+                        <Icon name="thumb_up_alt" className="popular-vote-icon" />
                     </span>
                 )}
             </span>
@@ -173,19 +139,13 @@ export const Player = ({
                             <ActionButtonRow
                                 buttons={[
                                     {
-                                        icon: "logout",
-                                        text: translateCommon(
-                                            "removeFromGame",
-                                            t
-                                        ),
+                                        icon: 'logout',
+                                        text: translateCommon('removeFromGame', t),
                                         callback: removePlayer,
                                     },
                                     {
-                                        icon: "groups",
-                                        text: translateCommon(
-                                            "moveToAudience",
-                                            t
-                                        ),
+                                        icon: 'groups',
+                                        text: translateCommon('moveToAudience', t),
                                         callback: makePlayerSpectator,
                                     },
                                 ]}

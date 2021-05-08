@@ -1,12 +1,7 @@
-import React from "react";
-import Icon from "../../icon";
+import React from 'react';
+import Icon from '../../Icon.jsx';
 
-export const Toggle = ({
-    currentValue,
-    isDisabled,
-    onChangeCallback,
-    field,
-}) => {
+export const Toggle = ({ currentValue, isDisabled, onChangeCallback, field }) => {
     const onClick = (event) => {
         event.stopPropagation();
 
@@ -20,9 +15,9 @@ export const Toggle = ({
 
     return (
         <Icon
-            name={`${currentValue ? "check_box" : "check_box_outline_blank"}`}
+            name={`${currentValue ? 'check_box' : 'check_box_outline_blank'}`}
             className="button-icon"
-            color={isDisabled ? "disabled" : "active"}
+            color={isDisabled ? 'disabled' : 'active'}
             onClick={onClick}
         />
     );
