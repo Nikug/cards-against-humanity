@@ -1,4 +1,4 @@
-import Icon from './general/Icon';
+import Icon from './Icon';
 import React from 'react';
 
 export default class Music extends React.Component {

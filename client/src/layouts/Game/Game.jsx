@@ -298,9 +298,17 @@ export const Game = ({ showDebug }) => {
                             empty={!hasTimer}
                         />
                     )}
-                    {false &&
-                        !hasProgressInTimer && <TimerV2 key={'without-progress' // Because life is not easy and css animations are fun, we have to unmount the whole timer component and remount it again to restart the animation (:
-                                } width={100} fillToPercent={0} percentToStartFrom={0} time={0} />}
+                    {false && !hasProgressInTimer && (
+                        <TimerV2
+                            key={
+                                'without-progress' // Because life is not easy and css animations are fun, we have to unmount the whole timer component and remount it again to restart the animation (:
+                            }
+                            width={100}
+                            fillToPercent={0}
+                            percentToStartFrom={0}
+                            time={0}
+                        />
+                    )}
                     {false && hasProgressInTimer && (
                         <TimerV2
                             key={'with-progress'}
@@ -326,7 +334,7 @@ export const Game = ({ showDebug }) => {
                         <SpectatorsInfo />
                     </div>
                         </div>*/}
-                <div className="lobby-container">{renderedContent}</div>
+                <div className="game-wrapper-3">{renderedContent}</div>
             </div>
         </>
     );

@@ -1,51 +1,39 @@
 import { BUTTON_TYPES, Button } from '../general/Button';
 import { containsObjectWithMatchingField, emptyFn, isNullOrUndefined } from '../../helpers/generalhelpers';
 
-import Card from './card';
 import React from 'react';
 import { isPlayerJoining } from '../../helpers/player-helpers';
 import { renderBlackCardwithWhiteCards } from './cardformathelpers/renderBlackcardWithWhiteCards';
 import { translateCommon } from '../../helpers/translation-helpers';
 import { useGameContext } from '../../contexts/GameContext';
 import { useTranslation } from 'react-i18next';
+import { Card } from './card';
 
-/**
- * Everything given via props
- * @param {mainCard} Card The basic card object which is displayed at the top.
- * @param {selectableCards} Array The cards that can be selected. Will be render at the bottom half.
- * @param {selectedCards} Array Which cards have been selected.
- * @param {confirmedCards} Array Which cards have been confirmed.
- * @param {selectCard} function Callback function to select a card. Calls the function with the card obj.
- * @param {confirmCards} function Callback function to confirm all selected cards.
- * @param {pickingBlackCard} boolean Is the picked card black.
- */
-
-export function CardPicker(props) {
-    const {
-        alternativeText,
-        centerActionButton,
-        confirmCards,
-        confirmedCards = [],
-        customButtonIcons,
-        customButtonState,
-        customButtonTexts,
-        description,
-        disableConfirmButton,
-        givePopularVote,
-        isForInstructions,
-        mainCard,
-        noActionButton,
-        noBigMainCard,
-        pickingBlackCard,
-        popularVotedCardsIDs,
-        preRenderedCards = [],
-        selectableCards = [],
-        selectCard,
-        selectDisabled,
-        selectedCards = [],
-        showPopularVote,
-        topText,
-    } = props;
+export const CardPicker = ({
+    alternativeText,
+    centerActionButton,
+    confirmCards,
+    confirmedCards = [],
+    customButtonIcons,
+    customButtonState,
+    customButtonTexts,
+    description,
+    disableConfirmButton,
+    givePopularVote,
+    isForInstructions,
+    mainCard,
+    noActionButton,
+    noBigMainCard,
+    pickingBlackCard,
+    popularVotedCardsIDs,
+    preRenderedCards = [],
+    selectableCards = [],
+    selectCard,
+    selectDisabled,
+    selectedCards = [],
+    showPopularVote,
+    topText,
+}) => {
     const { t } = useTranslation();
     const { player } = useGameContext();
 
@@ -195,4 +183,4 @@ export function CardPicker(props) {
             <div className={`selectable ${cardsAreSelected || selectCard === emptyFn ? 'non-selectable' : ''}`}>{renderedCards}</div>
         </div>
     );
-}
+};

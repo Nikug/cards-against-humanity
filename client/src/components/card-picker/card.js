@@ -4,55 +4,14 @@ import Icon from '../general/Icon';
 import React from 'react';
 import { translateCommon } from '../../helpers/translation-helpers.js';
 import { useTranslation } from 'react-i18next';
+import { formatTextWithBlanksAsDiv } from './cardformathelpers/formattextwithblanks.js';
 
 const CARD_TYPES = {
     WHITE: 1,
     BLACK: 2,
 };
 
-function formatTextWithBlanks(text, blankTexts) {
-    const splittedText = text.split('_');
-    const piecesToRender = [];
-
-    for (let i = 0, blankIterator = 0, len = splittedText.length; i < len; i++) {
-        const piece = splittedText[i];
-        piecesToRender.push(
-            <span key={`t-${i}`} className="text">
-                {piece}
-            </span>
-        );
-        if (i === len - 1) {
-            break;
-        }
-        if (blankTexts && blankTexts[blankIterator]) {
-            piecesToRender.push(
-                <span key={`b-${i}`} className="blank">
-                    {blankTexts[blankIterator]}
-                </span>
-            );
-            blankIterator++;
-        } else {
-            piecesToRender.push(
-                <span key={`b-${i}`} className="blank">
-                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                </span>
-            );
-        }
-    }
-
-    return <div className="text">{piecesToRender}</div>;
-}
-
-/**
- * Everything given via props
- * @param {card} Card The basic card object
- * @param {blankTexts} Array The white cards selected for black card
- * @param {bigCard} boolean Is the card big
- * @param {selected} boolean Is the card selected
- * @param {confirmed} boolean Is the card selection confimred
- */
-
-export default function Card(props) {
+export const Card = (props) => {
     const card = props.card;
     const { cardPackID, text, whiteCardsToPlay, whiteCardsToDraw, id } = card;
     const { bigCard, blankTexts, confirmed, givePopularVote, hasBeenPopularVoted, playerName, popularVoteScore, selectCard, selected, showPopularVote } = props;
@@ -66,7 +25,7 @@ export default function Card(props) {
     let textToRender;
 
     if (type === CARD_TYPES.BLACK) {
-        textToRender = formatTextWithBlanks(text, blankTexts);
+        textToRender = formatTextWithBlanksAsDiv(text, blankTexts);
     } else {
         if (typeof text === 'string') {
             textToRender = <div className="text">{text}</div>;
@@ -127,4 +86,4 @@ export default function Card(props) {
             </div>
         </div>
     );
-}
+};

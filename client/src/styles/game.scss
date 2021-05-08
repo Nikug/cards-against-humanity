@@ -43,22 +43,10 @@
     }
 }
 
-.lobby-container {
+.game-wrapper-3 {
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
     justify-content: center;
-
-    .nick-and-start-container {
-        width: 100%;
-        flex-direction: column;
-        display: flex;
-        justify-content: space-between;
-    }
-
-    .info {
-        margin-top: 0;
-        margin-bottom: 0;
-    }
 
     @include small-desktop {
         margin-top: 1em;
