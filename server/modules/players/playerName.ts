@@ -6,10 +6,8 @@ import { getGame, setGame } from "../games/gameUtil";
 import { PoolClient } from "pg";
 import { findPlayer } from "./playerUtil";
 import { playerName } from "../../consts/gameSettings";
-import sanitize from "sanitize";
+import { sanitizeString } from "../utilities/sanitize";
 import { updatePlayersIndividually } from "./emitPlayers";
-
-const sanitizer = sanitize();
 
 export const updatePlayerName = async (
     io: SocketIO.Server,
@@ -24,8 +22,7 @@ export const updatePlayerName = async (
     const trimmedName = newName.trim();
     if (trimmedName.length < playerName.minimumLength) return;
 
-    const shortenedName = trimmedName.substr(0, playerName.maximumLength);
-    const cleanName = sanitizer.value(shortenedName, "str");
+    const cleanName = sanitizeString(trimmedName, playerName.maximumLength);
 
     const player = findPlayer(game.players, playerID);
     if (!player) return;

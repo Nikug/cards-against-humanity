@@ -4,6 +4,7 @@ import { ERROR_TYPES } from "../../consts/error";
 import { clamp } from "./mathUtil";
 import { findPlayer } from "../players/playerUtil";
 import { gameOptions } from "../../consts/gameSettings";
+import { sanitizeString } from "./sanitize";
 
 export const validateHost = (game: CAH.Game, playerID: string) => {
     return game.players.find(
@@ -68,7 +69,10 @@ export const validatePlayerPlayingWhiteCards = (
 };
 
 export const validateOptions = (newOptions: CAH.Options): CAH.Options => {
-    validateTimers(newOptions.timers);
+    let password = undefined;
+    if (newOptions.password) {
+        password = sanitizeString(newOptions.password);
+    }
     const validatedOptions = {
         ...newOptions,
         maximumPlayers: clamp(
@@ -95,6 +99,7 @@ export const validateOptions = (newOptions: CAH.Options): CAH.Options => {
 
         winnerBecomesCardCzar: !!newOptions.winnerBecomesCardCzar,
         allowKickedPlayerJoin: !!newOptions.allowKickedPlayerJoin,
+        password: password,
     };
     return validatedOptions;
 };

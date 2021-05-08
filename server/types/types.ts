@@ -124,6 +124,7 @@ export interface Options {
     popularVote: boolean;
     cardPacks: CardPack[];
     timers: Timers;
+    password?: string;
 }
 
 export interface winConditions {

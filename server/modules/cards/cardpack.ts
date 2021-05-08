@@ -7,10 +7,8 @@ import { getGame, setGame } from "../games/gameUtil";
 import { validateHost, validateState } from "../utilities/validate";
 
 import fetch from "node-fetch";
-import sanitize from "sanitize";
+import { sanitizeString } from "../utilities/sanitize";
 import { sendNotification } from "../utilities/socket";
-
-const sanitizer = sanitize();
 
 interface ApiBlackCard {
     content: string;
@@ -26,7 +24,7 @@ export const addCardPack = async (
     playerID: string,
     client?: pg.PoolClient
 ) => {
-    const cleanID = sanitizer.value(cardPackID, "str");
+    const cleanID = sanitizeString(cardPackID);
     const url = `https://allbad.cards/api/pack/get?pack=${cleanID}`;
     let json;
     try {

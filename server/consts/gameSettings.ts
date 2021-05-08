@@ -74,6 +74,10 @@ export const playerName = {
     maximumLength: 50,
 };
 
+export const Password = {
+    maximumLength: 50,
+};
+
 // export const INACTIVE_GAME_DELETE_TIME = 10 * 60 * 1000; // 10 mins
 export const INACTIVE_GAME_DELETE_TIME = 5 * 60 * 1000; // 5 mins
 
