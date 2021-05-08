@@ -1,16 +1,11 @@
-import React, { useState } from "react";
-import { CONTROL_TYPES, Setting } from "./setting";
-import { emptyFn } from "../../helpers/generalhelpers";
-import Icon from "../icon";
+import React, { useState } from 'react';
+import { CONTROL_TYPES, Setting } from './setting';
+import { emptyFn } from '../../helpers/generalhelpers';
+import Icon from '../icon';
 
-export const CollabsibelSettingsSection = ({
-    content,
-    title,
-    isDisabled,
-    options,
-}) => {
+export const CollabsibelSettingsSection = ({ content, isDisabled, title }) => {
     const [isOpen, setIsOpen] = useState(false);
-    const iconClassnames = "icon-margin-right";
+    const iconClassnames = 'icon-margin-right';
 
     const { titleText, titleIconName } = title;
 
@@ -21,20 +16,14 @@ export const CollabsibelSettingsSection = ({
     return (
         <div className="collabsible-settings-section">
             <Setting
-                text={titleText}
-                controlType={CONTROL_TYPES.custom}
-                customControl={
-                    <Icon name={isOpen ? "expand_less" : "expand_more"} />
-                }
-                onChangeCallback={emptyFn}
-                icon={{
-                    name: titleIconName,
-                    className: iconClassnames,
-                    isDisabled: isDisabled,
-                }}
-                isDisabled={isDisabled}
                 className="title"
+                controlType={CONTROL_TYPES.custom}
+                customControl={<Icon name={isOpen ? 'expand_less' : 'expand_more'} />}
+                icon={{ name: titleIconName, className: iconClassnames, isDisabled: isDisabled }}
+                isDisabled={isDisabled}
+                onChangeCallback={emptyFn}
                 onClick={toggle}
+                text={titleText}
             />
             {isOpen && content}
         </div>

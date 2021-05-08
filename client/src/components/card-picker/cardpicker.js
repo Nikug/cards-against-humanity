@@ -1,17 +1,13 @@
-import { BUTTON_TYPES, Button } from "../button";
-import {
-    containsObjectWithMatchingField,
-    emptyFn,
-    isNullOrUndefined,
-} from "../../helpers/generalhelpers";
+import { BUTTON_TYPES, Button } from '../Button.jsx';
+import { containsObjectWithMatchingField, emptyFn, isNullOrUndefined } from '../../helpers/generalhelpers';
 
-import Card from "./card";
-import React from "react";
-import { isPlayerJoining } from "../../helpers/player-helpers";
-import { renderBlackCardwithWhiteCards } from "./cardformathelpers.js/renderBlackcardWithWhiteCards";
-import { translateCommon } from "../../helpers/translation-helpers";
-import { useGameContext } from "../../contexts/GameContext";
-import { useTranslation } from "react-i18next";
+import Card from './card';
+import React from 'react';
+import { isPlayerJoining } from '../../helpers/player-helpers';
+import { renderBlackCardwithWhiteCards } from './cardformathelpers.js/renderBlackcardWithWhiteCards';
+import { translateCommon } from '../../helpers/translation-helpers';
+import { useGameContext } from '../../contexts/GameContext';
+import { useTranslation } from 'react-i18next';
 
 /**
  * Everything given via props
@@ -62,11 +58,7 @@ export function CardPicker(props) {
             let hasBeenPopularVoted = false;
 
             if (popularVotedCardsIDs?.length > 0) {
-                for (
-                    let i = 0, len = popularVotedCardsIDs.length;
-                    i < len;
-                    i++
-                ) {
+                for (let i = 0, len = popularVotedCardsIDs.length; i < len; i++) {
                     const votedIDs = popularVotedCardsIDs[i];
 
                     if (votedIDs[0] === card.id[0]) {
@@ -80,16 +72,8 @@ export function CardPicker(props) {
                 <Card
                     key={i}
                     card={card}
-                    selected={containsObjectWithMatchingField(
-                        card,
-                        selectedCards,
-                        "id"
-                    )}
-                    confirmed={containsObjectWithMatchingField(
-                        card,
-                        confirmedCards,
-                        "id"
-                    )}
+                    selected={containsObjectWithMatchingField(card, selectedCards, 'id')}
+                    confirmed={containsObjectWithMatchingField(card, confirmedCards, 'id')}
                     selectCard={selectCard}
                     showPopularVote={showPopularVote && !card.isOwn}
                     givePopularVote={givePopularVote}
@@ -112,22 +96,17 @@ export function CardPicker(props) {
                             : confirmedCards.length > 0
                             ? confirmedCards[0]
                             : {
-                                  text: "",
+                                  text: '',
                                   whiteCardsToPlay: 0,
                               }
                     }
                     bigCard={!noBigMainCard}
-                    key={"mainCard"}
+                    key={'mainCard'}
                 />
             </div>
         );
     } else {
-        let selectedWhiteCards =
-            selectedCards.length > 0
-                ? selectedCards.slice()
-                : confirmedCards.length > 0
-                ? confirmedCards.slice()
-                : [];
+        let selectedWhiteCards = selectedCards.length > 0 ? selectedCards.slice() : confirmedCards.length > 0 ? confirmedCards.slice() : [];
         const content = [];
         if (mainCard) {
             content.push(
@@ -143,17 +122,14 @@ export function CardPicker(props) {
             content.push(
                 <div className="alternativetext" key="alternativeText">
                     {alternativeText}
-                    <i
-                        className="fa fa-spinner fa-spin"
-                        style={{ fontSize: "24px" }}
-                    />
+                    <i className="fa fa-spinner fa-spin" style={{ fontSize: '24px' }} />
                 </div>
             );
         }
         if (isPlayerJoining(player)) {
             content.push(
                 <div className="alternativetext" key="joining-text">
-                    {translateCommon("youGetToPlayOnNextRound", t)}!
+                    {translateCommon('youGetToPlayOnNextRound', t)}!
                 </div>
             );
         }
@@ -166,11 +142,8 @@ export function CardPicker(props) {
     }
 
     const cardsAreSelected = confirmedCards.length > 0;
-    let buttonTexts = [
-        translateCommon("choose", t),
-        translateCommon("cardChosen", t),
-    ];
-    let buttonIcons = ["send", "done"];
+    let buttonTexts = [translateCommon('choose', t), translateCommon('cardChosen', t)];
+    let buttonIcons = ['send', 'done'];
 
     if (!isNullOrUndefined(customButtonTexts) && customButtonTexts.length > 0) {
         for (let i = 0, len = buttonTexts.length; i < len; i++) {
@@ -191,11 +164,7 @@ export function CardPicker(props) {
     }
 
     return (
-        <div
-            className={`cardpicker-wrapper ${
-                isForInstructions ? "instructions-cardpicker" : ""
-            }`}
-        >
+        <div className={`cardpicker-wrapper ${isForInstructions ? 'instructions-cardpicker' : ''}`}>
             {topText && <div className="toptext">{topText}</div>}
             <div className="main">
                 {!centerActionButton && <span />}
@@ -203,21 +172,9 @@ export function CardPicker(props) {
                 {!noActionButton && (
                     <Button
                         additionalClassname={`confirm-button ${
-                            (
-                                !isNullOrUndefined(customButtonState)
-                                    ? customButtonState === 1
-                                    : cardsAreSelected
-                            )
-                                ? "non-selectable"
-                                : ""
-                        } ${selectDisabled ? "disabled" : ""}`}
-                        text={
-                            !isNullOrUndefined(customButtonState)
-                                ? buttonTexts[customButtonState]
-                                : cardsAreSelected
-                                ? buttonTexts[1]
-                                : buttonTexts[0]
-                        }
+                            (!isNullOrUndefined(customButtonState) ? customButtonState === 1 : cardsAreSelected) ? 'non-selectable' : ''
+                        } ${selectDisabled ? 'disabled' : ''}`}
+                        text={!isNullOrUndefined(customButtonState) ? buttonTexts[customButtonState] : cardsAreSelected ? buttonTexts[1] : buttonTexts[0]}
                         callback={() => confirmCards()}
                         type={
                             !isNullOrUndefined(customButtonState)
@@ -228,32 +185,14 @@ export function CardPicker(props) {
                                 ? BUTTON_TYPES.GREEN
                                 : BUTTON_TYPES.PRIMARY
                         }
-                        icon={
-                            !isNullOrUndefined(customButtonState)
-                                ? buttonIcons[customButtonState]
-                                : cardsAreSelected
-                                ? buttonIcons[1]
-                                : buttonIcons[0]
-                        }
+                        icon={!isNullOrUndefined(customButtonState) ? buttonIcons[customButtonState] : cardsAreSelected ? buttonIcons[1] : buttonIcons[0]}
                         iconPosition="after"
-                        disabled={
-                            !isNullOrUndefined(customButtonState)
-                                ? customButtonState === 1
-                                : hasAlternativeText || disableConfirmButton
-                        }
+                        disabled={!isNullOrUndefined(customButtonState) ? customButtonState === 1 : hasAlternativeText || disableConfirmButton}
                     />
                 )}
             </div>
             <div className="description">{description}</div>
-            <div
-                className={`selectable ${
-                    cardsAreSelected || selectCard === emptyFn
-                        ? "non-selectable"
-                        : ""
-                }`}
-            >
-                {renderedCards}
-            </div>
+            <div className={`selectable ${cardsAreSelected || selectCard === emptyFn ? 'non-selectable' : ''}`}>{renderedCards}</div>
         </div>
     );
 }

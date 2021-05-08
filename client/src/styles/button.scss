@@ -1,27 +1,29 @@
 $lgd: 180deg; // linear-gradient degree
 
 .button {
-    font-weight: 600;
     color: $button-text;
-    outline: 0;
+    text-align: center;
+    white-space: nowrap;
+    line-height: 1rem;
+
     display: inline-flex;
     align-items: center;
-    position: relative;
-    padding: 0.6em 1em;
+
     height: fit-content;
     width: fit-content;
-    text-align: center;
-    background: linear-gradient($lgd, $button-shadow, $button-background)
-        $button-background;
-    border: 1px solid $button-border;
-    cursor: pointer;
-    user-select: none;
-    white-space: nowrap;
+
+    box-sizing: border-box;
+
+    padding: 0.4em 1em;
     border-radius: 6px;
-    line-height: 1rem;
+
+    background: linear-gradient($lgd, $button-shadow, $button-background) $button-background;
+    border: 1px solid $button-border;
     backface-visibility: hidden;
     outline: none;
-    box-sizing: border-box;
+
+    cursor: pointer;
+    user-select: none;
 
     &.fill {
         width: 100%;
@@ -43,112 +45,61 @@ $lgd: 180deg; // linear-gradient degree
     }
 
     &:hover {
-        background: linear-gradient(
-                $lgd,
-                $button-shadow-hover,
-                $button-background-hover
-            )
-            $button-background-hover;
+        background: linear-gradient($lgd, $button-shadow-hover, $button-background-hover) $button-background-hover;
     }
 
     &:focus {
-        background: linear-gradient(
-                $lgd,
-                $button-background-hover,
-                $button-shadow-hover
-            )
-            $button-shadow-hover;
+        background: linear-gradient($lgd, $button-background-hover, $button-shadow-hover) $button-shadow-hover;
     }
 
     &.primary {
         color: $button-text-primary;
         border: 1px solid $button-border-primary;
-        background: linear-gradient(
-                $lgd,
-                $button-shadow-primary,
-                $button-background-primary
-            )
-            $button-background-primary;
+        background: linear-gradient($lgd, $button-shadow-primary, $button-background-primary) $button-background-primary;
 
         .button-icon {
             color: $button-text-green;
         }
 
         &:hover {
-            background: linear-gradient(
-                    $lgd,
-                    $button-shadow-primary-hover,
-                    $button-background-primary-hover
-                )
-                $button-background-primary-hover;
+            background: linear-gradient($lgd, $button-shadow-primary-hover, $button-background-primary-hover) $button-background-primary-hover;
         }
 
         &:focus {
-            background: linear-gradient(
-                    $lgd,
-                    $button-background-primary-hover,
-                    $button-shadow-primary-hover
-                )
-                $button-shadow-primary-hover;
+            background: linear-gradient($lgd, $button-background-primary-hover, $button-shadow-primary-hover) $button-shadow-primary-hover;
         }
     }
 
     &.green {
         color: $button-text-green;
         border: 1px solid $button-border-green;
-        background: linear-gradient(
-                $lgd,
-                $button-shadow-green,
-                $button-background-green
-            )
-            $button-background-green;
+        background: linear-gradient($lgd, $button-shadow-green, $button-background-green) $button-background-green;
 
         .button-icon {
             color: $button-text-green;
         }
 
         &:hover {
-            background: linear-gradient(
-                    $lgd,
-                    $button-shadow-green-hover,
-                    $button-background-green-hover
-                )
-                $button-background-green-hover;
+            background: linear-gradient($lgd, $button-shadow-green-hover, $button-background-green-hover) $button-background-green-hover;
         }
 
         &:focus {
-            background: linear-gradient(
-                    $lgd,
-                    $button-background-green-hover,
-                    $button-shadow-green-hover
-                )
-                $button-shadow-green-hover;
+            background: linear-gradient($lgd, $button-background-green-hover, $button-shadow-green-hover) $button-shadow-green-hover;
         }
     }
 
     &.disabled {
         cursor: default;
-        background: linear-gradient($lgd, $button-shadow, $button-background)
-            $button-background;
+        background: linear-gradient($lgd, $button-shadow, $button-background) $button-background;
         border: 1px solid $button-border;
 
         &:hover {
-            background: linear-gradient(
-                    $lgd,
-                    $button-shadow,
-                    $button-background
-                )
-                $button-background;
+            background: linear-gradient($lgd, $button-shadow, $button-background) $button-background;
             border: 1px solid $button-border;
         }
 
         &:focus {
-            background: linear-gradient(
-                    $lgd,
-                    $button-shadow,
-                    $button-background
-                )
-                $button-background;
+            background: linear-gradient($lgd, $button-shadow, $button-background) $button-background;
             border: 1px solid $button-border;
         }
 

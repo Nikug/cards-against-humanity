@@ -1,32 +1,27 @@
-import React, { useEffect, useState } from "react";
-import { Route, Switch, useHistory, useLocation } from "react-router-dom";
-import { deleteCookie, setCookie } from "./helpers/cookies";
+import React, { useEffect, useState } from 'react';
+import { Route, Switch, useHistory, useLocation } from 'react-router-dom';
+import { deleteCookie, setCookie } from './helpers/cookies';
 
-import "./index.scss";
+import './index.scss';
 
-import { Button } from "./components/button";
-import { Game } from "./layouts/Game/Game.jsx";
-import { GameContextProvider } from "./contexts/GameContext";
-import { Header } from "./components/header";
-import { Home } from "./layouts/Home/Home.jsx";
-import { Instructions } from "./layouts/Instructions";
-import { Notification } from "./components/notification/notification";
-import { NotificationContextProvider } from "./contexts/NotificationContext";
-import { WholePageLoader } from "./components/WholePageLoader";
-import axios from "axios";
-import i18n from "./i18n";
-import { isNullOrUndefined } from "./helpers/generalhelpers";
-import { socket } from "./components/sockets/socket";
-import { socketOn } from "./helpers/communicationhelpers";
-import { translateCommon } from "./helpers/translation-helpers";
-import { useTranslation } from "react-i18next";
-import {
-    getItemFromLocalStorage,
-    LOCAL_STORAGE_FIELDS,
-    removeItemFromLocalStorage,
-    setItemToLocalStorage,
-} from "./helpers/localstoragehelpers";
-import { Footer } from "./components/footer/Footer";
+import { Button } from './components/Button.jsx';
+import { Game } from './layouts/Game/Game.jsx';
+import { GameContextProvider } from './contexts/GameContext';
+import { Header } from './components/header';
+import { Home } from './layouts/Home/Home.jsx';
+import { Instructions } from './layouts/Instructions';
+import { Notification } from './components/notification/notification';
+import { NotificationContextProvider } from './contexts/NotificationContext';
+import { WholePageLoader } from './components/WholePageLoader';
+import axios from 'axios';
+import i18n from './i18n';
+import { isNullOrUndefined } from './helpers/generalhelpers';
+import { socket } from './components/sockets/socket';
+import { socketOn } from './helpers/communicationhelpers';
+import { translateCommon } from './helpers/translation-helpers';
+import { useTranslation } from 'react-i18next';
+import { getItemFromLocalStorage, LOCAL_STORAGE_FIELDS, removeItemFromLocalStorage, setItemToLocalStorage } from './helpers/localstoragehelpers';
+import { Footer } from './components/footer/Footer';
 
 export const App = () => {
     /*****************************************************************/ // Purely for hiding dev things from the production.
@@ -53,7 +48,7 @@ export const App = () => {
     const { t } = useTranslation();
 
     function startNewGame() {
-        axios.post("/g").then((res) => {
+        axios.post('/g').then((res) => {
             history.push(`/g/${res.data.url}`);
         });
     }
@@ -77,10 +72,7 @@ export const App = () => {
         const id = getNewId();
         console.log({ id });
 
-        setNotifications((prevValue) => [
-            ...prevValue,
-            { ...newNotification, id },
-        ]);
+        setNotifications((prevValue) => [...prevValue, { ...newNotification, id }]);
 
         setTimeout(() => {
             hideNotification(id);
@@ -147,17 +139,17 @@ export const App = () => {
 
     useEffect(() => {
         socketOn(
-            "update_game_and_players",
+            'update_game_and_players',
             (data) => {
-                console.log("update_game_and_players", { data });
+                console.log('update_game_and_players', { data });
                 if (data.error) {
-                    console.log("Received error from server:", data.error);
+                    console.log('Received error from server:', data.error);
                     setLoading(false);
                     return;
                 }
                 if (isNullOrUndefined(data.game)) {
-                    console.log("Should remove cookie");
-                    deleteCookie("playerID");
+                    console.log('Should remove cookie');
+                    deleteCookie('playerID');
                 } else {
                     setGame((prevGame) => ({
                         ...prevGame,
@@ -168,7 +160,7 @@ export const App = () => {
                         ...prevPlayer,
                         ...data.player,
                     }));
-                    setCookie({ field: "playerID", value: data.player.id });
+                    setCookie({ field: 'playerID', value: data.player.id });
                     history.push(`/g/${data.game.id}`);
                 }
                 setLoading(false);
@@ -177,31 +169,29 @@ export const App = () => {
         );
 
         socketOn(
-            "disconnect",
+            'disconnect',
             () => {
                 socket.close();
                 resetData();
-                history.push("/");
+                history.push('/');
             },
             notificationParams
         );
 
-        socketOn("notification", null, notificationParams);
+        socketOn('notification', null, notificationParams);
 
         return () => {
-            socket.off("update_game_and_players");
-            socket.off("disconnect");
-            socket.off("notification");
+            socket.off('update_game_and_players');
+            socket.off('disconnect');
+            socket.off('notification');
         };
     }, [notificationParams, fireNotification, notificationCount]);
 
     useEffect(() => {
-        const playerID = getItemFromLocalStorage(
-            LOCAL_STORAGE_FIELDS.PLAYER_ID
-        );
+        const playerID = getItemFromLocalStorage(LOCAL_STORAGE_FIELDS.PLAYER_ID);
 
         if (!isNullOrUndefined(player)) {
-            socket.emit("join_game", {
+            socket.emit('join_game', {
                 playerID,
             });
         } else {
@@ -211,7 +201,7 @@ export const App = () => {
     }, []);
 
     const updateData = (data) => {
-        console.log("updateData", { data });
+        console.log('updateData', { data });
         if (data.player) {
             setPlayer((prevPlayer) => ({ ...prevPlayer, ...data.player }));
         }
@@ -240,15 +230,7 @@ export const App = () => {
         const singleNotification = notifications[i];
         const { id, text, type } = singleNotification;
 
-        notificationsToRender.push(
-            <Notification
-                key={id}
-                id={id}
-                text={text}
-                type={type}
-                destroy={hideNotification}
-            />
-        );
+        notificationsToRender.push(<Notification key={id} id={id} text={text} type={type} destroy={hideNotification} />);
     }
 
     let content;
@@ -259,46 +241,19 @@ export const App = () => {
     } else {
         content = (
             <NotificationContextProvider value={notificationParams}>
-                {notifications.length > 0 && (
-                    <div className="notification-wrapper">
-                        {notificationsToRender}
-                    </div>
-                )}
-                <div
-                    className={`App ${
-                        pathName === "/" ? "background-img" : "mono-background"
-                    }`}
-                >
+                {notifications.length > 0 && <div className="notification-wrapper">{notificationsToRender}</div>}
+                <div className={`App ${pathName === '/' ? 'background-img' : 'mono-background'}`}>
                     <div>
                         <div className="content">
-                            <Header
-                                game={game}
-                                player={player}
-                                reset={resetData}
-                            />
+                            <Header game={game} player={player} reset={resetData} />
                             <div className="main">
                                 <Switch>
                                     <Route
                                         exact
                                         path="/"
-                                        render={(props) => (
-                                            <Home
-                                                startNewGame={startNewGame}
-                                                joinExistingGame={
-                                                    joinExistingGame
-                                                }
-                                                history={history}
-                                            />
-                                        )}
+                                        render={(props) => <Home startNewGame={startNewGame} joinExistingGame={joinExistingGame} history={history} />}
                                     />
-                                    <Route
-                                        path="/instructions"
-                                        render={(props) => (
-                                            <Instructions
-                                                path={"/instructions"}
-                                            />
-                                        )}
-                                    />
+                                    <Route path="/instructions" render={(props) => <Instructions path={'/instructions'} />} />
                                     <Route
                                         exact
                                         path="/g/:id"
@@ -310,10 +265,7 @@ export const App = () => {
                                                     updateData,
                                                 }}
                                             >
-                                                <Game
-                                                    updateData={updateData}
-                                                    showDebug={showDebug}
-                                                />
+                                                <Game updateData={updateData} showDebug={showDebug} />
                                             </GameContextProvider>
                                         )}
                                     />
@@ -323,19 +275,12 @@ export const App = () => {
                                         render={(props) => (
                                             <div
                                                 style={{
-                                                    display: "flex",
-                                                    flexDirection: "column",
+                                                    display: 'flex',
+                                                    flexDirection: 'column',
                                                 }}
                                             >
                                                 Hmmmm...?
-                                                <Button
-                                                    text={translateCommon(
-                                                        "back",
-                                                        t
-                                                    )}
-                                                    callback={navigate}
-                                                    callbackParams={"/"}
-                                                />
+                                                <Button text={translateCommon('back', t)} callback={navigate} callbackParams={'/'} />
                                             </div>
                                         )}
                                     />
@@ -354,21 +299,18 @@ export const App = () => {
             <div
                 className="App mono-background"
                 style={{
-                    display: "flex",
-                    justifyContent: "center",
-                    alignItems: "center",
-                    flexDirection: "column",
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    flexDirection: 'column',
                 }}
             >
-                <div>{translateCommon("doYouAcceptCookies", t)}</div>
+                <div>{translateCommon('doYouAcceptCookies', t)}</div>
                 <div>
                     <Button
-                        text={translateCommon("accept", t)}
+                        text={translateCommon('accept', t)}
                         callback={() => {
-                            setItemToLocalStorage(
-                                LOCAL_STORAGE_FIELDS.HAS_ACCEPTED_COOKIES,
-                                "true"
-                            );
+                            setItemToLocalStorage(LOCAL_STORAGE_FIELDS.HAS_ACCEPTED_COOKIES, 'true');
                             setHasAcceptedCookies(true);
                         }}
                     />
