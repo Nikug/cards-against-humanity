@@ -21,7 +21,7 @@ export const Toggle = ({
     return (
         <Icon
             name={`${currentValue ? "check_box" : "check_box_outline_blank"}`}
-            className="md-36 button-icon"
+            className="button-icon"
             color={isDisabled ? "disabled" : "active"}
             onClick={onClick}
         />

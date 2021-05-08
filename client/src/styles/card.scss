@@ -1,6 +1,6 @@
 .card-wrapper {
     font-family: "Ubuntu", sans-serif;
-    font-size: 1.2rem;
+    //font-size: 1.2rem;
     text-align: left;
     line-height: 1.6em;
 
@@ -57,7 +57,7 @@
         }
 
         > .footer {
-            font-size: 0.6rem;
+            //font-size: 0.6rem;
             text-align: right;
             line-height: normal;
             display: flex;
@@ -70,7 +70,7 @@
             }
 
             > .draw-and-play {
-                font-size: 0.8rem;
+                //font-size: 0.8rem;
             }
         }
 
@@ -89,7 +89,7 @@
                 flex-wrap: nowrap;
 
                 > .popular-vote-score {
-                    font-size: 1.2rem;
+                    //font-size: 1.2rem;
                     margin-left: 0.5em;
                 }
             }
@@ -128,7 +128,7 @@
 
     > .toptext {
         margin-bottom: 0.8rem;
-        font-size: 3rem;
+        //font-size: 3rem;
     }
 
     > .main {
@@ -204,7 +204,7 @@
                         flex-wrap: nowrap;
 
                         > .popular-vote-score {
-                            font-size: 1.2rem;
+                            //font-size: 1.2rem;
                             margin-left: 0.5em;
                         }
                     }

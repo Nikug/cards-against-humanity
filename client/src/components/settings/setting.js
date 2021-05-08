@@ -69,7 +69,7 @@ export const Setting = ({
             <div className="number-control">
                 <Icon
                     name="arrow_back_ios"
-                    className="md-24 button-icon"
+                    className="button-icon"
                     color={showAsDisabled ? "disabled" : "active"}
                     onClick={onDecrease}
                 />
@@ -82,7 +82,7 @@ export const Setting = ({
                 </span>
                 <Icon
                     name="arrow_forward_ios"
-                    className="md-24 button-icon"
+                    className="button-icon"
                     color={showAsDisabled ? "disabled" : "active"}
                     onClick={onIncrease}
                 />

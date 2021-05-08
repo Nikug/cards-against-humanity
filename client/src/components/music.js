@@ -29,12 +29,6 @@ export default class Music extends React.Component {
         const icon = this.state.play
             ? "pause_circle_outline"
             : "play_circle_outline";
-        return (
-            <Icon
-                onClick={this.toggle}
-                name={icon}
-                className="md-light md-inactive music"
-            />
-        );
+        return <Icon onClick={this.toggle} name={icon} />;
     }
 }

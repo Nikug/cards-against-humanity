@@ -6,7 +6,10 @@
     border-bottom: 1px solid $input-underline;
     border-radius: 3px;
     height: 100%;
-    padding: 0.5rem;
+    padding: 0.4em;
+    line-height: 1rem;
+
+    box-sizing: border-box;
 
     &:hover {
         background-color: $input-background-hover;

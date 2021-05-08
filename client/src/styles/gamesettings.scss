@@ -17,13 +17,10 @@
         max-width: 60em;
     }
 
-    overflow-y: auto;
-
     .start-game-button-container {
         width: 100%;
         display: flex;
         justify-content: end;
-        margin-top: 0.5em;
 
         .big-btn {
             position: absolute;
@@ -36,9 +33,12 @@
         }
 
         @include small-desktop {
+            margin-top: 0.5em;
+
             .big-btn {
                 position: static;
                 bottom: 0px;
+                border-radius: 6px;
             }
         }
     }
@@ -54,7 +54,7 @@
     }
 
     .game-settings-title {
-        font-size: 1.6rem;
+        //font-size: 1.6rem;
         padding: 0 0.6rem;
         margin: 0;
         margin-top: 0.5rem;
@@ -136,7 +136,7 @@
 
     .icon-and-text {
         align-items: center;
-        font-size: 1.4rem;
+        //font-size: 1.4rem;
         width: fit-content;
         display: flex;
         flex-grow: 0;
@@ -186,7 +186,7 @@
     flex-direction: row;
 
     .icon-margin-right {
-        margin-right: 0.2em;
+        margin-right: 0.6em;
         color: $settings-icon;
         text-shadow: none;
 

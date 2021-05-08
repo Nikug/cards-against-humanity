@@ -10,7 +10,7 @@ export const CollabsibelSettingsSection = ({
     options,
 }) => {
     const [isOpen, setIsOpen] = useState(false);
-    const iconClassnames = "md-36 icon-margin-right";
+    const iconClassnames = "icon-margin-right";
 
     const { titleText, titleIconName } = title;
 

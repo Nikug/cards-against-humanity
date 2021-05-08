@@ -22,7 +22,6 @@ import { useNotification } from "../../contexts/NotificationContext";
 import { useTranslation } from "react-i18next";
 
 export const NAME_CHAR_LIMIT = 50;
-export const ICON_CLASSNAMES = "md-36 icon-margin-right";
 
 const hasTimerInUse = (game) => {
     const gameState = game?.state;

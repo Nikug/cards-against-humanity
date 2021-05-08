@@ -26,7 +26,9 @@ export const Button = React.forwardRef((props, ref) => {
         <button
             ref={ref}
             className={classNames("button", additionalClassname, {
-                fill,
+                fill: fill === "fill",
+                "fill-vertical": fill === "fill-vertical",
+                "fill-horizontal": fill === "fill-horizontal",
                 disabled,
                 primary: type === BUTTON_TYPES.PRIMARY,
                 green: type === BUTTON_TYPES.GREEN,

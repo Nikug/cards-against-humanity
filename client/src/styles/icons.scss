@@ -1,25 +1,14 @@
-/* Rules for sizing the icon. */
-.material-icons.md-18 {
-    font-size: 1.125rem;
-}
-.material-icons.md-24 {
-    font-size: 1.5rem;
-}
-.material-icons.md-36 {
-    font-size: 2.25rem;
-}
-.material-icons.md-48 {
-    font-size: 3rem;
-}
-
 .material-icons {
-    line-height: normal;
+    font-size: inherit;
     color: $icon-basic;
+
     display: flex;
     align-items: center;
     justify-content: center;
+
+    line-height: normal;
+
     user-select: none;
-    font-size: 1rem;
 
     &.clickable {
         cursor: pointer;

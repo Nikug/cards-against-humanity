@@ -1,18 +1,24 @@
 .text-control {
-    //width: 100%;
     display: flex;
     flex-wrap: wrap;
     justify-content: flex-end;
     align-items: center;
 
-    .text-input {
-        // This should fit on mobile still, I think...
-        //flex-basis: 10em;
+    --padding: 0.2em;
+
+    > .text-input {
         flex-grow: 1;
+        padding-top: var(--padding);
+        padding-bottom: var(--padding);
     }
 
-    .button {
+    > .button {
+        // Something weird going on, but this seems to fix it.
+        --button-padding: calc(var(--padding) + 0.1em);
+
         flex-grow: 0;
+        padding-top: var(--button-padding);
+        padding-bottom: var(--button-padding);
     }
 
     gap: 0.1em;

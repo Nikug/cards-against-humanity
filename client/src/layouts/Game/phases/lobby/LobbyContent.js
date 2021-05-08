@@ -27,12 +27,12 @@ export const LobbyContent = ({
                         {player?.isHost && (
                             <div className="start-game-button-container">
                                 <StartGameButton
-                                    startGame={startGame}
-                                    game={game}
-                                    player={player}
                                     disableStartGameButton={
                                         disableStartGameButton
                                     }
+                                    game={game}
+                                    player={player}
+                                    startGame={startGame}
                                 />
                             </div>
                         )}

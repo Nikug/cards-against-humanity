@@ -30,13 +30,12 @@
 
     padding: 0.6rem;
     min-height: 2em;
-    max-height: 2em;
     overflow-x: auto;
     overflow-y: hidden;
 
     @include small-desktop {
-        min-height: 3.3em;
-        max-height: 3.3em;
+        min-height: 4em;
+        max-height: 4em;
         overflow-x: hidden;
         overflow-y: auto;
     }

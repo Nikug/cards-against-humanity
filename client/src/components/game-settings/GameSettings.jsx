@@ -130,7 +130,7 @@ export const GameSettings = ({ options, gameID, isDisabled, playerID }) => {
         return renderedCardPacks;
     };
 
-    const iconClassnames = "md-36 icon-margin-right";
+    const iconClassnames = "icon-margin-right";
     const {
         allowKickedPlayerJoin,
         cardPacks,

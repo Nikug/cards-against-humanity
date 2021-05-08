@@ -1,13 +1,32 @@
-body {
-    margin: 0;
-}
-
 // Consts and mixins
 @import "./styles/colors.scss";
 @import "./styles/consts.scss";
 @import "./styles/mediaqueries.scss";
 @import "./styles/mixins.scss";
 @import "./styles/general.scss";
+
+// Set font-size and margin
+html {
+    --font-size: calc(3 * 62.5%);
+
+    @include small-desktop {
+        --font-size: calc(2.5 * 62.5%);
+    }
+
+    font-size: (var(--font-size));
+
+    letter-spacing: 0.025em;
+    word-spacing: 0.05em;
+
+    // Same font everywhere unless told otherwise
+    * {
+        font: inherit;
+    }
+}
+
+body {
+    margin: 0;
+}
 
 // App
 @import "./styles/App.scss";
@@ -21,11 +40,7 @@ body {
 @import "./styles/notification.scss";
 @import "./styles/languageselector.scss";
 
-// Layouts
-@import "./styles/home.scss";
-@import "./styles/instructions.scss";
-
-// Basic elements
+// Basic bigger components (umm this could use a better name?)
 @import "./styles/footer.scss";
 @import "./styles/header.scss";
 
@@ -35,6 +50,10 @@ body {
 @import "./styles/music.scss";
 @import "./styles/timer.scss";
 @import "./styles/avatarcreator.scss";
+
+// Layouts
+@import "./styles/home.scss";
+@import "./styles/instructions.scss";
 
 // Game layouts
 @import "./styles/game.scss";

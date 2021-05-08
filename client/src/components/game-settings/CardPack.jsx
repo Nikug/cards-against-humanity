@@ -34,7 +34,7 @@ export const CardPack = ({
                 </div>
             </div>
             <div className="remove" onClick={() => removeCardpack(id)}>
-                <Icon name="delete_outline" className="md-36" />
+                <Icon name="delete_outline" />
             </div>
         </div>
     );

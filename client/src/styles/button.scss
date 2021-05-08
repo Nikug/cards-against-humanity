@@ -25,6 +25,17 @@ $lgd: 180deg; // linear-gradient degree
 
     &.fill {
         width: 100%;
+        height: 100%;
+
+        &-vertical {
+            width: fit-content;
+            height: 100%;
+        }
+
+        &-horizontal {
+            width: 100%;
+            height: fit-content;
+        }
     }
 
     .button-icon {
@@ -148,8 +159,8 @@ $lgd: 180deg; // linear-gradient degree
 
     &.big-btn {
         font-weight: 600;
-        font-size: 2rem;
-        padding: 0.2em 0.7em;
+        font-size: 1.4rem;
+        padding: 0.6em 1em;
     }
 }
 

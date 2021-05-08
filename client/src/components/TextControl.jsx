@@ -1,8 +1,10 @@
 import React from "react";
+import { classNames } from "../helpers/classnames";
 import { Button, BUTTON_TYPES } from "./button";
 import { Input } from "./Input";
 
 export const TextControl = ({
+    buttonClassName,
     buttonIcon,
     buttonOnClick,
     buttonOnClickParams = [],
@@ -11,6 +13,7 @@ export const TextControl = ({
     className,
     field,
     hasConfirm,
+    inputClassName,
     isDisabled,
     onChange,
     onChangeParams,
@@ -27,9 +30,9 @@ export const TextControl = ({
     };
 
     return (
-        <div className="text-control">
+        <div className={classNames("text-control", className)}>
             <Input
-                className={className}
+                className={inputClassName}
                 disabled={isDisabled}
                 field={field}
                 onChange={onChange}
@@ -43,7 +46,9 @@ export const TextControl = ({
             {hasConfirm && (
                 <Button
                     callback={handleButtonCLick}
+                    className={buttonClassName}
                     disabled={isDisabled}
+                    fill={"fill-vertical"}
                     icon={buttonIcon || undefined}
                     text={buttonText}
                     type={buttonType ?? BUTTON_TYPES.PRIMARY}

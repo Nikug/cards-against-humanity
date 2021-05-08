@@ -118,22 +118,19 @@ export const Player = ({
                 {state === "playing" && (
                     <Icon
                         name={"watch_later"}
-                        className={`player-status clock md-18 status-${state}
+                        className={`player-status clock status-${state}
                     `}
                     />
                 )}
                 {(state === "disconnected" || state === "kicked") && (
                     <Icon
                         name={"error_outline"}
-                        className={`player-status clock md-18 status-${state}
+                        className={`player-status clock status-${state}
                     `}
                     />
                 )}
                 {isHost && (
-                    <Icon
-                        name={"home"}
-                        className={`player-status md-18 white`}
-                    />
+                    <Icon name={"home"} className={`player-status white`} />
                 )}
                 <span
                     ref={nameRef}

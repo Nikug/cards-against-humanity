@@ -142,7 +142,7 @@ export const CardReadingContainer = () => {
                         currentValue={textToSpeechInUse}
                         icon={{
                             name: "record_voice_over",
-                            className: "md-36 icon-margin-right",
+                            className: "icon-margin-right",
                         }}
                     />
                 </div>

@@ -17,7 +17,7 @@ export const StartGameButton = ({
             additionalClassname={"big-btn"}
             callback={() => startGame(game?.id, player?.id)}
             disabled={disableStartGameButton || player?.isHost !== true}
-            fill={true}
+            fill={"fill-horizontal"}
             icon={"play_circle_filled"}
             iconPosition={"after"}
             text={translateCommon("startGame", t)}
