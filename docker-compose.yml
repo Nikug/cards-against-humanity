@@ -1,0 +1,7 @@
+version: "3.9"
+services:
+    full-stack:
+        build: .
+        image: cardsagainsthumanity-full-stack
+        ports:
+            - "80:4000"
