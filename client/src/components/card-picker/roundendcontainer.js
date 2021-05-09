@@ -8,12 +8,13 @@ import { mergeWhiteCardsByplayer } from './cardformathelpers/mergeWhiteCardsBypl
 import { socket } from '../sockets/socket';
 import { translateCommon } from '../../helpers/translation-helpers';
 import { useTranslation } from 'react-i18next';
+import { useGameContext } from '../../contexts/GameContext';
 
 const TIMEOUT = 10000;
 
-export function RoundEndContainer(props) {
+export function RoundEndContainer({ popularVotedCardsIDs, givePopularVote }) {
     const { t } = useTranslation();
-    const { game, player, popularVotedCardsIDs, givePopularVote } = props;
+    const { game, player } = useGameContext();
 
     let timeout = TIMEOUT;
 
@@ -49,7 +50,7 @@ export function RoundEndContainer(props) {
                 // https://www.npmjs.com/package/react-confetti
                 <Confetti tweenDuration={timeout} opacity={0.4} numberOfPieces={400} recycle={false} width={window.innerWidth} height={window.innerHeight} />
             )}
-            <div className="blackcardpicker">
+            <div className="cardpicker-container">
                 <CardPicker
                     mainCard={blackCard}
                     selectableCards={whiteCards}

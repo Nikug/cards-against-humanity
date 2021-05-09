@@ -1,36 +1,29 @@
-import React, { useEffect, useState } from "react";
-import {
-    containsObjectWithMatchingFieldIndex,
-    emptyFn,
-    isNullOrUndefined,
-} from "../../helpers/generalhelpers";
+import React, { useState } from 'react';
+import { containsObjectWithMatchingFieldIndex, emptyFn, isNullOrUndefined } from '../../helpers/generalhelpers';
 
-import { CardPicker } from "./cardpicker";
-import { socket } from "../sockets/socket";
-import { translateCommon } from "../../helpers/translation-helpers";
-import { useTranslation } from "react-i18next";
+import { CardPicker } from './cardpicker';
+import { socket } from '../sockets/socket';
+import { translateCommon } from '../../helpers/translation-helpers';
+import { useTranslation } from 'react-i18next';
+import { useGameContext } from '../../contexts/GameContext';
 
-export const BlackCardPickerContainer = (props) => {
+export const BlackCardPickerContainer = ({ blackCards }) => {
+    const { game, player } = useGameContext();
     const { t } = useTranslation();
+
     const [selectedCards, setSelectedCards] = useState([]);
     const [confirmedCards, setConfirmedCards] = useState([]);
-    const { blackCards } = props;
 
     const selectCard = (card) => {
-        const game = props.game;
         const newSelectedCards = selectedCards.slice();
         let pickLimit = 1;
 
         if (isNullOrUndefined(card.whiteCardsToPlay)) {
-            pickLimit =
-                game.rounds[game.rounds.length - 1].blackCard.whiteCardsToPlay;
+            pickLimit = game.rounds[game.rounds.length - 1].blackCard.whiteCardsToPlay;
         }
 
-        const i = containsObjectWithMatchingFieldIndex(
-            card,
-            newSelectedCards,
-            "id"
-        );
+        const i = containsObjectWithMatchingFieldIndex(card, newSelectedCards, 'id');
+
         if (i !== -1) {
             newSelectedCards.splice(i);
         } else if (newSelectedCards.length < pickLimit) {
@@ -39,43 +32,43 @@ export const BlackCardPickerContainer = (props) => {
             newSelectedCards.pop();
             newSelectedCards.push(card);
         }
+
         setSelectedCards(newSelectedCards);
     };
 
     const confirmCard = () => {
         if (selectedCards.length === 1) {
             const cardID = selectedCards[0].id;
-            const gameID = props.game.id;
-            const playerID = props.player.id;
-            socket.emit("select_black_card", {
+            const gameID = game?.id;
+            const playerID = player?.id;
+
+            socket.emit('select_black_card', {
                 gameID: gameID,
                 playerID: playerID,
                 selectedCardID: cardID,
-                discardedCardIDs: blackCards
-                    .filter((blackCard) => blackCard.id !== cardID)
-                    .map((blackCard) => blackCard.id),
+                discardedCardIDs: blackCards.filter((blackCard) => blackCard.id !== cardID).map((blackCard) => blackCard.id),
             });
 
             setConfirmedCards(selectedCards.slice());
         } else {
-            console.log("Error: There was no black card to confirm");
+            console.log('Error: There was no black card to confirm');
         }
     };
 
+    const cardsHaveBeenConfirmed = confirmedCards.length > 0;
+
     return (
-        <div className="blackcardpicker">
+        <div className="cardpicker-container">
             <CardPicker
+                confirmCards={confirmCard}
+                confirmedCards={confirmedCards}
+                description={translateCommon('chooseBlackCard', t)}
+                disableConfirmButton={cardsHaveBeenConfirmed || selectedCards.length !== 1}
+                noBigMainCard={true}
                 pickingBlackCard={true}
                 selectableCards={blackCards}
+                selectCard={cardsHaveBeenConfirmed ? emptyFn : selectCard}
                 selectedCards={selectedCards}
-                confirmedCards={confirmedCards}
-                selectCard={confirmedCards.length > 0 ? emptyFn : selectCard}
-                confirmCards={confirmCard}
-                description={translateCommon("chooseBlackCard", t)}
-                disableConfirmButton={
-                    confirmedCards.length > 0 || selectedCards.length !== 1
-                }
-                noBigMainCard={true}
             />
         </div>
     );

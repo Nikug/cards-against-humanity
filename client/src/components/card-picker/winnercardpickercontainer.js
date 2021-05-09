@@ -6,9 +6,11 @@ import { mergeWhiteCardsByplayer } from './cardformathelpers/mergeWhiteCardsBypl
 import { socket } from '../sockets/socket';
 import { translateCommon } from '../../helpers/translation-helpers';
 import { useTranslation } from 'react-i18next';
+import { useGameContext } from '../../contexts/GameContext';
 
-export const WinnerCardPickerContainer = ({ game, player, givePopularVote, popularVotedCardsIDs }) => {
+export const WinnerCardPickerContainer = ({ givePopularVote, popularVotedCardsIDs }) => {
     const { t } = useTranslation();
+    const { game, player } = useGameContext();
     const [selectedCards, setSelectedCards] = useState([]);
     const [confirmedCards, setConfirmedCards] = useState([]);
 
@@ -57,7 +59,7 @@ export const WinnerCardPickerContainer = ({ game, player, givePopularVote, popul
     };
 
     return (
-        <div className="blackcardpicker">
+        <div className="cardpicker-container">
             <CardPicker
                 mainCard={blackCard}
                 selectableCards={whiteCards}

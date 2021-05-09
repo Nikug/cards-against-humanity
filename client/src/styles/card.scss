@@ -1,8 +1,13 @@
 .card-wrapper {
-    --card-width: 16em;
-    --card-height: 9.2em; // Fits 3 lines of text, I guess?
+    --card-width: 100%;
+    --card-height: 2em;
 
-    font-family: "Ubuntu", sans-serif;
+    @include small-desktop {
+        --card-width: 16em;
+        --card-height: 9.2em; // Fits 3 lines of text, I guess?
+    }
+
+    font-family: 'Ubuntu', sans-serif;
     font-size: 0.75rem;
     text-align: left;
     line-height: 1.6em;
@@ -19,7 +24,9 @@
 
     padding: 0.25em;
 
-    border-radius: 6px;
+    @include small-desktop {
+        border-radius: 6px;
+    }
 
     .card {
         text-align: left;
@@ -63,10 +70,15 @@
         }
 
         > .footer {
+            display: none; // Hide card footer from mobile.
+
+            @include small-desktop {
+                display: flex;
+            }
+
             font-size: 0.4rem;
             text-align: right;
             line-height: normal;
-            display: flex;
             justify-content: space-between;
             align-items: flex-end;
             margin-top: auto;
@@ -118,114 +130,5 @@
 
     &.confirmed {
         background-color: $card-confimerd;
-    }
-}
-
-.cardpicker-wrapper {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-
-    > .toptext {
-        margin-bottom: 0.8rem;
-        font-size: 1.8em;
-    }
-
-    > .main {
-        margin-bottom: 3rem;
-        display: grid;
-        grid-template-columns: 1fr 1fr 1fr;
-        justify-items: center;
-        align-items: center;
-
-        .content-wrapper {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-
-        .alternativetext {
-            background-color: lighten($app-background, 10%);
-            padding: 0.2rem 0.6rem;
-            border-radius: 5px;
-            width: fit-content;
-            text-align: center;
-            margin: 1rem auto 0 auto;
-
-            > .fa {
-                margin-left: 0.6rem;
-            }
-        }
-
-        > .confirm-button {
-            align-self: center;
-            margin: 0 3rem;
-
-            &.non-selectable {
-                pointer-events: none;
-            }
-        }
-    }
-
-    > .selectable {
-        display: flex;
-        flex-direction: row;
-        flex-wrap: wrap;
-        max-width: 108rem;
-        justify-content: center;
-
-        .card-wrapper {
-            margin: 0.5rem 0.5rem;
-            cursor: pointer;
-        }
-
-        .description {
-            text-align: left;
-        }
-
-        &.non-selectable {
-            cursor: default;
-
-            .card-wrapper {
-                cursor: default;
-
-                .popularvote-btn {
-                    cursor: pointer;
-
-                    &.no-action {
-                        cursor: default;
-                    }
-
-                    &.popular-vote-score {
-                        display: flex;
-                        align-items: center;
-                        justify-content: center;
-                        flex-direction: row;
-                        flex-wrap: nowrap;
-
-                        > .popular-vote-score {
-                            font-size: 1rem;
-                            margin-left: 0.5em;
-                        }
-                    }
-                }
-            }
-        }
-    }
-}
-
-.waiting {
-    .card-wrapper {
-        cursor: default !important;
-    }
-}
-
-.cardreading-settings {
-    margin: 0 auto;
-    width: fit-content;
-    white-space: nowrap;
-
-    .icon-and-text {
-        margin-right: 2rem;
     }
 }

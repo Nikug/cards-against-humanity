@@ -16,8 +16,8 @@
     .welcome-text {
         margin: 0;
         color: $app-text;
-        font-family: "Staatliches", cursive;
-        font-size: 1.6rem;
+        font-family: 'Staatliches', cursive;
+        font-size: 1.4rem;
         text-align: center;
 
         width: fit-content;
@@ -33,7 +33,6 @@
     }
 
     .create-or-join-game-buttons {
-        font-size: 1.2rem;
         color: $app-text;
 
         display: flex;

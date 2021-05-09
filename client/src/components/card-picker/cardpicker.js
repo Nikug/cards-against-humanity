@@ -8,6 +8,7 @@ import { translateCommon } from '../../helpers/translation-helpers';
 import { useGameContext } from '../../contexts/GameContext';
 import { useTranslation } from 'react-i18next';
 import { Card } from './card';
+import { classNames } from '../../helpers/classnames';
 
 export const CardPicker = ({
     alternativeText,
@@ -151,36 +152,40 @@ export const CardPicker = ({
         buttonIcons = customButtonIcons;
     }
 
+    const buttonText = !isNullOrUndefined(customButtonState) ? buttonTexts[customButtonState] : cardsAreSelected ? buttonTexts[1] : buttonTexts[0];
+    const buttonType = !isNullOrUndefined(customButtonState)
+        ? customButtonState === 0
+            ? BUTTON_TYPES.PRIMARY
+            : BUTTON_TYPES.GREEN
+        : cardsAreSelected
+        ? BUTTON_TYPES.GREEN
+        : BUTTON_TYPES.PRIMARY;
+    const buttonIcon = !isNullOrUndefined(customButtonState) ? buttonIcons[customButtonState] : cardsAreSelected ? buttonIcons[1] : buttonIcons[0];
+    const isButtonDisabled = !isNullOrUndefined(customButtonState) ? customButtonState === 1 : hasAlternativeText || disableConfirmButton;
+
     return (
-        <div className={`cardpicker-wrapper ${isForInstructions ? 'instructions-cardpicker' : ''}`}>
+        <div className={classNames('cardpicker-wrapper', { 'instructions-cardpicker': isForInstructions })}>
             {topText && <div className="toptext">{topText}</div>}
             <div className="main">
                 {!centerActionButton && <span />}
                 {mainContent}
                 {!noActionButton && (
                     <Button
-                        additionalClassname={`confirm-button ${
-                            (!isNullOrUndefined(customButtonState) ? customButtonState === 1 : cardsAreSelected) ? 'non-selectable' : ''
-                        } ${selectDisabled ? 'disabled' : ''}`}
-                        text={!isNullOrUndefined(customButtonState) ? buttonTexts[customButtonState] : cardsAreSelected ? buttonTexts[1] : buttonTexts[0]}
-                        callback={() => confirmCards()}
-                        type={
-                            !isNullOrUndefined(customButtonState)
-                                ? customButtonState === 0
-                                    ? BUTTON_TYPES.PRIMARY
-                                    : BUTTON_TYPES.GREEN
-                                : cardsAreSelected
-                                ? BUTTON_TYPES.GREEN
-                                : BUTTON_TYPES.PRIMARY
-                        }
-                        icon={!isNullOrUndefined(customButtonState) ? buttonIcons[customButtonState] : cardsAreSelected ? buttonIcons[1] : buttonIcons[0]}
+                        additionalClassname={classNames('confirm-button', {
+                            'non-selectable': !isNullOrUndefined(customButtonState) ? customButtonState === 1 : cardsAreSelected,
+                            disabled: selectDisabled,
+                        })}
+                        text={buttonText}
+                        callback={confirmCards}
+                        type={buttonType}
+                        icon={buttonIcon}
                         iconPosition="after"
-                        disabled={!isNullOrUndefined(customButtonState) ? customButtonState === 1 : hasAlternativeText || disableConfirmButton}
+                        disabled={isButtonDisabled}
                     />
                 )}
             </div>
             <div className="description">{description}</div>
-            <div className={`selectable ${cardsAreSelected || selectCard === emptyFn ? 'non-selectable' : ''}`}>{renderedCards}</div>
+            <div className={classNames('selectable', { 'non-selectable': cardsAreSelected || selectCard === emptyFn })}>{renderedCards}</div>
         </div>
     );
 };

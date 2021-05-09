@@ -4,8 +4,11 @@ import { StartGameButton } from './StartGameButton';
 import { GameSettings } from '../../../../components/game-settings/GameSettings';
 import { GameSettingsHeader } from '../../../../components/game-settings/GamseSettingsHeader';
 import { AvatarCreator } from '../../../../components/game-settings/AvatarCreator';
+import { useGameContext } from '../../../../contexts/GameContext';
 
-export const LobbyContent = ({ disableStartGameButton, game, player, setPlayerName, startGame }) => {
+export const LobbyContent = ({ disableStartGameButton, setPlayerName, startGame }) => {
+    const { game, player } = useGameContext();
+
     return (
         <div className="game-settings-container">
             <div className="lobby-container-grid">

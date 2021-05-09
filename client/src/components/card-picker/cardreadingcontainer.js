@@ -69,7 +69,7 @@ export const CardReadingContainer = () => {
     const topText = outOf !== 0 ? `${translateCommon('letsReadTheCards', t)} (${whiteCardIndex}/${outOf}):` : `${translateCommon('letsReadTheCards', t)}:`;
 
     return (
-        <div className="blackcardpicker">
+        <div className="cardpicker-container">
             <CardPicker
                 mainCard={blackCard}
                 selectableCards={[]}

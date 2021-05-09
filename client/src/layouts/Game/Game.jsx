@@ -20,6 +20,7 @@ import { socketOn } from '../../helpers/communicationhelpers';
 import { useGameContext } from '../../contexts/GameContext';
 import { useNotification } from '../../contexts/NotificationContext';
 import { useTranslation } from 'react-i18next';
+import { classNames } from '../../helpers/classnames';
 
 export const NAME_CHAR_LIMIT = 50;
 
@@ -288,7 +289,7 @@ export const Game = ({ showDebug }) => {
                 </div>
             </div>
             <div className="game-wrapper-2">
-                <div className={`info ${hasTimer ? 'sticky' : ''}`}>
+                <div className={classNames('info', { sticky: hasTimer })}>
                     {true && (
                         <Timer
                             width={100}

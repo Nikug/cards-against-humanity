@@ -1,0 +1,112 @@
+.cardpicker-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    > .toptext {
+        margin-bottom: 0.8rem;
+        font-size: 1.8em;
+    }
+
+    > .main {
+        margin-bottom: 3rem;
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        justify-items: center;
+        align-items: center;
+
+        .content-wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .alternativetext {
+            background-color: lighten($app-background, 10%);
+            padding: 0.2rem 0.6rem;
+            border-radius: 5px;
+            width: fit-content;
+            text-align: center;
+            margin: 1rem auto 0 auto;
+
+            > .fa {
+                margin-left: 0.6rem;
+            }
+        }
+
+        > .confirm-button {
+            align-self: center;
+            margin: 0 3rem;
+
+            &.non-selectable {
+                pointer-events: none;
+            }
+        }
+    }
+
+    > .selectable {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        max-width: 108rem;
+        justify-content: center;
+
+        .card-wrapper {
+            margin: 0.1em 0;
+
+            @include small-desktop {
+                margin: 0.5rem 0.5rem;
+                cursor: pointer;
+            }
+        }
+
+        .description {
+            text-align: left;
+        }
+
+        &.non-selectable {
+            cursor: default;
+
+            .card-wrapper {
+                cursor: default;
+
+                .popularvote-btn {
+                    cursor: pointer;
+
+                    &.no-action {
+                        cursor: default;
+                    }
+
+                    &.popular-vote-score {
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        flex-direction: row;
+                        flex-wrap: nowrap;
+
+                        > .popular-vote-score {
+                            font-size: 1rem;
+                            margin-left: 0.5em;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+.waiting {
+    .card-wrapper {
+        cursor: default !important;
+    }
+}
+
+.cardreading-settings {
+    margin: 0 auto;
+    width: fit-content;
+    white-space: nowrap;
+
+    .icon-and-text {
+        margin-right: 2rem;
+    }
+}

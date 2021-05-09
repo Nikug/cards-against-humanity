@@ -68,16 +68,20 @@ export const Header = (props) => {
                 </div>
             </Link>
             <div className="buttons">
-                <span className="header-button language">
-                    <Icon className="header-icon" name="language" onClick={toggleMenu} />
-                    <PopOverMenu isDefaultOpen={menuIsOpen} noControl={true} content={<LanguageSelector />} />
-                </span>
-
-                <Link to="/support-us">
-                    <span className="header-button">
-                        <img className="thinking-icon" src={thinkingIcon} />
+                {false && (
+                    <span className="header-button language">
+                        <Icon className="header-icon" name="language" onClick={toggleMenu} />
+                        <PopOverMenu isDefaultOpen={menuIsOpen} noControl={true} content={<LanguageSelector />} />
                     </span>
-                </Link>
+                )}
+
+                {false && (
+                    <Link to="/support-us">
+                        <span className="header-button">
+                            <img className="thinking-icon" src={thinkingIcon} />
+                        </span>
+                    </Link>
+                )}
                 <Link to="/instructions">
                     <span className="header-button">
                         <Icon className="header-icon" name="help_center" />
