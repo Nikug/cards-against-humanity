@@ -18,7 +18,7 @@ const app = express();
 const server = http.createServer(app);
 const io = new Server(server);
 
-app.use(express.static(path.join(__dirname, "/../client/build")));
+app.use(express.static(path.join(__dirname, "/../../client/build")));
 
 app.use(router());
 sockets(io);
@@ -36,8 +36,8 @@ if (USE_DB) {
 
 if (PRODUCTION) {
     console.log("Running production environment!");
-    app.get("*", (req, res) => {
-        res.sendFile(path.join(__dirname + "/../client/build/index.html"));
+    app.get("/", (req, res) => {
+        res.sendFile(path.join(__dirname + "/../../client/build/index.html"));
     });
 }
 

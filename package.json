@@ -8,8 +8,7 @@
     "install": "cd server && npm ci && cd ../client && npm ci",
     "build": "cd server && npm run build && cd ../client && npm run build",
     "dev": "cd server && npm run dev",
-    "dev:db": "cd server && npm run dev:db",
-    "heroku-postbuild": "npm run install && npm run build"
+    "dev:db": "cd server && npm run dev:db"
   },
   "dependencies": {
     "cross-env": "^7.0.3"

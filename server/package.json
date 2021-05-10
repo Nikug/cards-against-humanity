@@ -7,14 +7,14 @@
         "node": ">= 14.0.0"
     },
     "scripts": {
-        "start": "cross-env PRODUCTION=true node main.js",
-        "start:db": "cross-env PRODUCTION=true USE_DB=true node -r dotenv/config main.js",
+        "start": "cross-env PRODUCTION=true node ./build/main.js",
+        "start:db": "cross-env PRODUCTION=true USE_DB=true node -r dotenv/config ./build/main.js",
         "client": "cd ../client && npm start",
         "server": "nodemon",
         "server:db": "cross-env USE_DB=true nodemon -r dotenv/config main.js",
         "dev": "concurrently --kill-others-on-fail \"npm run server\" \"npm run client\"",
         "dev:db": "concurrently --kill-others-on-fail \"npm run server:db\" \"npm run client\"",
-        "build": "cd ../client && npm run build",
+        "build": "tsc",
         "deploy": "npm run build && npm run start"
     },
     "author": "Niku Grönberg & Maija Heiskanen",
