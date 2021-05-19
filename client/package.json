@@ -29,15 +29,8 @@
         "start": "react-scripts start",
         "build": "react-scripts build",
         "test": "react-scripts test",
-        "eject": "react-scripts eject"
-    },
-    "eslintConfig": {
-        "extends": "react-app",
-        "rules": {
-            "no-debugger": "warn",
-            "no-console": "warn",
-            "no-unreachable": "warn"
-        }
+        "eject": "react-scripts eject",
+        "lint:fix": "eslint src/**/*.js --fix"
     },
     "browserslist": {
         "production": [
