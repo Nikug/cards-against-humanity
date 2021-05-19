@@ -1,4 +1,4 @@
-import { Link, useHistory, useLocation } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import React, { useCallback, useState } from 'react';
 
 import Icon from './general/Icon';
@@ -35,17 +35,14 @@ export const Header = (props) => {
             }
             return node;
         },
-        [text]
+        [showTitle]
     );
 
     const toggleMenu = () => {
         setMenuIsOpen(!menuIsOpen);
     };
 
-    const history = useHistory();
     const pathName = useLocation().pathname;
-
-    console.log({ id: game?.id, pathName });
 
     const leaveGame = () => {
         deleteCookie('playerID');
@@ -61,7 +58,7 @@ export const Header = (props) => {
         <div className="header">
             <Link to="/" className="header-link" title={showTitle ? text : undefined}>
                 <div className="header-logo-and-name">
-                    <img className="logo" src={logo} />
+                    <img className="logo" src={logo}  alt={'logo'}/>
                     <span ref={nameRef} className="name">
                         {text.toUpperCase()}
                     </span>
@@ -78,7 +75,7 @@ export const Header = (props) => {
                 {false && (
                     <Link to="/support-us">
                         <span className="header-button">
-                            <img className="thinking-icon" src={thinkingIcon} />
+                            <img className="thinking-icon" src={thinkingIcon}  alt={'thinking-emoji'}/>
                         </span>
                     </Link>
                 )}

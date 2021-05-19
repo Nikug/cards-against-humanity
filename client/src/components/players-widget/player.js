@@ -6,7 +6,7 @@ import { PopOverMenu } from '../popover-menu/PopoverMenu';
 import { animated } from 'react-spring';
 import crownIcon from './../../assets/svgicons/crown-svgrepo-com.svg';
 import { isPlayerHost } from '../../helpers/player-helpers';
-import { socket } from './../sockets/socket';
+import { socket } from '../sockets/socket';
 import { translateCommon } from '../../helpers/translation-helpers';
 import { useGameContext } from '../../contexts/GameContext';
 import { useTransition } from 'react-spring';
@@ -42,7 +42,7 @@ export const Player = ({ name, state, score, isCardCzar, isHost, isPopularVoteKi
             }
             return node;
         },
-        [name]
+        [showTitle]
     );
 
     // Score animation
@@ -90,7 +90,7 @@ export const Player = ({ name, state, score, isCardCzar, isHost, isPopularVoteKi
         <div title={showTitle ? name : undefined} className={`player ${isCardCzar ? 'cardCzar' : ''}`} onClick={toggleMenu}>
             {isCardCzar && (
                 <div className="icon-anchor">
-                    <img className="crown-icon" src={crownIcon} />
+                    <img className="crown-icon" src={crownIcon}  alt={'crown'}/>
                 </div>
             )}
             <span className={`player-name-and-status  ${isHost && false ? 'host' : ''}  ${isSelf ? 'myself' : ''}`}>

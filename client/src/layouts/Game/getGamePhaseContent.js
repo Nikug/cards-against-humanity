@@ -15,7 +15,6 @@ import { WinnerCardPickerContainer } from '../../components/card-picker/winnerca
 import { canStartGame } from './helpers/canStartGame';
 import { getRandomSpinner } from '../../components/spinner';
 import { translateCommon } from '../../helpers/translation-helpers';
-import { useGameContext } from '../../contexts/GameContext';
 
 export const getGamePhaseContent = ({ t, game, player, callbacks: { setPlayerName, givePopularVote, startGame }, blackCards, popularVotedCardsIDs }) => {
     const gameState = game?.state;

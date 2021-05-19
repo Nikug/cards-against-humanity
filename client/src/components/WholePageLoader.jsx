@@ -1,5 +1,4 @@
 import React from "react";
-import { SpinnerCircular } from "spinners-react";
 import { getRandomSpinner } from "./spinner";
 
 export const WholePageLoader = ({ text }) => {

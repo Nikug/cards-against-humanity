@@ -16,7 +16,6 @@ export const socketOn = (eventName, callback, notificationParams = {}) => {
         let notification = data?.notification;
 
         if (notification && fireNotification) {
-            console.log({ notification });
             const text = notification?.text;
 
             if (text && t) {

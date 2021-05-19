@@ -10,7 +10,7 @@
     .title-text-wrapper {
         display: flex;
         flex-direction: column;
-        align-items: start;
+        align-items: flex-start;
 
         .title-text {
             color: $app-text;

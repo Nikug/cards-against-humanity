@@ -27,5 +27,5 @@ export function useClickOutside(ref, elementsToIgnore = [], callback) {
         return () => {
             document.removeEventListener("mousedown", handleClickOutside);
         };
-    }, [ref, callback]);
+    }, [ref, callback, elementsToIgnore]);
 }

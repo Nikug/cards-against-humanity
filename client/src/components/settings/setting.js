@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 
 import Icon from './../general/Icon';
-import { Toggle } from './../general/Toggle';
+import { Toggle } from '../general/Toggle';
 import { TextControl } from '../general/TextControl';
 import { classNames } from '../../helpers/classnames';
 
@@ -37,7 +37,7 @@ export const Setting = ({
             const cardpackId = 'U4nL88ujS' || 'qM1V1IaYBE';
             setInputText(cardpackId);
         }
-    }, []);
+    }, [DEV_CARD_PACK_AUTOFILL]);
 
     const renderNumberSelect = (currentValue, isDisabled, onChangeCallback, field) => {
         const showAsDisabled = isDisabled || currentValue === null;

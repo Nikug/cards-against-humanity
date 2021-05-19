@@ -1,3 +1,6 @@
+/* eslint-disable */
+// This file going to change or be removed, so no point in fixing
+
 import React, { useEffect, useRef, useState } from 'react';
 import { animated, useSpring } from 'react-spring';
 import { useMeasure, usePrevious } from '../../helpers/animation-helpers';

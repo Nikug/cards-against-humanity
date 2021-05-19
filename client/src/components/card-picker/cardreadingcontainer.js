@@ -49,7 +49,7 @@ export const CardReadingContainer = () => {
         return () => {
             socket.off('show_white_card');
         };
-    }, [textToSpeechInUse]);
+    }, [textToSpeechInUse, game.rounds]);
 
     function toggleTextToSpeech() {
         socket.emit('change_text_to_speech', {

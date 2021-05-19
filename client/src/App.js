@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import { Route, Switch, useHistory, useLocation } from 'react-router-dom';
 import { deleteCookie, setCookie } from './helpers/cookies';
 
@@ -61,34 +61,15 @@ export const App = () => {
         history.push(`${route}`);
     };
 
-    const getNewId = () => {
+    const getNewId = useCallback(() => {
         const newId = notificationCount + 1;
         setNotificationCount((prevValue) => prevValue + 1);
 
         return newId;
-    };
+    }, [notificationCount]);
 
-    const fireNotification = (newNotification, timeInSeconds = 4) => {
-        const id = getNewId();
-        console.log({ id });
-
-        setNotifications((prevValue) => [...prevValue, { ...newNotification, id }]);
-
-        setTimeout(() => {
-            hideNotification(id);
-        }, timeInSeconds * 1000);
-    };
-
-    const notificationParams = {
-        fireNotification,
-        notificationCount,
-        setNotificationCount,
-        t,
-    };
-
-    const hideNotification = (id) => {
+    const hideNotification = useCallback((id) => {
         const newList = notifications.slice();
-        console.log({ notifications, id });
 
         for (let i = 0, len = notifications.length; i < len; i++) {
             const notification = notifications[i];
@@ -99,13 +80,31 @@ export const App = () => {
         }
 
         setNotifications(newList);
+    }, [notifications]);
+
+    const fireNotification = useCallback((newNotification, timeInSeconds = 4) => {
+        const id = getNewId();
+
+        setNotifications((prevValue) => [...prevValue, { ...newNotification, id }]);
+
+        setTimeout(() => {
+            hideNotification(id);
+        }, timeInSeconds * 1000);
+    }, [getNewId, hideNotification]);
+
+    const notificationParams = {
+        fireNotification,
+        notificationCount,
+        setNotificationCount,
+        t,
     };
 
     useEffect(() => {
         const language = getItemFromLocalStorage(LOCAL_STORAGE_FIELDS.LANGUAGE);
 
         if (language) {
-            i18n.changeLanguage(language);
+            // eslint-disable-next-line no-console
+            i18n.changeLanguage(language).then(r => console.log('changed language', r));
         }
     }, []);
 
@@ -157,7 +156,7 @@ export const App = () => {
             socket.off('disconnect');
             socket.off('notification');
         };
-    }, [notificationParams, fireNotification, notificationCount]);
+    }, [notificationParams, fireNotification, notificationCount, history]);
 
     useEffect(() => {
         const playerID = getItemFromLocalStorage(LOCAL_STORAGE_FIELDS.PLAYER_ID);
@@ -170,7 +169,7 @@ export const App = () => {
             removeItemFromLocalStorage(LOCAL_STORAGE_FIELDS.PLAYER_ID);
             setLoading(false);
         }
-    }, []);
+    }, [player]);
 
     const updateData = (data) => {
         console.log('updateData', { data });

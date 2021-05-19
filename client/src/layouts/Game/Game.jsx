@@ -2,14 +2,11 @@ import React, { useEffect, useState } from 'react';
 import { getCookie, setCookie } from '../../helpers/cookies';
 
 import { GAME_STATES } from '../../consts/gamestates';
-import { GameMenu } from './components/GameMenu/GameMenu';
 import { GameSettingsContainer } from '../../components/game-settings/gamesettingscontainer';
 import { HistoryContainer } from './components/GameMenu/history/HistoryContainer';
 import { LayerMenu } from '../../components/layer-menu/LayerMenu';
-import { NOTIFICATION_TYPES } from '../../components/notification/notification';
 import { PLAYER_STATES } from '../../consts/playerstates';
 import { PlayersWidget } from '../../components/players-widget/playerswidget';
-import { SpectatorsInfo } from './components/SpectatorsInfo/SpectatorsInfo';
 import { Timer } from '../../components/timer';
 import { TimerV2 } from '../../components/Timer/timerV2';
 import { WholePageLoader } from '../../components/WholePageLoader.jsx';
@@ -21,8 +18,8 @@ import { useGameContext } from '../../contexts/GameContext';
 import { useNotification } from '../../contexts/NotificationContext';
 import { useTranslation } from 'react-i18next';
 import { classNames } from '../../helpers/classnames';
-
-export const NAME_CHAR_LIMIT = 50;
+import {GameMenu} from "./components/GameMenu/GameMenu";
+import {SpectatorsInfo} from "./components/SpectatorsInfo/SpectatorsInfo";
 
 const hasTimerInUse = (game) => {
     const gameState = game?.state;
@@ -69,7 +66,6 @@ export const Game = ({ showDebug }) => {
     const [popularVotedCardsIDs, setPopularVotedCardsIDs] = useState([]);
 
     // Common consts
-    const isSpectator = player ? player.state === 'spectating' : false;
     const isLobby = game?.state === GAME_STATES.LOBBY;
 
     // useEffects
@@ -79,7 +75,6 @@ export const Game = ({ showDebug }) => {
             setIsLoading(true);
             const cookie = getCookie('playerID');
             if (socket.disconnected) {
-                console.log('opening socket');
                 socket.open();
             }
             socket.emit('join_game', {
@@ -168,7 +163,7 @@ export const Game = ({ showDebug }) => {
             setStartingProgress(currentProgress);
         }
         resetTimer();
-    }, [game?.state, game?.timers]);
+    }, [game.state, game.timers]);
 
     // Ask for black cards
     useEffect(() => {
@@ -178,7 +173,7 @@ export const Game = ({ showDebug }) => {
                 playerID: player.id,
             });
         }
-    }, []);
+    }, [game.id, game.state, player.id, player.isCardCzar]);
 
     // Functions
     const getGameIdFromURL = () => {
@@ -321,7 +316,7 @@ export const Game = ({ showDebug }) => {
                         />
                     )}
                 </div>
-                {/*<div className="info">
+                {false && <div className="info">
                     <div className="actions-wrapper">
                         <GameMenu
                             callbacks={{
@@ -334,7 +329,8 @@ export const Game = ({ showDebug }) => {
                         />
                         <SpectatorsInfo />
                     </div>
-                        </div>*/}
+                        </div>
+                }
                 <div className="game-wrapper-3">{renderedContent}</div>
             </div>
         </>

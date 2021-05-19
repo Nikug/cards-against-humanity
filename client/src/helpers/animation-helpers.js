@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect } from "react";
 import "resize-observer-polyfill";
 
 export function usePrevious(value) {
@@ -18,6 +18,6 @@ export function useMeasure() {
             ro.observe(ref.current, { box: "border-box" });
         }
         return () => ro.disconnect();
-    }, []);
+    }, [ro]);
     return [{ ref }, bounds];
 }

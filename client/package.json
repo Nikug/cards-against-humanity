@@ -32,7 +32,12 @@
         "eject": "react-scripts eject"
     },
     "eslintConfig": {
-        "extends": "react-app"
+        "extends": "react-app",
+        "rules": {
+            "no-debugger": "warn",
+            "no-console": "warn",
+            "no-unreachable": "warn"
+        }
     },
     "browserslist": {
         "production": [
