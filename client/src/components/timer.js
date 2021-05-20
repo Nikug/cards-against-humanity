@@ -3,22 +3,37 @@
 import React from "react";
 
 export function Timer({ width, percent = 1, startingPercent, time }) {
-    const [value, setValue] = React.useState(0);
-    const [startingValue, setStartingValue] = React.useState(0);
-    const [timeLeft, setTimeLeft] = React.useState(0);
+    const [
+value,
+setValue
+] = React.useState(0);
+    const [
+startingValue,
+setStartingValue
+] = React.useState(0);
+    const [
+timeLeft,
+setTimeLeft
+] = React.useState(0);
 
     React.useEffect(() => {
         const newValue = percent * width - startingPercent * width;
+
         setValue(newValue < 0 ? 0 : newValue);
         setStartingValue(startingPercent * width);
         setTimeLeft(time - startingPercent * time);
-    }, [percent, width, startingPercent, time]);
+    }, [
+percent,
+width,
+startingPercent,
+time
+]);
 
     return (
-        <div className="progress-div" style={{ width: `${width}%` }}>
+        <div className='progress-div' style={{ width: `${width}%` }}>
             <div
                 style={{ width: `${startingValue}%` }}
-                className="no-animation"
+                className='no-animation'
             />
             <div
                 style={{

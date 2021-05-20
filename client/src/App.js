@@ -1,4 +1,4 @@
-import React, {useCallback, useEffect, useState} from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { Route, Switch, useHistory, useLocation } from 'react-router-dom';
 import { deleteCookie, setCookie } from './helpers/cookies';
 
@@ -24,9 +24,9 @@ import axios from 'axios';
 import i18n from './i18n';
 
 export const App = () => {
-    /*****************************************************************/ // Purely for hiding dev things from the production.
-    const [clicked, setClicked] = useState(0);
-    const [showDebug, setShowDebug] = useState(false);
+    /** ***************************************************************/ // Purely for hiding dev things from the production.
+    const [ clicked, setClicked ] = useState(0);
+    const [ showDebug, setShowDebug ] = useState(false);
 
     const secretClick = () => {
         if (clicked > 3) {
@@ -35,14 +35,14 @@ export const App = () => {
             setClicked(clicked + 1);
         }
     };
-    /*****************************************************************/
+    /** ***************************************************************/
 
-    const [game, setGame] = useState(undefined);
-    const [hasAcceptedCookies, setHasAcceptedCookies] = useState(true);
-    const [loading, setLoading] = useState(true);
-    const [notificationCount, setNotificationCount] = useState(0);
-    const [notifications, setNotifications] = useState([]);
-    const [player, setPlayer] = useState(undefined);
+    const [ game, setGame ] = useState(undefined);
+    const [ hasAcceptedCookies, setHasAcceptedCookies ] = useState(true);
+    const [ loading, setLoading ] = useState(true);
+    const [ notificationCount, setNotificationCount ] = useState(0);
+    const [ notifications, setNotifications ] = useState([]);
+    const [ player, setPlayer ] = useState(undefined);
 
     const history = useHistory();
     const { t } = useTranslation();
@@ -63,6 +63,7 @@ export const App = () => {
 
     const getNewId = useCallback(() => {
         const newId = notificationCount + 1;
+
         setNotificationCount((prevValue) => prevValue + 1);
 
         return newId;
@@ -73,6 +74,7 @@ export const App = () => {
 
         for (let i = 0, len = notifications.length; i < len; i++) {
             const notification = notifications[i];
+
             if (notification.id === id) {
                 newList.splice(i, 1);
                 break;
@@ -85,12 +87,12 @@ export const App = () => {
     const fireNotification = useCallback((newNotification, timeInSeconds = 4) => {
         const id = getNewId();
 
-        setNotifications((prevValue) => [...prevValue, { ...newNotification, id }]);
+        setNotifications((prevValue) => [ ...prevValue, { ...newNotification, id }]);
 
         setTimeout(() => {
             hideNotification(id);
         }, timeInSeconds * 1000);
-    }, [getNewId, hideNotification]);
+    }, [ getNewId, hideNotification ]);
 
     const notificationParams = {
         fireNotification,
@@ -104,7 +106,7 @@ export const App = () => {
 
         if (language) {
             // eslint-disable-next-line no-console
-            i18n.changeLanguage(language).then(r => console.log('changed language', r));
+            i18n.changeLanguage(language).then((r) => console.log('changed language', r));
         }
     }, []);
 
@@ -116,6 +118,7 @@ export const App = () => {
                 if (data.error) {
                     console.log('Received error from server:', data.error);
                     setLoading(false);
+
                     return;
                 }
                 if (isNullOrUndefined(data.game)) {
@@ -156,15 +159,13 @@ export const App = () => {
             socket.off('disconnect');
             socket.off('notification');
         };
-    }, [notificationParams, fireNotification, notificationCount, history]);
+    }, [ notificationParams, fireNotification, notificationCount, history ]);
 
     useEffect(() => {
         const playerID = getItemFromLocalStorage(LOCAL_STORAGE_FIELDS.PLAYER_ID);
 
         if (!isNullOrUndefined(player)) {
-            socket.emit('join_game', {
-                playerID,
-            });
+            socket.emit('join_game', { playerID, });
         } else {
             removeItemFromLocalStorage(LOCAL_STORAGE_FIELDS.PLAYER_ID);
             setLoading(false);
@@ -212,22 +213,22 @@ export const App = () => {
     } else {
         content = (
             <NotificationContextProvider value={notificationParams}>
-                {notifications.length > 0 && <div className="notification-wrapper">{notificationsToRender}</div>}
+                {notifications.length > 0 && <div className='notification-wrapper'>{notificationsToRender}</div>}
                 <div className={`App ${pathName === '/' ? 'background-img' : 'mono-background'}`}>
                     <div>
-                        <div className="content">
+                        <div className='content'>
                             <Header game={game} player={player} reset={resetData} />
-                            <div className="main">
+                            <div className='main'>
                                 <Switch>
                                     <Route
                                         exact
-                                        path="/"
+                                        path='/'
                                         render={(props) => <Home startNewGame={startNewGame} joinExistingGame={joinExistingGame} history={history} />}
                                     />
-                                    <Route path="/instructions" render={(props) => <Instructions path={'/instructions'} />} />
+                                    <Route path='/instructions' render={(props) => <Instructions path={'/instructions'} />} />
                                     <Route
                                         exact
-                                        path="/g/:id"
+                                        path='/g/:id'
                                         render={(props) => (
                                             <GameContextProvider
                                                 value={{
@@ -242,7 +243,7 @@ export const App = () => {
                                     />
                                     <Route
                                         exact
-                                        path="/support-us"
+                                        path='/support-us'
                                         render={(props) => (
                                             <div
                                                 style={{
@@ -268,7 +269,7 @@ export const App = () => {
     if (hasAcceptedCookies === false) {
         return (
             <div
-                className="App mono-background"
+                className='App mono-background'
                 style={{
                     display: 'flex',
                     justifyContent: 'center',

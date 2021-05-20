@@ -12,7 +12,7 @@ import {
 
 import React from "react";
 
-//https://www.npmjs.com/package/spinners-react
+// https://www.npmjs.com/package/spinners-react
 
 const SPINNER_TYPES = {
     SpinnerCircular: 0,
@@ -60,6 +60,6 @@ function getRandomArbitrary(min, max) {
     return Math.round(Math.random() * (max - min) + min);
 }
 
-export const getRandomSpinner = () => {
-    return <Spinner type={getRandomArbitrary(0, 9)} />;
-};
+const NUMBER_OF_SPINNERS = 9;
+
+export const getRandomSpinner = () => <Spinner type={getRandomArbitrary(0, NUMBER_OF_SPINNERS)} />;

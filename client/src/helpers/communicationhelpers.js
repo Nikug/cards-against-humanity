@@ -23,6 +23,7 @@ export const socketOn = (eventName, callback, notificationParams = {}) => {
                     notification?.text,
                     t
                 );
+
                 if (translatedText.length > 0) {
                     // If there was translation available
                     notification = { ...notification, text: translatedText };

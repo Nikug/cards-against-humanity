@@ -18,8 +18,8 @@ import { useGameContext } from '../../contexts/GameContext';
 import { useNotification } from '../../contexts/NotificationContext';
 import { useTranslation } from 'react-i18next';
 import { classNames } from '../../helpers/classnames';
-import {GameMenu} from "./components/GameMenu/GameMenu";
-import {SpectatorsInfo} from "./components/SpectatorsInfo/SpectatorsInfo";
+import { GameMenu } from "./components/GameMenu/GameMenu";
+import { SpectatorsInfo } from "./components/SpectatorsInfo/SpectatorsInfo";
 
 const hasTimerInUse = (game) => {
     const gameState = game?.state;
@@ -57,13 +57,13 @@ export const Game = ({ showDebug }) => {
     const { fireNotification, notificationCount } = notificationParams;
 
     // States
-    const [isLoading, setIsLoading] = useState(false);
-    const [gameSettingsMenuOpen, setGameSettingsMenuOpen] = useState(false);
-    const [historyMenuOpen, setHistoryMenuOpen] = useState(false);
-    const [startingProgress, setStartingProgress] = useState(0);
-    const [timerIsOn, setTimerIsOn] = useState(false);
-    const [blackCards, setBlackCards] = useState([]);
-    const [popularVotedCardsIDs, setPopularVotedCardsIDs] = useState([]);
+    const [ isLoading, setIsLoading ] = useState(false);
+    const [ gameSettingsMenuOpen, setGameSettingsMenuOpen ] = useState(false);
+    const [ historyMenuOpen, setHistoryMenuOpen ] = useState(false);
+    const [ startingProgress, setStartingProgress ] = useState(0);
+    const [ timerIsOn, setTimerIsOn ] = useState(false);
+    const [ blackCards, setBlackCards ] = useState([]);
+    const [ popularVotedCardsIDs, setPopularVotedCardsIDs ] = useState([]);
 
     // Common consts
     const isLobby = game?.state === GAME_STATES.LOBBY;
@@ -74,6 +74,7 @@ export const Game = ({ showDebug }) => {
         if (game === undefined) {
             setIsLoading(true);
             const cookie = getCookie('playerID');
+
             if (socket.disconnected) {
                 socket.open();
             }
@@ -82,7 +83,7 @@ export const Game = ({ showDebug }) => {
                 playerID: cookie,
             });
         }
-    }, [game, player]);
+    }, [ game, player ]);
 
     useEffect(() => {
         socketOn(
@@ -152,18 +153,19 @@ export const Game = ({ showDebug }) => {
             socket.off('deal_black_cards');
             socket.off('send_popular_voted_cards');
         };
-    }, [notificationParams, fireNotification, notificationCount, updateData]);
+    }, [ notificationParams, fireNotification, notificationCount, updateData ]);
 
     useEffect(() => {
         if (game?.timers.passedTime && game?.timers.duration) {
             const { passedTime, duration } = game.timers;
             let currentProgress = (passedTime + 0.1) / duration;
+
             currentProgress = currentProgress < 0.01 ? 0 : currentProgress;
 
             setStartingProgress(currentProgress);
         }
         resetTimer();
-    }, [game.state, game.timers]);
+    }, [ game.state, game.timers ]);
 
     // Ask for black cards
     useEffect(() => {
@@ -173,11 +175,12 @@ export const Game = ({ showDebug }) => {
                 playerID: player.id,
             });
         }
-    }, [game.id, game.state, player.id, player.isCardCzar]);
+    }, [ game.id, game.state, player.id, player.isCardCzar ]);
 
     // Functions
     const getGameIdFromURL = () => {
         const url = window.location.pathname;
+
         return url.replace('/g/', '');
     };
 
@@ -264,7 +267,7 @@ export const Game = ({ showDebug }) => {
 
     return (
         <>
-            <div className="game-wrapper-1">
+            <div className='game-wrapper-1'>
                 {gameSettingsMenuOpen && (
                     <LayerMenu
                         content={
@@ -279,11 +282,11 @@ export const Game = ({ showDebug }) => {
                     />
                 )}
                 {historyMenuOpen && <LayerMenu content={<HistoryContainer />} closeLayerMenu={openHistory} />}
-                <div className="info">
+                <div className='info'>
                     <PlayersWidget game={game} player={player} />
                 </div>
             </div>
-            <div className="game-wrapper-2">
+            <div className='game-wrapper-2'>
                 <div className={classNames('info', { sticky: hasTimer })}>
                     {true && (
                         <Timer
@@ -316,8 +319,8 @@ export const Game = ({ showDebug }) => {
                         />
                     )}
                 </div>
-                {false && <div className="info">
-                    <div className="actions-wrapper">
+                {false && <div className='info'>
+                    <div className='actions-wrapper'>
                         <GameMenu
                             callbacks={{
                                 togglePlayerMode,
@@ -331,7 +334,7 @@ export const Game = ({ showDebug }) => {
                     </div>
                         </div>
                 }
-                <div className="game-wrapper-3">{renderedContent}</div>
+                <div className='game-wrapper-3'>{renderedContent}</div>
             </div>
         </>
     );

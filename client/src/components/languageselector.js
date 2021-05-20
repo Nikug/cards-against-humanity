@@ -6,25 +6,25 @@ import { LOCAL_STORAGE_FIELDS, setItemToLocalStorage } from "../helpers/localsto
 import { translateCommon } from "../helpers/translation-helpers";
 import i18n from "../i18n";
 
-const RadioButton = ({id, label, checked, onSelect}) => {
-    return (
+const RadioButton = ({ id, label, checked, onSelect }) => (
         <>
-            <input type="radio" id={id} name={label} value={label} checked={checked} onChange={() => onSelect(id)}/>
-            <label className="radio-button-label" onClick={() => onSelect(id)}>{label}</label>
+            <input type='radio' id={id} name={label} value={label} checked={checked} onChange={() => onSelect(id)}/>
+            <label className='radio-button-label' onClick={() => onSelect(id)}>{label}</label>
             <br></br>
         </>
     );
-};
 
 export const LanguageSelector = () => {
     const { t } = useTranslation();
 
     const languages = sortByProperty(i18n.languages);
     const currentLanguage = i18n.language;
-    const radioButtons = [];
+    const radioButtons = [
+];
 
     const onSelect = (id) => {
         const newLanguage = languages[id];
+
         i18n.changeLanguage(newLanguage);
         setItemToLocalStorage(LOCAL_STORAGE_FIELDS.LANGUAGE, newLanguage);
     }
@@ -37,9 +37,9 @@ export const LanguageSelector = () => {
     }
 
     return (
-        <div className="language-selector-wrapper">
-            <div className="title">{translateCommon('chooseLanguage', t)}</div>
-            <div className="radio-buttons">
+        <div className='language-selector-wrapper'>
+            <div className='title'>{translateCommon('chooseLanguage', t)}</div>
+            <div className='radio-buttons'>
                 {radioButtons}
             </div>
         </div>

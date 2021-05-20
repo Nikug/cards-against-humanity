@@ -1,20 +1,23 @@
-export let translateNotification = (keyWrod, t, options) => {
+export const translateNotification = (keyWrod, t, options) => {
     if (t == null) {
         return "";
     }
+
     return t(`notification:${keyWrod}`, options);
 };
 
-export let translateCommon = (keyWrod, t, options) => {
+export const translateCommon = (keyWrod, t, options) => {
     if (t == null) {
         return "";
     }
+
     return t(`common:${keyWrod}`, options);
 };
 
-export let translateUnderWork = (keyWrod, t, options) => {
+export const translateUnderWork = (keyWrod, t, options) => {
     if (t == null) {
         return "";
     }
+
     return t(`underwork:${keyWrod}`, options);
 };

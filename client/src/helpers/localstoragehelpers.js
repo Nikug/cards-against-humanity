@@ -8,10 +8,6 @@ export const setItemToLocalStorage = (field, value) => {
     localStorage.setItem(field, value);
 }
 
-export const getItemFromLocalStorage = (field) => {
-    return localStorage.getItem(field);
-}
+export const getItemFromLocalStorage = (field) => localStorage.getItem(field)
 
-export const removeItemFromLocalStorage = (field) => {
-    return localStorage.removeItem(field);
-}
+export const removeItemFromLocalStorage = (field) => localStorage.removeItem(field)

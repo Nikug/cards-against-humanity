@@ -12,7 +12,8 @@ const shouldIgnoreClick = (elementsToIgnore, event) => {
     return false;
 };
 
-export function useClickOutside(ref, elementsToIgnore = [], callback) {
+export function useClickOutside(ref, elementsToIgnore = [
+], callback) {
     // There was some problem with importing useEffect separately, but this seems to work.
     React.useEffect(() => {
         function handleClickOutside(event) {
@@ -24,8 +25,13 @@ export function useClickOutside(ref, elementsToIgnore = [], callback) {
             }
         }
         document.addEventListener("mousedown", handleClickOutside);
+
         return () => {
             document.removeEventListener("mousedown", handleClickOutside);
         };
-    }, [ref, callback, elementsToIgnore]);
+    }, [
+ref,
+callback,
+elementsToIgnore
+]);
 }
