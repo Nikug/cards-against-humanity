@@ -11,6 +11,7 @@ workdir /app
 copy server/package.json server/package-lock.json ./
 run npm ci
 copy server/ .
+run npm run build
 copy --from=build /app/build /client/build
 expose 4000
 cmd ["npm", "run", "start:db"]
