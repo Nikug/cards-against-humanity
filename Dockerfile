@@ -13,4 +13,4 @@ run npm ci
 copy server/ .
 copy --from=build /app/build /client/build
 expose 4000
-cmd ["npm", "start"]
+cmd ["npm", "run", "start:db"]
