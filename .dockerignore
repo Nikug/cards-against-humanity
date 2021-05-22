@@ -1,0 +1,7 @@
+server/node_modules
+server/autismipakka.json
+server/Dockerfile
+
+client/node_modules
+client/build/
+client/Dockerfile
