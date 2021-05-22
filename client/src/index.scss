@@ -7,10 +7,10 @@
 
 // Set font-size and margin
 html {
-    --font-size: calc(2.2 * 62.5%);
+    --font-size: calc(2.8 * 62.5%);
 
     @include small-desktop {
-        --font-size: calc(1.8 * 62.5%);
+        --font-size: calc(2.4 * 62.5%);
     }
 
     font-size: (var(--font-size));
