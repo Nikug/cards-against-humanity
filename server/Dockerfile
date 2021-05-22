@@ -4,4 +4,4 @@ copy package.json package-lock.json ./
 run npm ci
 copy . .
 expose 4000
-cmd ["npm", "start"]
+cmd ["npm", "run", "start:db"]
