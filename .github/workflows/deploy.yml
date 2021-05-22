@@ -2,7 +2,7 @@
 
 name: Deploy CI
 
-# Controls when the action will run. 
+# Controls when the action will run.
 on:
   release:
     types: [published]
@@ -21,6 +21,8 @@ jobs:
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
+
+      # Deploy files
       - name: ssh deploy
         uses: easingthemes/ssh-deploy@v2
         with:
@@ -30,3 +32,13 @@ jobs:
           REMOTE_USER: ${{ secrets.REMOTE_USER }}
           TARGET: ${{ secrets.REMOTE_TARGET }}
 
+      # Create .env file and run docker
+      - name: Copy env
+        uses: garygrossgarten/github-action-ssh@release
+        with:
+          command: cd ${{ secrets.REMOTE_TARGET }} &&
+            echo "${{ secrets.DB_SECRETS }}" > ./server/.env &&
+            docker-compose up -d --build
+          host: ${{ secrets.REMOTE_HOST }}
+          username: ${{ secrets.REMOTE_USER }}
+          privateKey: ${{ secrets.SSH_PRIVATE_KEY }}
