@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import { translateCommon } from '../../helpers/translation-helpers';
 import { useTranslation } from 'react-i18next';
 import { TextControl } from '../../components/general/TextControl';
+import { Tooltip } from '../../components/popovers/Tooltip.jsx';
 
 export const Home = ({ joinExistingGame, startNewGame }) => {
     const { t } = useTranslation();

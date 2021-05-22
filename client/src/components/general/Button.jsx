@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, forwardRef } from 'react';
 import { classNames } from '../../helpers/classnames';
 
 import Icon from './Icon.jsx';
@@ -39,7 +39,7 @@ const getButtonIcon = (icon, iconAfterText, noText) => {
     return <Icon name={icon} className={classNames('button-icon', { 'no-margin-right': noText || iconAfterText, 'after-text': iconAfterText })} />;
 };
 
-export const Button = React.forwardRef(({ additionalClassname, callback, callbackParams, disabled, fill, icon, iconPosition, text, type }, ref) => {
+export const Button = forwardRef(({ additionalClassname, callback, callbackParams, disabled, fill, icon, iconPosition, text, type }, ref) => {
     const noText = text == null || text.length === 0;
     const iconAfterText = iconPosition === 'after';
 

@@ -70,6 +70,7 @@
     "theWinnerCardsOfThisGame": "The winner cards of this game",
     "timers": "Timers",
     "version": "Version",
+    "versionNotStable": "This version might not be stable, so be prepared for surprising crashes! Well... As prepared as you can be for surprises...",
     "voteYourFavouriteCards": "Vote your favourite cards",
     "waitingFor_player_ToStartNextRound": "Waiting for {{player}} to start next round",
     "welcomeToPlayCardsAgainstHumankind": "Welcome to play Cards Against Humankind",

@@ -1,0 +1,17 @@
+.tippy-box[data-theme~='tooltip'] {
+    background-color: tomato;
+    color: yellow;
+}
+
+.tippy-box[data-theme~='tooltip'][data-placement^='top'] > .tippy-arrow::before {
+    border-top-color: tomato;
+}
+.tippy-box[data-theme~='tooltip'][data-placement^='bottom'] > .tippy-arrow::before {
+    border-bottom-color: tomato;
+}
+.tippy-box[data-theme~='tooltip'][data-placement^='left'] > .tippy-arrow::before {
+    border-left-color: tomato;
+}
+.tippy-box[data-theme~='tooltip'][data-placement^='right'] > .tippy-arrow::before {
+    border-right-color: tomato;
+}
