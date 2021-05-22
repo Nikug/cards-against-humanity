@@ -7,8 +7,8 @@
         "node": ">= 14.0.0"
     },
     "scripts": {
-        "start": "cross-env PRODUCTION=true node ./app/build/main.js",
-        "start:db": "cross-env PRODUCTION=true USE_DB=true node -r dotenv/config ./app/build/main.js",
+        "start": "cross-env PRODUCTION=true node main.js",
+        "start:db": "cross-env PRODUCTION=true USE_DB=true node -r dotenv/config main.js",
         "client": "cd ../client && npm start",
         "server": "nodemon",
         "server:db": "cross-env USE_DB=true nodemon -r dotenv/config main.js",

@@ -33,7 +33,7 @@ jobs:
           TARGET: ${{ secrets.REMOTE_TARGET }}
 
       # Create .env file and run docker
-      - name: Copy env
+      - name: Create .env and run docker
         uses: garygrossgarten/github-action-ssh@release
         with:
           command: cd ${{ secrets.REMOTE_TARGET }} &&
