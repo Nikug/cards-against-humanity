@@ -5,7 +5,6 @@ run npm ci
 copy client/ .
 run npm run build
 
-
 from node:14-alpine
 workdir /app
 copy server/package.json server/package-lock.json ./

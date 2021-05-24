@@ -1,7 +1,17 @@
 version: "3.9"
 services:
-    full-stack:
-        build: .
-        image: cardsagainsthumanity-full-stack
-        ports:
-            - "80:4000"
+  db:
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: ${PGPASSWORD}
+      POSTGRES_USER: ${PGUSER}
+      POSTGRES_DATABASE: ${PGDATABASE}
+    ports:
+      - "5432:5432"
+
+  full-stack:
+    build: .
+    image: cardsagainsthumanity-full-stack
+    ports:
+      - "80:4000"
