@@ -2,13 +2,12 @@ import dotenv from "dotenv";
 dotenv.config({ path: `${__dirname}/.env` });
 
 import { Server } from "socket.io";
-import { createTableQuery } from "./modules/db/table";
 import express from "express";
 import http from "http";
 import path from "path";
-import { queryDB } from "./modules/db/database";
 import { router } from "./modules/routes/routes";
 import { sockets } from "./modules/routes/sockets";
+import { connectToDB } from "./modules/db/connect";
 
 const port = process.env.PORT || 4000;
 const PRODUCTION = process.env.PRODUCTION;
@@ -24,14 +23,7 @@ app.use(router());
 sockets(io);
 
 if (USE_DB) {
-    console.log("Trying to connect to database...");
-    queryDB(createTableQuery)
-        .then(() => console.log("Connected to database!"))
-        .catch((e: any) => {
-            console.log("Couldn't connect to database. Shutting down...");
-            console.error(e);
-            process.exit();
-        });
+    connectToDB()
 }
 
 if (PRODUCTION) {
