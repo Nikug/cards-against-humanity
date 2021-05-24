@@ -4,14 +4,14 @@ services:
     image: postgres
     restart: always
     environment:
-      POSTGRES_PASSWORD: ${PGPASSWORD}
-      POSTGRES_USER: ${PGUSER}
-      POSTGRES_DATABASE: ${PGDATABASE}
-    ports:
-      - "5432:5432"
+      POSTGRES_PASSWORD: "${PGPASSWORD}"
+      POSTGRES_USER: "${PGUSER}"
+      POSTGRES_DATABASE: "${PGDATABASE}"
 
   full-stack:
     build: .
     image: cardsagainsthumanity-full-stack
     ports:
       - "80:4000"
+    depends_on:
+      - "db"
