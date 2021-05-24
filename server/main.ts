@@ -7,7 +7,7 @@ import http from "http";
 import path from "path";
 import { router } from "./modules/routes/routes";
 import { sockets } from "./modules/routes/sockets";
-import { connectToDB } from "./modules/db/connect";
+import { connectToDB } from "./modules/db/database";
 
 const port = process.env.PORT || 4000;
 const PRODUCTION = process.env.PRODUCTION;
@@ -23,7 +23,7 @@ app.use(router());
 sockets(io);
 
 if (USE_DB) {
-    connectToDB()
+    connectToDB();
 }
 
 if (PRODUCTION) {
