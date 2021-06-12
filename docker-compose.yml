@@ -20,13 +20,13 @@ services:
             - "traefik.http.routers.cah.rule=Host(`pelit.space`)"
             - "traefik.http.routers.cah.entrypoints=web"
             - "traefik.port=4000"
-            - "traefik.docker.network=traefik_network"
+            - "traefik.docker.network=traefik_default"
         networks:
             - db-network
-            - traefik_network
+            - traefik_default
 
 networks:
-    traefik_network:
+    traefik_default:
         driver: bridge
         external: true
     db-network:
