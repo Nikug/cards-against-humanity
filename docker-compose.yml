@@ -18,7 +18,7 @@ services:
         labels:
             - "traefik.enable=true"
             - "traefik.http.routers.cah.rule=Host(`pelit.space`)"
-            - "traefik.http.routers.cah.entrypoints=websecure"
+            - "traefik.http.routers.cah.entrypoints=web,websecure"
             - "traefik.http.routers.cah.tls=true"
             - "traefik.http.routers.cah.tls.certresolver=lets-encrypt"
             - "traefik.port=4000"
