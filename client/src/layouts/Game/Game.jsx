@@ -322,18 +322,20 @@ export const Game = ({ showDebug }) => {
                     )}
                 </div>
                 <div className="info">
-                    <div className="actions-wrapper">
-                        <GameMenu
-                            callbacks={{
-                                togglePlayerMode,
-                                returnBackToLobby,
-                                openGameSettings,
-                                openHistory,
-                            }}
-                            showDebug={showDebug}
-                        />
-                        <SpectatorsInfo />
-                    </div>
+                    {false && (
+                        <div className="actions-wrapper">
+                            <GameMenu
+                                callbacks={{
+                                    togglePlayerMode,
+                                    returnBackToLobby,
+                                    openGameSettings,
+                                    openHistory,
+                                }}
+                                showDebug={showDebug}
+                            />
+                            <SpectatorsInfo />
+                        </div>
+                    )}
                 </div>
                 <div className="game-wrapper-3">{renderedContent}</div>
             </div>

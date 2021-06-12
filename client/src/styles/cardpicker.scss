@@ -18,12 +18,12 @@
         display: flex;
         flex-direction: column;
         width: 100%;
+        min-height: 7em;
 
         .content-wrapper {
             width: 100%;
 
             > .card-wrapper {
-                min-height: 5.4em;
             }
         }
 
@@ -66,6 +66,7 @@
     .description {
         align-self: flex-start;
         margin-left: 0.6em;
+        margin-top: 0.6em;
 
         @include small-desktop {
             align-self: center;
@@ -73,6 +74,36 @@
             &.mobile-only {
                 display: none;
             }
+        }
+    }
+
+    .action-button {
+        width: 100%;
+        position: absolute;
+        bottom: 0px;
+        left: 0px;
+        right: 0px;
+        border-radius: 0;
+        z-index: 30;
+        justify-content: center;
+
+        @include small-desktop {
+            width: fit-content;
+            margin-top: 0.5em;
+
+            position: static;
+            bottom: 0px;
+            border-radius: 6px;
+        }
+    }
+
+    .action-button-empty-space {
+        opacity: 0;
+
+        @include small-desktop {
+            width: 0;
+            height: 0;
+            overflow: hidden;
         }
     }
 

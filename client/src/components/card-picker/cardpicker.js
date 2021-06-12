@@ -9,6 +9,7 @@ import { useGameContext } from '../../contexts/GameContext';
 import { useTranslation } from 'react-i18next';
 import { Card } from './card';
 import { classNames } from '../../helpers/classnames';
+import { CardPickerActionButton } from './CardPickerActionButton';
 
 export const CardPicker = ({
     alternativeText,
@@ -163,6 +164,7 @@ export const CardPicker = ({
         : BUTTON_TYPES.PRIMARY;
     const buttonIcon = !isNullOrUndefined(customButtonState) ? buttonIcons[customButtonState] : cardsAreSelected ? buttonIcons[1] : buttonIcons[0];
     const isButtonDisabled = !isNullOrUndefined(customButtonState) ? customButtonState === 1 : hasAlternativeText || disableConfirmButton;
+    const hasActionButton = !noActionButton;
 
     return (
         <div className={classNames('cardpicker-wrapper', { 'instructions-cardpicker': isForInstructions })}>
@@ -171,8 +173,8 @@ export const CardPicker = ({
                 {showPreviewTitle && <div className="description mobile-only">{'Esikatselu'}</div>}
                 {!centerActionButton && <span />}
                 {mainContent}
-                {!noActionButton && (
-                    <Button
+                {hasActionButton && (
+                    <CardPickerActionButton
                         additionalClassname={classNames('confirm-button', {
                             'non-selectable': !isNullOrUndefined(customButtonState) ? customButtonState === 1 : cardsAreSelected,
                             disabled: selectDisabled,
@@ -188,6 +190,26 @@ export const CardPicker = ({
             </div>
             <div className="description">{description}</div>
             <div className={classNames('selectable', { 'non-selectable': cardsAreSelected || selectCard === emptyFn })}>{renderedCards}</div>
+            {hasActionButton && (
+                <div
+                    // This is here to occupy the same emount of space as the StartGameButton would
+                    // (which is position absolute and at the bottom of the screen)
+                    className="action-button-empty-space"
+                >
+                    <CardPickerActionButton
+                        additionalClassname={classNames('confirm-button', {
+                            'non-selectable': !isNullOrUndefined(customButtonState) ? customButtonState === 1 : cardsAreSelected,
+                            disabled: selectDisabled,
+                        })}
+                        text={buttonText}
+                        callback={confirmCards}
+                        type={buttonType}
+                        icon={buttonIcon}
+                        iconPosition="after"
+                        disabled={isButtonDisabled}
+                    />
+                </div>
+            )}
         </div>
     );
 };
