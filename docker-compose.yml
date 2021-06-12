@@ -1,17 +1,22 @@
 version: "3.9"
 services:
-  db:
-    image: postgres
-    restart: always
-    environment:
-      POSTGRES_PASSWORD: "${POSTGRES_PASSWORD}"
-      POSTGRES_USER: "${POSTGRES_USER}"
-      POSTGRES_DB: "${POSTGRES_DB}"
+    db:
+        image: postgres
+        restart: always
+        environment:
+            POSTGRES_PASSWORD: "${POSTGRES_PASSWORD}"
+            POSTGRES_USER: "${POSTGRES_USER}"
+            POSTGRES_DB: "${POSTGRES_DB}"
 
-  full-stack:
-    build: .
-    image: cardsagainsthumanity-full-stack
-    ports:
-      - "80:4000"
-    depends_on:
-      - "db"
+    full-stack:
+        build: .
+        image: cardsagainsthumanity-full-stack
+        ports:
+            - "4000"
+        depends_on:
+            - "db"
+        labels:
+            - "traefik.enable=true"
+            - "traefik.http.routers.cah.rule=Host(`pelit.space`)"
+            - "traefik.http.routers.cah.entrypoints=web"
+            - "traefik.port=4000"
