@@ -7,12 +7,12 @@ services:
             POSTGRES_PASSWORD: "${POSTGRES_PASSWORD}"
             POSTGRES_USER: "${POSTGRES_USER}"
             POSTGRES_DB: "${POSTGRES_DB}"
+        networks:
+            - db-network
 
     full-stack:
         build: .
         image: cardsagainsthumanity-full-stack
-        ports:
-            - "4000"
         depends_on:
             - "db"
         labels:
@@ -20,3 +20,14 @@ services:
             - "traefik.http.routers.cah.rule=Host(`pelit.space`)"
             - "traefik.http.routers.cah.entrypoints=web"
             - "traefik.port=4000"
+            - "traefik.docker.network=traefik_network"
+        networks:
+            - db-network
+            - traefik_network
+
+networks:
+    traefik_network:
+        driver: bridge
+        external: true
+    db-network:
+        driver: bridge
