@@ -35,6 +35,14 @@ $header-button-hover: darken($color-blue, 15%);
 $app-background: $color-darkening-grey;
 $app-text: $color-white;
 
+// Tooltips
+
+$tooltip-background: $color-dark-grey;
+$tooltip-text: lighten($color-light-grey, 20%);
+
+$menu-background: $color-dark-grey;
+$menu-text: $color-white;
+
 // Buttons
 
 $button-text: $color-black;

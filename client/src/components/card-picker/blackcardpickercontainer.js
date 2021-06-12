@@ -69,6 +69,7 @@ export const BlackCardPickerContainer = ({ blackCards }) => {
                 selectableCards={blackCards}
                 selectCard={cardsHaveBeenConfirmed ? emptyFn : selectCard}
                 selectedCards={selectedCards}
+                showPreviewTitle={true}
             />
         </div>
     );

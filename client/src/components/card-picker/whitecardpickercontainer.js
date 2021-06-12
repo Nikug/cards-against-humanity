@@ -67,6 +67,7 @@ export function WhiteCardPickerContainer() {
                 description={translateCommon('chooseWhiteCard', t)}
                 selectDisabled={selectedCards.length !== pickLimit}
                 noBigMainCard={false}
+                showPreviewTitle={true}
             />
         </div>
     );

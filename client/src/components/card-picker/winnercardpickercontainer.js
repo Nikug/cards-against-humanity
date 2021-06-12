@@ -81,6 +81,7 @@ export const WinnerCardPickerContainer = ({ givePopularVote, popularVotedCardsID
                 noBigMainCard={!isCardCzar}
                 givePopularVote={givePopularVote}
                 popularVotedCardsIDs={popularVotedCardsIDs}
+                showPreviewTitle={true}
             />
         </div>
     );

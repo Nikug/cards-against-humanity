@@ -321,7 +321,7 @@ export const Game = ({ showDebug }) => {
                         />
                     )}
                 </div>
-                {/*<div className="info">
+                <div className="info">
                     <div className="actions-wrapper">
                         <GameMenu
                             callbacks={{
@@ -334,7 +334,7 @@ export const Game = ({ showDebug }) => {
                         />
                         <SpectatorsInfo />
                     </div>
-                        </div>*/}
+                </div>
                 <div className="game-wrapper-3">{renderedContent}</div>
             </div>
         </>

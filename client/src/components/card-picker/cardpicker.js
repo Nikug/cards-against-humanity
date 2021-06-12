@@ -33,6 +33,7 @@ export const CardPicker = ({
     selectDisabled,
     selectedCards = [],
     showPopularVote,
+    showPreviewTitle,
     topText,
 }) => {
     const { t } = useTranslation();
@@ -167,6 +168,7 @@ export const CardPicker = ({
         <div className={classNames('cardpicker-wrapper', { 'instructions-cardpicker': isForInstructions })}>
             {topText && <div className="toptext">{topText}</div>}
             <div className="main">
+                {showPreviewTitle && <div className="description mobile-only">{'Esikatselu'}</div>}
                 {!centerActionButton && <span />}
                 {mainContent}
                 {!noActionButton && (

@@ -1,7 +1,12 @@
+.cardpicker-container {
+    width: 100%;
+}
+
 .cardpicker-wrapper {
     display: flex;
     flex-direction: column;
     align-items: center;
+    width: 100%;
 
     > .toptext {
         margin-bottom: 0.8rem;
@@ -9,16 +14,17 @@
     }
 
     > .main {
-        margin-bottom: 3rem;
-        display: grid;
-        grid-template-columns: 1fr 1fr 1fr;
-        justify-items: center;
-        align-items: center;
+        margin-bottom: 1em;
+        display: flex;
+        flex-direction: column;
+        width: 100%;
 
         .content-wrapper {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
+            width: 100%;
+
+            > .card-wrapper {
+                min-height: 5.4em;
+            }
         }
 
         .alternativetext {
@@ -36,32 +42,54 @@
 
         > .confirm-button {
             align-self: center;
-            margin: 0 3rem;
+            margin-top: 1em;
 
             &.non-selectable {
                 pointer-events: none;
+            }
+        }
+
+        @include small-desktop {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            justify-items: center;
+            align-items: center;
+
+            .content-wrapper {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+            }
+        }
+    }
+
+    .description {
+        align-self: flex-start;
+        margin-left: 0.6em;
+
+        @include small-desktop {
+            align-self: center;
+
+            &.mobile-only {
+                display: none;
             }
         }
     }
 
     > .selectable {
         display: flex;
-        flex-direction: row;
-        flex-wrap: wrap;
-        max-width: 108rem;
-        justify-content: center;
+        flex-direction: column;
+        cursor: pointer;
+        gap: 4px; // Life is hard.
+        width: 100%;
 
-        .card-wrapper {
-            margin: 0.1em 0;
-
-            @include small-desktop {
-                margin: 0.5rem 0.5rem;
-                cursor: pointer;
-            }
-        }
-
-        .description {
-            text-align: left;
+        @include small-desktop {
+            gap: 0.5em;
+            display: flex;
+            flex-direction: row;
+            flex-wrap: wrap;
+            max-width: 108rem;
+            justify-content: center;
         }
 
         &.non-selectable {

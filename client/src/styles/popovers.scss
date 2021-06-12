@@ -1,3 +1,19 @@
 // General styling, imports at the end of file so those can override
 
+.tippy-box {
+    background-color: $tooltip-background;
+    color: $tooltip-text;
+    line-height: inherit;
+    font-size: 1rem;
+    text-decoration: none;
+    font-family: 'Teko', sans-serif;
+    box-shadow: rgba(0, 0, 0, 0.6) 15px 15px 12px;
+
+    .tippy-content {
+        //padding: 5px 9px;
+        padding: 10px;
+    }
+}
+
 @import './popovers/tooltip.scss';
+@import './popovers/menu.scss';
