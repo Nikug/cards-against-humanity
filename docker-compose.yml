@@ -19,6 +19,8 @@ services:
             - "traefik.enable=true"
             - "traefik.http.routers.cah.rule=Host(`pelit.space`)"
             - "traefik.http.routers.cah.entrypoints=web"
+            - "traefik.http.routers.cah.tls=true"
+            - "traefik.http.routers.cah.tls.certresolver=lets-encrypt"
             - "traefik.port=4000"
             - "traefik.docker.network=traefik_default"
         networks:
