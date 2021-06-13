@@ -68,10 +68,9 @@ export const Header = (props) => {
                 </div>
             </Link>
             <div className="buttons">
-                {false && (
+                {true && (
                     <span className="header-button language">
-                        <Icon className="header-icon" name="language" onClick={toggleMenu} />
-                        <PopOverMenu isDefaultOpen={menuIsOpen} noControl={true} content={<LanguageSelector />} />
+                        <LanguageSelector />
                     </span>
                 )}
 

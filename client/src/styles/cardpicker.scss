@@ -18,7 +18,11 @@
         display: flex;
         flex-direction: column;
         width: 100%;
-        min-height: 7em;
+        min-height: 7.2em;
+
+        @include small-desktop {
+            min-height: 8.4em;
+        }
 
         .content-wrapper {
             width: 100%;
@@ -77,6 +81,32 @@
         }
     }
 
+    .action-button-container {
+        width: 100%;
+        display: flex;
+        justify-content: center;
+
+        .confirm-button {
+            position: absolute;
+            bottom: 0px;
+            left: 0px;
+            right: 0px;
+            border-radius: 0;
+            z-index: 30;
+            justify-content: center;
+        }
+
+        @include small-desktop {
+            margin-top: 0.5em;
+
+            .confirm-button {
+                position: static;
+                bottom: 0px;
+                border-radius: 6px;
+            }
+        }
+    }
+
     .action-button {
         width: 100%;
         position: absolute;
@@ -100,7 +130,12 @@
     .action-button-empty-space {
         opacity: 0;
 
+        .action-button {
+            position: static;
+        }
+
         @include small-desktop {
+            display: none;
             width: 0;
             height: 0;
             overflow: hidden;

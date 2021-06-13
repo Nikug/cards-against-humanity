@@ -174,18 +174,20 @@ export const CardPicker = ({
                 {!centerActionButton && <span />}
                 {mainContent}
                 {hasActionButton && (
-                    <CardPickerActionButton
-                        additionalClassname={classNames('confirm-button', {
-                            'non-selectable': !isNullOrUndefined(customButtonState) ? customButtonState === 1 : cardsAreSelected,
-                            disabled: selectDisabled,
-                        })}
-                        text={buttonText}
-                        callback={confirmCards}
-                        type={buttonType}
-                        icon={buttonIcon}
-                        iconPosition="after"
-                        disabled={isButtonDisabled}
-                    />
+                    <div className={'action-button-container'}>
+                        <CardPickerActionButton
+                            additionalClassname={classNames('confirm-button', {
+                                'non-selectable': !isNullOrUndefined(customButtonState) ? customButtonState === 1 : cardsAreSelected,
+                                disabled: selectDisabled,
+                            })}
+                            text={buttonText}
+                            callback={confirmCards}
+                            type={buttonType}
+                            icon={buttonIcon}
+                            iconPosition="after"
+                            disabled={isButtonDisabled}
+                        />
+                    </div>
                 )}
             </div>
             <div className="description">{description}</div>

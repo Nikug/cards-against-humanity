@@ -110,7 +110,9 @@
     }
 
     &.big-card {
-        width: 32em;
+        @include small-desktop {
+            width: 32em;
+        }
     }
 
     &.white {

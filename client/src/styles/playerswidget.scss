@@ -40,8 +40,7 @@
         overflow-y: auto;
     }
 
-    scrollbar-color: lighten($players-background-shadow, 10%)
-        $players-background-shadow;
+    scrollbar-color: lighten($players-background-shadow, 10%) $players-background-shadow;
 
     &.no-active-players {
         justify-content: center;
@@ -64,7 +63,7 @@
 
     // Is there a legit way to do this???
     :last-child:after {
-        content: "";
+        content: '';
         display: block;
         position: absolute;
         width: 0.6rem;
@@ -77,7 +76,7 @@
     align-items: center;
 
     border-radius: 0.8em;
-    padding: 0.1em 0.4em;
+    padding: 0.15em 0.5em;
 
     @include small-desktop {
         height: 100%;
@@ -95,9 +94,11 @@
     .score {
         //padding-top: 0.12em;
         //color: $icon-win;
+        margin-left: 0.2em;
 
         @include small-desktop {
             color: $app-text;
+            margin-left: 0;
         }
     }
 
@@ -110,12 +111,18 @@
         overflow: visible;
 
         .crown-icon {
-            width: 2.5rem;
+            width: 0.9em;
 
             position: absolute;
-            top: -1.9rem;
-            left: -1.6rem;
+            top: -1.3rem;
+            left: -0.6rem;
             transform: rotate(-30deg);
+
+            @include small-desktop {
+                width: 1em;
+                top: -0.95rem;
+                left: -1rem;
+            }
         }
     }
 }

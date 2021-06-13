@@ -89,7 +89,7 @@
         color: $header-button-text-hover;
         @include text-shadow;
 
-        .menu-container {
+        .tippy-content {
             text-shadow: none;
         }
     }
