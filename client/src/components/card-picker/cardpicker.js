@@ -9,7 +9,7 @@ import { useGameContext } from '../../contexts/GameContext';
 import { useTranslation } from 'react-i18next';
 import { Card } from './card';
 import { classNames } from '../../helpers/classnames';
-import { CardPickerActionButton } from './CardPickerActionButton';
+import { CardPickerActionButton } from './components/CardPickerActionButton';
 
 export const CardPicker = ({
     alternativeText,

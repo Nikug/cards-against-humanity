@@ -9,6 +9,7 @@ import { socket } from '../sockets/socket';
 import { translateCommon } from '../../helpers/translation-helpers';
 import { useTranslation } from 'react-i18next';
 import { useGameContext } from '../../contexts/GameContext';
+import { WinnerText } from './components/WinnerText';
 
 const TIMEOUT = 10000;
 
@@ -46,7 +47,7 @@ export function RoundEndContainer({ popularVotedCardsIDs, givePopularVote }) {
 
     return (
         <>
-            {winningWhiteCardsByPlayer?.playerName !== undefined && (
+            {false && winningWhiteCardsByPlayer?.playerName !== undefined && (
                 // https://www.npmjs.com/package/react-confetti
                 <Confetti tweenDuration={timeout} opacity={0.4} numberOfPieces={400} recycle={false} width={window.innerWidth} height={window.innerHeight} />
             )}
@@ -65,13 +66,7 @@ export function RoundEndContainer({ popularVotedCardsIDs, givePopularVote }) {
                     customButtonTexts={[translateCommon('nextRound', t), `${translateCommon('loading', t)}...`]}
                     customButtonIcons={['arrow_forward', 'cached']}
                     customButtonState={startingNewRound ? 1 : 0}
-                    topText={
-                        winningWhiteCardsByPlayer?.playerName
-                            ? `🎉 ${translateCommon('_player_WonTheRound', t, {
-                                  player: winningWhiteCardsByPlayer?.playerName,
-                              })}! 🎉`
-                            : `${translateCommon('_player_DidNotChooseAWinnerAndLostOnePoint', t, { player: cardCzarName })}...`
-                    }
+                    topText={<WinnerText name={winningWhiteCardsByPlayer?.playerName} cardCzarName={cardCzarName} />}
                     showPopularVote={showPopularVote}
                     givePopularVote={givePopularVote}
                     popularVotedCardsIDs={popularVotedCardsIDs}

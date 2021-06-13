@@ -10,7 +10,11 @@
 
     > .toptext {
         margin-bottom: 0.8rem;
-        font-size: 1.8em;
+        font-size: 1.2em;
+
+        @include small-desktop {
+            font-size: 1.8em;
+        }
     }
 
     > .main {
@@ -38,6 +42,7 @@
             width: fit-content;
             text-align: center;
             margin: 1rem auto 0 auto;
+            overflow-wrap: break-word;
 
             > .fa {
                 margin-left: 0.6rem;
@@ -85,6 +90,10 @@
         width: 100%;
         display: flex;
         justify-content: center;
+
+        > .button {
+            box-shadow: 0 -0.2em 0.4em $color-black-50;
+        }
 
         .confirm-button {
             position: absolute;
