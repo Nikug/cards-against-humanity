@@ -170,7 +170,7 @@ export const CardPicker = ({
         <div className={classNames('cardpicker-wrapper', { 'instructions-cardpicker': isForInstructions })}>
             {topText && <div className="toptext">{topText}</div>}
             <div className="main">
-                {showPreviewTitle && <div className="description mobile-only">{'Esikatselu'}</div>}
+                {showPreviewTitle && <div className="description mobile-only">{translateCommon('preview', t)}</div>}
                 {!centerActionButton && <span />}
                 {mainContent}
                 {hasActionButton && (
