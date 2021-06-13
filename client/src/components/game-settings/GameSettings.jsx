@@ -279,6 +279,7 @@ export const GameSettings = ({ options, gameID, isDisabled, playerID }) => {
                     placeholderText={'rAnD0MchArs'}
                     controlType={CONTROL_TYPES.textWithConfirm}
                     onChangeCallback={addCardPack}
+                    isDisabled={isDisabled}
                     icon={{
                         name: 'library_add',
                         className: iconClassnames,

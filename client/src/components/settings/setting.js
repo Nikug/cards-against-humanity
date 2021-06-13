@@ -33,7 +33,7 @@ export const Setting = ({
     const [inputText, setInputText] = useState('');
 
     useEffect(() => {
-        if (DEV_CARD_PACK_AUTOFILL === true) {
+        if (DEV_CARD_PACK_AUTOFILL === true && !isDisabled) {
             const cardpackId = 'U4nL88ujS' || 'qM1V1IaYBE';
             setInputText(cardpackId);
         }

@@ -20,7 +20,7 @@
     }
 }
 
-.disabled .text-input {
+.disabled.text-input {
     background-color: lighten($input-background, 15%);
     color: $settings-text-disabled;
     border: none;
