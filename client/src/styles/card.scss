@@ -52,6 +52,12 @@
         &.white {
             background-color: $white-card-background;
             color: $white-card-text;
+
+            > .text > *:not(:first-child) {
+                border-top: 2px solid $color-light-grey;
+                padding-top: 0.25em;
+                margin-top: 0.25em;
+            }
         }
 
         &.black {

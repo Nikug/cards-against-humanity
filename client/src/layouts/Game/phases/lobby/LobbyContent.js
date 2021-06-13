@@ -9,6 +9,8 @@ import { useGameContext } from '../../../../contexts/GameContext';
 export const LobbyContent = ({ disableStartGameButton, setPlayerName, startGame }) => {
     const { game, player } = useGameContext();
 
+    const isHost = player?.isHost;
+
     return (
         <div className="game-settings-container">
             <div className="lobby-container-grid">
@@ -20,7 +22,7 @@ export const LobbyContent = ({ disableStartGameButton, setPlayerName, startGame 
                     <GameSettingsHeader keyword={'ownSettings'} />
                     <div className={'justify-between column fill'}>
                         <NamePicker setPlayerName={setPlayerName} />
-                        {player?.isHost && (
+                        {isHost && (
                             <div className="start-game-button-container">
                                 <StartGameButton disableStartGameButton={disableStartGameButton} game={game} player={player} startGame={startGame} />
                             </div>
@@ -29,13 +31,15 @@ export const LobbyContent = ({ disableStartGameButton, setPlayerName, startGame 
                 </div>
 
                 <GameSettings options={game ? game.options : {}} gameID={game?.id} isDisabled={player?.isHost !== true} playerID={player?.id} />
-                <div
-                    // This is here to occupy the same emount of space as the StartGameButton would
-                    // (which is position absolute and at the bottom of the screen)
-                    className="start-game-button-empty-space"
-                >
-                    <StartGameButton isDisabled={true} />
-                </div>
+                {isHost && (
+                    <div
+                        // This is here to occupy the same emount of space as the StartGameButton would
+                        // (which is position absolute and at the bottom of the screen)
+                        className="start-game-button-empty-space"
+                    >
+                        <StartGameButton isDisabled={true} />
+                    </div>
+                )}
             </div>
         </div>
     );

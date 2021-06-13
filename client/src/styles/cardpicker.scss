@@ -95,6 +95,12 @@
             box-shadow: 0 -0.2em 0.4em $color-black-50;
         }
 
+        @include small-desktop {
+            > .button {
+                box-shadow: none;
+            }
+        }
+
         .confirm-button {
             position: absolute;
             bottom: 0px;
