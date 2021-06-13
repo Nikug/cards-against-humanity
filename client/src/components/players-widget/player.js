@@ -11,6 +11,8 @@ import { translateCommon } from '../../helpers/translation-helpers';
 import { useGameContext } from '../../contexts/GameContext';
 import { useTransition } from 'react-spring';
 import { useTranslation } from 'react-i18next';
+import Tippy from '@tippyjs/react';
+import { BUTTON_TYPES } from '../general/Button';
 
 export const Player = ({ name, state, score, isCardCzar, isHost, isPopularVoteKing, isSelf, publicID }) => {
     const { t } = useTranslation();
@@ -86,7 +88,7 @@ export const Player = ({ name, state, score, isCardCzar, isHost, isPopularVoteKi
         removePlayer(false);
     };
 
-    return (
+    const playerElement = (
         <div title={showTitle ? name : undefined} className={`player ${isCardCzar ? 'cardCzar' : ''}`} onClick={toggleMenu}>
             {isCardCzar && (
                 <div className="icon-anchor">
@@ -98,14 +100,14 @@ export const Player = ({ name, state, score, isCardCzar, isHost, isPopularVoteKi
                     <Icon
                         name={'watch_later'}
                         className={`player-status clock status-${state}
-                    `}
+            `}
                     />
                 )}
                 {(state === 'disconnected' || state === 'kicked') && (
                     <Icon
                         name={'error_outline'}
                         className={`player-status clock status-${state}
-                    `}
+            `}
                     />
                 )}
                 {isHost && <Icon name={'home'} className={`player-status white`} />}
@@ -129,31 +131,43 @@ export const Player = ({ name, state, score, isCardCzar, isHost, isPopularVoteKi
                     </span>
                 )}
             </span>
-            {isPlayerHost(player) && (
-                <PopOverMenu
-                    isDefaultOpen={menuIsOpen}
-                    noControl={true}
-                    content={
-                        <>
-                            {name}
-                            <ActionButtonRow
-                                buttons={[
-                                    {
-                                        icon: 'logout',
-                                        text: translateCommon('removeFromGame', t),
-                                        callback: removePlayer,
-                                    },
-                                    {
-                                        icon: 'groups',
-                                        text: translateCommon('moveToAudience', t),
-                                        callback: makePlayerSpectator,
-                                    },
-                                ]}
-                            />
-                        </>
-                    }
-                />
-            )}
         </div>
+    );
+
+    return isPlayerHost(player) ? (
+        <Tippy
+            trigger={'click'}
+            duration={[100, 0]}
+            placement="bottom-start"
+            role="menu"
+            theme="menu"
+            interactive={true}
+            arrow={true}
+            content={
+                <>
+                    <span className="title">{name}</span>
+                    <ActionButtonRow
+                        buttons={[
+                            {
+                                type: BUTTON_TYPES.PRIMARY,
+                                icon: 'logout',
+                                text: translateCommon('removeFromGame', t),
+                                callback: removePlayer,
+                            },
+                            {
+                                type: BUTTON_TYPES.PRIMARY,
+                                icon: 'groups',
+                                text: translateCommon('moveToAudience', t),
+                                callback: makePlayerSpectator,
+                            },
+                        ]}
+                    />
+                </>
+            }
+        >
+            {playerElement}
+        </Tippy>
+    ) : (
+        playerElement
     );
 };

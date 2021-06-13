@@ -56,9 +56,13 @@
 }
 
 .actions-wrapper {
-    display: flex;
-    flex-direction: row;
+    display: none;
+
+    @include small-desktop {
+        display: flex;
+    }
     height: 0;
+    flex-direction: row;
     overflow: visible;
     margin-top: 0.5rem;
 

@@ -322,7 +322,7 @@ export const Game = ({ showDebug }) => {
                     )}
                 </div>
                 <div className="info">
-                    {false && (
+                    {true && (
                         <div className="actions-wrapper">
                             <GameMenu
                                 callbacks={{

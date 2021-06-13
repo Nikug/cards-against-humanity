@@ -8,6 +8,14 @@
     .button {
         width: 100%;
     }
+
+    .title {
+        display: block;
+        max-width: 100%;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
 }
 
 .tippy-box[data-theme~='menu'][data-placement^='top'] > .tippy-arrow::before {
