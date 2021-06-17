@@ -2,6 +2,7 @@ import type * as CAH from "types";
 import type * as SocketIO from "socket.io";
 
 import { clearGameTimer } from "../utilities/delayedStateChange";
+import { removeAllCards } from "../cards/resetCards";
 import { resetPlayers } from "../players/resetPlayer";
 import { setGame } from "./gameUtil";
 import { updatePlayersIndividually } from "../players/emitPlayers";
@@ -29,24 +30,17 @@ export const resetGame = (game: CAH.Game) => {
     // Reset playerStates, scores, cardczar status and player white cards
     updatedGame.players = resetPlayers(updatedGame.players);
 
-    // Reset played cards back to deck
-    updatedGame.cards.whiteCards = [
-        ...updatedGame.cards.whiteCards,
-        ...updatedGame.cards.playedWhiteCards,
-    ];
-    updatedGame.cards.blackCards = [
-        ...updatedGame.cards.blackCards,
-        ...updatedGame.cards.playedBlackCards,
-    ];
+    // Remove all cards
+    const gameWithNoCards = removeAllCards(updatedGame);
 
     // Reset timers
-    updatedGame.client.timers.duration = undefined;
-    updatedGame.client.timers.passedTime = undefined;
+    gameWithNoCards.client.timers.duration = undefined;
+    gameWithNoCards.client.timers.passedTime = undefined;
 
     // Reset game state if not in lobby
-    if (updatedGame.stateMachine.state !== "lobby") {
-        updatedGame.stateMachine.returnToLobby();
+    if (gameWithNoCards.stateMachine.state !== "lobby") {
+        gameWithNoCards.stateMachine.returnToLobby();
     }
 
-    return updatedGame;
+    return gameWithNoCards;
 };

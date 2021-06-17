@@ -7,6 +7,7 @@ import { getGame, setGame } from "../games/gameUtil";
 
 import { gameOptions } from "../../consts/gameSettings";
 import { getActivePlayers } from "../players/playerUtil";
+import { reloadAllCardPacks } from "../cards/cardpack";
 import { resetGame } from "../games/endGame";
 import { sendNotification } from "../utilities/socket";
 import { updatePlayersIndividually } from "../players/emitPlayers";
@@ -35,6 +36,9 @@ export const returnToLobby = async (
     game.client.state = game.stateMachine.state;
 
     const initialGame = resetGame(game);
+    // Set loading to db
+    initialGame.cards = await reloadAllCardPacks(game);
+    // Set not loading to db
     await setGame(initialGame, client);
 
     updatePlayersIndividually(io, initialGame);
