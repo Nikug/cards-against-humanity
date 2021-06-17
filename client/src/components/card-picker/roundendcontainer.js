@@ -7,6 +7,7 @@ import { isPlayerCardCzar } from '../../helpers/player-helpers';
 import { mergeWhiteCardsByplayer } from './cardformathelpers/mergeWhiteCardsByplayer';
 import { socket } from '../sockets/socket';
 import { translateCommon } from '../../helpers/translation-helpers';
+import { useWindowSize } from '../../helpers/hooks';
 import { useTranslation } from 'react-i18next';
 import { useGameContext } from '../../contexts/GameContext';
 import { WinnerText } from './components/WinnerText';
@@ -16,6 +17,7 @@ const TIMEOUT = 10000;
 export function RoundEndContainer({ popularVotedCardsIDs, givePopularVote }) {
     const { t } = useTranslation();
     const { game, player } = useGameContext();
+    const { width, height } = useWindowSize();
 
     let timeout = TIMEOUT;
 
@@ -43,13 +45,14 @@ export function RoundEndContainer({ popularVotedCardsIDs, givePopularVote }) {
     const showPopularVote = game?.options?.popularVote;
     const cardCzarName = game.players.filter((player) => player.isCardCzar === true)[0].name;
 
-    console.log('ses', winningWhiteCardsByPlayer);
-
     return (
         <>
-            {false && winningWhiteCardsByPlayer?.playerName !== undefined && (
+            {winningWhiteCardsByPlayer?.playerName !== undefined && (
                 // https://www.npmjs.com/package/react-confetti
-                <Confetti tweenDuration={timeout} opacity={0.4} numberOfPieces={400} recycle={false} width={window.innerWidth} height={window.innerHeight} />
+                // Slicing 20 px from each dimension to avoid annoying overflow. Should have a better look how to fix.
+                <div className="confetti">
+                    <Confetti tweenDuration={timeout} opacity={0.4} numberOfPieces={400} recycle={false} width={width - 5} height={height - 5} />
+                </div>
             )}
             <div className="cardpicker-container">
                 <CardPicker

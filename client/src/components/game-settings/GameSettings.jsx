@@ -274,7 +274,7 @@ export const GameSettings = ({ options, gameID, isDisabled, playerID }) => {
             <div className="settings-block divider">
                 <GameSettingsHeader keyword={'cardDecks'} />
                 <Setting
-                    DEV_CARD_PACK_AUTOFILL={true}
+                    DEV_CARD_PACK_AUTOFILL={false}
                     text={translateCommon('addCardDeck', t)}
                     placeholderText={'rAnD0MchArs'}
                     controlType={CONTROL_TYPES.textWithConfirm}
