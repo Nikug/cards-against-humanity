@@ -10,7 +10,8 @@ type Server2Client =
     | "show_white_card" // Sends a white card to be shown
     | "update_game_and_players" // Updates game and players
     | "upgraded_to_host" // Receiver is now host
-    | "update_timers"; // Updates just the timers
+    | "update_timers" // Updates just the timers
+    | "join_game"; // Used to send that can't join because password was wrong
 
 type Client2Server =
     | "join_game" // Player joins a game
