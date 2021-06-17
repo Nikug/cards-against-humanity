@@ -1,0 +1,32 @@
+// Menu
+.tippy-box[data-theme~='menu'] {
+    background-color: $menu-background;
+    color: $menu-text;
+
+    min-width: 10em;
+
+    .button {
+        width: 100%;
+    }
+
+    .title {
+        display: block;
+        max-width: 100%;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+}
+
+.tippy-box[data-theme~='menu'][data-placement^='top'] > .tippy-arrow::before {
+    border-top-color: $menu-background;
+}
+.tippy-box[data-theme~='menu'][data-placement^='bottom'] > .tippy-arrow::before {
+    border-bottom-color: $menu-background;
+}
+.tippy-box[data-theme~='menu'][data-placement^='left'] > .tippy-arrow::before {
+    border-left-color: $menu-background;
+}
+.tippy-box[data-theme~='menu'][data-placement^='right'] > .tippy-arrow::before {
+    border-right-color: $menu-background;
+}

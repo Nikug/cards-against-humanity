@@ -1,0 +1,221 @@
+.cardpicker-container {
+    width: 100%;
+}
+
+.cardpicker-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+
+    > .toptext {
+        margin-bottom: 0.8rem;
+        font-size: 1.2em;
+
+        @include small-desktop {
+            font-size: 1.8em;
+        }
+    }
+
+    > .main {
+        margin-bottom: 1em;
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        min-height: 7.2em;
+
+        @include small-desktop {
+            min-height: 8.4em;
+        }
+
+        .content-wrapper {
+            width: 100%;
+
+            > .card-wrapper {
+            }
+        }
+
+        .alternativetext {
+            background-color: lighten($app-background, 10%);
+            padding: 0.2rem 0.6rem;
+            border-radius: 5px;
+            width: fit-content;
+            text-align: center;
+            margin: 1rem auto 0 auto;
+            overflow-wrap: break-word;
+
+            > .fa {
+                margin-left: 0.6rem;
+            }
+        }
+
+        > .confirm-button {
+            align-self: center;
+            margin-top: 1em;
+
+            &.non-selectable {
+                pointer-events: none;
+            }
+        }
+
+        @include small-desktop {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            justify-items: center;
+            align-items: center;
+
+            .content-wrapper {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+            }
+        }
+    }
+
+    .description {
+        align-self: flex-start;
+        margin-left: 0.6em;
+        margin-top: 0.6em;
+
+        @include small-desktop {
+            align-self: center;
+
+            &.mobile-only {
+                display: none;
+            }
+        }
+    }
+
+    .action-button-container {
+        width: 100%;
+        display: flex;
+        justify-content: center;
+
+        > .button {
+            box-shadow: 0 -0.2em 0.4em $color-black-50;
+        }
+
+        @include small-desktop {
+            > .button {
+                box-shadow: none;
+            }
+        }
+
+        .confirm-button {
+            position: absolute;
+            bottom: 0px;
+            left: 0px;
+            right: 0px;
+            border-radius: 0;
+            z-index: 30;
+            justify-content: center;
+        }
+
+        @include small-desktop {
+            margin-top: 0.5em;
+
+            .confirm-button {
+                position: static;
+                bottom: 0px;
+                border-radius: 6px;
+            }
+        }
+    }
+
+    .action-button {
+        width: 100%;
+        position: absolute;
+        bottom: 0px;
+        left: 0px;
+        right: 0px;
+        border-radius: 0;
+        z-index: 30;
+        justify-content: center;
+
+        @include small-desktop {
+            width: fit-content;
+            margin-top: 0.5em;
+
+            position: static;
+            bottom: 0px;
+            border-radius: 6px;
+        }
+    }
+
+    .action-button-empty-space {
+        opacity: 0;
+
+        .action-button {
+            position: static;
+        }
+
+        @include small-desktop {
+            display: none;
+            width: 0;
+            height: 0;
+            overflow: hidden;
+        }
+    }
+
+    > .selectable {
+        display: flex;
+        flex-direction: column;
+        cursor: pointer;
+        gap: 4px; // Life is hard.
+        width: 100%;
+
+        @include small-desktop {
+            gap: 0.5em;
+            display: flex;
+            flex-direction: row;
+            flex-wrap: wrap;
+            max-width: 108rem;
+            justify-content: center;
+        }
+
+        &.non-selectable {
+            cursor: default;
+
+            .card-wrapper {
+                cursor: default;
+
+                .popularvote-btn {
+                    cursor: pointer;
+
+                    &.no-action {
+                        cursor: default;
+                    }
+
+                    &.popular-vote-score {
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        flex-direction: row;
+                        flex-wrap: nowrap;
+
+                        > .popular-vote-score {
+                            font-size: 1rem;
+                            margin-left: 0.5em;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+.waiting {
+    .card-wrapper {
+        cursor: default !important;
+    }
+}
+
+.cardreading-settings {
+    margin: 0 auto;
+    width: fit-content;
+    white-space: nowrap;
+
+    .icon-and-text {
+        margin-right: 2rem;
+    }
+}

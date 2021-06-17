@@ -5,9 +5,5 @@ import { useTranslation } from "react-i18next";
 export const ErrorContainer = () => {
     const { t } = useTranslation();
 
-    return (
-        <div className="error-info">
-            {translateNotification("otherError", t)}
-        </div>
-    );
+    return <div>{translateNotification("otherError", t)}</div>;
 };

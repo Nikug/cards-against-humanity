@@ -1,32 +1,23 @@
-import {
-    isPlayerCardCzar,
-    isPlayerSpectatorOrJoining,
-} from "../../helpers/player-helpers";
+import { isPlayerCardCzar, isPlayerSpectatorOrJoining } from '../../helpers/player-helpers';
 
-import { BlackCardPickerContainer } from "../../components/card-picker/blackcardpickercontainer";
-import { CardReadingContainer } from "../../components/card-picker/cardreadingcontainer";
-import { ErrorContainer } from "./components/ErrorContainer";
-import { GAME_STATES } from "../../consts/gamestates";
-import { GameEndContainer } from "../../components/card-picker/gameendcontainer";
-import { LobbyContent } from "./phases/lobby/LobbyContent";
-import { NamePicker } from "./phases/lobby/NamePicker";
-import React from "react";
-import { RoundEndContainer } from "../../components/card-picker/roundendcontainer";
-import { WaitingCardPickerContainer } from "../../components/card-picker/waitincardpickercontainer";
-import { WhiteCardPickerContainer } from "../../components/card-picker/whitecardpickercontainer";
-import { WinnerCardPickerContainer } from "../../components/card-picker/winnercardpickercontainer";
-import { canStartGame } from "./helpers/canStartGame";
-import { getRandomSpinner } from "../../components/spinner";
-import { translateCommon } from "../../helpers/translation-helpers";
+import { BlackCardPickerContainer } from '../../components/card-picker/blackcardpickercontainer';
+import { CardReadingContainer } from '../../components/card-picker/cardreadingcontainer';
+import { ErrorContainer } from './components/ErrorContainer';
+import { GAME_STATES } from '../../consts/gamestates';
+import { GameEndContainer } from '../../components/card-picker/gameendcontainer';
+import { LobbyContent } from './phases/lobby/LobbyContent';
+import { NamePicker } from './phases/lobby/NamePicker';
+import React from 'react';
+import { RoundEndContainer } from '../../components/card-picker/roundendcontainer';
+import { WaitingCardPickerContainer } from '../../components/card-picker/waitincardpickercontainer';
+import { WhiteCardPickerContainer } from '../../components/card-picker/whitecardpickercontainer';
+import { WinnerCardPickerContainer } from '../../components/card-picker/winnercardpickercontainer';
+import { canStartGame } from './helpers/canStartGame';
+import { getRandomSpinner } from '../../components/spinner';
+import { translateCommon } from '../../helpers/translation-helpers';
+import { useGameContext } from '../../contexts/GameContext';
 
-export const getGamePhaseContent = ({
-    t,
-    callbacks: { setPlayerName, givePopularVote, togglePlayerMode, startGame },
-    game,
-    player,
-    blackCards,
-    popularVotedCardsIDs,
-}) => {
+export const getGamePhaseContent = ({ t, game, player, callbacks: { setPlayerName, givePopularVote, startGame }, blackCards, popularVotedCardsIDs }) => {
     const gameState = game?.state;
     const playerState = player?.state;
     const disableStartGameButton = !canStartGame(game);
@@ -37,9 +28,10 @@ export const getGamePhaseContent = ({
         return (
             <div
                 style={{
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    width: '30%',
                 }}
             >
                 {getRandomSpinner()}
@@ -47,44 +39,23 @@ export const getGamePhaseContent = ({
         );
     }
 
-    if (gameState !== "lobby" && playerState === "pickingName") {
+    if (gameState !== 'lobby' && playerState === 'pickingName') {
         return <NamePicker setPlayerName={setPlayerName} />;
     }
 
     switch (gameState) {
         case GAME_STATES.LOBBY:
-            return (
-                <LobbyContent
-                    game={game}
-                    player={player}
-                    setPlayerName={setPlayerName}
-                    startGame={startGame}
-                    disableStartGameButton={disableStartGameButton}
-                />
-            );
+            return <LobbyContent setPlayerName={setPlayerName} startGame={startGame} disableStartGameButton={disableStartGameButton} />;
         case GAME_STATES.PICKING_BLACK_CARD:
             if (isCardCzar) {
-                return (
-                    <BlackCardPickerContainer
-                        player={player}
-                        game={game}
-                        blackCards={blackCards}
-                    />
-                );
+                return <BlackCardPickerContainer blackCards={blackCards} />;
             }
-            const cardCzarName = game.players.filter(
-                (player) => player.isCardCzar
-            )[0].name;
+
+            const cardCzarName = game.players.filter((player) => player.isCardCzar)[0].name;
 
             return (
                 <WaitingCardPickerContainer
-                    player={player}
-                    game={game}
-                    alternativeText={translateCommon(
-                        "_player_isChoosingBlackCard",
-                        t,
-                        { player: cardCzarName }
-                    )}
+                    alternativeText={translateCommon('_player_isChoosingBlackCard', t, { player: cardCzarName })}
                     showMainCard={false}
                 />
             );
@@ -92,40 +63,21 @@ export const getGamePhaseContent = ({
             if (isCardCzar || isSpectator) {
                 return (
                     <WaitingCardPickerContainer
-                        player={player}
-                        game={game}
-                        alternativeText={`${translateCommon(
-                            "playersAreChoosingWhiteCards",
-                            t
-                        )}...`}
+                        alternativeText={`${translateCommon('playersAreChoosingWhiteCards', t)}...`}
                         showMainCard={true}
                         noBigMainCard={true}
                     />
                 );
             }
-            return <WhiteCardPickerContainer player={player} game={game} />;
+            return <WhiteCardPickerContainer />;
         case GAME_STATES.READING_CARDS:
-            return <CardReadingContainer player={player} game={game} />;
+            return <CardReadingContainer />;
         case GAME_STATES.SHOWING_CARDS:
-            return (
-                <WinnerCardPickerContainer
-                    player={player}
-                    game={game}
-                    givePopularVote={givePopularVote}
-                    popularVotedCardsIDs={popularVotedCardsIDs}
-                />
-            );
+            return <WinnerCardPickerContainer givePopularVote={givePopularVote} popularVotedCardsIDs={popularVotedCardsIDs} />;
         case GAME_STATES.ROUND_END:
-            return (
-                <RoundEndContainer
-                    player={player}
-                    game={game}
-                    givePopularVote={givePopularVote}
-                    popularVotedCardsIDs={popularVotedCardsIDs}
-                />
-            );
+            return <RoundEndContainer givePopularVote={givePopularVote} popularVotedCardsIDs={popularVotedCardsIDs} />;
         case GAME_STATES.GAME_OVER:
-            return <GameEndContainer player={player} game={game} />;
+            return <GameEndContainer />;
         default:
             return <ErrorContainer />;
     }

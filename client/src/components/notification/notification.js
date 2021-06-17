@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from "react";
-import Icon from "../icon";
+import React, { useState, useEffect } from 'react';
+import Icon from '../general/Icon';
 
 export const NOTIFICATION_TYPES = {
-    DEFAULT: "default",
-    ERROR: "error",
-    SUCCESS: "success",
+    DEFAULT: 'default',
+    ERROR: 'error',
+    SUCCESS: 'success',
 };
 
 export const Notification = ({ id, text, type, destroy }) => {
@@ -28,21 +28,21 @@ export const Notification = ({ id, text, type, destroy }) => {
     const mapIcon = (type) => {
         switch (type) {
             case NOTIFICATION_TYPES.DEFAULT:
-                return { name: "info", color: "blue", className: "type-icon" };
+                return { name: 'info', color: 'blue', className: 'type-icon' };
             case NOTIFICATION_TYPES.ERROR:
                 return {
-                    name: "warning",
-                    color: "red",
-                    className: "type-icon",
+                    name: 'warning',
+                    color: 'red',
+                    className: 'type-icon',
                 };
             case NOTIFICATION_TYPES.SUCCESS:
                 return {
-                    name: "check_circle",
-                    color: "green",
-                    className: "type-icon",
+                    name: 'check_circle',
+                    color: 'green',
+                    className: 'type-icon',
                 };
             default:
-                return { name: "info", color: "blue", className: "type-icon" };
+                return { name: 'info', color: 'blue', className: 'type-icon' };
         }
     };
 
@@ -53,7 +53,7 @@ export const Notification = ({ id, text, type, destroy }) => {
                 <span className="text">{text}</span>
             </div>
             <div className="dismiss-btn">
-                <Icon name={"highlight_off"} color={"white"} onClick={hide} />
+                <Icon name={'highlight_off'} color={'white'} onClick={hide} />
             </div>
         </div>
     );

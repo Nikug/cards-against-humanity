@@ -3,11 +3,11 @@ import {
     Setting,
 } from "../../../../components/settings/setting";
 
-import { ICON_CLASSNAMES } from "../../Game";
 import React from "react";
 import { translateCommon } from "../../../../helpers/translation-helpers";
 import { useTranslation } from "react-i18next";
 
+export const ICON_CLASSNAMES = "icon-margin-right";
 const NAME_CHAR_LIMIT = 50;
 
 export const NamePicker = ({ setPlayerName }) => {

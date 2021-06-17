@@ -1,7 +1,7 @@
-import { a, useTrail } from "react-spring";
+import { a, useTrail } from 'react-spring';
 
-import { Button } from "../../../../components/button";
-import React from "react";
+import { Button } from '../../../../components/general/Button.jsx';
+import React from 'react';
 
 export const ActionButtonRow = ({ buttons }) => {
     const renderedButtons = [];
