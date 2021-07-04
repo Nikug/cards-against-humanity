@@ -36,12 +36,12 @@ export const returnToLobby = async (
     game.client.state = game.stateMachine.state;
 
     const initialGame = resetGame(game);
-    // Set loading to db
-    initialGame.cards = await reloadAllCardPacks(game);
-    // Set not loading to db
+    initialGame.client.options.loadingCardPacks = true;
     await setGame(initialGame, client);
-
     updatePlayersIndividually(io, initialGame);
+
+    // Downloads all cardpacks in the background
+    reloadAllCardPacks(io, game.id, game.client.options.cardPacks);
 };
 
 export const validateHostAndReturnToLobby = async (

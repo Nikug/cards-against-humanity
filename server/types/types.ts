@@ -123,6 +123,7 @@ export interface Options {
     allowCardCzarPopularVote: boolean;
     popularVote: boolean;
     cardPacks: CardPack[];
+    loadingCardPacks: boolean;
     timers: Timers;
     password?: string;
 }

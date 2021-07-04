@@ -3,12 +3,14 @@ import type * as SocketIO from "socket.io";
 import type * as pg from "pg";
 
 import { ERROR_TYPES, NOTIFICATION_TYPES } from "../../consts/error";
+import { endTransaction, startTransaction } from "../db/database";
 import { getGame, setGame } from "../games/gameUtil";
 import { validateHost, validateState } from "../utilities/validate";
 
 import fetch from "node-fetch";
 import { sanitizeString } from "../utilities/sanitize";
 import { sendNotification } from "../utilities/socket";
+import { updatePlayersIndividually } from "../players/emitPlayers";
 
 const API_URL = "https://allbad.cards/api/pack/get?pack=";
 
@@ -193,8 +195,8 @@ export const removeCardPackFromGame = async (
     return game.client.options;
 };
 
-export const reloadAllCardPacks = async (game: CAH.Game) => {
-    const promises = game.client.options.cardPacks.map(
+export const reloadAllCardPacks = async (io: SocketIO.Server, gameId: string, cardPacks: CAH.CardPack[]) => {
+    const promises = cardPacks.map(
         async (cardPack: CAH.CardPack) => {
             const url = `${API_URL}${cardPack.id}`;
             const res = await fetch(url);
@@ -203,18 +205,27 @@ export const reloadAllCardPacks = async (game: CAH.Game) => {
         }
     );
 
+    const newCards: CAH.Cards = {
+        whiteCards: [],
+        blackCards: [],
+        sentBlackCards: [],
+        playedWhiteCards: [],
+        playedBlackCards: [],
+    };
+    const newCardPacks: CAH.CardPack[] = [];
+
     try {
         const responses = await Promise.all(promises);
         for (let i = 0, limit = responses.length; i < limit; i++) {
             const processed = processCardPack(responses[i]);
+            processed?.cardPack && newCardPacks.push(processed.cardPack);
             if (processed) {
-                game.client.options.cardPacks.push(processed.cardPack);
-                game.cards.whiteCards = [
-                    ...game.cards.whiteCards,
+                newCards.whiteCards = [
+                    ...newCards.whiteCards,
                     ...processed.whiteCards,
                 ];
-                game.cards.blackCards = [
-                    ...game.cards.blackCards,
+                newCards.blackCards = [
+                    ...newCards.blackCards,
                     ...processed.blackCards,
                 ];
             }
@@ -223,6 +234,17 @@ export const reloadAllCardPacks = async (game: CAH.Game) => {
         // Handle error
         // Send notification or something
     } finally {
-        return game.cards;
+        const client = process.env.USE_DB ? await startTransaction() : undefined;
+        const game = await getGame(gameId, client);
+        if(!game){
+            client && endTransaction(client);
+            return
+        }
+        game.cards = newCards;
+        game.client.options.cardPacks = newCardPacks;
+        game.client.options.loadingCardPacks = false;
+        await setGame(game, client);
+        client && endTransaction(client);
+        updatePlayersIndividually(io, game);
     }
 };
