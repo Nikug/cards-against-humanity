@@ -1,9 +1,9 @@
-import { OneRoundHistory } from "./OneRoundHistory";
-import React from "react";
-import { renderBlackCardwithWhiteCards } from "../../../../../components/card-picker/cardformathelpers.js/renderBlackcardWithWhiteCards";
-import { translateCommon } from "../../../../../helpers/translation-helpers";
-import { useGameContext } from "../../../../../contexts/GameContext";
-import { useTranslation } from "react-i18next";
+import { OneRoundHistory } from './OneRoundHistory';
+import React from 'react';
+import { renderBlackCardwithWhiteCards } from '../../../../../components/card-picker/cardformathelpers/renderBlackcardWithWhiteCards';
+import { translateCommon } from '../../../../../helpers/translation-helpers';
+import { useGameContext } from '../../../../../contexts/GameContext';
+import { useTranslation } from 'react-i18next';
 
 export const HistoryContainer = () => {
     const { t } = useTranslation();
@@ -35,18 +35,14 @@ export const HistoryContainer = () => {
             }
 
             if (cards.length > 0) {
-                roundContainers.push(
-                    <OneRoundHistory cards={cards} roundNumber={i + 1} />
-                );
+                roundContainers.push(<OneRoundHistory cards={cards} roundNumber={i + 1} />);
             }
         }
     }
 
     return (
         <div className="history-container">
-            <div className="title">
-                {translateCommon("previouslyPlayedCards", t)}:
-            </div>
+            <div className="title">{translateCommon('previouslyPlayedCards', t)}:</div>
             <div className="container">{roundContainers}</div>
         </div>
     );

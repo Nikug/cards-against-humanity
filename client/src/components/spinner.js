@@ -28,7 +28,7 @@ const SPINNER_TYPES = {
 
 const defaultProps = {
     color: "#268bd2",
-    size: "50%",
+    style: { width: "100%" },
 };
 
 export const Spinner = ({ type }) => {

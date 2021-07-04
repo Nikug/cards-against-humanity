@@ -1,19 +1,18 @@
-@import "./colors.scss";
-
 .App {
-    font-size: 30px;
-    padding: 0;
-    margin: 0;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+    overflow-y: auto;
+
+    background: $app-background;
+    color: $app-text;
+    scrollbar-color: lighten($app-background, 10%) $app-background;
+
     text-decoration: none;
     font-family: "Teko", sans-serif;
-    min-height: 100vh;
-    max-height: 100vh;
-    min-width: 100vw;
-    max-width: 100vw;
-    color: $app-text;
-    overflow-y: auto;
-    overflow-x: hidden;
-    scrollbar-color: lighten($app-background, 10%) $app-background;
+
+    padding: 0;
+    margin: 0;
 
     a {
         color: inherit;
@@ -22,6 +21,10 @@
 
     input {
         text-decoration: none;
+    }
+
+    button {
+        //font: inherit;
     }
 
     &.mono-background {
@@ -36,29 +39,14 @@
         background-position: center top;
     }
 
-    .basic-grid {
+    .content {
         height: 100vh;
-    }
-}
 
-.loading-page-spinner-container {
-    background: $app-background;
-    text-decoration: none;
-    font-family: "Teko", sans-serif;
-    font-size: 5em;
-    min-width: 100vw;
-    min-height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-direction: column;
-
-    .loading-text {
-        color: $app-text;
-        margin-bottom: 2em;
+        display: flex;
+        flex-direction: column;
     }
 
-    .loading-page-spinner {
-        width: 30%;
+    .main {
+        flex: 1;
     }
 }

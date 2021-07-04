@@ -1,55 +1,42 @@
-import { BUTTON_TYPES, Button } from "../button";
-import {
-    containsObjectWithMatchingField,
-    emptyFn,
-    isNullOrUndefined,
-} from "../../helpers/generalhelpers";
+import { BUTTON_TYPES, Button } from '../general/Button';
+import { containsObjectWithMatchingField, emptyFn, isNullOrUndefined } from '../../helpers/generalhelpers';
 
-import Card from "./card";
-import React from "react";
-import { isPlayerJoining } from "../../helpers/player-helpers";
-import { renderBlackCardwithWhiteCards } from "./cardformathelpers.js/renderBlackcardWithWhiteCards";
-import { translateCommon } from "../../helpers/translation-helpers";
-import { useGameContext } from "../../contexts/GameContext";
-import { useTranslation } from "react-i18next";
+import React from 'react';
+import { isPlayerJoining } from '../../helpers/player-helpers';
+import { renderBlackCardwithWhiteCards } from './cardformathelpers/renderBlackcardWithWhiteCards';
+import { translateCommon } from '../../helpers/translation-helpers';
+import { useGameContext } from '../../contexts/GameContext';
+import { useTranslation } from 'react-i18next';
+import { Card } from './card';
+import { classNames } from '../../helpers/classnames';
+import { CardPickerActionButton } from './components/CardPickerActionButton';
 
-/**
- * Everything given via props
- * @param {mainCard} Card The basic card object which is displayed at the top.
- * @param {selectableCards} Array The cards that can be selected. Will be render at the bottom half.
- * @param {selectedCards} Array Which cards have been selected.
- * @param {confirmedCards} Array Which cards have been confirmed.
- * @param {selectCard} function Callback function to select a card. Calls the function with the card obj.
- * @param {confirmCards} function Callback function to confirm all selected cards.
- * @param {pickingBlackCard} boolean Is the picked card black.
- */
-
-export function CardPicker(props) {
-    const {
-        alternativeText,
-        centerActionButton,
-        confirmCards,
-        confirmedCards = [],
-        customButtonIcons,
-        customButtonState,
-        customButtonTexts,
-        description,
-        disableConfirmButton,
-        givePopularVote,
-        isForInstructions,
-        mainCard,
-        noActionButton,
-        noBigMainCard,
-        pickingBlackCard,
-        popularVotedCardsIDs,
-        preRenderedCards = [],
-        selectableCards = [],
-        selectCard,
-        selectDisabled,
-        selectedCards = [],
-        showPopularVote,
-        topText,
-    } = props;
+export const CardPicker = ({
+    alternativeText,
+    centerActionButton,
+    confirmCards,
+    confirmedCards = [],
+    customButtonIcons,
+    customButtonState,
+    customButtonTexts,
+    description,
+    disableConfirmButton,
+    givePopularVote,
+    isForInstructions,
+    mainCard,
+    noActionButton,
+    noBigMainCard,
+    pickingBlackCard,
+    popularVotedCardsIDs,
+    preRenderedCards = [],
+    selectableCards = [],
+    selectCard,
+    selectDisabled,
+    selectedCards = [],
+    showPopularVote,
+    showPreviewTitle,
+    topText,
+}) => {
     const { t } = useTranslation();
     const { player } = useGameContext();
 
@@ -62,11 +49,7 @@ export function CardPicker(props) {
             let hasBeenPopularVoted = false;
 
             if (popularVotedCardsIDs?.length > 0) {
-                for (
-                    let i = 0, len = popularVotedCardsIDs.length;
-                    i < len;
-                    i++
-                ) {
+                for (let i = 0, len = popularVotedCardsIDs.length; i < len; i++) {
                     const votedIDs = popularVotedCardsIDs[i];
 
                     if (votedIDs[0] === card.id[0]) {
@@ -80,16 +63,8 @@ export function CardPicker(props) {
                 <Card
                     key={i}
                     card={card}
-                    selected={containsObjectWithMatchingField(
-                        card,
-                        selectedCards,
-                        "id"
-                    )}
-                    confirmed={containsObjectWithMatchingField(
-                        card,
-                        confirmedCards,
-                        "id"
-                    )}
+                    selected={containsObjectWithMatchingField(card, selectedCards, 'id')}
+                    confirmed={containsObjectWithMatchingField(card, confirmedCards, 'id')}
                     selectCard={selectCard}
                     showPopularVote={showPopularVote && !card.isOwn}
                     givePopularVote={givePopularVote}
@@ -112,22 +87,17 @@ export function CardPicker(props) {
                             : confirmedCards.length > 0
                             ? confirmedCards[0]
                             : {
-                                  text: "",
+                                  text: '',
                                   whiteCardsToPlay: 0,
                               }
                     }
                     bigCard={!noBigMainCard}
-                    key={"mainCard"}
+                    key={'mainCard'}
                 />
             </div>
         );
     } else {
-        let selectedWhiteCards =
-            selectedCards.length > 0
-                ? selectedCards.slice()
-                : confirmedCards.length > 0
-                ? confirmedCards.slice()
-                : [];
+        let selectedWhiteCards = selectedCards.length > 0 ? selectedCards.slice() : confirmedCards.length > 0 ? confirmedCards.slice() : [];
         const content = [];
         if (mainCard) {
             content.push(
@@ -143,17 +113,14 @@ export function CardPicker(props) {
             content.push(
                 <div className="alternativetext" key="alternativeText">
                     {alternativeText}
-                    <i
-                        className="fa fa-spinner fa-spin"
-                        style={{ fontSize: "24px" }}
-                    />
+                    <i className="fa fa-spinner fa-spin" style={{ fontSize: '24px' }} />
                 </div>
             );
         }
         if (isPlayerJoining(player)) {
             content.push(
                 <div className="alternativetext" key="joining-text">
-                    {translateCommon("youGetToPlayOnNextRound", t)}!
+                    {translateCommon('youGetToPlayOnNextRound', t)}!
                 </div>
             );
         }
@@ -166,11 +133,8 @@ export function CardPicker(props) {
     }
 
     const cardsAreSelected = confirmedCards.length > 0;
-    let buttonTexts = [
-        translateCommon("choose", t),
-        translateCommon("cardChosen", t),
-    ];
-    let buttonIcons = ["send", "done"];
+    let buttonTexts = [translateCommon('choose', t), translateCommon('cardChosen', t)];
+    let buttonIcons = ['send', 'done'];
 
     if (!isNullOrUndefined(customButtonTexts) && customButtonTexts.length > 0) {
         for (let i = 0, len = buttonTexts.length; i < len; i++) {
@@ -190,70 +154,64 @@ export function CardPicker(props) {
         buttonIcons = customButtonIcons;
     }
 
+    const buttonText = !isNullOrUndefined(customButtonState) ? buttonTexts[customButtonState] : cardsAreSelected ? buttonTexts[1] : buttonTexts[0];
+    const buttonType = !isNullOrUndefined(customButtonState)
+        ? customButtonState === 0
+            ? BUTTON_TYPES.PRIMARY
+            : BUTTON_TYPES.GREEN
+        : cardsAreSelected
+        ? BUTTON_TYPES.GREEN
+        : BUTTON_TYPES.PRIMARY;
+    const buttonIcon = !isNullOrUndefined(customButtonState) ? buttonIcons[customButtonState] : cardsAreSelected ? buttonIcons[1] : buttonIcons[0];
+    const isButtonDisabled = !isNullOrUndefined(customButtonState) ? customButtonState === 1 : hasAlternativeText || disableConfirmButton;
+    const hasActionButton = !noActionButton;
+
     return (
-        <div
-            className={`cardpicker-wrapper ${
-                isForInstructions ? "instructions-cardpicker" : ""
-            }`}
-        >
+        <div className={classNames('cardpicker-wrapper', { 'instructions-cardpicker': isForInstructions })}>
             {topText && <div className="toptext">{topText}</div>}
             <div className="main">
+                {showPreviewTitle && <div className="description mobile-only">{translateCommon('preview', t)}</div>}
                 {!centerActionButton && <span />}
                 {mainContent}
-                {!noActionButton && (
-                    <Button
-                        additionalClassname={`confirm-button ${
-                            (
-                                !isNullOrUndefined(customButtonState)
-                                    ? customButtonState === 1
-                                    : cardsAreSelected
-                            )
-                                ? "non-selectable"
-                                : ""
-                        } ${selectDisabled ? "disabled" : ""}`}
-                        text={
-                            !isNullOrUndefined(customButtonState)
-                                ? buttonTexts[customButtonState]
-                                : cardsAreSelected
-                                ? buttonTexts[1]
-                                : buttonTexts[0]
-                        }
-                        callback={() => confirmCards()}
-                        type={
-                            !isNullOrUndefined(customButtonState)
-                                ? customButtonState === 0
-                                    ? BUTTON_TYPES.PRIMARY
-                                    : BUTTON_TYPES.GREEN
-                                : cardsAreSelected
-                                ? BUTTON_TYPES.GREEN
-                                : BUTTON_TYPES.PRIMARY
-                        }
-                        icon={
-                            !isNullOrUndefined(customButtonState)
-                                ? buttonIcons[customButtonState]
-                                : cardsAreSelected
-                                ? buttonIcons[1]
-                                : buttonIcons[0]
-                        }
-                        iconPosition="after"
-                        disabled={
-                            !isNullOrUndefined(customButtonState)
-                                ? customButtonState === 1
-                                : hasAlternativeText || disableConfirmButton
-                        }
-                    />
+                {hasActionButton && (
+                    <div className={'action-button-container'}>
+                        <CardPickerActionButton
+                            additionalClassname={classNames('confirm-button', {
+                                'non-selectable': !isNullOrUndefined(customButtonState) ? customButtonState === 1 : cardsAreSelected,
+                                disabled: selectDisabled,
+                            })}
+                            text={buttonText}
+                            callback={confirmCards}
+                            type={buttonType}
+                            icon={buttonIcon}
+                            iconPosition="after"
+                            disabled={isButtonDisabled}
+                        />
+                    </div>
                 )}
             </div>
             <div className="description">{description}</div>
-            <div
-                className={`selectable ${
-                    cardsAreSelected || selectCard === emptyFn
-                        ? "non-selectable"
-                        : ""
-                }`}
-            >
-                {renderedCards}
-            </div>
+            <div className={classNames('selectable', { 'non-selectable': cardsAreSelected || selectCard === emptyFn })}>{renderedCards}</div>
+            {hasActionButton && (
+                <div
+                    // This is here to occupy the same emount of space as the StartGameButton would
+                    // (which is position absolute and at the bottom of the screen)
+                    className="action-button-empty-space"
+                >
+                    <CardPickerActionButton
+                        additionalClassname={classNames('confirm-button', {
+                            'non-selectable': !isNullOrUndefined(customButtonState) ? customButtonState === 1 : cardsAreSelected,
+                            disabled: selectDisabled,
+                        })}
+                        text={buttonText}
+                        callback={confirmCards}
+                        type={buttonType}
+                        icon={buttonIcon}
+                        iconPosition="after"
+                        disabled={isButtonDisabled}
+                    />
+                </div>
+            )}
         </div>
     );
-}
+};

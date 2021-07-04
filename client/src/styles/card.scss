@@ -1,40 +1,62 @@
-@import "./colors.scss";
-
 .card-wrapper {
-    font-family: "Ubuntu", sans-serif;
-    font-size: 1.3rem;
-    width: 20rem;
-    height: fit-content;
-    min-height: 10rem;
+    --card-width: 100%;
+    --card-height: 2em;
+
+    @include small-desktop {
+        --card-width: 16em;
+        --card-height: 9.2em; // Fits 3 lines of text, I guess?
+    }
+
+    font-family: 'Ubuntu', sans-serif;
+    font-size: 0.75rem;
     text-align: left;
-    border-radius: 6px;
-    padding: 0.3rem;
+    line-height: 1.6em;
+
+    display: flex;
     justify-content: center;
     align-content: center;
-    display: flex;
-    line-height: 1.6em;
+
     box-sizing: border-box;
 
-    .card {
-        box-sizing: border-box;
-        width: 20rem;
-        height: fit-content;
-        min-height: 10rem;
-        padding: 0.5rem 0.8rem;
-        text-align: left;
+    width: var(--card-width);
+    min-height: var(--card-height);
+    height: fit-content;
+
+    padding: 0.25em;
+
+    @include small-desktop {
         border-radius: 6px;
+    }
+
+    .card {
+        text-align: left;
+
         display: flex;
         flex-direction: column;
         justify-content: space-between;
+
+        box-sizing: border-box;
+
+        width: 100%;
+        height: 100%;
+        min-height: var(--card-height);
+
+        padding: 0.8em 1em;
+
+        border-radius: 6px;
+
+        > .text {
+            margin: auto 0;
+        }
 
         &.white {
             background-color: $white-card-background;
             color: $white-card-text;
 
-            > .text {
-                :nth-child(n + 1) {
-                    margin-top: 0.8rem;
-                }
+            > .text > *:not(:first-child) {
+                border-top: 2px solid $color-light-grey;
+                padding-top: 0.25em;
+                margin-top: 0.25em;
             }
         }
 
@@ -44,35 +66,35 @@
         }
 
         > .text {
-            margin: auto 0;
             overflow-wrap: break-word;
 
             .blank {
-                //text-decoration: underline;
                 border-bottom: 1px solid $black-card-text;
             }
         }
 
         > .footer {
-            font-size: 0.6rem;
-            text-align: right;
-            line-height: normal;
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-end;
-            margin-top: 0.2rem;
+            display: none; // Hide card footer from mobile.
 
-            > .cardpackid {
-                height: 0.6rem;
+            @include small-desktop {
+                display: flex;
             }
 
+            font-size: 0.4rem;
+            text-align: right;
+            line-height: normal;
+            justify-content: space-between;
+            align-items: flex-end;
+            padding-top: 1em;
+
             > .draw-and-play {
-                font-size: 0.8rem;
+                font-size: 0.6rem;
             }
         }
 
         .popularvote-btn {
             cursor: pointer;
+            font-size: 2.5em;
 
             &.no-action {
                 cursor: default;
@@ -86,18 +108,16 @@
                 flex-wrap: nowrap;
 
                 > .popular-vote-score {
-                    font-size: 1.2rem;
-                    margin-left: 0.5rem;
+                    font-size: 2em;
+                    margin-left: 0.5em;
                 }
             }
         }
     }
 
     &.big-card {
-        width: 40rem;
-
-        .card {
-            width: 40rem;
+        @include small-desktop {
+            width: 32em;
         }
     }
 
@@ -115,114 +135,5 @@
 
     &.confirmed {
         background-color: $card-confimerd;
-    }
-}
-
-.cardpicker-wrapper {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-
-    > .toptext {
-        margin-bottom: 0.8rem;
-        font-size: 3rem;
-    }
-
-    > .main {
-        margin-bottom: 3rem;
-        display: grid;
-        grid-template-columns: 1fr 1fr 1fr;
-        justify-items: center;
-        align-items: center;
-
-        .content-wrapper {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-
-        .alternativetext {
-            background-color: lighten($app-background, 10%);
-            padding: 0.2rem 0.6rem;
-            border-radius: 5px;
-            width: fit-content;
-            text-align: center;
-            margin: 1rem auto 0 auto;
-
-            > .fa {
-                margin-left: 0.6rem;
-            }
-        }
-
-        > .confirm-button {
-            align-self: center;
-            margin: 0 3rem;
-
-            &.non-selectable {
-                pointer-events: none;
-            }
-        }
-    }
-
-    > .selectable {
-        display: flex;
-        flex-direction: row;
-        flex-wrap: wrap;
-        max-width: 108rem;
-        justify-content: center;
-
-        .card-wrapper {
-            margin: 0.5rem 0.5rem;
-            cursor: pointer;
-        }
-
-        .description {
-            text-align: left;
-        }
-
-        &.non-selectable {
-            cursor: default;
-
-            .card-wrapper {
-                cursor: default;
-
-                .popularvote-btn {
-                    cursor: pointer;
-
-                    &.no-action {
-                        cursor: default;
-                    }
-
-                    &.popular-vote-score {
-                        display: flex;
-                        align-items: center;
-                        justify-content: center;
-                        flex-direction: row;
-                        flex-wrap: nowrap;
-
-                        > .popular-vote-score {
-                            font-size: 1.2rem;
-                            margin-left: 0.5rem;
-                        }
-                    }
-                }
-            }
-        }
-    }
-}
-
-.waiting {
-    .card-wrapper {
-        cursor: default !important;
-    }
-}
-
-.cardreading-settings {
-    margin: 0 auto;
-    width: fit-content;
-    white-space: nowrap;
-
-    .icon-and-text {
-        margin-right: 2rem;
     }
 }

@@ -3,7 +3,7 @@
     height: 80%;
 
     .title {
-        font-size: 2rem;
+        font-size: 1.8rem;
     }
     .container {
         display: flex;
@@ -12,7 +12,7 @@
 
     .one-round-history {
         .title {
-            font-size: 1.8rem;
+            font-size: 1.4rem;
         }
         .cards-container {
             display: flex;
@@ -20,7 +20,7 @@
             flex-wrap: wrap;
 
             .card-wrapper {
-                margin: 0.5rem 0.5rem;
+                margin: 0.5em 0.5em;
             }
         }
     }

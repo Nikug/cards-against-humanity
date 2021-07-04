@@ -1,9 +1,37 @@
+.header-button.language .tippy-box {
+    min-width: 0;
+}
+
 .language-selector-wrapper {
     padding: 0.2rem;
     width: fit-content;
-   
+
+    &:hover {
+        text-shadow: none;
+    }
+
     .title {
         white-space: nowrap;
+        margin-bottom: 0.4em;
+    }
+
+    .radio-buttons {
+        width: 100%;
+    }
+
+    .language-selector-radio-button-row {
+        width: 100%;
+        display: flex;
+
+        > .label {
+            margin-left: 0.4em;
+            display: flex;
+            align-items: center;
+        }
+
+        &:hover {
+            @include text-shadow;
+        }
     }
 }
 
