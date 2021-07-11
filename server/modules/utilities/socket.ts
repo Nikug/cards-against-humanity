@@ -53,11 +53,8 @@ export const sendNotification = (
 };
 
 export const removeDisconnectedSockets = (
-    io: SocketIO.Server,
-    socketIDs: string[]
+    socketIDs: string[],
+    socketID: string
 ) => {
-    return socketIDs.filter(
-        // @ts-ignore
-        (socket) => io.sockets[socket] !== undefined
-    );
+    return socketIDs.filter((socket) => socket !== socketID);
 };

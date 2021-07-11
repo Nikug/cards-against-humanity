@@ -1,27 +1,27 @@
+import './index.scss';
+
+import { LOCAL_STORAGE_FIELDS, getItemFromLocalStorage, removeItemFromLocalStorage, setItemToLocalStorage } from './helpers/localstoragehelpers';
 import React, { useEffect, useState } from 'react';
 import { Route, Switch, useHistory, useLocation } from 'react-router-dom';
 import { deleteCookie, setCookie } from './helpers/cookies';
-
-import './index.scss';
 
 import { Button } from './components/general/Button';
 import { Footer } from './components/footer/Footer';
 import { Game } from './layouts/Game/Game';
 import { GameContextProvider } from './contexts/GameContext';
-import { getItemFromLocalStorage, LOCAL_STORAGE_FIELDS, removeItemFromLocalStorage, setItemToLocalStorage } from './helpers/localstoragehelpers';
 import { Header } from './components/header';
 import { Home } from './layouts/Home/Home';
 import { Instructions } from './layouts/Instructions';
-import { isNullOrUndefined } from './helpers/generalhelpers';
 import { Notification } from './components/notification/notification';
 import { NotificationContextProvider } from './contexts/NotificationContext';
+import { WholePageLoader } from './components/WholePageLoader';
+import axios from 'axios';
+import i18n from './i18n';
+import { isNullOrUndefined } from './helpers/generalhelpers';
 import { socket } from './components/sockets/socket';
 import { socketOn } from './helpers/communicationhelpers';
 import { translateCommon } from './helpers/translation-helpers';
 import { useTranslation } from 'react-i18next';
-import { WholePageLoader } from './components/WholePageLoader';
-import axios from 'axios';
-import i18n from './i18n';
 
 export const App = () => {
     /*****************************************************************/ // Purely for hiding dev things from the production.
@@ -157,7 +157,7 @@ export const App = () => {
             socket.off('disconnect');
             socket.off('notification');
         };
-    }, [notificationParams, fireNotification, notificationCount]);
+    }, [notificationParams, fireNotification, notificationCount, history]);
 
     useEffect(() => {
         const playerID = getItemFromLocalStorage(LOCAL_STORAGE_FIELDS.PLAYER_ID);

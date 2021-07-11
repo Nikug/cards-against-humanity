@@ -7,7 +7,9 @@ export const formatToDB = (game: Game) => {
     return newGame;
 };
 
-export const restoreFromDB = (result: postgres.QueryResult) => {
+export const restoreFromDB = (
+    result: postgres.QueryResult
+): Game | undefined => {
     if (result.rows.length < 1) {
         return undefined;
     }

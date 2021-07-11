@@ -140,7 +140,7 @@ const addPlayerToGame = async (
                 NOTIFICATION_TYPES.default,
                 { socket: socket }
             );
-            socket.disconnect();
+            socket.disconnect(true);
             return;
         }
     } else {
