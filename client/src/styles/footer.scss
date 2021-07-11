@@ -1,24 +1,29 @@
-@import "./colors.scss";
-
-.copyrights {
-    color: $copyright-text;
-    font-size: 0.6em;
-    user-select: none;
-}
-
 .music-player {
-    color: $music-player;
-    color: $copyright-text;
-    font-size: 0.6em;
+    user-select: auto;
+    display: flex;
 }
 
 .main-footer {
-    position: fixed;
     box-sizing: border-box;
     width: 100%;
-    padding: 0 1.6rem 0 0;
+    padding: 0 0.5em;
     bottom: 0;
     display: flex;
-    justify-content: space-between;
+    flex-shrink: 0;
     align-items: flex-end;
+
+    > * {
+        width: 100%;
+        color: $copyright-text;
+        user-select: none;
+        text-align: center;
+    }
+
+    :first-child {
+        text-align: start;
+    }
+
+    :last-child {
+        text-align: end;
+    }
 }

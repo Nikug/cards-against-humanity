@@ -1,42 +1,87 @@
-@import "./colors.scss";
-
 .game-settings-container {
-    font-size: 1.7rem;
     color: $settings-text;
     background: $settings-container-background;
+
+    padding-bottom: 0.4em;
     border-radius: 2px;
 
     cursor: default;
     user-select: none;
 
     display: flex;
-    flex-grow: 3;
     flex-direction: column;
     flex-wrap: nowrap;
+    flex-grow: 1;
 
-    padding: 1.5rem 2rem 2rem 2rem;
-    margin: 0 auto 2rem auto;
-    max-width: 80rem;
+    @include small-desktop {
+        padding: 1.5rem 2rem 2rem 2rem;
+        max-width: 60em;
+    }
 
-    overflow-y: auto;
+    .start-game-button-container {
+        width: 100%;
+        display: flex;
+        justify-content: flex-end;
+
+        > .button {
+            box-shadow: 0 -0.2em 0.4em $color-black-50;
+        }
+
+        @include small-desktop {
+            > .button {
+                box-shadow: none;
+            }
+        }
+
+        .big-btn {
+            position: fixed;
+            bottom: 0px;
+            left: 0px;
+            right: 0px;
+            border-radius: 0;
+            z-index: 30;
+            justify-content: center;
+        }
+
+        @include small-desktop {
+            margin-top: 0.5em;
+
+            .big-btn {
+                position: static;
+                bottom: 0px;
+                border-radius: 6px;
+            }
+        }
+    }
+
+    .start-game-button-empty-space {
+        opacity: 0;
+
+        @include small-desktop {
+            width: 0;
+            height: 0;
+            overflow: hidden;
+        }
+    }
 
     .game-settings-title {
-        font-size: 2.5rem;
-        padding: 0;
+        font-size: 1.4rem;
+        padding: 0 0.6rem;
         margin: 0;
         margin-top: 0.5rem;
+
+        @include small-desktop {
+            padding: 0;
+        }
     }
 
     &.disabled {
         user-select: none;
         cursor: default;
 
-        //color: $settings-text-disabled;
-
         .setting {
             &:hover {
                 text-shadow: none;
-                //color: $settings-text-disabled;
                 background-color: $setting-background;
             }
 
@@ -60,12 +105,7 @@
 
                 .button {
                     pointer-events: none;
-                    background: linear-gradient(
-                            180deg,
-                            darken($button-shadow, 40%),
-                            darken($button-background, 40%)
-                        )
-                        $button-background;
+                    background: linear-gradient(180deg, darken($button-shadow, 40%), darken($button-background, 40%)) $button-background;
                     border: 1px solid darken($settings-text-disabled, 10%);
                     color: $settings-text-disabled;
                 }
@@ -83,83 +123,54 @@
 
 .settings-block {
     width: 100%;
+    box-sizing: border-box;
     display: flex;
     flex-direction: column;
-    padding-right: 2rem;
-    padding-left: 0;
-    padding-bottom: 1rem;
-
-    &.divider {
-        padding-right: 0;
-        padding-left: 2rem;
-        border-left: 4px solid $settings-divider;
-    }
 }
 
 .setting {
     display: flex;
     flex-direction: row;
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
     justify-content: space-between;
+    align-items: center;
+
     padding: 0.2rem 0.8rem;
     margin: 0.2rem 0;
     border-radius: 2px;
     background-color: $setting-background;
 
+    &.text-control {
+        flex-wrap: wrap;
+    }
+
     .icon-and-text {
-        max-width: 80%;
         align-items: center;
-        line-height: 1.8rem;
+        width: fit-content;
+        display: flex;
+        flex-grow: 0;
+        flex-shrink: 1;
+        margin-right: 1em;
     }
 
     .control {
         display: flex;
+
+        flex-grow: 1;
         margin: auto 0;
         align-items: center;
-    }
+        justify-content: flex-end;
 
-    .text-control {
-        display: flex;
-        flex-direction: row;
+        width: fit-content;
+
+        > .text-control {
+            flex-grow: 1;
+        }
     }
 
     &:hover {
         background-color: $setting-background-hover;
         color: $header-button-text-hover;
-        /*
-        text-shadow: -2px -2px $settings-item-hover-text-shadow,
-            -2px -1.5px $settings-item-hover-text-shadow,
-            -2px -1px $settings-item-hover-text-shadow,
-            -2px -0.5px $settings-item-hover-text-shadow,
-            -2px 0px $settings-item-hover-text-shadow,
-            -2px 0.5px $settings-item-hover-text-shadow,
-            -2px 1px $settings-item-hover-text-shadow,
-            -2px 1.5px $settings-item-hover-text-shadow,
-            -2px 2px $settings-item-hover-text-shadow,
-            -1.5px 2px $settings-item-hover-text-shadow,
-            -1px 2px $settings-item-hover-text-shadow,
-            -0.5px 2px $settings-item-hover-text-shadow,
-            0px 2px $settings-item-hover-text-shadow,
-            0.5px 2px $settings-item-hover-text-shadow,
-            1px 2px $settings-item-hover-text-shadow,
-            1.5px 2px $settings-item-hover-text-shadow,
-            2px 2px $settings-item-hover-text-shadow,
-            2px 1.5px $settings-item-hover-text-shadow,
-            2px 1px $settings-item-hover-text-shadow,
-            2px 0.5px $settings-item-hover-text-shadow,
-            2px 0px $settings-item-hover-text-shadow,
-            2px -0.5px $settings-item-hover-text-shadow,
-            2px -1px $settings-item-hover-text-shadow,
-            2px -1.5px $settings-item-hover-text-shadow,
-            2px -2px $settings-item-hover-text-shadow,
-            1.5px -2px $settings-item-hover-text-shadow,
-            1px -2px $settings-item-hover-text-shadow,
-            0.5px -2px $settings-item-hover-text-shadow,
-            0px -2px $settings-item-hover-text-shadow,
-            -0.5px -2px $settings-item-hover-text-shadow,
-            -1px -2px $settings-item-hover-text-shadow,
-            -1.5px -2px $settings-item-hover-text-shadow;
-            */
 
         .control {
             text-shadow: none;
@@ -168,8 +179,15 @@
 }
 
 .imported-card-packs {
-    padding-right: 0;
-    margin-top: 0.8rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-end;
+
+    margin-top: 0.6em;
+
+    max-height: 10em;
+    overflow-y: auto;
 }
 
 .icon-and-text {
@@ -177,7 +195,7 @@
     flex-direction: row;
 
     .icon-margin-right {
-        margin-right: 1rem;
+        margin-right: 0.6em;
         color: $settings-icon;
         text-shadow: none;
 
@@ -190,34 +208,7 @@
 .button-icon {
     &.active {
         color: $settings-control;
-        text-shadow: -2px -2px $settings-control-shadow,
-            -2px -1.5px $settings-control-shadow,
-            -2px -1px $settings-control-shadow,
-            -2px -0.5px $settings-control-shadow,
-            -2px 0px $settings-control-shadow,
-            -2px 0.5px $settings-control-shadow,
-            -2px 1px $settings-control-shadow,
-            -2px 1.5px $settings-control-shadow,
-            -2px 2px $settings-control-shadow,
-            -1.5px 2px $settings-control-shadow,
-            -1px 2px $settings-control-shadow,
-            -0.5px 2px $settings-control-shadow,
-            0px 2px $settings-control-shadow, 0.5px 2px $settings-control-shadow,
-            1px 2px $settings-control-shadow, 1.5px 2px $settings-control-shadow,
-            2px 2px $settings-control-shadow, 2px 1.5px $settings-control-shadow,
-            2px 1px $settings-control-shadow, 2px 0.5px $settings-control-shadow,
-            2px 0px $settings-control-shadow,
-            2px -0.5px $settings-control-shadow,
-            2px -1px $settings-control-shadow,
-            2px -1.5px $settings-control-shadow,
-            2px -2px $settings-control-shadow,
-            1.5px -2px $settings-control-shadow,
-            1px -2px $settings-control-shadow,
-            0.5px -2px $settings-control-shadow,
-            0px -2px $settings-control-shadow,
-            -0.5px -2px $settings-control-shadow,
-            -1px -2px $settings-control-shadow,
-            -1.5px -2px $settings-control-shadow;
+        @include text-shadow;
     }
 
     &.disabled {
@@ -250,9 +241,7 @@
     z-index: 6;
 
     > .setting {
-        box-sizing: border-box;
-        border-left: 5px solid $settings-icon;
-        width: 90%;
+        @include left-side-border;
 
         &.title {
             cursor: pointer;

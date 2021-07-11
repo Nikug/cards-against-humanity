@@ -11,7 +11,7 @@ i18n
     // init i18next
     // for all options read: https://www.i18next.com/overview/configuration-options
     .init({
-        ns: ["common", "notification"],
+        ns: ["common", "notification", "underwork"],
         defaultNs: "common",
         react: {
             useSuspense: true,

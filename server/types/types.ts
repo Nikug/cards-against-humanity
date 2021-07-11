@@ -123,6 +123,7 @@ export interface Options {
     allowCardCzarPopularVote: boolean;
     popularVote: boolean;
     cardPacks: CardPack[];
+    loadingCardPacks: boolean;
     timers: Timers;
     password?: string;
 }
@@ -157,7 +158,7 @@ export interface Timers {
 export interface CardPack {
     id: string;
     name: string;
-    isNSFW: boolean;
+    isNsfw: boolean;
     whiteCards: number;
     blackCards: number;
 }
@@ -166,6 +167,45 @@ export interface Notification {
     text: string;
     type?: NotificationType;
     time?: number; // seconds
+}
+
+export interface ApiBlackCard {
+    pick: number;
+    draw: number;
+    content: string;
+}
+
+export interface ApiCardPack {
+    message?: string;
+    _id: string;
+    id: string;
+    categories: string[];
+    dateCreated: string;
+    dateUpdated: string;
+    definition: {
+        white: string[];
+        black: ApiBlackCard[];
+        family: boolean;
+        pack: {
+            name: string;
+            id: string;
+        };
+        quantity: {
+            white: number;
+            black: number;
+            total: number;
+        };
+        levelReq: string;
+        packType: string;
+        retired: boolean;
+    };
+    favorites: number;
+    isNsfw: boolean;
+    isPublic: boolean;
+    owner: string;
+    packId: string;
+    oldOwner: string;
+    buildVersion: number;
 }
 
 export type GameState =

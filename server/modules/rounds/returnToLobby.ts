@@ -7,6 +7,7 @@ import { getGame, setGame } from "../games/gameUtil";
 
 import { gameOptions } from "../../consts/gameSettings";
 import { getActivePlayers } from "../players/playerUtil";
+import { reloadAllCardPacks } from "../cards/cardpack";
 import { resetGame } from "../games/endGame";
 import { sendNotification } from "../utilities/socket";
 import { updatePlayersIndividually } from "../players/emitPlayers";
@@ -35,9 +36,12 @@ export const returnToLobby = async (
     game.client.state = game.stateMachine.state;
 
     const initialGame = resetGame(game);
+    initialGame.client.options.loadingCardPacks = true;
     await setGame(initialGame, client);
-
     updatePlayersIndividually(io, initialGame);
+
+    // Downloads all cardpacks in the background
+    reloadAllCardPacks(io, game.id, game.client.options.cardPacks);
 };
 
 export const validateHostAndReturnToLobby = async (

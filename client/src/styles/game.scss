@@ -1,6 +1,23 @@
-.info {
-    margin: 0rem 1.5rem 0 1.5rem;
+.game-wrapper-1 {
+    margin: 0;
+    padding: 0;
 
+    @include small-desktop {
+        padding: 0 1em;
+        padding-top: 1em;
+    }
+}
+.game-wrapper-2 {
+    margin: 0;
+    padding: 0;
+
+    @include small-desktop {
+        padding: 0 1em;
+        padding-bottom: 1em;
+    }
+}
+
+.info {
     &.center {
         margin-right: auto;
         margin-left: auto;
@@ -13,41 +30,39 @@
     }
 }
 
-.lobby-container {
-    height: 44rem;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    margin-top: 4rem;
+.lobby-container-grid {
+    @include small-desktop {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        grid-template-rows: auto auto;
+        gap: 1em;
 
-    .nick-and-start-container {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        justify-self: center;
-        max-width: 80rem;
-
-        .nickname-selector {
-            width: 50%;
-            margin-right: 8rem;
+        > * {
+            justify-self: stretch;
         }
-    }
-
-    .info {
-        margin-top: 0;
-        margin-bottom: 0;
     }
 }
 
-.error-info {
-    margin: 2rem;
-    font-size: 3rem;
+.game-wrapper-3 {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    margin-top: 0.4em;
+
+    @include small-desktop {
+        margin-top: 1em;
+        width: 100%;
+    }
 }
 
 .actions-wrapper {
-    display: flex;
-    flex-direction: row;
+    display: none;
+
+    @include small-desktop {
+        display: flex;
+    }
     height: 0;
+    flex-direction: row;
     overflow: visible;
     margin-top: 0.5rem;
 
@@ -67,7 +82,7 @@
                 justify-content: flex-end;
                 width: 100%;
                 padding: 0.2em 0.3em;
-                font-size: 0.7em;
+                font-size: 0.8em;
             }
 
             .spectator-indicator {
@@ -78,7 +93,7 @@
                 justify-content: flex-start;
                 width: 100%;
                 padding: 0.2em 0.5em;
-                font-size: 0.7em;
+                font-size: 0.8em;
             }
         }
     }
@@ -92,27 +107,27 @@
 }
 
 .no-control {
-    align-self:flex-start;
+    align-self: flex-start;
 }
 
 .menu-anchor {
     height: 0;
+    width: 0;
     position: relative;
     z-index: 5;
     z-index: 20;
 
     .menu-container {
         position: relative;
-        padding: 0.5em;
+        //padding: 0.5em;
         background-color: rgba(20, 20, 20, 0.829);
-        margin: 0.2em 0;
+        //margin: 0.2em 0;
         border-radius: 2px;
         box-shadow: 10px 10px 3px #0000008f;
         display: flex;
         flex-direction: column;
         overflow: hidden;
-        width: fit-content;
-        width: -moz-fit-content;
+        height: 0;
     }
 }
 

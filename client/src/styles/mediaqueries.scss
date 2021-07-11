@@ -1,0 +1,31 @@
+// Smallest amount of pixels to make the client use teh device.
+
+$mobile: 320px;
+$tablet: 480px;
+$small-desktop: 770px;
+$medium-desktop: 1025px;
+$large-desktop: 1200px;
+
+@mixin mobile {
+    @media (min-width: #{$mobile}) {
+        @content;
+    }
+}
+
+@mixin tablet {
+    @media (min-width: #{$tablet}) {
+        @content;
+    }
+}
+
+@mixin small-desktop {
+    @media (min-width: #{$small-desktop}) {
+        @content;
+    }
+}
+
+@mixin medium-desktop {
+    @media (min-width: #{$medium-desktop}) {
+        @content;
+    }
+}

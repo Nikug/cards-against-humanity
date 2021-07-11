@@ -1,0 +1,18 @@
+// Tooltip
+.tippy-box[data-theme~='tooltip'] {
+    background-color: $tooltip-background;
+    color: $tooltip-text;
+}
+
+.tippy-box[data-theme~='tooltip'][data-placement^='top'] > .tippy-arrow::before {
+    border-top-color: $tooltip-background;
+}
+.tippy-box[data-theme~='tooltip'][data-placement^='bottom'] > .tippy-arrow::before {
+    border-bottom-color: $tooltip-background;
+}
+.tippy-box[data-theme~='tooltip'][data-placement^='left'] > .tippy-arrow::before {
+    border-left-color: $tooltip-background;
+}
+.tippy-box[data-theme~='tooltip'][data-placement^='right'] > .tippy-arrow::before {
+    border-right-color: $tooltip-background;
+}

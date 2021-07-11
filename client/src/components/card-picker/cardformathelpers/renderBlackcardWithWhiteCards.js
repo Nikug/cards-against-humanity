@@ -1,26 +1,15 @@
-import React from "react";
-import { isNullOrUndefined } from "../../../helpers/generalhelpers";
-import Card from "../card";
+import React from 'react';
+import { isNullOrUndefined } from '../../../helpers/generalhelpers';
+import { Card } from '../card';
 
-export const renderBlackCardwithWhiteCards = ({
-    blackCard,
-    whiteCards,
-    popularVoteScore,
-    playerName,
-    isBigCard,
-    key,
-}) => {
+export const renderBlackCardwithWhiteCards = ({ blackCard, whiteCards, popularVoteScore, playerName, isBigCard, key }) => {
     let card = null;
 
     const blankTexts = [];
     let selectedWhiteCards = whiteCards.length > 0 ? whiteCards.slice() : [];
 
     // If selectedCard is actually multiple selected cards, convert to better format
-    if (
-        !isNullOrUndefined(selectedWhiteCards) &&
-        (selectedWhiteCards.length > 0) &
-            Array.isArray(selectedWhiteCards[0]?.id)
-    ) {
+    if (!isNullOrUndefined(selectedWhiteCards) && (selectedWhiteCards.length > 0) & Array.isArray(selectedWhiteCards[0]?.id)) {
         selectedWhiteCards = [];
 
         for (let i = 0, len = whiteCards.length; i < len; i++) {
@@ -41,12 +30,9 @@ export const renderBlackCardwithWhiteCards = ({
     for (let i = 0, len = selectedWhiteCards.length; i < len; i++) {
         const card = selectedWhiteCards[i];
 
-        const lastChar = card.text.slice(
-            card.text.length - 1,
-            card.text.length
-        );
+        const lastChar = card.text.slice(card.text.length - 1, card.text.length);
 
-        if (lastChar === ".") {
+        if (lastChar === '.') {
             blankTexts.push(card.text.slice(0, card.text.length - 1)); // Cut the extra dot.
         } else {
             blankTexts.push(card.text);
@@ -57,7 +43,7 @@ export const renderBlackCardwithWhiteCards = ({
         <Card
             card={blackCard}
             blankTexts={blankTexts}
-            key={key || "mainCard"}
+            key={key || 'mainCard'}
             bigCard={isBigCard}
             popularVoteScore={popularVoteScore}
             playerName={playerName}

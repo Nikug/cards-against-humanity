@@ -4,7 +4,7 @@ import { gameOptions } from "../../consts/gameSettings";
 
 export const newGameTemplate = (url: string): Game => {
     const fsm = createStateMachine();
-    const game = {
+    const game: Game = {
         id: url,
         client: {
             id: url,
@@ -23,6 +23,7 @@ export const newGameTemplate = (url: string): Game => {
                 allowCardCzarPopularVote:
                     gameOptions.defaultAllowCardCzarPopularVote,
                 cardPacks: [],
+                loadingCardPacks: false,
                 timers: {
                     selectBlackCard: gameOptions.timers.selectBlackCard.default,
                     useSelectBlackCard: gameOptions.timers.selectBlackCard.use,

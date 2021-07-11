@@ -1,35 +1,50 @@
-@import "./colors.scss";
-
 .cardpack-container {
     display: flex;
     flex-direction: row;
-    width: 100%;
+    margin-bottom: 0.5em;
+
+    @include left-side-border;
 
     .cardpack {
         display: flex;
-        flex-direction: column;
+        justify-content: space-between;
+        flex-wrap: wrap;
+
         background-color: $setting-background;
         border-radius: 2px 0 0 2px;
-        width: 100%;
-        padding: 0.2rem 1rem;
 
-        > .name {
-            font-size: 2.5rem;
-        }
-        > .cardcount {
-        }
-        > .nsfw {
+        width: 100%;
+        padding: 0.3em 0.8em;
+        margin: 0;
+
+        .info-wrapper {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+
+            &:not(.card-amounts) {
+                margin-right: 0.6em;
+            }
+
+            > :not(.name) {
+                font-size: 0.8rem;
+            }
         }
     }
 
     .remove {
         display: flex;
         background-color: lighten($setting-background, 15%);
-        border-radius: 0 10px 10px 0;
-        padding: 1rem;
-        margin: 0.2rem 0;
+
+        min-height: 100%;
+        max-height: 100%;
+        padding: 0 0.6em;
         justify-items: center;
         align-items: center;
+
+        @include small-desktop {
+            border-radius: 0 10px 10px 0;
+        }
 
         &:hover {
             background-color: $cardpack-remove-hover;

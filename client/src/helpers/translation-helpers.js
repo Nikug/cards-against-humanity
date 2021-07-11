@@ -11,3 +11,10 @@ export let translateCommon = (keyWrod, t, options) => {
     }
     return t(`common:${keyWrod}`, options);
 };
+
+export let translateUnderWork = (keyWrod, t, options) => {
+    if (t == null) {
+        return "";
+    }
+    return t(`underwork:${keyWrod}`, options);
+};

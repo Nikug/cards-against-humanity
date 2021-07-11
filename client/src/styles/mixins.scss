@@ -1,0 +1,31 @@
+@mixin text-shadow {
+    text-shadow: -2px -2px $header-button-hover,
+        -2px -1.5px $header-button-hover, -2px -1px $header-button-hover,
+        -2px -0.5px $header-button-hover, -2px 0px $header-button-hover,
+        -2px 0.5px $header-button-hover, -2px 1px $header-button-hover,
+        -2px 1.5px $header-button-hover, -2px 2px $header-button-hover,
+        -1.5px 2px $header-button-hover, -1px 2px $header-button-hover,
+        -0.5px 2px $header-button-hover, 0px 2px $header-button-hover,
+        0.5px 2px $header-button-hover, 1px 2px $header-button-hover,
+        1.5px 2px $header-button-hover, 2px 2px $header-button-hover,
+        2px 1.5px $header-button-hover, 2px 1px $header-button-hover,
+        2px 0.5px $header-button-hover, 2px 0px $header-button-hover,
+        2px -0.5px $header-button-hover, 2px -1px $header-button-hover,
+        2px -1.5px $header-button-hover, 2px -2px $header-button-hover,
+        1.5px -2px $header-button-hover, 1px -2px $header-button-hover,
+        0.5px -2px $header-button-hover, 0px -2px $header-button-hover,
+        -0.5px -2px $header-button-hover, -1px -2px $header-button-hover,
+        -1.5px -2px $header-button-hover;
+}
+
+@mixin cut-text {
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+@mixin left-side-border {
+    box-sizing: border-box;
+    border-left: 5px solid $settings-icon;
+    width: 90%;
+}

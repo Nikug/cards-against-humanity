@@ -1,47 +1,69 @@
-@import "./colors.scss";
-@import "./consts.scss";
-
-.header {
-    display: flex;
-    justify-content: space-between;
-    width: 100%;
-    padding: 0.3rem 0;
-    color: $color-white;
-    background: linear-gradient(180deg, $header-shadow, $header-background)
-        $header-background;
-    user-select: none;
-    font-size: 1.5rem;
-    max-height: $header-height;
-    box-sizing: border-box;
-
-    .logo {
-        width: 2rem;
-        height: 2rem;
-        margin-right: 0.5rem;
-    }
-
-    margin-bottom: 0.5em;
+.header-link {
+    width: fit-content;
 }
 
-.header-text {
-    margin: 0 0.8rem;
-    font-weight: 800;
-    cursor: pointer;
+.header {
+    font-size: 0.8rem;
+    line-height: 1em;
+    --burger-menu-width: 11em;
     display: flex;
-    flex-direction: row;
+    flex-shrink: 0;
+    justify-content: space-between;
+    align-items: center;
+
+    width: 100%;
+
+    box-sizing: border-box;
+    padding: 0.3em 0;
+
+    color: $color-white;
+    background: linear-gradient(180deg, $header-shadow, $header-background) $header-background;
     user-select: none;
+
+    .logo {
+        width: 1em;
+        height: 1em;
+        margin-right: 0.5em;
+    }
+}
+
+.header-link {
+    width: 100%;
+    max-width: calc(100% - var(--burger-menu-width));
+}
+
+.header-logo-and-name {
+    font-weight: 800;
+
+    display: flex;
+    flex: 1;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+
+    margin: 0 0.6em;
+    width: 100%;
+
+    user-select: none;
+    cursor: pointer;
+
+    .name {
+        white-space: nowrap;
+
+        @include cut-text;
+    }
 }
 
 .buttons {
     display: flex;
-    margin-right: 1.2rem;
+    flex-shrink: 0;
     justify-items: center;
     align-items: center;
 
-    // All except the first child.
-    :nth-child(n + 2) {
+    // All except the first child
+    > *:not(:first-child) {
         border-left: $color-white 1px solid;
-        padding-left: 0.8rem;
+        padding-left: 0.4em;
     }
 }
 
@@ -49,10 +71,11 @@
     display: flex;
     justify-items: center;
     align-items: center;
-    padding-right: 0.8rem;
+    padding-right: 0.4em;
     cursor: pointer;
+    flex-shrink: 1;
 
-    :nth-child(n) {
+    > * {
         border-left: none;
         padding-left: 0;
     }
@@ -64,41 +87,34 @@
     &:hover {
         transition: 0.1s ease;
         color: $header-button-text-hover;
-        text-shadow: -2px -2px $header-button-hover,
-            -2px -1.5px $header-button-hover, -2px -1px $header-button-hover,
-            -2px -0.5px $header-button-hover, -2px 0px $header-button-hover,
-            -2px 0.5px $header-button-hover, -2px 1px $header-button-hover,
-            -2px 1.5px $header-button-hover, -2px 2px $header-button-hover,
-            -1.5px 2px $header-button-hover, -1px 2px $header-button-hover,
-            -0.5px 2px $header-button-hover, 0px 2px $header-button-hover,
-            0.5px 2px $header-button-hover, 1px 2px $header-button-hover,
-            1.5px 2px $header-button-hover, 2px 2px $header-button-hover,
-            2px 1.5px $header-button-hover, 2px 1px $header-button-hover,
-            2px 0.5px $header-button-hover, 2px 0px $header-button-hover,
-            2px -0.5px $header-button-hover, 2px -1px $header-button-hover,
-            2px -1.5px $header-button-hover, 2px -2px $header-button-hover,
-            1.5px -2px $header-button-hover, 1px -2px $header-button-hover,
-            0.5px -2px $header-button-hover, 0px -2px $header-button-hover,
-            -0.5px -2px $header-button-hover, -1px -2px $header-button-hover,
-            -1.5px -2px $header-button-hover;
+        @include text-shadow;
 
-            .menu-container {
-                text-shadow: none;
-            }
+        .tippy-content {
+            text-shadow: none;
+        }
     }
 }
 
 .header-button-text {
-    margin-bottom: -0.3rem;
+    display: none;
+
+    @include small-desktop {
+        display: block;
+        line-height: 1em;
+    }
 }
 
 .header-icon {
     display: flex;
     justify-items: center;
     align-items: center;
-    margin-right: 0.5rem;
+    margin-right: 0;
+
+    @include small-desktop {
+        margin-right: 0.3em;
+    }
 }
 
 .thinking-icon {
-    width: 1.4rem;
+    height: 0.8rem;
 }

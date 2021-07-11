@@ -1,10 +1,10 @@
-# Caarrrdds
+# Kortit ihmiskuntaa vastaan
 
-against humanity or something
+Modern cards against humanity online game. Hosted at [pelit.space](https://pelit.space)
 
 ## How to run
 
-You need Node14 to run this project.
+You need Node version 14 to run this project.
 
 run `npm i` in root and in /client
 
