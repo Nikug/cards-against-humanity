@@ -1,17 +1,17 @@
-import { isPlayerHost, isPlayerSpectator } from '../../../../helpers/player-helpers';
+import { isPlayerCardCzar, isPlayerHost, isPlayerSpectator, isPlayerSpectatorOrJoining } from '../../../../helpers/player-helpers';
 
-import { ActionButtonRow } from './ActionButtonRow';
+import { ActionButtonRow, BUTTON_ROW_DIRECTION } from './ActionButtonRow';
 import { Button, BUTTON_TYPES } from '../../../../components/general/Button.jsx';
 import { GAME_STATES } from '../../../../consts/gamestates';
 import { PopOverMenu } from '../../../../components/popover-menu/PopoverMenu';
 import React from 'react';
 import { SocketMessenger } from '../../../../components/socket-messenger/socket-messenger';
-import { translateCommon } from '../../../../helpers/translation-helpers';
+import { translateCommon, translateUnderWork } from '../../../../helpers/translation-helpers';
 import { useGameContext } from '../../../../contexts/GameContext';
 import { useTranslation } from 'react-i18next';
 import Tippy from '@tippyjs/react';
 
-export const GameMenu = ({ callbacks: { togglePlayerMode, returnBackToLobby, openGameSettings, openHistory }, showDebug }) => {
+export const GameMenu = ({ callbacks: { togglePlayerMode, changeCards, returnBackToLobby, openGameSettings, openHistory } }) => {
     const { t } = useTranslation();
     const { game, player } = useGameContext();
 
@@ -31,34 +31,45 @@ export const GameMenu = ({ callbacks: { togglePlayerMode, returnBackToLobby, ope
                 <>
                     {translateCommon('menu', t)}
                     <ActionButtonRow
+                        direction={BUTTON_ROW_DIRECTION.COLUMN}
                         buttons={[
-                            isSpectator
-                                ? {
-                                      icon: 'login',
-                                      text: translateCommon('joinToGame', t),
-                                      callback: togglePlayerMode,
-                                      type: BUTTON_TYPES.PRIMARY,
-                                  }
-                                : {
-                                      icon: 'groups',
-                                      text: translateCommon('goToAudience', t),
-                                      callback: togglePlayerMode,
-                                      type: BUTTON_TYPES.PRIMARY,
-                                  },
-                            {
+                            togglePlayerMode &&
+                                (isSpectator
+                                    ? {
+                                          icon: 'login',
+                                          text: translateCommon('joinToGame', t),
+                                          callback: togglePlayerMode,
+                                          type: BUTTON_TYPES.PRIMARY,
+                                      }
+                                    : {
+                                          icon: 'groups',
+                                          text: translateCommon('goToAudience', t),
+                                          callback: togglePlayerMode,
+                                          type: BUTTON_TYPES.PRIMARY,
+                                      }),
+                            changeCards && {
+                                icon: 'refresh',
+                                text: translateCommon('changeCards', t),
+                                callback: returnBackToLobby,
+                                type: BUTTON_TYPES.PRIMARY,
+                                disabled: true, // isPlayerCardCzar(player) || isPlayerSpectatorOrJoining(player) || isLobby,
+                                tooltip: translateUnderWork('underWork', t),
+                            },
+                            returnBackToLobby && {
                                 icon: 'home',
                                 text: translateCommon('returnToLobby', t),
                                 callback: returnBackToLobby,
                                 type: BUTTON_TYPES.PRIMARY,
                                 disabled: !isPlayerHost(player) || isLobby,
                             },
-                            {
+                            openGameSettings && {
                                 icon: 'settings',
                                 text: translateCommon('gameSettings', t),
                                 callback: openGameSettings,
                                 type: BUTTON_TYPES.PRIMARY,
+                                disabled: isLobby,
                             },
-                            {
+                            openHistory && {
                                 icon: 'history',
                                 text: translateCommon('history', t),
                                 callback: openHistory,
@@ -72,56 +83,5 @@ export const GameMenu = ({ callbacks: { togglePlayerMode, returnBackToLobby, ope
         >
             <Button icon={'menu'}></Button>
         </Tippy>
-    );
-
-    return (
-        <>
-            <PopOverMenu
-                buttonProps={{ icon: 'menu' }}
-                content={
-                    <>
-                        {translateCommon('menu', t)}
-                        <ActionButtonRow
-                            buttons={[
-                                isSpectator
-                                    ? {
-                                          icon: 'login',
-                                          text: translateCommon('joinToGame', t),
-                                          callback: togglePlayerMode,
-                                          type: BUTTON_TYPES.PRIMARY,
-                                      }
-                                    : {
-                                          icon: 'groups',
-                                          text: translateCommon('goToAudience', t),
-                                          callback: togglePlayerMode,
-                                          type: BUTTON_TYPES.PRIMARY,
-                                      },
-                                {
-                                    icon: 'home',
-                                    text: translateCommon('returnToLobby', t),
-                                    callback: returnBackToLobby,
-                                    type: BUTTON_TYPES.PRIMARY,
-                                    disabled: !isPlayerHost(player) || isLobby,
-                                },
-                                {
-                                    icon: 'settings',
-                                    text: translateCommon('gameSettings', t),
-                                    callback: openGameSettings,
-                                    type: BUTTON_TYPES.PRIMARY,
-                                },
-                                {
-                                    icon: 'history',
-                                    text: translateCommon('history', t),
-                                    callback: openHistory,
-                                    type: BUTTON_TYPES.PRIMARY,
-                                    disabled: !(game?.rounds?.length > 0),
-                                },
-                            ]}
-                        />
-                    </>
-                }
-            />
-            {showDebug && <PopOverMenu buttonProps={{ icon: 'menu', text: 'Debug' }} content={<SocketMessenger gameID={game?.id} playerID={player?.id} />} />}
-        </>
     );
 };
