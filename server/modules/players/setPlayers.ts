@@ -25,7 +25,7 @@ export const setPlayersWaiting = (players: CAH.Player[]): CAH.Player[] => {
         if (player.isCardCzar) {
             return { ...player, state: "playing" };
         } else {
-            return player.state === "active" || player.state === "playing"
+            return ["active", "playing", "joining"].includes(player.state)
                 ? { ...player, state: "waiting" }
                 : player;
         }

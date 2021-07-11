@@ -56,8 +56,6 @@ export const startNewRound = async (
     game.stateMachine.startRound();
     game.client.state = game.stateMachine.state;
 
-    game = replenishWhiteCards(game);
-
     if (game.client.options.winnerBecomesCardCzar && game.currentRound) {
         const winnerID = getRoundWinner(game.currentRound);
         game.players = appointNextCardCzar(game, playerID, winnerID);
@@ -72,6 +70,7 @@ export const startNewRound = async (
         game.players.find((player: CAH.Player) => player.isCardCzar) ??
         game.players[0];
 
+    game = replenishWhiteCards(game);
     game = dealBlackCards(io, cardCzar.sockets, game);
 
     game = changeGameStateAfterTime(io, game, "startPlayingWhiteCards");
