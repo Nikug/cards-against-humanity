@@ -75,4 +75,66 @@ describe("Start game", () => {
             expect.anything()
         );
     });
+
+    it("should not start game with 2 players and not enough white cards", async () => {
+        const lobbyGame = CreateLobbyGame();
+        lobbyGame.cards.whiteCards = createWhiteCards(5);
+
+        const mockSet = mockSetGame();
+        const mockGet = mockGetGame(lobbyGame);
+        const mockNotification = mockSendNotification();
+        await startGame(
+            ioMock,
+            socketMock,
+            mockGameId,
+            mockPlayerId,
+            pgClientMock
+        );
+        expect(mockSet).toHaveBeenCalledTimes(0);
+        expect(mockNotification).toHaveBeenCalledTimes(1);
+        expect(mockNotification).toHaveBeenCalledWith(
+            ERROR_TYPES.notEnoughWhiteCards,
+            expect.anything(),
+            expect.anything()
+        );
+    });
+
+    it("should not start game with 2 players and not enough black cards", async () => {
+        const lobbyGame = CreateLobbyGame();
+        lobbyGame.cards.blackCards = createBlackCards(1);
+
+        const mockSet = mockSetGame();
+        const mockGet = mockGetGame(lobbyGame);
+        const mockNotification = mockSendNotification();
+        await startGame(
+            ioMock,
+            socketMock,
+            mockGameId,
+            mockPlayerId,
+            pgClientMock
+        );
+        expect(mockSet).toHaveBeenCalledTimes(0);
+        expect(mockNotification).toHaveBeenCalledTimes(1);
+        expect(mockNotification).toHaveBeenCalledWith(
+            ERROR_TYPES.notEnoughBlackCards,
+            expect.anything(),
+            expect.anything()
+        );
+    });
+
+    it("should not start game if starter is not host", async () => {
+        const lobbyGame = CreateLobbyGame();
+        lobbyGame.players = [createPlayer(mockPlayerId), createPlayer("other")];
+
+        const mockSet = mockSetGame();
+        const mockGet = mockGetGame(lobbyGame);
+        await startGame(
+            ioMock,
+            socketMock,
+            mockGameId,
+            mockPlayerId,
+            pgClientMock
+        );
+        expect(mockSet).toHaveBeenCalledTimes(0);
+    });
 });
