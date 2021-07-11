@@ -6,4 +6,5 @@ module.exports = {
             useESM: true,
         },
     },
+    setupFiles: ["./test.env.js"],
 };

@@ -25,8 +25,8 @@ export const addGame = async (newGame: CAH.Game, client?: pg.PoolClient) => {
     }
 };
 
-export const getGameIds = async (client: pg.PoolClient) => {
-    if (process.env.USE_DB) {
+export const getGameIds = async (client?: pg.PoolClient) => {
+    if (process.env.USE_DB && client) {
         const result = await getDBGameIds(client);
         const gameNames = result.rows.map((row) => row.gameid);
         return gameNames;
