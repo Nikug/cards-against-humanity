@@ -1,9 +1,7 @@
-import * as utils from "../modules/db/util";
+import { mockId, mockTransactionize, pgClientMock } from "./helpers";
 
 import { createGame } from "../modules/games/createGame";
 import hri from "human-readable-ids";
-
-const mockId = "test-id-1";
 
 jest.mock("human-readable-ids", () => ({
     hri: {
@@ -11,15 +9,10 @@ jest.mock("human-readable-ids", () => ({
     },
 }));
 
-jest.spyOn(utils, "transactionize").mockImplementation(() => pgClientMock);
-
 beforeAll(() => {
     jest.useFakeTimers();
+    mockTransactionize();
 });
-
-const pgClientMock: any = {
-    query: jest.fn((query, params) => ({ rows: [] })),
-};
 
 describe("Create game", () => {
     it("should create game with id", async () => {
