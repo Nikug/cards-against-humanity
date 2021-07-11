@@ -2,11 +2,9 @@ import React, { useEffect, useState } from 'react';
 import { getCookie, setCookie } from '../../helpers/cookies';
 
 import { GAME_STATES } from '../../consts/gamestates';
-import { GameMenu } from './components/GameMenu/GameMenu';
 import { GameSettingsContainer } from '../../components/game-settings/gamesettingscontainer';
 import { HistoryContainer } from './components/GameMenu/history/HistoryContainer';
 import { LayerMenu } from '../../components/layer-menu/LayerMenu';
-import { NOTIFICATION_TYPES } from '../../components/notification/notification';
 import { PLAYER_STATES } from '../../consts/playerstates';
 import { PlayersWidget } from '../../components/players-widget/playerswidget';
 import { SpectatorsInfo } from './components/SpectatorsInfo/SpectatorsInfo';
@@ -21,6 +19,7 @@ import { useGameContext } from '../../contexts/GameContext';
 import { useNotification } from '../../contexts/NotificationContext';
 import { useTranslation } from 'react-i18next';
 import { classNames } from '../../helpers/classnames';
+import { GameMenuButtonRow } from './components/GameMenu/GameMenuButtonRow';
 
 export const NAME_CHAR_LIMIT = 50;
 
@@ -228,6 +227,10 @@ export const Game = ({ showDebug }) => {
         });
     };
 
+    const changeCards = () => {
+        alert('Korttien vaihtaminen ei ole vielä mahdollista. Odota hetki (jos toinenkin)');
+    };
+
     const returnBackToLobby = () => {
         socket.emit('return_to_lobby', {
             gameID: game?.id,
@@ -284,6 +287,16 @@ export const Game = ({ showDebug }) => {
                     />
                 )}
                 {historyMenuOpen && <LayerMenu content={<HistoryContainer />} closeLayerMenu={openHistory} />}
+                <GameMenuButtonRow
+                    callbacks={{
+                        togglePlayerMode,
+                        changeCards,
+                        returnBackToLobby,
+                        openGameSettings,
+                        openHistory,
+                    }}
+                    showDebug={showDebug}
+                />
                 <div className="info">
                     <PlayersWidget game={game} player={player} />
                 </div>
@@ -322,20 +335,7 @@ export const Game = ({ showDebug }) => {
                     )}
                 </div>
                 <div className="info">
-                    {true && (
-                        <div className="actions-wrapper">
-                            <GameMenu
-                                callbacks={{
-                                    togglePlayerMode,
-                                    returnBackToLobby,
-                                    openGameSettings,
-                                    openHistory,
-                                }}
-                                showDebug={showDebug}
-                            />
-                            <SpectatorsInfo />
-                        </div>
-                    )}
+                    <SpectatorsInfo />
                 </div>
                 <div className="game-wrapper-3">{renderedContent}</div>
             </div>

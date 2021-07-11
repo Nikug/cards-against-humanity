@@ -73,6 +73,7 @@ export function RoundEndContainer({ popularVotedCardsIDs, givePopularVote }) {
                     showPopularVote={showPopularVote}
                     givePopularVote={givePopularVote}
                     popularVotedCardsIDs={popularVotedCardsIDs}
+                    showStreaks={true}
                     noBigMainCard={false}
                     noActionButton={!player.isCardCzar}
                 />
