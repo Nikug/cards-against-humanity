@@ -82,16 +82,21 @@ export const removeGame = async (gameID: string, client?: pg.PoolClient) => {
     }
 };
 
-export const findGameAndPlayerBySocketID = async (
+interface GameAndPlayer {
+    player?: CAH.Player;
+    game?: CAH.Game;
+}
+
+export async function findGameAndPlayerBySocketID(
     socketID: string,
     client?: pg.PoolClient
-) => {
+): Promise<GameAndPlayer | undefined> {
     if (process.env.USE_DB && client) {
         const game = await getDBGameBySocketId(socketID, client);
         if (!game) return undefined;
 
-        const player = game.players.find((player: CAH.Player) =>
-            player.sockets.includes(socketID)
+        const player: CAH.Player | undefined = game.players.find(
+            (player: CAH.Player) => player.sockets.includes(socketID)
         );
         return { game, player };
     } else {
@@ -111,7 +116,7 @@ export const findGameAndPlayerBySocketID = async (
         }
     }
     return undefined;
-};
+}
 
 export const findGameByPlayerID = async (
     playerID: string,
