@@ -1,11 +1,11 @@
-import { mockId, mockTransactionize, pgClientMock } from "./helpers";
+import { mockGameId, mockTransactionize, pgClientMock } from "./helpers";
 
 import { createGame } from "../modules/games/createGame";
 import hri from "human-readable-ids";
 
 jest.mock("human-readable-ids", () => ({
     hri: {
-        random: () => mockId,
+        random: () => mockGameId,
     },
 }));
 
@@ -17,7 +17,7 @@ beforeAll(() => {
 describe("Create game", () => {
     it("should create game with id", async () => {
         const game = await createGame(pgClientMock);
-        expect(game?.id).toEqual(mockId);
+        expect(game?.id).toEqual(mockGameId);
         expect(pgClientMock.query).toHaveBeenCalled();
     });
 
@@ -28,7 +28,9 @@ describe("Create game", () => {
     });
 
     it("should not create game if name is not available", async () => {
-        pgClientMock.query = jest.fn(() => ({ rows: [{ gameid: mockId }] }));
+        pgClientMock.query = jest.fn(() => ({
+            rows: [{ gameid: mockGameId }],
+        }));
         const game = await createGame(pgClientMock);
         expect(game).toEqual(undefined);
     });
