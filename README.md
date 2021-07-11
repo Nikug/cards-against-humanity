@@ -1,6 +1,6 @@
 # Kortit ihmiskuntaa vastaan
 
-Modern cards against humanity online game. Hosted at [pelit.space](https://pelit.space)
+Modern cards against humanity online game. Hosted at [https://pelit.space](https://pelit.space)
 
 ## How to run
 
