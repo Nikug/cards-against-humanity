@@ -50,7 +50,7 @@ export const GameMenu = ({ callbacks: { togglePlayerMode, changeCards, returnBac
                             changeCards && {
                                 icon: 'refresh',
                                 text: translateCommon('changeCards', t),
-                                callback: returnBackToLobby,
+                                callback: changeCards,
                                 type: BUTTON_TYPES.PRIMARY,
                                 disabled: true, // isPlayerCardCzar(player) || isPlayerSpectatorOrJoining(player) || isLobby,
                                 tooltip: translateUnderWork('underWork', t),
