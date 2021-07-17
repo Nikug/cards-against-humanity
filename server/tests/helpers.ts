@@ -19,6 +19,8 @@ export const ioMock: any = {
 
 export const socketMock: any = {
     emit: jest.fn(),
+    join: jest.fn(),
+    disconnect: jest.fn(),
 };
 
 export const mockTransactionize = () =>

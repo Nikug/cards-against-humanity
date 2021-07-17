@@ -40,7 +40,7 @@ beforeEach(() => {
 describe("Start game", () => {
     it("should start game with 2 players and enough cards", async () => {
         const mockSet = mockSetGame();
-        const mockGet = mockGetGame(CreateLobbyGame());
+        mockGetGame(CreateLobbyGame());
         await startGame(
             ioMock,
             socketMock,
@@ -58,7 +58,7 @@ describe("Start game", () => {
         lobbyGame.players = [createPlayer(mockPlayerId, true, false)];
 
         const mockSet = mockSetGame();
-        const mockGet = mockGetGame(lobbyGame);
+        mockGetGame(lobbyGame);
         const mockNotification = mockSendNotification();
         await startGame(
             ioMock,
@@ -81,7 +81,7 @@ describe("Start game", () => {
         lobbyGame.cards.whiteCards = createWhiteCards(5);
 
         const mockSet = mockSetGame();
-        const mockGet = mockGetGame(lobbyGame);
+        mockGetGame(lobbyGame);
         const mockNotification = mockSendNotification();
         await startGame(
             ioMock,
@@ -104,7 +104,7 @@ describe("Start game", () => {
         lobbyGame.cards.blackCards = createBlackCards(1);
 
         const mockSet = mockSetGame();
-        const mockGet = mockGetGame(lobbyGame);
+        mockGetGame(lobbyGame);
         const mockNotification = mockSendNotification();
         await startGame(
             ioMock,
@@ -127,7 +127,7 @@ describe("Start game", () => {
         lobbyGame.players = [createPlayer(mockPlayerId), createPlayer("other")];
 
         const mockSet = mockSetGame();
-        const mockGet = mockGetGame(lobbyGame);
+        mockGetGame(lobbyGame);
         await startGame(
             ioMock,
             socketMock,
