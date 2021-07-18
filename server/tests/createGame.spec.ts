@@ -11,7 +11,6 @@ jest.mock("human-readable-ids", () => ({
 
 beforeAll(() => {
     jest.useFakeTimers();
-    mockTransactionize();
 });
 
 describe("Create game", () => {

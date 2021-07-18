@@ -66,10 +66,8 @@ export const removeGameIfNoActivePlayers = async (
     const game = await getGame(gameID, client);
     if (!game) return;
 
-    if (
-        !game.players ||
-        getAllButDisconnectedPlayers(game.players).length === 0
-    ) {
+    const players = getAllButDisconnectedPlayers(game.players);
+    if (!game.players || players.length === 0) {
         await removeGame(gameID, client);
     }
 };

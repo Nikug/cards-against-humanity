@@ -6,6 +6,7 @@ import { BlackCard, Game, Player, WhiteCard } from "../types/types";
 
 export const mockGameId = "test-id-1";
 export const mockPlayerId = "player-1";
+export const mockSocketId = "socket-1";
 
 export const pgClientMock: any = {
     query: jest.fn((query, params) => ({ rows: [] })),
@@ -24,7 +25,11 @@ export const socketMock: any = {
 };
 
 export const mockTransactionize = () =>
-    jest.spyOn(utils, "transactionize").mockImplementation(() => pgClientMock);
+    jest
+        .spyOn(utils, "transactionize")
+        .mockImplementation(async (callback, params) => {
+            return await callback(...params, pgClientMock);
+        });
 
 export const mockSetGame = () =>
     jest
@@ -42,14 +47,14 @@ export const mockSendNotification = () =>
         .mockImplementation((message: string) => message);
 
 export const createPlayer = (
-    id: string,
+    id: string | number,
     isHost?: boolean,
     isCardCzar?: boolean
 ): Player => {
     return {
-        id: id,
-        name: id,
-        publicID: id,
+        id: id.toString(),
+        name: id.toString(),
+        publicID: id.toString(),
         state: "active",
         score: 0,
         sockets: [],
