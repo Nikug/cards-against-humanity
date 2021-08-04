@@ -17,7 +17,7 @@ export const getNextCardCzar = (
     );
 
     const nextCardCzars = activePlayerIndexes.filter(
-        (index) => index && index > cardCzarIndex
+        (index) => index != null && index > cardCzarIndex
     );
 
     if (nextCardCzars.length > 0) {
