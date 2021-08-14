@@ -1,3 +1,4 @@
+import { GameState } from "types";
 import StateMachine from "javascript-state-machine";
 
 export const createStateMachine = (initialState?: string) => {
@@ -23,6 +24,7 @@ export const createStateMachine = (initialState?: string) => {
 
             { name: "returnToLobby", from: "*", to: "lobby" },
             { name: "skipRound", from: "*", to: "pickingBlackCard" },
+            { name: "jumpTo", from: "*", to: (s: GameState) => s }, // Only used in testing, never use in code
         ],
     });
     return fsm;

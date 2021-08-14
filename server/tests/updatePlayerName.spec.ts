@@ -39,8 +39,7 @@ describe("Update Player Name", () => {
     it("Allows player to update their name in some other game state", async () => {
         const mockSet = mockSetGame();
         const newGame = newGameTemplate(mockGameId);
-        newGame.stateMachine.startGame();
-        newGame.stateMachine.startPlayingWhiteCards();
+        newGame.stateMachine.jumpTo("playingWhiteCards");
         newGame.client.state = newGame.stateMachine.state;
         newGame.players = [createPlayer("host", true)];
         mockGetGame(newGame);
@@ -61,8 +60,7 @@ describe("Update Player Name", () => {
     it("Allows player to pick their name when joining to a game that is ongoing and updates their state from 'pickingName' to 'joining'", async () => {
         const mockSet = mockSetGame();
         const newGame = newGameTemplate(mockGameId);
-        newGame.stateMachine.startGame();
-        newGame.stateMachine.startPlayingWhiteCards();
+        newGame.stateMachine.jumpTo("showingCards");
         newGame.client.state = newGame.stateMachine.state;
 
         const joiningPlayer = createPlayer("newPlayer");
