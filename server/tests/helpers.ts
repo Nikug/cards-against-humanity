@@ -10,6 +10,7 @@ export const mockSocketId = "socket-1";
 
 export const pgClientMock: any = {
     query: jest.fn((query, params) => ({ rows: [] })),
+    release: jest.fn(),
 };
 
 export const ioMock: any = {
