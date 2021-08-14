@@ -16,6 +16,9 @@ export const ioMock: any = {
     to: jest.fn(() => ({
         emit: jest.fn(),
     })),
+    in: jest.fn(() => ({
+        emit: jest.fn(),
+    })),
 };
 
 export const socketMock: any = {
