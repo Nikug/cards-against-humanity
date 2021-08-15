@@ -68,9 +68,7 @@ describe("Add Card Pack", () => {
     it("Allows host to add a card pack in lobby", async () => {
         const mockSet = mockSetGame();
         const newGame = newGameTemplate(mockGameId);
-        const player = createPlayer("host", true);
-        player.useTextToSpeech = false;
-        newGame.players = [player];
+        newGame.players = [createPlayer("host", true)];
         mockGetGame(newGame);
 
         mocked(fetch).mockReturnValue(
@@ -98,9 +96,7 @@ describe("Add Card Pack", () => {
     it("Sends error if card pack is not found", async () => {
         const mockSet = mockSetGame();
         const newGame = newGameTemplate(mockGameId);
-        const player = createPlayer("host", true);
-        player.useTextToSpeech = false;
-        newGame.players = [player];
+        newGame.players = [createPlayer("host", true)];
         mockGetGame(newGame);
 
         mocked(fetch).mockReturnValue(
@@ -133,9 +129,7 @@ describe("Add Card Pack", () => {
     it.skip("Sends error if same pack has already been added", async () => {
         const mockSet = mockSetGame();
         const newGame = newGameTemplate(mockGameId);
-        const player = createPlayer("host", true);
-        player.useTextToSpeech = false;
-        newGame.players = [player];
+        newGame.players = [createPlayer("host", true)];
         newGame.client.options.cardPacks = [
             {
                 id: mockPackId,
@@ -165,6 +159,69 @@ describe("Add Card Pack", () => {
         expect(mockSet).toHaveBeenCalledTimes(0);
         expect(notificationMock).toHaveBeenCalledWith(
             ERROR_TYPES.cardPackWasNotFound,
+            expect.anything(),
+            expect.anything()
+        );
+    });
+
+    // Skip until fixed
+    it.skip("Doesn't allow adding a card pack if not in lobby", async () => {
+        const mockSet = mockSetGame();
+        const newGame = newGameTemplate(mockGameId);
+        newGame.stateMachine.jumpTo("playingWhiteCards");
+        newGame.players = [createPlayer("host", true)];
+        mockGetGame(newGame);
+
+        mocked(fetch).mockReturnValue(
+            Promise.resolve(new Response(JSON.stringify(mockData)))
+        );
+
+        const mockNotification = mockSendNotification();
+
+        await addCardPack(
+            ioMock,
+            socketMock,
+            mockGameId,
+            mockPackId,
+            "host",
+            pgClientMock
+        );
+
+        expect(mocked(fetch).mock.calls.length).toBe(1);
+        expect(mockSet).toHaveBeenCalledTimes(0);
+        expect(mockNotification).toHaveBeenCalledWith(
+            ERROR_TYPES.incorrectGameState,
+            expect.anything(),
+            expect.anything()
+        );
+    });
+
+    // Skip until fixed
+    it.skip("Doesn't allow adding a card pack if not host", async () => {
+        const mockSet = mockSetGame();
+        const newGame = newGameTemplate(mockGameId);
+        newGame.players = [createPlayer("not-host", false)];
+        mockGetGame(newGame);
+
+        mocked(fetch).mockReturnValue(
+            Promise.resolve(new Response(JSON.stringify(mockData)))
+        );
+
+        const mockNotification = mockSendNotification();
+
+        await addCardPack(
+            ioMock,
+            socketMock,
+            mockGameId,
+            mockPackId,
+            "not-host",
+            pgClientMock
+        );
+
+        expect(mocked(fetch).mock.calls.length).toBe(1);
+        expect(mockSet).toHaveBeenCalledTimes(0);
+        expect(mockNotification).toHaveBeenCalledWith(
+            ERROR_TYPES.forbiddenHostAction,
             expect.anything(),
             expect.anything()
         );
