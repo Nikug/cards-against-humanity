@@ -195,15 +195,17 @@ export const removeCardPackFromGame = async (
     return game.client.options;
 };
 
-export const reloadAllCardPacks = async (io: SocketIO.Server, gameId: string, cardPacks: CAH.CardPack[]) => {
-    const promises = cardPacks.map(
-        async (cardPack: CAH.CardPack) => {
-            const url = `${API_URL}${cardPack.id}`;
-            const res = await fetch(url);
-            const json: CAH.ApiCardPack = await res.json();
-            return json;
-        }
-    );
+export const reloadAllCardPacks = async (
+    io: SocketIO.Server,
+    gameId: string,
+    cardPacks: CAH.CardPack[]
+) => {
+    const promises = cardPacks.map(async (cardPack: CAH.CardPack) => {
+        const url = `${API_URL}${cardPack.id}`;
+        const res = await fetch(url);
+        const json: CAH.ApiCardPack = await res.json();
+        return json;
+    });
 
     const newCards: CAH.Cards = {
         whiteCards: [],
@@ -234,11 +236,13 @@ export const reloadAllCardPacks = async (io: SocketIO.Server, gameId: string, ca
         // Handle error
         // Send notification or something
     } finally {
-        const client = process.env.USE_DB ? await startTransaction() : undefined;
+        const client = process.env.USE_DB
+            ? await startTransaction()
+            : undefined;
         const game = await getGame(gameId, client);
-        if(!game){
+        if (!game) {
             client && endTransaction(client);
-            return
+            return;
         }
         game.cards = newCards;
         game.client.options.cardPacks = newCardPacks;
