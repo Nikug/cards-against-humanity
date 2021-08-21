@@ -295,7 +295,7 @@ export const GameSettings = ({ options, gameID, isDisabled, playerID }) => {
                         {
                             callback: addCardPack,
                             callbackParams: 'qM1V1IaYBE',
-                            disabled: cardPacks && cardPacks.some((pack) => pack.id === 'qM1V1IaYBE'),
+                            disabled: isDisabled || (cardPacks && cardPacks.some((pack) => pack.id === 'qM1V1IaYBE')),
                             icon: 'add_circle_outline',
                             text: 'Autismipakka',
                             type: BUTTON_TYPES.PRIMARY,
@@ -303,7 +303,7 @@ export const GameSettings = ({ options, gameID, isDisabled, playerID }) => {
                         {
                             callback: addCardPack,
                             callbackParams: 'U4nL88ujS',
-                            disabled: cardPacks && cardPacks.some((pack) => pack.id === 'U4nL88ujS'),
+                            disabled: isDisabled || (cardPacks && cardPacks.some((pack) => pack.id === 'U4nL88ujS')),
                             icon: 'add_circle_outline',
                             text: 'The Coronavirus Box',
                             type: BUTTON_TYPES.PRIMARY,
