@@ -121,7 +121,7 @@ export const Setting = ({
         return <Icon name={name} className={`${className ? className : ''} ${isDisabled ? 'disabled' : ''}`} color={color} onClick={onClick} />;
     };
 
-    const renderMultiplseControls = (controls, currentValue, isDisabled, onChangeCallback, placeholderText) => {
+    const renderMultipleControls = (controls, currentValue, isDisabled, onChangeCallback, placeholderText) => {
         const renderedControls = [];
 
         for (let i = 0, len = controls.length; i < len; i++) {
@@ -135,7 +135,7 @@ export const Setting = ({
 
     const renderControl = (controlType, currentValue, isDisabled, onChangeCallback, placeholderText, field) => {
         if (Array.isArray(controlType)) {
-            return renderMultiplseControls(controlType, currentValue, isDisabled, onChangeCallback, placeholderText);
+            return renderMultipleControls(controlType, currentValue, isDisabled, onChangeCallback, placeholderText);
         }
 
         switch (controlType) {
