@@ -10,7 +10,6 @@ export const CONTROL_TYPES = {
     number: 'number',
     text: 'text',
     textWithConfirm: 'textWithConfirm',
-    textWithSplitButtonConfirm: 'textWithSplitButtonConfirm',
     custom: 'custom',
 };
 
@@ -68,10 +67,6 @@ export const Setting = ({
                 <Icon name="arrow_forward_ios" className="button-icon" color={showAsDisabled ? 'disabled' : 'active'} onClick={onIncrease} />
             </div>
         );
-    };
-
-    const renderTextFieldWithSplitButton = () => {
-        return 'aaa';
     };
 
     const renderTextField = (currentValue = inputText, isDisabled, onChangeCallback, field, placeholderText, hasConfirm = false) => {
@@ -152,8 +147,6 @@ export const Setting = ({
                 return renderTextField(currentValue, isDisabled, onChangeCallback, field, placeholderText, false);
             case CONTROL_TYPES.textWithConfirm:
                 return renderTextField(currentValue, isDisabled, onChangeCallback, field, placeholderText, true);
-            case CONTROL_TYPES.textWithSplitButtonConfirm:
-                return renderTextFieldWithSplitButton(currentValue, isDisabled, onChangeCallback, field, placeholderText, true);
             default:
                 break;
         }
