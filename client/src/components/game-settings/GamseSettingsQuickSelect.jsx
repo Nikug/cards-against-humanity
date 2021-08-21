@@ -10,7 +10,7 @@ export const GameSettingsQuickSelect = ({ buttonsProps }) => {
     for (let i = 0, len = buttonsProps.length; i < len; i++) {
         const button = buttonsProps[i];
 
-        buttons.push(<Button {...button} />);
+        buttons.push(<Button key={i} {...button} />);
     }
 
     return <div className="game-settings-quick-select">{buttons}</div>;
