@@ -75,6 +75,32 @@
         }
     }
 
+    .game-settings-info {
+        display: flex;
+        flex-direction: row;
+
+        font-size: 0.9rem;
+        color: $icon-light-blue;
+
+        > .icon {
+            margin-right: 0.6em;
+        }
+
+        > .link:hover {
+            text-decoration: underline;
+        }
+    }
+
+    .game-settings-quick-select {
+        margin-top: 0.2em;
+
+        display: flex;
+        flex-direction: row;
+        justify-content: flex-end;
+        flex-wrap: wrap;
+        gap: 0.3em;
+    }
+
     &.disabled {
         user-select: none;
         cursor: default;

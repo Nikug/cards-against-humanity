@@ -8,6 +8,9 @@ import { translateCommon } from '../../helpers/translation-helpers';
 import { useTranslation } from 'react-i18next';
 import { GameSettingsHeader } from './GamseSettingsHeader';
 import { CANNOT_CHANGE, changeValue } from './gamesettingshelpers';
+import { GameSettingsInfo } from './GameSettingsInfo';
+import { GameSettingsQuickSelect } from './GamseSettingsQuickSelect';
+import { BUTTON_TYPES } from '../general/Button';
 
 export const GameSettings = ({ options, gameID, isDisabled, playerID }) => {
     const { t } = useTranslation();
@@ -273,6 +276,7 @@ export const GameSettings = ({ options, gameID, isDisabled, playerID }) => {
             </div>
             <div className="settings-block divider">
                 <GameSettingsHeader keyword={'cardDecks'} />
+                <GameSettingsInfo keyword={'cardDeckInstructions'} link={'https://allbad.cards/packs'} />
                 <Setting
                     DEV_CARD_PACK_AUTOFILL={false}
                     text={translateCommon('addCardDeck', t)}
@@ -286,7 +290,26 @@ export const GameSettings = ({ options, gameID, isDisabled, playerID }) => {
                         isDisabled: isDisabled,
                     }}
                 />
-                {/*<GameSettingsHeader keyword={"addedCardDecks"} />*/}
+                <GameSettingsQuickSelect
+                    buttonsProps={[
+                        {
+                            callback: addCardPack,
+                            callbackParams: 'qM1V1IaYBE',
+                            disabled: cardPacks && cardPacks.some((pack) => pack.id === 'qM1V1IaYBE'),
+                            icon: 'add_circle_outline',
+                            text: 'Autismipakka',
+                            type: BUTTON_TYPES.PRIMARY,
+                        },
+                        {
+                            callback: addCardPack,
+                            callbackParams: 'U4nL88ujS',
+                            disabled: cardPacks && cardPacks.some((pack) => pack.id === 'U4nL88ujS'),
+                            icon: 'add_circle_outline',
+                            text: 'The Coronavirus Box',
+                            type: BUTTON_TYPES.PRIMARY,
+                        },
+                    ]}
+                />
                 <div className="imported-card-packs">{renderedCardPacks.length === 0 ? translateCommon('noCardDecks', t) : renderedCardPacks}</div>
             </div>
         </>
