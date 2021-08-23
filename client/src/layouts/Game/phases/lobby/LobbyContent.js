@@ -6,7 +6,7 @@ import { GameSettingsHeader } from '../../../../components/game-settings/GamseSe
 import { AvatarCreator } from '../../../../components/game-settings/AvatarCreator';
 import { useGameContext } from '../../../../contexts/GameContext';
 
-export const LobbyContent = ({ disableStartGameButton, setPlayerName, startGame }) => {
+export const LobbyContent = ({ disableStartGameButton, setPlayerName, setPlayerAvatar, startGame }) => {
     const { game, player } = useGameContext();
 
     const isHost = player?.isHost;
@@ -16,7 +16,7 @@ export const LobbyContent = ({ disableStartGameButton, setPlayerName, startGame 
             <div className="lobby-container-grid">
                 <div className="settings-block">
                     <GameSettingsHeader plainText={'Avatar'} />
-                    <AvatarCreator />
+                    <AvatarCreator setPlayerAvatar={setPlayerAvatar}/>
                 </div>
                 <div className="settings-block">
                     <GameSettingsHeader keyword={'ownSettings'} />

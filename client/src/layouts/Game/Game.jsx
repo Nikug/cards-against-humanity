@@ -200,6 +200,19 @@ export const Game = ({ showDebug }) => {
         }
     };
 
+    const setPlayerAvatar = (avatar) => {
+      console.log("Change avatar");
+      /*
+      if (!!player?.id) {
+          socket.emit('set_player_avatar', {
+              gameID: game?.id,
+              playerID: player?.id,
+              playerName: avatar,
+          });
+      }
+      */
+    }
+
     const setPlayerName = (name) => {
         const cleanedName = name.trim();
 
