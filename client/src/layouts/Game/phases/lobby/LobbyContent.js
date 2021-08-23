@@ -8,9 +8,9 @@ import { useSelector } from 'react-redux';
 import { playerSelector } from '../../../../selectors/playerSelectors';
 import { gameSelector } from '../../../../selectors/gameSelectors';
 
-export const LobbyContent = ({ disableStartGameButton, setPlayerName, startGame }) => {
-    const player = useSelector(playerSelector);
-    const game = useSelector(gameSelector);
+export const LobbyContent = ({ disableStartGameButton, setPlayerName, setPlayerAvatar, startGame }) => {
+    const { game, player } = useGameContext();
+
     const isHost = player?.isHost;
 
     return (
@@ -18,7 +18,7 @@ export const LobbyContent = ({ disableStartGameButton, setPlayerName, startGame 
             <div className="lobby-container-grid">
                 <div className="settings-block">
                     <GameSettingsHeader plainText={'Avatar'} />
-                    <AvatarCreator />
+                    <AvatarCreator setPlayerAvatar={setPlayerAvatar} />
                 </div>
                 <div className="settings-block">
                     <GameSettingsHeader keyword={'ownSettings'} />

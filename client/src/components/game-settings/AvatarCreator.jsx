@@ -6,6 +6,9 @@ import { AvatarPicker } from './AvatarPicker';
 
 export const AvatarCreator = () => {
     const { t } = useTranslation();
+    const currentAvatar = 0;
+    const isDisabled = false;
+    const iconClassnames = 'icon-margin-right';
 
 
     const avatarChoices = {
