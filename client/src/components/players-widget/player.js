@@ -1,8 +1,7 @@
 import React, { useCallback, useState } from 'react';
 
-import { ActionButtonRow } from '../../layouts/Game/components/GameMenu/ActionButtonRow';
+import { ActionButtonRow, BUTTON_ROW_DIRECTION } from '../../layouts/Game/components/GameMenu/ActionButtonRow';
 import Icon from '../general/Icon';
-import { PopOverMenu } from '../popover-menu/PopoverMenu';
 import { animated } from 'react-spring';
 import crownIcon from './../../assets/svgicons/crown-svgrepo-com.svg';
 import { isPlayerHost } from '../../helpers/player-helpers';
@@ -20,13 +19,6 @@ export const Player = ({ name, state, score, isCardCzar, isHost, isPopularVoteKi
     const { player, game } = useGameContext();
     const noName = name === null || name === undefined;
     const [showTitle, setShowTitle] = useState(false);
-    const [menuIsOpen, setMenuIsOpen] = useState(false);
-
-    const toggleMenu = () => {
-        if (isPlayerHost(player)) {
-            setMenuIsOpen(!menuIsOpen);
-        }
-    };
 
     const nameRef = useCallback(
         (node) => {
@@ -89,7 +81,7 @@ export const Player = ({ name, state, score, isCardCzar, isHost, isPopularVoteKi
     };
 
     const playerElement = (
-        <div title={showTitle ? name : undefined} className={`player ${isCardCzar ? 'cardCzar' : ''}`} onClick={toggleMenu}>
+        <div title={showTitle ? name : undefined} className={`player ${isCardCzar ? 'cardCzar' : ''}`}>
             {isCardCzar && (
                 <div className="icon-anchor">
                     <img className="crown-icon" src={crownIcon} />
@@ -147,6 +139,7 @@ export const Player = ({ name, state, score, isCardCzar, isHost, isPopularVoteKi
                 <>
                     <span className="title">{name}</span>
                     <ActionButtonRow
+                        direction={BUTTON_ROW_DIRECTION.COLUMN}
                         buttons={[
                             {
                                 type: BUTTON_TYPES.PRIMARY,
