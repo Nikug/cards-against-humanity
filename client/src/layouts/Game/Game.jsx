@@ -207,7 +207,7 @@ export const Game = ({ showDebug }) => {
           socket.emit('set_player_avatar', {
               gameID: game?.id,
               playerID: player?.id,
-              playerName: avatar,
+              playerAvatar: avatar,
           });
       }
       */

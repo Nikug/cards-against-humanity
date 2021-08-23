@@ -17,6 +17,7 @@ export const AvatarCreator = ({setPlayerAvatar}) => {
             <Setting
                 commented-text={translateCommon('avatarCreator', t)}
                 text="Avatar"
+                commented-controlType={[CONTROL_TYPES.custom]}
                 controlType={[CONTROL_TYPES.number]}
                 onChangeCallback={setPlayerAvatar}
                 currentValue={[currentAvatar]}
