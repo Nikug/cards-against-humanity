@@ -10,6 +10,7 @@ import { translateCommon } from '../helpers/translation-helpers';
 import { useTranslation } from 'react-i18next';
 import { PopOverMenu } from './popover-menu/PopoverMenu';
 import { LanguageSelector } from './languageselector';
+import { UserSettings } from './usersettings';
 
 export const Header = (props) => {
     const { t } = useTranslation();
@@ -87,9 +88,8 @@ export const Header = (props) => {
                         <span className="header-button-text">{translateCommon('instructions', t)}</span>
                     </span>
                 </Link>
-                <span className="header-button" onClick={() => alert('Tästä aukeaa vielä joskus ehkä asetusvalikko')}>
-                    <Icon className="header-icon" name="settings" />
-                    <span className="header-button-text">{translateCommon('settings', t)}</span>
+                <span className="header-button">
+                    <UserSettings />
                 </span>
                 {game && pathName === `/g/${game.id}` && (
                     <Link to="/">
