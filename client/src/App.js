@@ -22,6 +22,10 @@ import { useTranslation } from 'react-i18next';
 import { WholePageLoader } from './components/WholePageLoader';
 import axios from 'axios';
 import i18n from './i18n';
+import { gameActionTypes, updateGame } from './actions/gameActions';
+import { updatePlayer } from './actions/playerActions';
+import { updatePlayersList } from './actions/playersListActions';
+import { useDispatch } from 'react-redux';
 
 export const App = () => {
     /*****************************************************************/ // Purely for hiding dev things from the production.
@@ -46,6 +50,8 @@ export const App = () => {
 
     const history = useHistory();
     const { t } = useTranslation();
+
+    const dispatch = useDispatch();
 
     function startNewGame() {
         axios.post('/g').then((res) => {
@@ -114,6 +120,7 @@ export const App = () => {
             'update_game_and_players',
             (data) => {
                 console.log('update_game_and_players', { data });
+
                 if (data.error) {
                     console.log('Received error from server:', data.error);
                     setLoading(false);
@@ -123,6 +130,10 @@ export const App = () => {
                     console.log('Should remove cookie');
                     deleteCookie('playerID');
                 } else {
+                    dispatch(updateGame(data, game));
+                    dispatch(updatePlayer(data.player));
+                    dispatch(updatePlayersList(data.players));
+
                     setGame((prevGame) => ({
                         ...prevGame,
                         ...data.game,
@@ -133,6 +144,7 @@ export const App = () => {
                         ...data.player,
                     }));
                     setCookie({ field: 'playerID', value: data.player.id });
+
                     history.push(`/g/${data.game.id}`);
                 }
                 setLoading(false);

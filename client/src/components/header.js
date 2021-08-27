@@ -1,5 +1,5 @@
 import { Link, useHistory, useLocation } from 'react-router-dom';
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 
 import Icon from './general/Icon';
 import { deleteCookie } from '../helpers/cookies';
@@ -10,13 +10,14 @@ import { translateCommon } from '../helpers/translation-helpers';
 import { useTranslation } from 'react-i18next';
 import { PopOverMenu } from './popover-menu/PopoverMenu';
 import { LanguageSelector } from './languageselector';
+import { useDispatch, useSelector } from 'react-redux';
+import { playerActionTypes } from '../actions/playerActions';
 
 export const Header = (props) => {
     const { t } = useTranslation();
     const text = translateCommon('cardsAgainstHumankind', t);
     const { game, player } = props;
 
-    const [menuIsOpen, setMenuIsOpen] = useState(false);
     const [showTitle, setShowTitle] = useState(false);
 
     const nameRef = useCallback(
@@ -38,14 +39,7 @@ export const Header = (props) => {
         [text]
     );
 
-    const toggleMenu = () => {
-        setMenuIsOpen(!menuIsOpen);
-    };
-
-    const history = useHistory();
     const pathName = useLocation().pathname;
-
-    console.log({ id: game?.id, pathName });
 
     const leaveGame = () => {
         deleteCookie('playerID');
@@ -55,7 +49,18 @@ export const Header = (props) => {
         });
         // props.reset();
         // history.push("/");
+
+        // dispatch({
+        //     type: playerActionTypes.UPDATE,
+        //     payload: { name: 'Nipa' },
+        // });
     };
+
+    const p = useSelector((state) => state.player);
+
+    useEffect(() => {
+        console.log('player is', p);
+    }, [p]);
 
     return (
         <div className="header">
