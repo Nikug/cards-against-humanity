@@ -1,16 +1,6 @@
-import { createStore, combineReducers, applyMiddleware } from 'redux';
+import { createStore, applyMiddleware } from 'redux';
 import logger from 'redux-logger';
 
-import player from './reducers/playerReducer';
-import game from './reducers/gameReducer';
-import players from './reducers/playersListReducer';
+import rootReducer from './reducers/rootReducer';
 
-export default createStore(
-    combineReducers({
-        player,
-        game,
-        players,
-    }),
-    {},
-    applyMiddleware(logger)
-);
+export default createStore(rootReducer, {}, applyMiddleware(logger));

@@ -22,9 +22,9 @@ import { useTranslation } from 'react-i18next';
 import { WholePageLoader } from './components/WholePageLoader';
 import axios from 'axios';
 import i18n from './i18n';
-import { gameActionTypes, updateGame } from './actions/gameActions';
-import { updatePlayer } from './actions/playerActions';
-import { updatePlayersList } from './actions/playersListActions';
+import { gameActionTypes, resetGame, updateGame } from './actions/gameActions';
+import { resetPlayer, updatePlayer } from './actions/playerActions';
+import { resetPlayersList, updatePlayersList } from './actions/playersListActions';
 import { useDispatch } from 'react-redux';
 
 export const App = () => {
@@ -42,7 +42,6 @@ export const App = () => {
     /*****************************************************************/
 
     const [game, setGame] = useState(undefined);
-    const [hasAcceptedCookies, setHasAcceptedCookies] = useState(true);
     const [loading, setLoading] = useState(true);
     const [notificationCount, setNotificationCount] = useState(0);
     const [notifications, setNotifications] = useState([]);
@@ -130,7 +129,7 @@ export const App = () => {
                     console.log('Should remove cookie');
                     deleteCookie('playerID');
                 } else {
-                    dispatch(updateGame(data, game));
+                    dispatch(updateGame(data.game));
                     dispatch(updatePlayer(data.player));
                     dispatch(updatePlayersList(data.players));
 
@@ -204,6 +203,10 @@ export const App = () => {
     };
 
     const resetData = () => {
+        dispatch(resetGame());
+        dispatch(resetPlayer());
+        dispatch(resetPlayersList());
+
         setPlayer(undefined);
         setGame(undefined);
     };
@@ -275,31 +278,6 @@ export const App = () => {
                     </div>
                 </div>
             </NotificationContextProvider>
-        );
-    }
-
-    if (hasAcceptedCookies === false) {
-        return (
-            <div
-                className="App mono-background"
-                style={{
-                    display: 'flex',
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    flexDirection: 'column',
-                }}
-            >
-                <div>{translateCommon('doYouAcceptCookies', t)}</div>
-                <div>
-                    <Button
-                        text={translateCommon('accept', t)}
-                        callback={() => {
-                            setItemToLocalStorage(LOCAL_STORAGE_FIELDS.HAS_ACCEPTED_COOKIES, 'true');
-                            setHasAcceptedCookies(true);
-                        }}
-                    />
-                </div>
-            </div>
         );
     }
 

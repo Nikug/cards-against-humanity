@@ -20,6 +20,11 @@ import { useNotification } from '../../contexts/NotificationContext';
 import { useTranslation } from 'react-i18next';
 import { classNames } from '../../helpers/classnames';
 import { GameMenuButtonRow } from './components/GameMenu/GameMenuButtonRow';
+import { useDispatch } from 'react-redux';
+import { updatePlayer } from '../../actions/playerActions';
+import { updateGame } from '../../actions/gameActions';
+import { updatePlayersList } from '../../actions/playersListActions';
+import { updateGameSettings } from '../../actions/gameSettingsActions';
 
 export const NAME_CHAR_LIMIT = 50;
 
@@ -58,6 +63,9 @@ export const Game = ({ showDebug }) => {
     const notificationParams = useNotification();
     const { fireNotification, notificationCount } = notificationParams;
 
+    // Dispacther
+    const dispatch = useDispatch();
+
     // States
     const [isLoading, setIsLoading] = useState(false);
     const [gameSettingsMenuOpen, setGameSettingsMenuOpen] = useState(false);
@@ -92,6 +100,10 @@ export const Game = ({ showDebug }) => {
         socketOn(
             'update_player',
             (data) => {
+                if (data.player) {
+                    dispatch(updatePlayer(data.player));
+                }
+
                 setCookie({ field: 'playerID', value: data.player.id });
                 updateData({ player: data.player });
             },
@@ -101,6 +113,10 @@ export const Game = ({ showDebug }) => {
         socketOn(
             'update_game',
             (data) => {
+                if (data.game) {
+                    dispatch(updateGame(data.game));
+                }
+
                 updateData({ game: data.game });
                 setIsLoading(false);
             },
@@ -110,6 +126,10 @@ export const Game = ({ showDebug }) => {
         socketOn(
             'update_players',
             (data) => {
+                if (data.players) {
+                    dispatch(updatePlayersList(data.players));
+                }
+
                 updateData({ players: data.players });
             },
             notificationParams
@@ -118,6 +138,10 @@ export const Game = ({ showDebug }) => {
         socketOn(
             'update_game_options',
             (data) => {
+                if (data.options) {
+                    dispatch(updateGameSettings(data.options));
+                }
+
                 updateData({ options: data.options });
             },
             notificationParams

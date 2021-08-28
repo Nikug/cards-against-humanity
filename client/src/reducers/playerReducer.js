@@ -1,12 +1,19 @@
 import { playerActionTypes } from '../actions/playerActions';
 
-const playerReducer = (state = { value: {}, state: null }, action) => {
+export const getInitialPlayerState = () => {
+    return { value: {}, state: null };
+};
+
+const playerReducer = (state = getInitialPlayerState(), action) => {
     switch (action.type) {
         case playerActionTypes.UPDATE:
             state = {
                 ...state,
                 value: { ...action.payload },
             };
+            break;
+        case playerActionTypes.RESET:
+            state = getInitialPlayerState();
             break;
     }
     return state;
