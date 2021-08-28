@@ -96,7 +96,6 @@ export const Setting = ({
     };
 
     const handleTextFieldChange = (event, field, changeCallback) => {
-        console.log({ changeCallback });
         if (!event) {
             if (field) {
                 changeCallback({ field, value: inputText });

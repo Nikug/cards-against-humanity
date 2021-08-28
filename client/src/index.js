@@ -35,14 +35,3 @@ ReactDOM.render(
 // unregister() to register() below. Note this comes with some pitfalls.
 // Learn more about service workers: https://bit.ly/CRA-PWA
 serviceWorker.unregister();
-
-/*
-store.subscribe(() => {
-    console.log('State after dispatch', store.getState());
-});
-
-store.dispatch({
-    type: gameActionTypes.UPDATE,
-    payload: { aaa: 'aaa' },
-});
-*/

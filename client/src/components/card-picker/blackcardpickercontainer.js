@@ -5,22 +5,23 @@ import { CardPicker } from './cardpicker';
 import { socket } from '../sockets/socket';
 import { translateCommon } from '../../helpers/translation-helpers';
 import { useTranslation } from 'react-i18next';
-import { useGameContext } from '../../contexts/GameContext';
+import { useSelector } from 'react-redux';
+import { gameIdSelector } from '../../selectors/gameSelectors';
+import { playerIdSelector } from '../../selectors/playerSelectors';
 
 export const BlackCardPickerContainer = ({ blackCards }) => {
-    const { game, player } = useGameContext();
     const { t } = useTranslation();
 
+    // State
+    const gameID = useSelector(gameIdSelector);
+    const playerID = useSelector(playerIdSelector);
     const [selectedCards, setSelectedCards] = useState([]);
     const [confirmedCards, setConfirmedCards] = useState([]);
 
+    const pickLimit = 1; // Always select just one black card
+
     const selectCard = (card) => {
         const newSelectedCards = selectedCards.slice();
-        let pickLimit = 1;
-
-        if (isNullOrUndefined(card.whiteCardsToPlay)) {
-            pickLimit = game.rounds[game.rounds.length - 1].blackCard.whiteCardsToPlay;
-        }
 
         const i = containsObjectWithMatchingFieldIndex(card, newSelectedCards, 'id');
 
@@ -37,10 +38,8 @@ export const BlackCardPickerContainer = ({ blackCards }) => {
     };
 
     const confirmCard = () => {
-        if (selectedCards.length === 1) {
+        if (selectedCards.length === pickLimit) {
             const cardID = selectedCards[0].id;
-            const gameID = game?.id;
-            const playerID = player?.id;
 
             socket.emit('select_black_card', {
                 gameID: gameID,
@@ -63,7 +62,7 @@ export const BlackCardPickerContainer = ({ blackCards }) => {
                 confirmCards={confirmCard}
                 confirmedCards={confirmedCards}
                 description={translateCommon('chooseBlackCard', t)}
-                disableConfirmButton={cardsHaveBeenConfirmed || selectedCards.length !== 1}
+                disableConfirmButton={cardsHaveBeenConfirmed || selectedCards.length !== pickLimit}
                 noBigMainCard={true}
                 pickingBlackCard={true}
                 selectableCards={blackCards}

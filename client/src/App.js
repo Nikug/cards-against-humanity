@@ -26,6 +26,7 @@ import { gameActionTypes, resetGame, updateGame } from './actions/gameActions';
 import { resetPlayer, updatePlayer } from './actions/playerActions';
 import { resetPlayersList, updatePlayersList } from './actions/playersListActions';
 import { useDispatch } from 'react-redux';
+import { resetGameSettings, updateGameSettings } from './actions/gameSettingsActions';
 
 export const App = () => {
     /*****************************************************************/ // Purely for hiding dev things from the production.
@@ -75,7 +76,6 @@ export const App = () => {
 
     const fireNotification = (newNotification, timeInSeconds = 4) => {
         const id = getNewId();
-        console.log({ id });
 
         setNotifications((prevValue) => [...prevValue, { ...newNotification, id }]);
 
@@ -93,7 +93,6 @@ export const App = () => {
 
     const hideNotification = (id) => {
         const newList = notifications.slice();
-        console.log({ notifications, id });
 
         for (let i = 0, len = notifications.length; i < len; i++) {
             const notification = notifications[i];
@@ -118,18 +117,16 @@ export const App = () => {
         socketOn(
             'update_game_and_players',
             (data) => {
-                console.log('update_game_and_players', { data });
-
                 if (data.error) {
                     console.log('Received error from server:', data.error);
                     setLoading(false);
                     return;
                 }
                 if (isNullOrUndefined(data.game)) {
-                    console.log('Should remove cookie');
                     deleteCookie('playerID');
                 } else {
                     dispatch(updateGame(data.game));
+                    dispatch(updateGameSettings(data.game.options));
                     dispatch(updatePlayer(data.player));
                     dispatch(updatePlayersList(data.players));
 
@@ -184,7 +181,6 @@ export const App = () => {
     }, []);
 
     const updateData = (data) => {
-        console.log('updateData', { data });
         if (data.player) {
             setPlayer((prevPlayer) => ({ ...prevPlayer, ...data.player }));
         }
@@ -204,6 +200,7 @@ export const App = () => {
 
     const resetData = () => {
         dispatch(resetGame());
+        dispatch(resetGameSettings());
         dispatch(resetPlayer());
         dispatch(resetPlayersList());
 

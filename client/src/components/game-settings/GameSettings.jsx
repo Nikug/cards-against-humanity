@@ -14,10 +14,11 @@ import { BUTTON_TYPES } from '../general/Button';
 import { useSelector } from 'react-redux';
 import { gameIdSelector } from '../../selectors/gameSelectors';
 import { playerIdSelector } from '../../selectors/playerSelectors';
+import { gameSettingsSelector } from '../../selectors/gameSettingsSelectors';
 
 export const GameSettings = ({ isDisabled }) => {
     // State
-    const options = useSelector((state) => state.gameSettings.value);
+    const options = useSelector(gameSettingsSelector);
     const gameID = useSelector(gameIdSelector);
     const playerID = useSelector(playerIdSelector);
 

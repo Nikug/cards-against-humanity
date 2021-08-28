@@ -1,15 +1,17 @@
-import { BUTTON_TYPES, Button } from '../general/Button';
+import { BUTTON_TYPES } from '../general/Button';
 import { containsObjectWithMatchingField, emptyFn, isNullOrUndefined } from '../../helpers/generalhelpers';
 
 import React from 'react';
-import { isPlayerJoining } from '../../helpers/player-helpers';
 import { renderBlackCardwithWhiteCards } from './cardformathelpers/renderBlackcardWithWhiteCards';
 import { translateCommon } from '../../helpers/translation-helpers';
-import { useGameContext } from '../../contexts/GameContext';
 import { useTranslation } from 'react-i18next';
 import { Card } from './card';
 import { classNames } from '../../helpers/classnames';
 import { CardPickerActionButton } from './components/CardPickerActionButton';
+import { useSelector } from 'react-redux';
+import { playerIsJoiningSelector } from '../../selectors/playerSelectors';
+import { gameRoundNumberSelector, gameStreakSelector } from '../../selectors/gameSelectors';
+import { gameSettingsRoundLimitSelector, gameSettingsUseRoundLimitSelector } from '../../selectors/gameSettingsSelectors';
 
 export const CardPicker = ({
     alternativeText,
@@ -39,7 +41,14 @@ export const CardPicker = ({
     topText,
 }) => {
     const { t } = useTranslation();
-    const { game, player } = useGameContext();
+
+    // TODO: Refactor these out of this component, provide as props?
+    const isJoining = useSelector(playerIsJoiningSelector);
+    const roundNumber = useSelector(gameRoundNumberSelector);
+    const roundLimit = useSelector(gameSettingsRoundLimitSelector);
+    const useRoundLimit = useSelector(gameSettingsUseRoundLimitSelector);
+    const streak = useSelector(gameStreakSelector);
+    const streakCount = streak?.wins;
 
     const renderedCards = preRenderedCards.slice();
     const selectableCardsLength = selectableCards ? selectableCards.length : 0;
@@ -138,12 +147,6 @@ export const CardPicker = ({
         }
         buttonIcons = customButtonIcons;
     }
-
-    const roundNumber = game?.rounds?.length;
-    const roundLimit = game?.options?.winConditions?.roundLimit;
-    const useRoundLimit = game?.options?.winConditions?.useRoundLimit;
-    const streak = game?.streak;
-    const streakCount = game?.streak?.wins;
     let streakEmojies = '';
 
     if (streakCount > 1) {
@@ -168,7 +171,7 @@ export const CardPicker = ({
             </div>
         );
     }
-    if (isPlayerJoining(player)) {
+    if (isJoining) {
         alternativeTextContent.push(
             <div className="alternativetext" key="joining-text">
                 {translateCommon('youGetToPlayOnNextRound', t)}!

@@ -25,8 +25,11 @@ export const sendNotification = (
 ) => {
     if (options.io && options.gameID) {
         options.io.in(options.gameID).emit("notification", {
-            notification: message,
-            type: type,
+            notification: {
+                text: message,
+                type: type,
+                time: NOTIFICATION_TIME
+            }
         });
     } else if (options.socket) {
         options.socket.emit("notification", {

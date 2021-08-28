@@ -19,12 +19,16 @@ import { useNotification } from '../../contexts/NotificationContext';
 import { useTranslation } from 'react-i18next';
 import { classNames } from '../../helpers/classnames';
 import { GameMenuButtonRow } from './components/GameMenu/GameMenuButtonRow';
-import { shallowEqual, useDispatch, useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { updatePlayer } from '../../actions/playerActions';
 import { updateGame } from '../../actions/gameActions';
 import { updatePlayersList } from '../../actions/playersListActions';
 import { updateGameSettings } from '../../actions/gameSettingsActions';
 import { hasTimerInUse } from './helpers/hasTimerInUse';
+import { gameIdSelector, gameSelector, gameStateSelector } from '../../selectors/gameSelectors';
+import { playerSelector } from '../../selectors/playerSelectors';
+import { playersListSelector } from '../../selectors/playersListSelectors';
+import { gameSettingsSelector } from '../../selectors/gameSettingsSelectors';
 
 export const NAME_CHAR_LIMIT = 50;
 
@@ -35,18 +39,14 @@ export const Game = ({ showDebug }) => {
     const notificationParams = useNotification();
     const { fireNotification, notificationCount } = notificationParams;
 
-    const player = useSelector((state) => state.player.value, shallowEqual);
-    const game = useSelector((state) => state.game.value, shallowEqual);
-    const players = useSelector((state) => state.players.value, shallowEqual);
-
-    const gameID = useSelector((state) => state.game.value.id);
-    const gameState = useSelector((state) => state.game.value?.state);
-    const timerOptions = useSelector((state) => state.gameSettings.value?.timers);
-
-    useEffect(() => {
-        console.log('player is', { player });
-    }, [player]);
     // State
+    const player = useSelector(playerSelector);
+    const game = useSelector(gameSelector);
+    const players = useSelector(playersListSelector);
+    const options = useSelector(gameSettingsSelector);
+    const gameID = useSelector(gameIdSelector);
+    const gameState = useSelector(gameStateSelector);
+    const timerOptions = useSelector((state) => state.gameSettings.value?.timers);
 
     // Dispacther
     const dispatch = useDispatch();
@@ -76,7 +76,6 @@ export const Game = ({ showDebug }) => {
                 socket.open();
             }
 
-            console.log('joining game');
             socket.emit('join_game', {
                 gameID: getGameIdFromURL(),
                 playerID: cookie,
@@ -103,6 +102,7 @@ export const Game = ({ showDebug }) => {
             (data) => {
                 if (data.game) {
                     dispatch(updateGame(data.game));
+                    dispatch(updateGameSettings(data.game.options));
                 }
 
                 updateData({ game: data.game });
@@ -275,6 +275,7 @@ export const Game = ({ showDebug }) => {
         game,
         player,
         players,
+        options,
         blackCards,
         popularVotedCardsIDs,
     };

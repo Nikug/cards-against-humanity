@@ -1,18 +1,17 @@
 import React, { useCallback, useState } from 'react';
+import { useSelector } from 'react-redux';
+import { socket } from '../sockets/socket';
+
+import { useTransition } from 'react-spring';
+import { animated } from 'react-spring';
+import { useTranslation } from 'react-i18next';
+import Tippy from '@tippyjs/react';
 
 import { ActionButtonRow, BUTTON_ROW_DIRECTION } from '../../layouts/Game/components/GameMenu/ActionButtonRow';
 import Icon from '../general/Icon';
-import { animated } from 'react-spring';
 import crownIcon from './../../assets/svgicons/crown-svgrepo-com.svg';
-import { isPlayerHost } from '../../helpers/player-helpers';
-import { socket } from './../sockets/socket';
 import { translateCommon } from '../../helpers/translation-helpers';
-import { useGameContext } from '../../contexts/GameContext';
-import { useTransition } from 'react-spring';
-import { useTranslation } from 'react-i18next';
-import Tippy from '@tippyjs/react';
 import { BUTTON_TYPES } from '../general/Button';
-import { useSelector } from 'react-redux';
 import { playerIdSelector, playerIsHostSelector } from '../../selectors/playerSelectors';
 import { gameIdSelector } from '../../selectors/gameSelectors';
 
@@ -23,8 +22,9 @@ export const Player = ({ name, state, score, isCardCzar, isHost, isPopularVoteKi
     const isSelfHost = useSelector(playerIsHostSelector);
     const selfID = useSelector(playerIdSelector);
     const gameID = useSelector(gameIdSelector);
-    const noName = name === null || name === undefined;
     const [showTitle, setShowTitle] = useState(false);
+
+    const noName = name === null || name === undefined;
 
     const nameRef = useCallback(
         (node) => {
