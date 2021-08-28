@@ -7,8 +7,7 @@ import './index.scss';
 import { Button } from './components/general/Button';
 import { Footer } from './components/footer/Footer';
 import { Game } from './layouts/Game/Game';
-import { GameContextProvider } from './contexts/GameContext';
-import { getItemFromLocalStorage, LOCAL_STORAGE_FIELDS, removeItemFromLocalStorage, setItemToLocalStorage } from './helpers/localstoragehelpers';
+import { getItemFromLocalStorage, LOCAL_STORAGE_FIELDS, removeItemFromLocalStorage } from './helpers/localstoragehelpers';
 import { Header } from './components/header';
 import { Home } from './layouts/Home/Home';
 import { Instructions } from './layouts/Instructions';
@@ -22,7 +21,7 @@ import { useTranslation } from 'react-i18next';
 import { WholePageLoader } from './components/WholePageLoader';
 import axios from 'axios';
 import i18n from './i18n';
-import { gameActionTypes, resetGame, updateGame } from './actions/gameActions';
+import { resetGame, updateGame } from './actions/gameActions';
 import { resetPlayer, updatePlayer } from './actions/playerActions';
 import { resetPlayersList, updatePlayersList } from './actions/playersListActions';
 import { useDispatch } from 'react-redux';
@@ -42,11 +41,9 @@ export const App = () => {
     };
     /*****************************************************************/
 
-    const [game, setGame] = useState(undefined);
     const [loading, setLoading] = useState(true);
     const [notificationCount, setNotificationCount] = useState(0);
     const [notifications, setNotifications] = useState([]);
-    const [player, setPlayer] = useState(undefined);
 
     const history = useHistory();
     const { t } = useTranslation();
@@ -130,15 +127,6 @@ export const App = () => {
                     dispatch(updatePlayer(data.player));
                     dispatch(updatePlayersList(data.players));
 
-                    setGame((prevGame) => ({
-                        ...prevGame,
-                        ...data.game,
-                        players: data.players,
-                    }));
-                    setPlayer((prevPlayer) => ({
-                        ...prevPlayer,
-                        ...data.player,
-                    }));
                     setCookie({ field: 'playerID', value: data.player.id });
 
                     history.push(`/g/${data.game.id}`);
@@ -170,7 +158,7 @@ export const App = () => {
     useEffect(() => {
         const playerID = getItemFromLocalStorage(LOCAL_STORAGE_FIELDS.PLAYER_ID);
 
-        if (!isNullOrUndefined(player)) {
+        if (!isNullOrUndefined(playerID)) {
             socket.emit('join_game', {
                 playerID,
             });
@@ -180,32 +168,11 @@ export const App = () => {
         }
     }, []);
 
-    const updateData = (data) => {
-        if (data.player) {
-            setPlayer((prevPlayer) => ({ ...prevPlayer, ...data.player }));
-        }
-        if (data.game) {
-            setGame((prevGame) => ({ ...prevGame, ...data.game }));
-        }
-        if (data.options) {
-            setGame((prevGame) => ({ ...prevGame, options: data.options }));
-        }
-        if (data.players) {
-            setGame((prevGame) => ({ ...prevGame, players: data.players }));
-        }
-        if (data.timers) {
-            setGame((prevGame) => ({ ...prevGame, timers: data.timers }));
-        }
-    };
-
     const resetData = () => {
         dispatch(resetGame());
         dispatch(resetGameSettings());
         dispatch(resetPlayer());
         dispatch(resetPlayersList());
-
-        setPlayer(undefined);
-        setGame(undefined);
     };
 
     const notificationsToRender = [];
@@ -234,21 +201,7 @@ export const App = () => {
                                 <Switch>
                                     <Route exact path="/" render={() => <Home startNewGame={startNewGame} joinExistingGame={joinExistingGame} />} />
                                     <Route path="/instructions" render={() => <Instructions path={'/instructions'} />} />
-                                    <Route
-                                        exact
-                                        path="/g/:id"
-                                        render={() => (
-                                            <GameContextProvider
-                                                value={{
-                                                    game,
-                                                    player,
-                                                    updateData,
-                                                }}
-                                            >
-                                                <Game showDebug={showDebug} />
-                                            </GameContextProvider>
-                                        )}
-                                    />
+                                    <Route exact path="/g/:id" render={() => <Game showDebug={showDebug} />} />
                                     <Route
                                         exact
                                         path="/support-us"

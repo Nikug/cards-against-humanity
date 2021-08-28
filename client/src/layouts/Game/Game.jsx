@@ -14,14 +14,13 @@ import { WholePageLoader } from '../../components/WholePageLoader.jsx';
 import { getGamePhaseContent } from './getGamePhaseContent';
 import { socket } from '../../components/sockets/socket';
 import { socketOn } from '../../helpers/communicationhelpers';
-import { useGameContext } from '../../contexts/GameContext';
 import { useNotification } from '../../contexts/NotificationContext';
 import { useTranslation } from 'react-i18next';
 import { classNames } from '../../helpers/classnames';
 import { GameMenuButtonRow } from './components/GameMenu/GameMenuButtonRow';
 import { useDispatch, useSelector } from 'react-redux';
 import { updatePlayer } from '../../actions/playerActions';
-import { updateGame } from '../../actions/gameActions';
+import { updateGame, updateGameTimers } from '../../actions/gameActions';
 import { updatePlayersList } from '../../actions/playersListActions';
 import { updateGameSettings } from '../../actions/gameSettingsActions';
 import { hasTimerInUse } from './helpers/hasTimerInUse';
@@ -33,9 +32,11 @@ import { gameSettingsSelector } from '../../selectors/gameSettingsSelectors';
 export const NAME_CHAR_LIMIT = 50;
 
 export const Game = ({ showDebug }) => {
+    // Hooks
     const { t } = useTranslation();
+    const dispatch = useDispatch();
+
     // Contexts
-    const { updateData } = useGameContext();
     const notificationParams = useNotification();
     const { fireNotification, notificationCount } = notificationParams;
 
@@ -47,9 +48,6 @@ export const Game = ({ showDebug }) => {
     const gameID = useSelector(gameIdSelector);
     const gameState = useSelector(gameStateSelector);
     const timerOptions = useSelector((state) => state.gameSettings.value?.timers);
-
-    // Dispacther
-    const dispatch = useDispatch();
 
     // States
     const [isLoading, setIsLoading] = useState(false);
@@ -92,7 +90,6 @@ export const Game = ({ showDebug }) => {
                 }
 
                 setCookie({ field: 'playerID', value: data.player.id });
-                updateData({ player: data.player });
             },
             notificationParams
         );
@@ -105,7 +102,6 @@ export const Game = ({ showDebug }) => {
                     dispatch(updateGameSettings(data.game.options));
                 }
 
-                updateData({ game: data.game });
                 setIsLoading(false);
             },
             notificationParams
@@ -117,8 +113,6 @@ export const Game = ({ showDebug }) => {
                 if (data.players) {
                     dispatch(updatePlayersList(data.players));
                 }
-
-                updateData({ players: data.players });
             },
             notificationParams
         );
@@ -129,8 +123,6 @@ export const Game = ({ showDebug }) => {
                 if (data.options) {
                     dispatch(updateGameSettings(data.options));
                 }
-
-                updateData({ options: data.options });
             },
             notificationParams
         );
@@ -146,7 +138,9 @@ export const Game = ({ showDebug }) => {
         socketOn(
             'update_timers',
             (data) => {
-                updateData({ timers: data.timers });
+                if (data.timers) {
+                    dispatch(updateGameTimers(data.timers));
+                }
             },
             notificationParams
         );
@@ -168,7 +162,7 @@ export const Game = ({ showDebug }) => {
             socket.off('deal_black_cards');
             socket.off('send_popular_voted_cards');
         };
-    }, [notificationParams, fireNotification, notificationCount, updateData]);
+    }, [notificationParams, fireNotification, notificationCount]);
 
     useEffect(() => {
         if (game?.timers?.passedTime && game?.timers?.duration) {
