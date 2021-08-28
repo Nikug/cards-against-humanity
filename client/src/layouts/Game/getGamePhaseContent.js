@@ -17,14 +17,22 @@ import { getRandomSpinner } from '../../components/spinner';
 import { translateCommon } from '../../helpers/translation-helpers';
 import { useGameContext } from '../../contexts/GameContext';
 
-export const getGamePhaseContent = ({ t, game, player, callbacks: { setPlayerName, givePopularVote, startGame }, blackCards, popularVotedCardsIDs }) => {
+export const getGamePhaseContent = ({
+    t,
+    game,
+    player,
+    players,
+    callbacks: { setPlayerName, givePopularVote, startGame },
+    blackCards,
+    popularVotedCardsIDs,
+}) => {
     const gameState = game?.state;
     const playerState = player?.state;
-    const disableStartGameButton = !canStartGame(game);
+    const disableStartGameButton = !canStartGame(game, players);
     const isCardCzar = isPlayerCardCzar(player);
     const isSpectator = isPlayerSpectatorOrJoining(player);
 
-    if (!game || !player) {
+    if (!game?.id || !player?.id) {
         return (
             <div
                 style={{

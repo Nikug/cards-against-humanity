@@ -6,13 +6,12 @@ import { GameSettingsContainer } from '../../components/game-settings/gamesettin
 import { HistoryContainer } from './components/GameMenu/history/HistoryContainer';
 import { LayerMenu } from '../../components/layer-menu/LayerMenu';
 import { PLAYER_STATES } from '../../consts/playerstates';
-import { PlayersWidget } from '../../components/players-widget/playerswidget';
+import { PlayersWidget } from '../../components/players-widget/PlayersWidget';
 import { SpectatorsInfo } from './components/SpectatorsInfo/SpectatorsInfo';
 import { Timer } from '../../components/timer';
 import { TimerV2 } from '../../components/Timer/timerV2';
 import { WholePageLoader } from '../../components/WholePageLoader.jsx';
 import { getGamePhaseContent } from './getGamePhaseContent';
-import { isNullOrUndefined } from '../../helpers/generalhelpers';
 import { socket } from '../../components/sockets/socket';
 import { socketOn } from '../../helpers/communicationhelpers';
 import { useGameContext } from '../../contexts/GameContext';
@@ -20,48 +19,34 @@ import { useNotification } from '../../contexts/NotificationContext';
 import { useTranslation } from 'react-i18next';
 import { classNames } from '../../helpers/classnames';
 import { GameMenuButtonRow } from './components/GameMenu/GameMenuButtonRow';
-import { useDispatch } from 'react-redux';
+import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import { updatePlayer } from '../../actions/playerActions';
 import { updateGame } from '../../actions/gameActions';
 import { updatePlayersList } from '../../actions/playersListActions';
 import { updateGameSettings } from '../../actions/gameSettingsActions';
+import { hasTimerInUse } from './helpers/hasTimerInUse';
 
 export const NAME_CHAR_LIMIT = 50;
-
-const hasTimerInUse = (game) => {
-    const gameState = game?.state;
-    const timers = game?.options?.timers;
-
-    if (isNullOrUndefined(gameState) || isNullOrUndefined(timers)) {
-        return false;
-    }
-
-    switch (gameState) {
-        case GAME_STATES.LOBBY:
-            return false;
-        case GAME_STATES.PICKING_BLACK_CARD:
-            return timers.useSelectBlackCard;
-        case GAME_STATES.PLAYING_WHITE_CARDS:
-            return timers.useSelectWhiteCards;
-        case GAME_STATES.READING_CARDS:
-            return timers.useReadBlackCard;
-        case GAME_STATES.SHOWING_CARDS:
-            return timers.useSelectWinner;
-        case GAME_STATES.ROUND_END:
-            return timers.useRoundEnd;
-        case GAME_STATES.GAME_OVER:
-            return false;
-        default:
-            return false;
-    }
-};
 
 export const Game = ({ showDebug }) => {
     const { t } = useTranslation();
     // Contexts
-    const { game, player, updateData } = useGameContext();
+    const { updateData } = useGameContext();
     const notificationParams = useNotification();
     const { fireNotification, notificationCount } = notificationParams;
+
+    const player = useSelector((state) => state.player.value, shallowEqual);
+    const game = useSelector((state) => state.game.value, shallowEqual);
+    const players = useSelector((state) => state.players.value, shallowEqual);
+
+    const gameID = useSelector((state) => state.game.value.id);
+    const gameState = useSelector((state) => state.game.value?.state);
+    const timerOptions = useSelector((state) => state.gameSettings.value?.timers);
+
+    useEffect(() => {
+        console.log('player is', { player });
+    }, [player]);
+    // State
 
     // Dispacther
     const dispatch = useDispatch();
@@ -76,25 +61,28 @@ export const Game = ({ showDebug }) => {
     const [popularVotedCardsIDs, setPopularVotedCardsIDs] = useState([]);
 
     // Common consts
-    const isSpectator = player ? player.state === 'spectating' : false;
-    const isLobby = game?.state === GAME_STATES.LOBBY;
+    const isLobby = gameState === GAME_STATES.LOBBY;
 
     // useEffects
     useEffect(() => {
         setIsLoading(false);
-        if (game === undefined) {
+
+        if (!gameID) {
             setIsLoading(true);
+
             const cookie = getCookie('playerID');
+
             if (socket.disconnected) {
-                console.log('opening socket');
                 socket.open();
             }
+
+            console.log('joining game');
             socket.emit('join_game', {
                 gameID: getGameIdFromURL(),
                 playerID: cookie,
             });
         }
-    }, [game, player]);
+    }, [gameID]);
 
     useEffect(() => {
         socketOn(
@@ -183,7 +171,7 @@ export const Game = ({ showDebug }) => {
     }, [notificationParams, fireNotification, notificationCount, updateData]);
 
     useEffect(() => {
-        if (game?.timers.passedTime && game?.timers.duration) {
+        if (game?.timers?.passedTime && game?.timers?.duration) {
             const { passedTime, duration } = game.timers;
             let currentProgress = (passedTime + 0.1) / duration;
             currentProgress = currentProgress < 0.01 ? 0 : currentProgress;
@@ -286,13 +274,14 @@ export const Game = ({ showDebug }) => {
         },
         game,
         player,
+        players,
         blackCards,
         popularVotedCardsIDs,
     };
 
     const renderedContent = getGamePhaseContent(contentProps);
     const hasProgressInTimer = !isLobby && timerIsOn;
-    const hasTimer = hasTimerInUse(game);
+    const hasTimer = hasTimerInUse(gameState, timerOptions);
 
     return (
         <>
@@ -322,7 +311,7 @@ export const Game = ({ showDebug }) => {
                     showDebug={showDebug}
                 />
                 <div className="info">
-                    <PlayersWidget game={game} player={player} />
+                    <PlayersWidget />
                 </div>
             </div>
             <div className="game-wrapper-2">
@@ -332,7 +321,7 @@ export const Game = ({ showDebug }) => {
                             width={100}
                             percent={!hasTimer ? 0 : timerIsOn ? 1 : 0}
                             startingPercent={!hasTimer ? 0 : startingProgress}
-                            time={game?.timers.duration ?? 0}
+                            time={game?.timers?.duration ?? 0}
                             empty={!hasTimer}
                         />
                     )}

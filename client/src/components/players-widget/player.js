@@ -12,11 +12,17 @@ import { useTransition } from 'react-spring';
 import { useTranslation } from 'react-i18next';
 import Tippy from '@tippyjs/react';
 import { BUTTON_TYPES } from '../general/Button';
+import { useSelector } from 'react-redux';
+import { playerIdSelector, playerIsHostSelector } from '../../selectors/playerSelectors';
+import { gameIdSelector } from '../../selectors/gameSelectors';
 
 export const Player = ({ name, state, score, isCardCzar, isHost, isPopularVoteKing, isSelf, publicID }) => {
     const { t } = useTranslation();
 
-    const { player, game } = useGameContext();
+    // State
+    const isSelfHost = useSelector(playerIsHostSelector);
+    const selfID = useSelector(playerIdSelector);
+    const gameID = useSelector(gameIdSelector);
     const noName = name === null || name === undefined;
     const [showTitle, setShowTitle] = useState(false);
 
@@ -69,8 +75,8 @@ export const Player = ({ name, state, score, isCardCzar, isHost, isPopularVoteKi
 
     const removePlayer = (removeFromGame = true) => {
         socket.emit('kick_player', {
-            gameID: game?.id,
-            playerID: player?.id,
+            gameID,
+            playerID: selfID,
             targetID: publicID,
             removeFromGame: removeFromGame,
         });
@@ -126,7 +132,7 @@ export const Player = ({ name, state, score, isCardCzar, isHost, isPopularVoteKi
         </div>
     );
 
-    return isPlayerHost(player) ? (
+    return isSelfHost && !isSelf ? (
         <Tippy
             trigger={'click'}
             duration={[100, 0]}

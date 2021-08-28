@@ -11,9 +11,19 @@ import { CANNOT_CHANGE, changeValue } from './gamesettingshelpers';
 import { GameSettingsInfo } from './GameSettingsInfo';
 import { GameSettingsQuickSelect } from './GamseSettingsQuickSelect';
 import { BUTTON_TYPES } from '../general/Button';
+import { useSelector } from 'react-redux';
+import { gameIdSelector } from '../../selectors/gameSelectors';
+import { playerIdSelector } from '../../selectors/playerSelectors';
 
-export const GameSettings = ({ options, gameID, isDisabled, playerID }) => {
+export const GameSettings = ({ isDisabled }) => {
+    // State
+    const options = useSelector((state) => state.gameSettings.value);
+    const gameID = useSelector(gameIdSelector);
+    const playerID = useSelector(playerIdSelector);
+
+    // Hooks
     const { t } = useTranslation();
+
     const updateOptions = (key, value) => {
         if (!playerID || !gameID) return;
         if (value === undefined) return;
@@ -111,7 +121,7 @@ export const GameSettings = ({ options, gameID, isDisabled, playerID }) => {
         const renderedCardPacks = [];
 
         if (!cardPacks) {
-            return;
+            return renderedCardPacks;
         }
 
         cardPacks.forEach((cardPack) => {
@@ -139,8 +149,8 @@ export const GameSettings = ({ options, gameID, isDisabled, playerID }) => {
         useSelectBlackCard,
         useSelectWhiteCards,
         useSelectWinner,
-    } = options.timers;
-    const { roundLimit, scoreLimit, useRoundLimit, useScoreLimit } = winConditions;
+    } = options?.timers || {};
+    const { roundLimit, scoreLimit, useRoundLimit, useScoreLimit } = winConditions || {};
 
     return (
         <>

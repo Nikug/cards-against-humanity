@@ -8,54 +8,62 @@ import { Spinner } from '../spinner';
 import { isNullOrUndefined } from '../../helpers/generalhelpers';
 import { translateCommon } from '../../helpers/translation-helpers';
 import { useTranslation } from 'react-i18next';
+import { useSelector } from 'react-redux';
+import { playerSelector } from '../../selectors/playerSelectors';
+import { playersListSelector } from '../../selectors/playersListSelectors';
 
-export const PlayersWidget = ({ game, player }) => {
+const renderPlayers = (players, self) => {
+    const renderedPlayers = [];
+    const ownId = self?.id;
+
+    for (let i = 0, len = players.length; i < len; i++) {
+        const player = players[i];
+        const { id, isCardCzar, isHost, isPopularVoteKing, name, publicID, score, state } = player;
+
+        renderedPlayers.push(
+            <Player
+                isCardCzar={isCardCzar}
+                isHost={isHost}
+                isPopularVoteKing={isPopularVoteKing}
+                isSelf={!isNullOrUndefined(ownId) && id === ownId}
+                key={publicID}
+                name={state === PLAYER_STATES.PICKING_NAME ? null : name}
+                player={player}
+                publicID={publicID}
+                score={score}
+                state={state}
+            />
+        );
+    }
+
+    return renderedPlayers;
+};
+
+export const PlayersWidget = () => {
     const { t } = useTranslation();
+
+    // State
+    const player = useSelector(playerSelector);
+    const players = useSelector(playersListSelector);
 
     let otherContent = null;
 
-    const renderPlayers = (players, self) => {
-        const renderedPlayers = [];
-        const ownId = self?.id;
-
-        for (let i = 0, len = players.length; i < len; i++) {
-            const player = players[i];
-            const { id, isCardCzar, isHost, isPopularVoteKing, name, publicID, score, state } = player;
-
-            renderedPlayers.push(
-                <Player
-                    isCardCzar={isCardCzar}
-                    isHost={isHost}
-                    isPopularVoteKing={isPopularVoteKing}
-                    isSelf={!isNullOrUndefined(ownId) && id === ownId}
-                    key={publicID}
-                    name={state === PLAYER_STATES.PICKING_NAME ? null : name}
-                    player={player}
-                    publicID={publicID}
-                    score={score}
-                    state={state}
-                />
-            );
-        }
-
-        return renderedPlayers;
-    };
-
     // Player animation
 
-    let playersToRender = game?.players || [];
+    let playersToRender = players || [];
 
-    if (playersToRender.length === undefined) {
+    playersToRender = playersToRender.filter((player) => {
+        return player.state !== 'spectating';
+    });
+
+    // TODO: check if player/players is in loading state
+    if (false) {
         otherContent = (
             <div className="players-widget loading">
                 <Spinner />
             </div>
         );
     }
-
-    playersToRender = playersToRender.filter((player) => {
-        return player.state !== 'spectating';
-    });
 
     if (playersToRender.length === 0) {
         otherContent = (

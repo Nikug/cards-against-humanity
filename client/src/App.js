@@ -232,19 +232,15 @@ export const App = () => {
                 <div className={`App ${pathName === '/' ? 'background-img' : 'mono-background'}`}>
                     <div>
                         <div className="content">
-                            <Header game={game} player={player} reset={resetData} />
+                            <Header />
                             <div className="main">
                                 <Switch>
-                                    <Route
-                                        exact
-                                        path="/"
-                                        render={(props) => <Home startNewGame={startNewGame} joinExistingGame={joinExistingGame} history={history} />}
-                                    />
-                                    <Route path="/instructions" render={(props) => <Instructions path={'/instructions'} />} />
+                                    <Route exact path="/" render={() => <Home startNewGame={startNewGame} joinExistingGame={joinExistingGame} />} />
+                                    <Route path="/instructions" render={() => <Instructions path={'/instructions'} />} />
                                     <Route
                                         exact
                                         path="/g/:id"
-                                        render={(props) => (
+                                        render={() => (
                                             <GameContextProvider
                                                 value={{
                                                     game,
@@ -252,14 +248,14 @@ export const App = () => {
                                                     updateData,
                                                 }}
                                             >
-                                                <Game updateData={updateData} showDebug={showDebug} />
+                                                <Game showDebug={showDebug} />
                                             </GameContextProvider>
                                         )}
                                     />
                                     <Route
                                         exact
                                         path="/support-us"
-                                        render={(props) => (
+                                        render={() => (
                                             <div
                                                 style={{
                                                     display: 'flex',

@@ -1,22 +1,21 @@
-import { Link, useHistory, useLocation } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import React, { useCallback, useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
+import { useTranslation } from 'react-i18next';
+import { socket } from './sockets/socket';
 
 import Icon from './general/Icon';
 import { deleteCookie } from '../helpers/cookies';
 import logo from './../assets/images/korttipeli_favicon.png';
-import { socket } from './sockets/socket';
 import thinkingIcon from './../assets/svgicons/thinking.svg';
 import { translateCommon } from '../helpers/translation-helpers';
-import { useTranslation } from 'react-i18next';
-import { PopOverMenu } from './popover-menu/PopoverMenu';
 import { LanguageSelector } from './languageselector';
-import { useDispatch, useSelector } from 'react-redux';
-import { playerActionTypes } from '../actions/playerActions';
 
-export const Header = (props) => {
+export const Header = () => {
     const { t } = useTranslation();
     const text = translateCommon('cardsAgainstHumankind', t);
-    const { game, player } = props;
+    const gameID = useSelector((state) => state.game.value?.id);
+    const playerID = useSelector((state) => state.player.value?.id);
 
     const [showTitle, setShowTitle] = useState(false);
 
@@ -44,23 +43,12 @@ export const Header = (props) => {
     const leaveGame = () => {
         deleteCookie('playerID');
         socket.emit('leave_game', {
-            gameID: game?.id,
-            playerID: player?.id,
+            gameID,
+            playerID,
         });
         // props.reset();
         // history.push("/");
-
-        // dispatch({
-        //     type: playerActionTypes.UPDATE,
-        //     payload: { name: 'Nipa' },
-        // });
     };
-
-    const p = useSelector((state) => state.player);
-
-    useEffect(() => {
-        console.log('player is', p);
-    }, [p]);
 
     return (
         <div className="header">
@@ -96,7 +84,7 @@ export const Header = (props) => {
                     <Icon className="header-icon" name="settings" />
                     <span className="header-button-text">{translateCommon('settings', t)}</span>
                 </span>
-                {game && pathName === `/g/${game.id}` && (
+                {gameID && pathName === `/g/${gameID}` && (
                     <Link to="/">
                         <span href="/" className="header-button" onClick={leaveGame}>
                             <Icon className="header-icon" name="logout" />
