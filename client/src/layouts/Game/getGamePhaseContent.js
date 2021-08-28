@@ -15,6 +15,7 @@ import { WinnerCardPickerContainer } from '../../components/card-picker/winnerca
 import { canStartGame } from './helpers/canStartGame';
 import { getRandomSpinner } from '../../components/spinner';
 import { translateCommon } from '../../helpers/translation-helpers';
+import { getCardCzarNameFromPlayersList } from '../../helpers/getCardCzarNameFromPlayersList';
 
 export const getGamePhaseContent = ({
     t,
@@ -59,7 +60,7 @@ export const getGamePhaseContent = ({
                 return <BlackCardPickerContainer blackCards={blackCards} />;
             }
 
-            const cardCzarName = players ? players.filter((player) => player.isCardCzar)[0]?.name : '';
+            const cardCzarName = getCardCzarNameFromPlayersList(players);
 
             return (
                 <WaitingCardPickerContainer
