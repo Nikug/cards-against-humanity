@@ -77,25 +77,31 @@ export const createPlayer = (
     };
 };
 
-export const createWhiteCards = (count: number): WhiteCard[] => {
+export const createWhiteCards = (
+    count: number,
+    packId?: string
+): WhiteCard[] => {
     return Array(count)
         .fill(0)
         .map(
             (_, i): WhiteCard => ({
                 id: i.toString(),
-                cardPackID: "cardpack",
+                cardPackID: packId ?? "cardpack",
                 text: "text",
             })
         );
 };
 
-export const createBlackCards = (count: number): BlackCard[] => {
+export const createBlackCards = (
+    count: number,
+    packId?: string
+): BlackCard[] => {
     return Array(count)
         .fill(0)
         .map(
             (_, i): BlackCard => ({
                 id: i.toString(),
-                cardPackID: "cardpack",
+                cardPackID: packId ?? "cardpack",
                 text: "text",
                 whiteCardsToDraw: 1,
                 whiteCardsToPlay: 1,

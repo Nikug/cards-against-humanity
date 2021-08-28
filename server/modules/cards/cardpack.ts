@@ -181,9 +181,14 @@ export const removeCardPackFromGame = async (
         return;
     }
 
+    const cardPackCount = game.client.options.cardPacks.length;
     game.client.options.cardPacks = game.client.options.cardPacks.filter(
         (cardPack: CAH.CardPack) => cardPack.id !== cardPackID
     );
+    if (cardPackCount === game.client.options.cardPacks.length) {
+        return null;
+    }
+
     game.cards.whiteCards = game.cards.whiteCards.filter(
         (card: CAH.WhiteCard) => card.cardPackID !== cardPackID
     );

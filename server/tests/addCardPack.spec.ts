@@ -1,4 +1,3 @@
-import { ApiCardPack, Game } from "types";
 import {
     createPlayer,
     ioMock,
@@ -9,10 +8,11 @@ import {
     pgClientMock,
     socketMock,
 } from "./helpers";
-import fetch, { RequestInfo } from "node-fetch";
 
 import { ERROR_TYPES } from "../consts/error";
+import { Game } from "types";
 import { addCardPack } from "../modules/cards/cardpack";
+import fetch from "node-fetch";
 import { mocked } from "ts-jest/utils";
 import { newGameTemplate } from "../modules/games/newGame";
 
