@@ -9,10 +9,18 @@ export const gamePickLimitSelector = (state) => {
 export const gameBlackCardSelector = (state) => {
     const rounds = state.game.value?.rounds;
 
-    return rounds[rounds.length - 1].blackCard;
+    if (!rounds || rounds.length === 0) {
+        return null;
+    }
+
+    return rounds[rounds.length - 1]?.blackCard;
 };
 export const gameWhiteCardsByPlayerSelector = (state) => {
     const rounds = state.game.value?.rounds;
+
+    if (!rounds || rounds.length === 0) {
+        return [];
+    }
 
     return rounds[rounds.length - 1].whiteCardsByPlayer;
 };

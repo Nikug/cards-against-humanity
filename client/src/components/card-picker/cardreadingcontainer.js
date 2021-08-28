@@ -54,7 +54,7 @@ export const CardReadingContainer = () => {
         socketOn('show_white_card', listener);
 
         return () => {
-            socket.off('show_white_card');
+            socket.off('show_white_card', listener);
         };
     }, [textToSpeechInUse, blackCard]);
 

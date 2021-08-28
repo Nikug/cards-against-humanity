@@ -25,7 +25,7 @@ import { updatePlayersList } from '../../actions/playersListActions';
 import { updateGameSettings } from '../../actions/gameSettingsActions';
 import { hasTimerInUse } from './helpers/hasTimerInUse';
 import { gameIdSelector, gameSelector, gameStateSelector } from '../../selectors/gameSelectors';
-import { playerSelector } from '../../selectors/playerSelectors';
+import { playerIdSelector, playerSelector } from '../../selectors/playerSelectors';
 import { playersListSelector } from '../../selectors/playersListSelectors';
 import { gameSettingsSelector } from '../../selectors/gameSettingsSelectors';
 
@@ -46,6 +46,7 @@ export const Game = ({ showDebug }) => {
     const players = useSelector(playersListSelector);
     const options = useSelector(gameSettingsSelector);
     const gameID = useSelector(gameIdSelector);
+    const playerID = useSelector(playerIdSelector);
     const gameState = useSelector(gameStateSelector);
     const timerOptions = useSelector((state) => state.gameSettings.value?.timers);
 
@@ -175,15 +176,16 @@ export const Game = ({ showDebug }) => {
         resetTimer();
     }, [game?.state, game?.timers]);
 
+    // This is probably not needed anymore, as listener is in this component too and server sends them automatically
     // Ask for black cards
-    useEffect(() => {
-        if (game?.state === GAME_STATES.PICKING_BLACK_CARD && player?.isCardCzar) {
-            socket.emit('draw_black_cards', {
-                gameID: game.id,
-                playerID: player.id,
-            });
-        }
-    }, [game?.id, game?.state, player?.id, player?.isCardCzar]);
+    // useEffect(() => {
+    //     if (game?.state === GAME_STATES.PICKING_BLACK_CARD && player?.isCardCzar) {
+    //         socket.emit('draw_black_cards', {
+    //             gameID: game.id,
+    //             playerID: player.id,
+    //         });
+    //     }
+    // }, [game?.id, game?.state, player?.id, player?.isCardCzar]);
 
     // Functions
     const getGameIdFromURL = () => {

@@ -15,7 +15,7 @@ const gameReducer = (state = getInitialGameState(), action) => {
         case gameActionTypes.UPDATE_TIMERS:
             state = {
                 ...state,
-                value: { timers: { ...action.payload } },
+                value: { ...state.value, timers: { ...state.value.timers, ...action.payload } },
             };
             break;
         case gameActionTypes.RESET:
