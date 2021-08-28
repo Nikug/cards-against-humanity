@@ -7,7 +7,7 @@ import { socket } from '../sockets/socket';
 import { translateCommon } from '../../helpers/translation-helpers';
 import { useTranslation } from 'react-i18next';
 import { playerIdSelector, playerIsCardCzarSelector } from '../../selectors/playerSelectors';
-import { gameBlackCardSelector, gameIdSelector, gameTimersSelector, gameWhiteCardsByPlayerSelector } from '../../selectors/gameSelectors';
+import { gameBlackCardSelector, gameIdSelector, gameWhiteCardsByPlayerSelector } from '../../selectors/gameSelectors';
 import { gameSettingsPopularVoteSelector } from '../../selectors/gameSettingsSelectors';
 import { useSelector } from 'react-redux';
 

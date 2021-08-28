@@ -42,7 +42,7 @@ export const Player = ({ name, state, score, isCardCzar, isHost, isPopularVoteKi
             }
             return node;
         },
-        [name]
+        [showTitle]
     );
 
     // Score animation
@@ -90,7 +90,7 @@ export const Player = ({ name, state, score, isCardCzar, isHost, isPopularVoteKi
         <div title={showTitle ? name : undefined} className={`player ${isCardCzar ? 'cardCzar' : ''}`}>
             {isCardCzar && (
                 <div className="icon-anchor">
-                    <img className="crown-icon" src={crownIcon} />
+                    <img className="crown-icon" src={crownIcon} alt="crown" />
                 </div>
             )}
             <span className={`player-name-and-status  ${isHost && false ? 'host' : ''}  ${isSelf ? 'myself' : ''}`}>

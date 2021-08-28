@@ -15,6 +15,8 @@ const gameSettingsReducer = (state = getInitialGameSettingsState(), action) => {
         case gameSettingsActionTypes.RESET:
             state = getInitialGameSettingsState();
             break;
+        default:
+            break;
     }
     return state;
 };

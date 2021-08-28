@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import { Route, BrowserRouter as Router, Switch, useHistory, useLocation } from 'react-router-dom';
+import React from 'react';
+import { Route, Switch, useHistory } from 'react-router-dom';
 
 import { Button } from '../components/general/Button.jsx';
 import { translateCommon } from '../helpers/translation-helpers';

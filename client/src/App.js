@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { Route, Switch, useHistory, useLocation } from 'react-router-dom';
 import { deleteCookie, setCookie } from './helpers/cookies';
 
@@ -47,8 +47,14 @@ export const App = () => {
 
     const history = useHistory();
     const { t } = useTranslation();
-
     const dispatch = useDispatch();
+
+    const resetData = useCallback(() => {
+        dispatch(resetGame());
+        dispatch(resetGameSettings());
+        dispatch(resetPlayer());
+        dispatch(resetPlayersList());
+    }, [dispatch]);
 
     function startNewGame() {
         axios.post('/g').then((res) => {
@@ -64,43 +70,51 @@ export const App = () => {
         history.push(`${route}`);
     };
 
-    const getNewId = () => {
+    const getNewId = useCallback(() => {
         const newId = notificationCount + 1;
         setNotificationCount((prevValue) => prevValue + 1);
 
         return newId;
-    };
+    }, [notificationCount]);
 
-    const fireNotification = (newNotification, timeInSeconds = 4) => {
-        const id = getNewId();
+    const hideNotification = useCallback(
+        (id) => {
+            const newList = notifications.slice();
 
-        setNotifications((prevValue) => [...prevValue, { ...newNotification, id }]);
-
-        setTimeout(() => {
-            hideNotification(id);
-        }, timeInSeconds * 1000);
-    };
-
-    const notificationParams = {
-        fireNotification,
-        notificationCount,
-        setNotificationCount,
-        t,
-    };
-
-    const hideNotification = (id) => {
-        const newList = notifications.slice();
-
-        for (let i = 0, len = notifications.length; i < len; i++) {
-            const notification = notifications[i];
-            if (notification.id === id) {
-                newList.splice(i, 1);
-                break;
+            for (let i = 0, len = notifications.length; i < len; i++) {
+                const notification = notifications[i];
+                if (notification.id === id) {
+                    newList.splice(i, 1);
+                    break;
+                }
             }
-        }
 
-        setNotifications(newList);
-    };
+            setNotifications(newList);
+        },
+        [notifications]
+    );
+
+    const fireNotification = useCallback(
+        (newNotification, timeInSeconds = 4) => {
+            const id = getNewId();
+
+            setNotifications((prevValue) => [...prevValue, { ...newNotification, id }]);
+
+            setTimeout(() => {
+                hideNotification(id);
+            }, timeInSeconds * 1000);
+        },
+        [getNewId, hideNotification]
+    );
+
+    const notificationParams = useMemo(() => {
+        return {
+            fireNotification,
+            notificationCount,
+            setNotificationCount,
+            t,
+        };
+    }, [notificationCount, fireNotification, t]);
 
     useEffect(() => {
         const language = getItemFromLocalStorage(LOCAL_STORAGE_FIELDS.LANGUAGE);
@@ -153,7 +167,7 @@ export const App = () => {
             socket.off('disconnect');
             socket.off('notification');
         };
-    }, [notificationParams, fireNotification, notificationCount]);
+    }, [notificationParams, fireNotification, notificationCount, dispatch, resetData, history]);
 
     useEffect(() => {
         const playerID = getItemFromLocalStorage(LOCAL_STORAGE_FIELDS.PLAYER_ID);
@@ -167,13 +181,6 @@ export const App = () => {
             setLoading(false);
         }
     }, []);
-
-    const resetData = () => {
-        dispatch(resetGame());
-        dispatch(resetGameSettings());
-        dispatch(resetPlayer());
-        dispatch(resetPlayersList());
-    };
 
     const notificationsToRender = [];
 

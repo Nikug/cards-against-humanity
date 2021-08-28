@@ -16,7 +16,6 @@ import * as serviceWorker from './serviceWorker';
 import { BrowserRouter as Router } from 'react-router-dom';
 import { WholePageLoader } from './components/WholePageLoader.jsx';
 import store from './store';
-import { gameActionTypes } from './actions/gameActions';
 
 ReactDOM.render(
     <React.StrictMode>

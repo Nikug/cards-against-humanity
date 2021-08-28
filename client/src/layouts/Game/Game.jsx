@@ -162,7 +162,7 @@ export const Game = ({ showDebug }) => {
             socket.off('deal_black_cards');
             socket.off('send_popular_voted_cards');
         };
-    }, [notificationParams, fireNotification, notificationCount]);
+    }, [notificationParams, fireNotification, notificationCount, dispatch]);
 
     useEffect(() => {
         if (game?.timers?.passedTime && game?.timers?.duration) {
@@ -183,7 +183,7 @@ export const Game = ({ showDebug }) => {
                 playerID: player.id,
             });
         }
-    }, []);
+    }, [game?.id, game?.state, player?.id, player?.isCardCzar]);
 
     // Functions
     const getGameIdFromURL = () => {

@@ -1,5 +1,5 @@
 import { Link, useLocation } from 'react-router-dom';
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 import { socket } from './sockets/socket';
@@ -35,7 +35,7 @@ export const Header = () => {
             }
             return node;
         },
-        [text]
+        [showTitle]
     );
 
     const pathName = useLocation().pathname;
@@ -54,7 +54,7 @@ export const Header = () => {
         <div className="header">
             <Link to="/" className="header-link" title={showTitle ? text : undefined}>
                 <div className="header-logo-and-name">
-                    <img className="logo" src={logo} />
+                    <img className="logo" src={logo} alt="logo" />
                     <span ref={nameRef} className="name">
                         {text.toUpperCase()}
                     </span>
@@ -70,7 +70,7 @@ export const Header = () => {
                 {false && (
                     <Link to="/support-us">
                         <span className="header-button">
-                            <img className="thinking-icon" src={thinkingIcon} />
+                            <img className="thinking-icon" src={thinkingIcon} alt="thinking-emoji" />
                         </span>
                     </Link>
                 )}

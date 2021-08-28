@@ -21,6 +21,8 @@ const gameReducer = (state = getInitialGameState(), action) => {
         case gameActionTypes.RESET:
             state = getInitialGameState();
             break;
+        default:
+            break;
     }
     return state;
 };

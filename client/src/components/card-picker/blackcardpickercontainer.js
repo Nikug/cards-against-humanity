@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { containsObjectWithMatchingFieldIndex, emptyFn, isNullOrUndefined } from '../../helpers/generalhelpers';
+import { containsObjectWithMatchingFieldIndex, emptyFn } from '../../helpers/generalhelpers';
 
 import { CardPicker } from './cardpicker';
 import { socket } from '../sockets/socket';

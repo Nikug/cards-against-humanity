@@ -15,6 +15,8 @@ const playersListReducer = (state = getInitialPlayersListState(), action) => {
         case playersListActionTypes.RESET:
             state = getInitialPlayersListState();
             break;
+        default:
+            break;
     }
     return state;
 };
