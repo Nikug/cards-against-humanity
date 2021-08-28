@@ -14,7 +14,6 @@ import { ERROR_TYPES } from "../consts/error";
 import { Game } from "types";
 import { newGameTemplate } from "../modules/games/newGame";
 import { selectBlackCard } from "../modules/cards/selectBlackCard";
-import { sendBlackCards } from "../modules/cards/drawCards";
 
 const mockPackId = "cardPack123";
 
