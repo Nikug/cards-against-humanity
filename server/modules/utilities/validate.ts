@@ -53,6 +53,14 @@ export const validatePlayerPlayingWhiteCards = (
         };
 
     if (
+        game.currentRound?.blackCard?.whiteCardsToPlay !== whiteCardIDs.length
+    ) {
+        return {
+            error: ERROR_TYPES.otherError,
+        };
+    }
+
+    if (
         player.whiteCards.filter((whiteCard: CAH.WhiteCard) =>
             whiteCardIDs.includes(whiteCard.id)
         ).length !== whiteCardIDs.length
