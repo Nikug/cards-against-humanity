@@ -8,17 +8,14 @@ export const playersListTextToSpeechSelector = (state) => {
     const players = state.players.value || [];
 
     if (players.length === 0) {
-        console.log('gameTextToSpeechSelector no players');
         return false;
     }
 
     const cardCzars = players.filter((player) => player.isCardCzar);
 
     if (cardCzars.length !== 1) {
-        console.log('gameTextToSpeechSelector no cardCzar');
         return false;
     }
 
-    console.log('gameTextToSpeechSelector', { cardCzars });
     return cardCzars[0].useTextToSpeech;
 };
