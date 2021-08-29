@@ -14,10 +14,10 @@ export const pgClientMock: any = {
 };
 
 export const ioMock: any = {
-    to: jest.fn(() => ({
+    to: jest.fn((id: string) => ({
         emit: jest.fn(),
     })),
-    in: jest.fn(() => ({
+    in: jest.fn((room: string) => ({
         emit: jest.fn(),
     })),
 };
