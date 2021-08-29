@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { useSelector } from 'react-redux';
 
 import { CardPicker } from './cardpicker';
 import Confetti from 'react-confetti';
@@ -6,15 +8,24 @@ import { emptyFn } from '../../helpers/generalhelpers';
 import { renderBlackCardwithWhiteCards } from './cardformathelpers/renderBlackcardWithWhiteCards';
 import { socket } from '../sockets/socket';
 import { translateCommon } from '../../helpers/translation-helpers';
-import { useTranslation } from 'react-i18next';
-import { useGameContext } from '../../contexts/GameContext';
+import { playerIdSelector, playerIsHostSelector } from '../../selectors/playerSelectors';
+import { gameIdSelector, gameRoundsSelector } from '../../selectors/gameSelectors';
+import { playersListSelector } from '../../selectors/playersListSelectors';
 
 export const GameEndContainer = () => {
     const { t } = useTranslation();
-    const { game, player } = useGameContext();
+
+    // State
+    const isHost = useSelector(playerIsHostSelector);
+    const playerID = useSelector(playerIdSelector);
+    const gameID = useSelector(gameIdSelector);
+    const players = useSelector(playersListSelector);
+    const rounds = useSelector(gameRoundsSelector);
     const [returningBackToLobby, setReturningBackToLobby] = useState(false);
 
-    const playersSorted = game.players.sort(function (a, b) {
+    const winnerCards = [];
+
+    const playersSorted = players.sort(function (a, b) {
         const keyA = a.score;
         const keyB = b.score;
 
@@ -23,9 +34,6 @@ export const GameEndContainer = () => {
 
         return 0;
     });
-
-    const winnerCards = [];
-    const rounds = game?.rounds;
 
     if (rounds?.length > 0) {
         for (let i = 0, len = rounds.length; i < len; i++) {
@@ -61,8 +69,8 @@ export const GameEndContainer = () => {
         setReturningBackToLobby(true);
 
         socket.emit('return_to_lobby', {
-            gameID: game?.id,
-            playerID: player?.id,
+            gameID,
+            playerID,
         });
     };
 
@@ -76,7 +84,7 @@ export const GameEndContainer = () => {
                     customButtonState={returningBackToLobby ? 1 : 0}
                     customButtonTexts={[translateCommon('returnToLobby', t), `${translateCommon('returningToLobby', t)}...`]}
                     centerActionButton={true}
-                    noActionButton={!player?.isHost}
+                    noActionButton={!isHost}
                     topText={`🎉🎉🎉 ${playersSorted[0].name ?? translateCommon('someone', t)} ${translateCommon('wonTheGame', t)}! 🎉🎉🎉`}
                     description={`${translateCommon('theWinnerCardsOfThisGame', t)}:`}
                     preRenderedCards={sortedWinnerCards}

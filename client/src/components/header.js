@@ -1,22 +1,22 @@
-import { Link, useHistory, useLocation } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import React, { useCallback, useState } from 'react';
+import { useSelector } from 'react-redux';
+import { useTranslation } from 'react-i18next';
+import { socket } from './sockets/socket';
 
 import Icon from './general/Icon';
 import { deleteCookie } from '../helpers/cookies';
 import logo from './../assets/images/korttipeli_favicon.png';
-import { socket } from './sockets/socket';
 import thinkingIcon from './../assets/svgicons/thinking.svg';
 import { translateCommon } from '../helpers/translation-helpers';
-import { useTranslation } from 'react-i18next';
-import { PopOverMenu } from './popover-menu/PopoverMenu';
 import { LanguageSelector } from './languageselector';
 
-export const Header = (props) => {
+export const Header = () => {
     const { t } = useTranslation();
     const text = translateCommon('cardsAgainstHumankind', t);
-    const { game, player } = props;
+    const gameID = useSelector((state) => state.game.value?.id);
+    const playerID = useSelector((state) => state.player.value?.id);
 
-    const [menuIsOpen, setMenuIsOpen] = useState(false);
     const [showTitle, setShowTitle] = useState(false);
 
     const nameRef = useCallback(
@@ -35,23 +35,16 @@ export const Header = (props) => {
             }
             return node;
         },
-        [text]
+        [showTitle]
     );
 
-    const toggleMenu = () => {
-        setMenuIsOpen(!menuIsOpen);
-    };
-
-    const history = useHistory();
     const pathName = useLocation().pathname;
-
-    console.log({ id: game?.id, pathName });
 
     const leaveGame = () => {
         deleteCookie('playerID');
         socket.emit('leave_game', {
-            gameID: game?.id,
-            playerID: player?.id,
+            gameID,
+            playerID,
         });
         // props.reset();
         // history.push("/");
@@ -61,7 +54,7 @@ export const Header = (props) => {
         <div className="header">
             <Link to="/" className="header-link" title={showTitle ? text : undefined}>
                 <div className="header-logo-and-name">
-                    <img className="logo" src={logo} />
+                    <img className="logo" src={logo} alt="logo" />
                     <span ref={nameRef} className="name">
                         {text.toUpperCase()}
                     </span>
@@ -77,7 +70,7 @@ export const Header = (props) => {
                 {false && (
                     <Link to="/support-us">
                         <span className="header-button">
-                            <img className="thinking-icon" src={thinkingIcon} />
+                            <img className="thinking-icon" src={thinkingIcon} alt="thinking-emoji" />
                         </span>
                     </Link>
                 )}
@@ -91,7 +84,7 @@ export const Header = (props) => {
                     <Icon className="header-icon" name="settings" />
                     <span className="header-button-text">{translateCommon('settings', t)}</span>
                 </span>
-                {game && pathName === `/g/${game.id}` && (
+                {gameID && pathName === `/g/${gameID}` && (
                     <Link to="/">
                         <span href="/" className="header-button" onClick={leaveGame}>
                             <Icon className="header-icon" name="logout" />

@@ -10,12 +10,12 @@ export function setCookie(cookie, expireTimeInHours = 1) {
 
 export function getAllCookies() {
     const documentCookie = document.cookie;
-    const cookieFields = documentCookie.split(";");
+    const cookieFields = documentCookie.split(';');
     let cookiesToReturn = {};
 
     for (let i = 0, len = cookieFields.length; i < len; i++) {
         const field = cookieFields[i];
-        const values = field.split("=");
+        const values = field.split('=');
 
         if (values.length === 2) {
             cookiesToReturn[values[0]] = values[1];
@@ -27,11 +27,11 @@ export function getAllCookies() {
 
 export function getCookie(cookieName) {
     const documentCookie = document.cookie;
-    const cookieFields = documentCookie.split(";");
+    const cookieFields = documentCookie.split(';');
 
     for (let i = 0, len = cookieFields.length; i < len; i++) {
         const field = cookieFields[i].trim();
-        const values = field.split("=");
+        const values = field.split('=');
 
         if (values.length === 2 && values[0] === cookieName) {
             const cookieToReturn = {};
@@ -43,6 +43,6 @@ export function getCookie(cookieName) {
     return null;
 }
 
-export function deleteCookie(cookieName = "username") {
+export function deleteCookie(cookieName = 'username') {
     document.cookie = `${cookieName}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
 }

@@ -6,30 +6,34 @@ import { mergeWhiteCardsByplayer } from './cardformathelpers/mergeWhiteCardsBypl
 import { socket } from '../sockets/socket';
 import { translateCommon } from '../../helpers/translation-helpers';
 import { useTranslation } from 'react-i18next';
-import { useGameContext } from '../../contexts/GameContext';
+import { playerIdSelector, playerIsCardCzarSelector } from '../../selectors/playerSelectors';
+import { gameBlackCardSelector, gameIdSelector, gameWhiteCardsByPlayerSelector } from '../../selectors/gameSelectors';
+import { gameSettingsPopularVoteSelector } from '../../selectors/gameSettingsSelectors';
+import { useSelector } from 'react-redux';
 
 export const WinnerCardPickerContainer = ({ givePopularVote, popularVotedCardsIDs }) => {
     const { t } = useTranslation();
-    const { game, player } = useGameContext();
     const [selectedCards, setSelectedCards] = useState([]);
     const [confirmedCards, setConfirmedCards] = useState([]);
 
-    const round = game.rounds.length - 1;
-    const blackCard = game.rounds[round].blackCard;
-    const isCardCzar = player?.isCardCzar;
-    const hasPopularVote = game?.options?.popularVote;
-    const whiteCardsByPlayer = game.rounds[round].whiteCardsByPlayer;
+    const gameID = useSelector(gameIdSelector);
+    const playerID = useSelector(playerIdSelector);
+    const isCardCzar = useSelector(playerIsCardCzarSelector);
+    const whiteCardsByPlayer = useSelector(gameWhiteCardsByPlayerSelector);
+    const blackCard = useSelector(gameBlackCardSelector);
+    const showPopularVote = useSelector(gameSettingsPopularVoteSelector);
+
     const [whiteCards] = mergeWhiteCardsByplayer(whiteCardsByPlayer);
 
     const selectCard = (card) => {
         if (confirmedCards.length > 0) {
             return;
         }
+
         const newSelectedCards = selectedCards.slice();
-
         const pickLimit = 1;
-
         const i = containsObjectWithMatchingFieldIndex(card, newSelectedCards, 'id');
+
         if (i !== -1) {
             newSelectedCards.splice(i);
         } else if (newSelectedCards.length < pickLimit) {
@@ -38,6 +42,7 @@ export const WinnerCardPickerContainer = ({ givePopularVote, popularVotedCardsID
             newSelectedCards.pop();
             newSelectedCards.push(card);
         }
+
         setSelectedCards(newSelectedCards, card);
     };
 
@@ -45,9 +50,6 @@ export const WinnerCardPickerContainer = ({ givePopularVote, popularVotedCardsID
         const pickLimit = 1;
 
         if (selectedCards.length === pickLimit) {
-            const gameID = game.id;
-            const playerID = player.id;
-
             socket.emit('pick_winning_card', {
                 gameID: gameID,
                 playerID: playerID,
@@ -70,14 +72,14 @@ export const WinnerCardPickerContainer = ({ givePopularVote, popularVotedCardsID
                 description={
                     isCardCzar
                         ? translateCommon('chooseTheWinner', t)
-                        : hasPopularVote
+                        : showPopularVote
                         ? translateCommon('voteYourFavouriteCards', t)
                         : translateCommon('whiteCards', t)
                 }
                 alternativeText={isCardCzar ? undefined : `${translateCommon('cardCzarIsChoosingTheWinner', t)}...`}
                 noActionButton={!isCardCzar}
                 selectDisabled={selectedCards.length !== 1}
-                showPopularVote={hasPopularVote && !isCardCzar}
+                showPopularVote={showPopularVote && !isCardCzar}
                 noBigMainCard={!isCardCzar}
                 givePopularVote={givePopularVote}
                 popularVotedCardsIDs={popularVotedCardsIDs}
