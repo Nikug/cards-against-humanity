@@ -9,8 +9,9 @@ import { translateCommon } from '../../helpers/translation-helpers';
 import { useTranslation } from 'react-i18next';
 import { formatTextWithBlanksAsText } from './cardformathelpers/formattextwithblanks';
 import { useSelector } from 'react-redux';
-import { gameBlackCardSelector, gameIdSelector, gameTextToSpeechSelector } from '../../selectors/gameSelectors';
+import { gameBlackCardSelector, gameIdSelector } from '../../selectors/gameSelectors';
 import { playerIdSelector, playerIsCardCzarSelector } from '../../selectors/playerSelectors';
+import { playersListTextToSpeechSelector } from '../../selectors/playersListSelectors';
 
 export const CardReadingContainer = () => {
     const { t } = useTranslation();
@@ -20,7 +21,7 @@ export const CardReadingContainer = () => {
     const playerID = useSelector(playerIdSelector);
     const isCardCzar = useSelector(playerIsCardCzarSelector);
     const blackCard = useSelector(gameBlackCardSelector);
-    const textToSpeechInUse = useSelector(gameTextToSpeechSelector);
+    const textToSpeechInUse = useSelector(playersListTextToSpeechSelector);
 
     const [whiteCards, setWhiteCards] = useState([]);
     const [whiteCardIndex, setWhiteCardIndex] = useState(0);
@@ -54,7 +55,7 @@ export const CardReadingContainer = () => {
         socketOn('show_white_card', listener);
 
         return () => {
-            socket.off('show_white_card', listener);
+            socket.off('show_white_card');
         };
     }, [textToSpeechInUse, blackCard]);
 

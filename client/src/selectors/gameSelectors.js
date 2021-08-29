@@ -24,7 +24,6 @@ export const gameWhiteCardsByPlayerSelector = (state) => {
 
     return rounds[rounds.length - 1].whiteCardsByPlayer;
 };
-export const gameTextToSpeechSelector = (state) => state.game.value?.players?.filter((player) => player.isCardCzar)[0].useTextToSpeech;
 export const gameRoundNumberSelector = (state) => state.game.value?.rounds?.length || 0;
 export const gameStreakSelector = (state) => state.game.value?.streak;
 export const gameRoundsSelector = (state) => state.game.value?.rounds;
