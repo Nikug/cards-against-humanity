@@ -53,8 +53,6 @@ const createWhiteCardsByPlayer = (
     return cards;
 };
 
-const getPlayerIds = (players: Player[]) => players.map((player) => player.id);
-
 beforeAll(() => {
     jest.useFakeTimers();
 });
