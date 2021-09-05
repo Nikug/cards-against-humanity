@@ -5,7 +5,6 @@ import {
     ioMock,
     mockGameId,
     mockGetGame,
-    mockPlayerId,
     mockSendNotification,
     mockSetGame,
     pgClientMock,
