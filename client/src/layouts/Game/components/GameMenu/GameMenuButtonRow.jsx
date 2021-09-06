@@ -1,20 +1,22 @@
-import { isPlayerCardCzar, isPlayerHost, isPlayerSpectator, isPlayerSpectatorOrJoining } from '../../../../helpers/player-helpers';
+import React from 'react';
+import { useSelector } from 'react-redux';
+import { useTranslation } from 'react-i18next';
 
 import { ActionButtonRow } from './ActionButtonRow';
 import { BUTTON_TYPES } from '../../../../components/general/Button.jsx';
 import { GAME_STATES } from '../../../../consts/gamestates';
-import React from 'react';
 import { translateCommon, translateUnderWork } from '../../../../helpers/translation-helpers';
-import { useGameContext } from '../../../../contexts/GameContext';
-import { useTranslation } from 'react-i18next';
 import { GameMenu } from './GameMenu';
+import { gameStateSelector } from '../../../../selectors/gameSelectors';
+import { playerIsSpectatorSelector } from '../../../../selectors/playerSelectors';
 
 export const GameMenuButtonRow = ({ callbacks: { togglePlayerMode, changeCards, returnBackToLobby, openGameSettings, openHistory } }) => {
     const { t } = useTranslation();
-    const { game, player } = useGameContext();
 
-    const isLobby = game?.state === GAME_STATES.LOBBY;
-    const isSpectator = isPlayerSpectator(player);
+    const gameState = useSelector(gameStateSelector);
+    const isSpectator = useSelector(playerIsSpectatorSelector);
+
+    const isLobby = gameState === GAME_STATES.LOBBY;
 
     return (
         <div className="game-menu-button-row">

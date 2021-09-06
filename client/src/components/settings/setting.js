@@ -37,7 +37,7 @@ export const Setting = ({
             const cardpackId = 'U4nL88ujS' || 'qM1V1IaYBE';
             setInputText(cardpackId);
         }
-    }, []);
+    }, [DEV_CARD_PACK_AUTOFILL, isDisabled]);
 
     const renderNumberSelect = (currentValue, isDisabled, onChangeCallback, field) => {
         const showAsDisabled = isDisabled || currentValue === null;
@@ -96,7 +96,6 @@ export const Setting = ({
     };
 
     const handleTextFieldChange = (event, field, changeCallback) => {
-        console.log({ changeCallback });
         if (!event) {
             if (field) {
                 changeCallback({ field, value: inputText });

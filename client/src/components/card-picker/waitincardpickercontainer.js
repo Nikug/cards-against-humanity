@@ -5,27 +5,23 @@ import { emptyFn } from '../../helpers/generalhelpers';
 import { isPlayerSpectatorOrJoining } from '../../helpers/player-helpers';
 import { translateCommon } from '../../helpers/translation-helpers';
 import { useTranslation } from 'react-i18next';
-import { useGameContext } from '../../contexts/GameContext';
+import { useSelector } from 'react-redux';
+import { gameBlackCardSelector, gameStateSelector, gameWhiteCardsByPlayerSelector } from '../../selectors/gameSelectors';
+import { playerSelector, playerWhiteCardsSelector } from '../../selectors/playerSelectors';
 
 export function WaitingCardPickerContainer({ alternativeText, showMainCard, noBigMainCard }) {
     const { t } = useTranslation();
-    const { game, player } = useGameContext();
-    const gameState = game?.state;
+
+    // State
+    const player = useSelector(playerSelector);
+    const blackCard = useSelector(gameBlackCardSelector);
+    const gameState = useSelector(gameStateSelector);
+    const whiteCardsByPlayer = useSelector(gameWhiteCardsByPlayerSelector);
+    const ownWhiteCards = useSelector(playerWhiteCardsSelector);
 
     const isSpectator = isPlayerSpectatorOrJoining(player);
-    let whiteCards;
-
-    if (isSpectator) {
-        whiteCards = [];
-    } else {
-        whiteCards = gameState === GAME_STATES.SHOWING_CARDS ? game.rounds[game.rounds.length - 1].whiteCardsByPlayer : player?.whiteCards;
-    }
-
-    let mainCard = null;
-
-    if (showMainCard !== false) {
-        mainCard = game?.rounds[game?.rounds?.length - 1].blackCard;
-    }
+    const whiteCards = isSpectator ? [] : gameState === GAME_STATES.SHOWING_CARDS ? whiteCardsByPlayer : ownWhiteCards;
+    const mainCard = showMainCard ? blackCard : null;
 
     return (
         <div className="cardpicker-container waiting">

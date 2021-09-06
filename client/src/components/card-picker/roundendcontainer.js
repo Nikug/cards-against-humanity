@@ -1,49 +1,57 @@
 import React, { useState } from 'react';
+import { socket } from '../sockets/socket';
+import { useSelector } from 'react-redux';
+import { useTranslation } from 'react-i18next';
 
 import { CardPicker } from './cardpicker';
 import Confetti from 'react-confetti';
 import { emptyFn } from '../../helpers/generalhelpers';
-import { isPlayerCardCzar } from '../../helpers/player-helpers';
 import { mergeWhiteCardsByplayer } from './cardformathelpers/mergeWhiteCardsByplayer';
-import { socket } from '../sockets/socket';
 import { translateCommon } from '../../helpers/translation-helpers';
 import { useWindowSize } from '../../helpers/hooks';
-import { useTranslation } from 'react-i18next';
-import { useGameContext } from '../../contexts/GameContext';
 import { WinnerText } from './components/WinnerText';
+import { playerIdSelector, playerIsCardCzarSelector } from '../../selectors/playerSelectors';
+import { gameBlackCardSelector, gameIdSelector, gameTimersSelector, gameWhiteCardsByPlayerSelector } from '../../selectors/gameSelectors';
+import { playersListCardCzarNameSelector } from '../../selectors/playersListSelectors';
+import { gameSettingsPopularVoteSelector } from '../../selectors/gameSettingsSelectors';
 
-const TIMEOUT = 10000;
+const DEFAULT_TIMEOUT = 5000;
 
 export function RoundEndContainer({ popularVotedCardsIDs, givePopularVote }) {
+    // Hooks
     const { t } = useTranslation();
-    const { game, player } = useGameContext();
     const { width, height } = useWindowSize();
 
-    let timeout = TIMEOUT;
-
-    if (game?.timers.passedTime && game?.timers.duration) {
-        const { passedTime, duration } = game.timers;
-        timeout = (duration - passedTime) * 1000;
-    }
+    // State
+    const gameID = useSelector(gameIdSelector);
+    const playerID = useSelector(playerIdSelector);
+    const isCardCzar = useSelector(playerIsCardCzarSelector);
+    const timers = useSelector(gameTimersSelector);
+    const whiteCardsByPlayer = useSelector(gameWhiteCardsByPlayerSelector);
+    const blackCard = useSelector(gameBlackCardSelector);
+    const cardCzarName = useSelector(playersListCardCzarNameSelector);
+    const showPopularVote = useSelector(gameSettingsPopularVoteSelector);
 
     const [startingNewRound, setStartingNewRound] = useState(false);
 
-    const startNewRound = () => {
-        setStartingNewRound(true);
-        socket.emit('start_round', {
-            gameID: game.id,
-            playerID: player.id,
-        });
-    };
+    const { passedTime, duration } = timers || {};
+    let timeout = DEFAULT_TIMEOUT;
 
-    const whiteCardsByPlayer = game.rounds[game.rounds.length - 1].whiteCardsByPlayer;
+    if (passedTime && duration) {
+        timeout = (duration - passedTime) * 1000;
+    }
+
     const winningWhiteCardsByPlayer = whiteCardsByPlayer.find((card) => card.playerName != null);
-
     const [whiteCards, confirmedCards] = mergeWhiteCardsByplayer(whiteCardsByPlayer);
 
-    const blackCard = game.rounds[game.rounds.length - 1].blackCard;
-    const showPopularVote = game?.options?.popularVote;
-    const cardCzarName = game.players.filter((player) => player.isCardCzar === true)[0].name;
+    const startNewRound = () => {
+        setStartingNewRound(true);
+
+        socket.emit('start_round', {
+            gameID,
+            playerID,
+        });
+    };
 
     return (
         <>
@@ -63,9 +71,7 @@ export function RoundEndContainer({ popularVotedCardsIDs, givePopularVote }) {
                     selectCard={emptyFn}
                     confirmCards={startNewRound}
                     description={showPopularVote ? translateCommon('voteYourFavouriteCards', t) : translateCommon('whiteCards', t)}
-                    alternativeText={
-                        isPlayerCardCzar(player) ? `${translateCommon('waitingFor_player_ToStartNextRound', t, { player: cardCzarName })}...` : undefined
-                    }
+                    alternativeText={isCardCzar ? `${translateCommon('waitingFor_player_ToStartNextRound', t, { player: cardCzarName })}...` : undefined}
                     customButtonTexts={[translateCommon('nextRound', t), `${translateCommon('loading', t)}...`]}
                     customButtonIcons={['arrow_forward', 'cached']}
                     customButtonState={startingNewRound ? 1 : 0}
@@ -75,7 +81,7 @@ export function RoundEndContainer({ popularVotedCardsIDs, givePopularVote }) {
                     popularVotedCardsIDs={popularVotedCardsIDs}
                     showStreaks={true}
                     noBigMainCard={false}
-                    noActionButton={!player.isCardCzar}
+                    noActionButton={!isCardCzar}
                 />
             </div>
         </>

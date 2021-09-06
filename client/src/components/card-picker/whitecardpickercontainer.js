@@ -1,30 +1,36 @@
 import React, { useState } from 'react';
+import { socket } from '../sockets/socket';
+
+import { useTranslation } from 'react-i18next';
+import { useSelector } from 'react-redux';
 
 import { CardPicker } from './cardpicker';
 import { containsObjectWithMatchingFieldIndex } from '../../helpers/generalhelpers';
-import { socket } from '../sockets/socket';
 import { translateCommon } from '../../helpers/translation-helpers';
-import { useTranslation } from 'react-i18next';
-import { useGameContext } from '../../contexts/GameContext';
+import { playerIdSelector, playerWhiteCardsSelector } from '../../selectors/playerSelectors';
+import { gameIdSelector, gamePickLimitSelector, gameBlackCardSelector } from '../../selectors/gameSelectors';
 
 export function WhiteCardPickerContainer() {
     const { t } = useTranslation();
-    const { game, player } = useGameContext();
-    const whiteCards = player?.whiteCards;
+
+    // State
+    const gameID = useSelector(gameIdSelector);
+    const playerID = useSelector(playerIdSelector);
+    const whiteCards = useSelector(playerWhiteCardsSelector);
+    const pickLimit = useSelector(gamePickLimitSelector);
+    const blackCard = useSelector(gameBlackCardSelector);
+
     const [selectedCards, setSelectedCards] = useState([]);
     const [confirmedCards, setConfirmedCards] = useState([]);
-
-    const pickLimit = game.rounds[game.rounds.length - 1].blackCard.whiteCardsToPlay;
 
     const selectCard = (card) => {
         if (confirmedCards.length > 0) {
             return;
         }
+
         const newSelectedCards = selectedCards.slice();
-
-        const pickLimit = game.rounds[game.rounds.length - 1].blackCard.whiteCardsToPlay;
-
         const i = containsObjectWithMatchingFieldIndex(card, newSelectedCards, 'id');
+
         if (i !== -1) {
             newSelectedCards.splice(i);
         } else if (newSelectedCards.length < pickLimit) {
@@ -33,16 +39,15 @@ export function WhiteCardPickerContainer() {
             newSelectedCards.pop();
             newSelectedCards.push(card);
         }
+
         setSelectedCards(newSelectedCards);
     };
 
     const confirmCard = () => {
         if (selectedCards.length === pickLimit) {
-            const gameID = game.id;
-            const playerID = player.id;
             socket.emit('play_white_cards', {
-                gameID: gameID,
-                playerID: playerID,
+                gameID,
+                playerID,
                 whiteCardIDs: selectedCards.map((whiteCard) => whiteCard.id),
             });
 
@@ -51,8 +56,6 @@ export function WhiteCardPickerContainer() {
             console.log('ERROR: There was not enough white cards to confirm');
         }
     };
-
-    const blackCard = game.rounds[game.rounds.length - 1].blackCard;
 
     return (
         <div className="cardpicker-container">

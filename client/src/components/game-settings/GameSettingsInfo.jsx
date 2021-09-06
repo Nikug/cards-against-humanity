@@ -10,7 +10,7 @@ export const GameSettingsInfo = ({ keyword, plainText, link }) => {
 
     if (link) {
         content = (
-            <a className="text link" target="_blank" href={link}>
+            <a className="text link" target="_blank" href={link} rel="noreferrer">
                 {text}
             </a>
         );

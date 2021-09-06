@@ -1,5 +1,6 @@
-import { isPlayerCardCzar, isPlayerSpectatorOrJoining } from '../../helpers/player-helpers';
+import React from 'react';
 
+import { isPlayerCardCzar, isPlayerSpectatorOrJoining } from '../../helpers/player-helpers';
 import { BlackCardPickerContainer } from '../../components/card-picker/blackcardpickercontainer';
 import { CardReadingContainer } from '../../components/card-picker/cardreadingcontainer';
 import { ErrorContainer } from './components/ErrorContainer';
@@ -7,7 +8,6 @@ import { GAME_STATES } from '../../consts/gamestates';
 import { GameEndContainer } from '../../components/card-picker/gameendcontainer';
 import { LobbyContent } from './phases/lobby/LobbyContent';
 import { NamePicker } from './phases/lobby/NamePicker';
-import React from 'react';
 import { RoundEndContainer } from '../../components/card-picker/roundendcontainer';
 import { WaitingCardPickerContainer } from '../../components/card-picker/waitincardpickercontainer';
 import { WhiteCardPickerContainer } from '../../components/card-picker/whitecardpickercontainer';
@@ -15,16 +15,25 @@ import { WinnerCardPickerContainer } from '../../components/card-picker/winnerca
 import { canStartGame } from './helpers/canStartGame';
 import { getRandomSpinner } from '../../components/spinner';
 import { translateCommon } from '../../helpers/translation-helpers';
-import { useGameContext } from '../../contexts/GameContext';
+import { getCardCzarNameFromPlayersList } from '../../helpers/getCardCzarNameFromPlayersList';
 
-export const getGamePhaseContent = ({ t, game, player, callbacks: { setPlayerName, givePopularVote, startGame }, blackCards, popularVotedCardsIDs }) => {
+export const getGamePhaseContent = ({
+    t,
+    game,
+    player,
+    players,
+    options,
+    callbacks: { setPlayerName, givePopularVote, startGame },
+    blackCards,
+    popularVotedCardsIDs,
+}) => {
     const gameState = game?.state;
     const playerState = player?.state;
-    const disableStartGameButton = !canStartGame(game);
+    const disableStartGameButton = !canStartGame(options, players);
     const isCardCzar = isPlayerCardCzar(player);
     const isSpectator = isPlayerSpectatorOrJoining(player);
 
-    if (!game || !player) {
+    if (!game?.id || !player?.id) {
         return (
             <div
                 style={{
@@ -51,7 +60,7 @@ export const getGamePhaseContent = ({ t, game, player, callbacks: { setPlayerNam
                 return <BlackCardPickerContainer blackCards={blackCards} />;
             }
 
-            const cardCzarName = game.players.filter((player) => player.isCardCzar)[0].name;
+            const cardCzarName = getCardCzarNameFromPlayersList(players);
 
             return (
                 <WaitingCardPickerContainer

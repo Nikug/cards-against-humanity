@@ -2,7 +2,7 @@ export const gameOptions = {
     minimumPlayers: 2,
     maximumPlayers: 50,
     spectatorLimit: 20,
-    defaultPlayers: 8,
+    defaultPlayers: 10,
 
     allowPopularVote: true,
     // If no one has votes, no point in making anyone king
@@ -28,7 +28,7 @@ export const gameOptions = {
         roundLimit: {
             minimum: 1,
             maximum: 100,
-            default: 5,
+            default: 20,
             use: false,
         },
     },

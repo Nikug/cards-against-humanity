@@ -1,6 +1,6 @@
-import Backend from "i18next-http-backend";
-import i18n from "i18next";
-import { initReactI18next } from "react-i18next";
+import Backend from 'i18next-http-backend';
+import i18n from 'i18next';
+import { initReactI18next } from 'react-i18next';
 
 i18n
     // load translation using http -> see /public/locales
@@ -11,12 +11,12 @@ i18n
     // init i18next
     // for all options read: https://www.i18next.com/overview/configuration-options
     .init({
-        ns: ["common", "notification", "underwork"],
-        defaultNs: "common",
+        ns: ['common', 'notification', 'underwork'],
+        defaultNs: 'common',
         react: {
             useSuspense: true,
         },
-        fallbackLng: ["fi", "en"],
+        fallbackLng: ['fi', 'en'],
         debug: false,
 
         interpolation: {

@@ -1,13 +1,12 @@
 import React from 'react';
 import Tippy from '@tippyjs/react';
+import i18n from '../i18n';
 
 import { useTranslation } from 'react-i18next';
 import { sortByProperty } from '../helpers/generalhelpers';
 import { LOCAL_STORAGE_FIELDS, setItemToLocalStorage } from '../helpers/localstoragehelpers';
 import { translateCommon } from '../helpers/translation-helpers';
-import i18n from '../i18n';
 import Icon from './general/Icon';
-import { Button } from './general/Button';
 
 const RadioButton = ({ id, label, checked, onSelect }) => {
     return (

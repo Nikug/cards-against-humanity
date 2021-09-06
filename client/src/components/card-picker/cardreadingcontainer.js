@@ -6,19 +6,26 @@ import { CardPicker } from './cardpicker';
 import { socket } from '../sockets/socket';
 import { socketOn } from '../../helpers/communicationhelpers';
 import { translateCommon } from '../../helpers/translation-helpers';
-import { useGameContext } from '../../contexts/GameContext';
 import { useTranslation } from 'react-i18next';
 import { formatTextWithBlanksAsText } from './cardformathelpers/formattextwithblanks';
+import { useSelector } from 'react-redux';
+import { gameBlackCardSelector, gameIdSelector } from '../../selectors/gameSelectors';
+import { playerIdSelector, playerIsCardCzarSelector } from '../../selectors/playerSelectors';
+import { playersListTextToSpeechSelector } from '../../selectors/playersListSelectors';
 
 export const CardReadingContainer = () => {
     const { t } = useTranslation();
-    const { game, player } = useGameContext();
+
+    // State
+    const gameID = useSelector(gameIdSelector);
+    const playerID = useSelector(playerIdSelector);
+    const isCardCzar = useSelector(playerIsCardCzarSelector);
+    const blackCard = useSelector(gameBlackCardSelector);
+    const textToSpeechInUse = useSelector(playersListTextToSpeechSelector);
 
     const [whiteCards, setWhiteCards] = useState([]);
     const [whiteCardIndex, setWhiteCardIndex] = useState(0);
     const [outOf, setOutOf] = useState(0);
-    const textToSpeechInUse = game?.players?.filter((player) => player.isCardCzar)[0].useTextToSpeech;
-    const blackCard = game?.rounds[game.rounds.length - 1].blackCard;
 
     useEffect(() => {
         const listener = (data) => {
@@ -26,7 +33,8 @@ export const CardReadingContainer = () => {
             setWhiteCardIndex(data.index);
             setOutOf(data.outOf);
 
-            const blackCardToRead = game?.rounds[game.rounds.length - 1].blackCard;
+            // const blackCardToRead = game?.rounds[game.rounds.length - 1].blackCard;
+            const blackCardToRead = blackCard;
 
             if (textToSpeechInUse && !isNullOrUndefined(blackCardToRead)) {
                 const whiteCardsToRead = data.whiteCards;
@@ -49,20 +57,20 @@ export const CardReadingContainer = () => {
         return () => {
             socket.off('show_white_card');
         };
-    }, [textToSpeechInUse]);
+    }, [textToSpeechInUse, blackCard]);
 
     function toggleTextToSpeech() {
         socket.emit('change_text_to_speech', {
-            gameID: game?.id,
-            playerID: player.id,
+            gameID,
+            playerID,
             useTextToSpeech: !textToSpeechInUse,
         });
     }
 
     const showNextCard = () => {
         socket.emit('show_next_white_card', {
-            gameID: game?.id,
-            playerID: player.id,
+            gameID,
+            playerID,
         });
     };
 
@@ -84,11 +92,11 @@ export const CardReadingContainer = () => {
                         : [translateCommon('next', t), `${translateCommon('loading', t)}...`]
                 }
                 customButtonIcons={['arrow_forward', 'cached']}
-                noActionButton={player?.isCardCzar ? false : true}
+                noActionButton={isCardCzar ? false : true}
                 topText={topText}
                 noBigMainCard={whiteCards?.length === 0}
             />
-            {player?.isCardCzar && (
+            {isCardCzar && (
                 <div className="cardreading-settings">
                     <Setting
                         text={translateCommon('readCardsForMe', t)}
