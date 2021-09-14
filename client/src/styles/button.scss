@@ -1,4 +1,7 @@
 $lgd: 180deg; // linear-gradient degree
+$shadow-radius: 3px;
+$shadow-blur: 3px;
+$shadow-color: rgba(0, 0, 0, 0.6);
 
 .button {
     color: $button-text;
@@ -10,15 +13,18 @@ $lgd: 180deg; // linear-gradient degree
     align-items: center;
 
     height: fit-content;
+    min-height: 1.8em;
     width: fit-content;
 
     box-sizing: border-box;
 
-    padding: 0.3em 0.8em;
-    border-radius: 6px;
+    padding: 0.3em 0.85em;
+    border-radius: 0.5em;
 
     background: linear-gradient($lgd, $button-shadow, $button-background) $button-background;
-    border: 1px solid $button-border;
+    border: none;
+    box-shadow: $shadow-radius $shadow-radius $shadow-blur $shadow-color;
+    margin-bottom: $shadow-radius;
     backface-visibility: hidden;
     outline: none;
 
@@ -50,11 +56,11 @@ $lgd: 180deg; // linear-gradient degree
 
     &:focus {
         background: linear-gradient($lgd, $button-background-hover, $button-shadow-hover) $button-shadow-hover;
+        box-shadow: $shadow-radius $shadow-radius $shadow-blur $shadow-color inset;
     }
 
     &.primary {
         color: $button-text-primary;
-        border: 1px solid $button-border-primary;
         background: linear-gradient($lgd, $button-shadow-primary, $button-background-primary) $button-background-primary;
 
         .button-icon {
@@ -72,7 +78,6 @@ $lgd: 180deg; // linear-gradient degree
 
     &.green {
         color: $button-text-green;
-        border: 1px solid $button-border-green;
         background: linear-gradient($lgd, $button-shadow-green, $button-background-green) $button-background-green;
 
         .button-icon {
@@ -90,17 +95,15 @@ $lgd: 180deg; // linear-gradient degree
 
     &.disabled {
         cursor: default;
+        box-shadow: none;
         background: linear-gradient($lgd, $button-shadow, $button-background) $button-background;
-        border: 1px solid $button-border;
 
         &:hover {
             background: linear-gradient($lgd, $button-shadow, $button-background) $button-background;
-            border: 1px solid $button-border;
         }
 
         &:focus {
             background: linear-gradient($lgd, $button-shadow, $button-background) $button-background;
-            border: 1px solid $button-border;
         }
 
         .button-icon {
