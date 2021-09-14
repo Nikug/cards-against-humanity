@@ -12,6 +12,12 @@ $large-desktop: 1200px;
     }
 }
 
+@mixin mobile-only {
+    @media (max-width: #{$small-desktop}) {
+        @content;
+    }
+}
+
 @mixin tablet {
     @media (min-width: #{$tablet}) {
         @content;
