@@ -1,32 +1,58 @@
 .avatar-creator-container {
-    padding: 0.6em;
-    padding-right: 1em;
-    padding-left: 1em;
     background-color: rgba(112, 144, 151, 0.3);
     border-radius: 2px;
     color: darken($app-text, 15%);
 
     display: grid;
-    grid-template-columns: 2fr 1fr;
+    grid-template-columns: auto auto 2em min-content 2em;
     grid-template-rows: auto;
     grid-template-areas:
-        'text picker1'
-        'text picker2'
-        'text picker3';
+        'text hat arrowleft1 avatar arrowright1'
+        'text eyes arrowleft2 avatar arrowright2'
+        'text mouth arrowleft3 avatar arrowright3';
 }
 
 .text {
     grid-area: text;
 }
-.avatar-picker-1 {
-    grid-area: 'picker1';
-    justify-self: end;
+.hat-text {
+    grid-area: hat;
 }
-.avatar-picker-2 {
-    grid-area: 'picker2';
-    justify-self: end;
+.eyes-text {
+    grid-area: eyes;
 }
-.avatar-picker-3 {
-    grid-area: 'picker3';
-    justify-self: end;
+.mouth-text {
+    grid-area: mouth;
+}
+.arrow-left-1 {
+    grid-area: arrowleft1;
+}
+.arrow-left-2 {
+    grid-area: arrowleft2;
+}
+.arrow-left-3 {
+    grid-area: arrowleft3;
+}
+.avatar {
+    grid-area: avatar;
+    justify-self: center;
+}
+.avatar img {
+    max-width: 150px;
+    min-width: 150px;
+    max-height: 150px;
+    min-height: 150px;
+}
+.arrow-right-1 {
+    grid-area: arrowright1;
+}
+.arrow-right-2 {
+    grid-area: arrowright2;
+}
+.arrow-right-3 {
+    grid-area: arrowright3;
+}
+
+.unnecessaryDiv {
+    display: flex;
 }
