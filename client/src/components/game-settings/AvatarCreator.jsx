@@ -11,9 +11,9 @@ const defaultAvatar = {
 };
 
 const maxAvatarTypes = {
-    hats: 5,
-    eyes: 5,
-    mouths: 5, 
+    hatType: 5,
+    eyeType: 5,
+    mouthType: 5, 
 }
 
 const avatarImg = "https://cdn.shopify.com/s/files/1/0220/9497/0980/products/image_e0191ed4-1fcc-4e99-a811-0624189386bc.png?v=1558095871";
@@ -23,13 +23,13 @@ export const AvatarCreator = () => {
     const [currentAvatar, setCurrentAvatar] = useState(defaultAvatar);
 
     const changeAvatar = (type, dir) => {
-        let newAvatar = currentAvatar
+        let newAvatar = { ...currentAvatar }
         if (dir === "next") {
-            newAvatar[type] = Math.max(newAvatar[type] + 1, maxAvatarTypes[type]);
+            newAvatar[type] = Math.min(newAvatar[type] + 1, maxAvatarTypes[type]);
             setCurrentAvatar(newAvatar);
             console.log("Set avatar");
         } else if ( dir === "prev") {
-            newAvatar[type] = Math.min(newAvatar[type] - 1, 0);
+            newAvatar[type] = Math.max(newAvatar[type] - 1, 0);
             setCurrentAvatar(newAvatar);
             console.log("Set avatar");
         } else {
