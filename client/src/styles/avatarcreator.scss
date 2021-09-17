@@ -1,14 +1,32 @@
 .avatar-creator-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-
-    flex-grow: 1;
-
     padding: 0.6em;
+    padding-right: 1em;
+    padding-left: 1em;
     background-color: rgba(112, 144, 151, 0.3);
-
     border-radius: 2px;
-
     color: darken($app-text, 15%);
+
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    grid-template-rows: auto;
+    grid-template-areas:
+        'text picker1'
+        'text picker2'
+        'text picker3';
+}
+
+.text {
+    grid-area: text;
+}
+.avatar-picker-1 {
+    grid-area: 'picker1';
+    justify-self: end;
+}
+.avatar-picker-2 {
+    grid-area: 'picker2';
+    justify-self: end;
+}
+.avatar-picker-3 {
+    grid-area: 'picker3';
+    justify-self: end;
 }
