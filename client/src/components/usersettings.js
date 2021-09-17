@@ -19,7 +19,7 @@ export const UserSettings = () => {
     const userSettings = useSelector(userSettingsSelector);
 
     const [radioVolValue, setRadioVolValue] = useState(DEFAULT_VOLUME);
-    const [text2SpeechVolValue, setText2SpeechVolValue] = useState(DEFAULT_VOLUME);
+    const [textToSpeechVolValue, setText2SpeechVolValue] = useState(DEFAULT_VOLUME);
     const [soundEffectVolValue, setSoundEffectVolValue] = useState(DEFAULT_VOLUME);
 
     useEffect(() => {
@@ -29,19 +29,27 @@ export const UserSettings = () => {
     }, [userSettings.radioVolume]);
 
     useEffect(() => {
-        if (userSettings.radioVolume !== undefined) {
-            setText2SpeechVolValue(userSettings.radioVolume);
+        if (userSettings.textToSpeechVolume !== undefined) {
+            setText2SpeechVolValue(userSettings.textToSpeechVolume);
         }
-    }, [userSettings.radioVolume]);
+    }, [userSettings.textToSpeechVolume]);
 
     useEffect(() => {
-        if (userSettings.radioVolume !== undefined) {
-            setSoundEffectVolValue(userSettings.radioVolume);
+        if (userSettings.soundEffectVolValue !== undefined) {
+            setSoundEffectVolValue(userSettings.soundEffectVolValue);
         }
-    }, [userSettings.radioVolume]);
+    }, [userSettings.soundEffectVolValue]);
 
     const updateRadioVolume = (event) => {
         dispatch(updateUserSettings({ radioVolume: event.target.value }));
+    };
+
+    const updateTextToSpeechVolume = (event) => {
+        dispatch(updateUserSettings({ textToSpeechVolume: event.target.value }));
+    };
+
+    const updateSoundEffectVolume = (event) => {
+        dispatch(updateUserSettings({ soundEffectVolume: event.target.value }));
     };
 
     return (
@@ -64,13 +72,15 @@ export const UserSettings = () => {
                     />
                     <Slider
                         title={translateCommon('textToSpeechVolume', t)}
-                        value={text2SpeechVolValue}
+                        value={textToSpeechVolValue}
                         changeCallback={(event) => setText2SpeechVolValue(event.target.value)}
+                        onMouseUpCallback={updateTextToSpeechVolume}
                     />
                     <Slider
                         title={translateCommon('soundEffectVolume', t)}
                         value={soundEffectVolValue}
                         changeCallback={(event) => setSoundEffectVolValue(event.target.value)}
+                        onMouseUpCallback={updateSoundEffectVolume}
                     />
                 </div>
             }
