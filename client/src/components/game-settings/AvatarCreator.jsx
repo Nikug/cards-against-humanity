@@ -23,15 +23,12 @@ export const AvatarCreator = () => {
     const [currentAvatar, setCurrentAvatar] = useState(defaultAvatar);
 
     const changeAvatar = (type, dir) => {
-        let newAvatar = { ...currentAvatar }
-        if (dir === "next") {
-            newAvatar[type] = Math.min(newAvatar[type] + 1, maxAvatarTypes[type]);
-            setCurrentAvatar(newAvatar);
-            console.log("Set avatar");
-        } else if ( dir === "prev") {
-            newAvatar[type] = Math.max(newAvatar[type] - 1, 0);
-            setCurrentAvatar(newAvatar);
-            console.log("Set avatar");
+        if ( dir === "next" ) {
+            let newAvatar = Math.min(currentAvatar[type] + 1, maxAvatarTypes[type]);
+            setCurrentAvatar(prevAvatar => ({...prevAvatar, [type]: newAvatar}));
+        } else if ( dir === "prev" ) {
+            let newAvatar = Math.max(currentAvatar[type] - 1, 0);
+            setCurrentAvatar(prevAvatar => ({...prevAvatar, [type]: newAvatar}));
         } else {
             return;
         }
