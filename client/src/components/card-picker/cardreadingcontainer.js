@@ -12,6 +12,7 @@ import { useSelector } from 'react-redux';
 import { gameBlackCardSelector, gameIdSelector } from '../../selectors/gameSelectors';
 import { playerIdSelector, playerIsCardCzarSelector } from '../../selectors/playerSelectors';
 import { playersListTextToSpeechSelector } from '../../selectors/playersListSelectors';
+import { userSettingsTextToSpeechVolumeSelector } from '../../selectors/userSettingsSelector';
 
 export const CardReadingContainer = () => {
     const { t } = useTranslation();
@@ -22,6 +23,7 @@ export const CardReadingContainer = () => {
     const isCardCzar = useSelector(playerIsCardCzarSelector);
     const blackCard = useSelector(gameBlackCardSelector);
     const textToSpeechInUse = useSelector(playersListTextToSpeechSelector);
+    const textToSpeechVolume = useSelector(userSettingsTextToSpeechVolumeSelector);
 
     const [whiteCards, setWhiteCards] = useState([]);
     const [whiteCardIndex, setWhiteCardIndex] = useState(0);
@@ -49,7 +51,7 @@ export const CardReadingContainer = () => {
 
                 const fullText = formatTextWithBlanksAsText(blackCardTexts, blankTexts);
 
-                textToSpeech(fullText);
+                textToSpeech(fullText, textToSpeechVolume);
             }
         };
         socketOn('show_white_card', listener);
@@ -57,7 +59,7 @@ export const CardReadingContainer = () => {
         return () => {
             socket.off('show_white_card');
         };
-    }, [textToSpeechInUse, blackCard]);
+    }, [textToSpeechInUse, blackCard, textToSpeechVolume]);
 
     function toggleTextToSpeech() {
         socket.emit('change_text_to_speech', {

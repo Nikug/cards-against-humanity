@@ -40,13 +40,13 @@ export function containsObjectWithMatchingFieldIndex(obj, list, fieldName) {
     return -1;
 }
 
-export function textToSpeech(text) {
-    if ("speechSynthesis" in window) {
+export function textToSpeech(text, volume) {
+    if ('speechSynthesis' in window) {
         const msg = new SpeechSynthesisUtterance();
-        msg.lang = "fi";
+        msg.lang = 'fi';
         msg.rate = 1;
         msg.text = text;
-        msg.volume = 0.3;
+        msg.volume = volume ? volume / 100 : 0.3;
         window.speechSynthesis.speak(msg);
     }
 }
@@ -57,16 +57,24 @@ export const sortByProperty = (list, property) => {
     }
 
     if (property == null) {
-        return list.sort(function(a, b){
-            if(a < b) { return -1; }
-            if(a > b) { return 1; }
+        return list.sort(function (a, b) {
+            if (a < b) {
+                return -1;
+            }
+            if (a > b) {
+                return 1;
+            }
             return 0;
-        })
+        });
     }
 
-    return list.sort(function(a, b){
-        if(a[property] < b[property]) { return -1; }
-        if(a[property] > b[property]) { return 1; }
+    return list.sort(function (a, b) {
+        if (a[property] < b[property]) {
+            return -1;
+        }
+        if (a[property] > b[property]) {
+            return 1;
+        }
         return 0;
-    })
-}
+    });
+};
