@@ -58,12 +58,7 @@ export const AvatarCreator = () => {
                 <Icon name="arrow_back_ios" className="" onClick={() => changeAvatar('mouthType', 'prev')} />
             </div>
             <div className="avatar">
-                <AvatarImage
-                    imagesrc={avatarImg}
-                    hatImagesrc={propImages.hat[currentAvatar.hatType]}
-                    eyeImagesrc={propImages.eyes[currentAvatar.eyeType]}
-                    mouthImagesrc={propImages.mouth[currentAvatar.mouthType]}
-                />
+                <AvatarImage imagesrc={avatarImg} hatNumber={currentAvatar.hatType} eyeNumber={currentAvatar.eyeType} mouthNumber={currentAvatar.mouthType} />
             </div>
             <div className="arrow-right-1">
                 <Icon name="arrow_forward_ios" className="" onClick={() => changeAvatar('hatType', 'next')} />
