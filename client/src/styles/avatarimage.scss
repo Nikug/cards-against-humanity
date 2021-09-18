@@ -1,0 +1,46 @@
+.avatar-img-container {
+    position: relative;
+}
+
+.bgr-img {
+    max-width: 150px;
+    min-width: 150px;
+    max-height: 150px;
+    min-height: 150px;
+}
+
+.hat-img {
+    position: absolute;
+    z-index: 1;
+    left: 50px;
+    right: 50px;
+    top: 5px;
+    max-width: 50px;
+    min-width: 50px;
+    max-height: 50px;
+    min-height: 50px;
+}
+
+.eye-img {
+    position: absolute;
+    z-index: 1;
+    left: 50px;
+    right: 50px;
+    top: 55px;
+    max-width: 50px;
+    min-width: 50px;
+    max-height: 25px;
+    min-height: 25px;
+}
+
+.mouth-img {
+    position: absolute;
+    z-index: 1;
+    left: 62px;
+    right: 62px;
+    top: 80px;
+    max-width: 24px;
+    min-width: 24px;
+    max-height: 25px;
+    min-height: 25px;
+}
