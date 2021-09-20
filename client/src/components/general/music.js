@@ -1,7 +1,8 @@
 import Icon from './Icon';
-import React, { useRef, useState, useEffect } from 'react';
+import React, { useRef, useState, useEffect, useMemo } from 'react';
 import { userSettingsRadioVolumeSelector } from '../../selectors/userSettingsSelector';
 import { useSelector } from 'react-redux';
+import { radioVolumeAdjuster } from '../../helpers/audio/volumeAdjusters';
 
 export const Music = () => {
     const audioRef = useRef(new Audio('https://stream.bauermedia.fi/radionova/radionova_64.aac'));
@@ -9,10 +10,10 @@ export const Music = () => {
 
     const radioVolume = useSelector(userSettingsRadioVolumeSelector);
 
-    audioRef.current.volume = radioVolume ? radioVolume / 200 : 0.05;
+    audioRef.current.volume = radioVolumeAdjuster(radioVolume);
 
     useEffect(() => {
-        audioRef.current.volume = radioVolume ? radioVolume / 200 : 0.05;
+        audioRef.current.volume = radioVolumeAdjuster(radioVolume);
     }, [radioVolume]);
 
     const toggle = () => {
@@ -27,7 +28,7 @@ export const Music = () => {
         }
     };
 
-    const icon = isPlaying ? 'pause_circle_outline' : 'play_circle_outline';
+    const icon = useMemo(() => (isPlaying ? 'pause_circle_outline' : 'play_circle_outline'), [isPlaying]);
 
     return <Icon onClick={toggle} name={icon} />;
 };

@@ -14,8 +14,7 @@ const DEFAULT_VOLUME = 50;
 export const UserSettings = () => {
     const { t } = useTranslation();
     const dispatch = useDispatch();
-    // öö ootas ku mä mietin
-    // ainiin!
+
     const userSettings = useSelector(userSettingsSelector);
 
     const [radioVolValue, setRadioVolValue] = useState(DEFAULT_VOLUME);
@@ -40,16 +39,34 @@ export const UserSettings = () => {
         }
     }, [userSettings.soundEffectVolValue]);
 
-    const updateRadioVolume = (event) => {
-        dispatch(updateUserSettings({ radioVolume: event.target.value }));
+    const change = (event, changeParams) => {
+        const field = changeParams?.field;
+
+        if (!field || !event.target) {
+            return;
+        }
+
+        switch (field) {
+            case 'radioVolume':
+                setRadioVolValue(event.target.value);
+                break;
+            case 'textToSpeechVolume':
+                setText2SpeechVolValue(event.target.value);
+                break;
+            case 'soundEffectVolume':
+                setSoundEffectVolValue(event.target.value);
+                break;
+            default:
+                break;
+        }
     };
 
-    const updateTextToSpeechVolume = (event) => {
-        dispatch(updateUserSettings({ textToSpeechVolume: event.target.value }));
-    };
+    const updateVolume = (event, changeParams) => {
+        if (!changeParams || !event.target) {
+            return;
+        }
 
-    const updateSoundEffectVolume = (event) => {
-        dispatch(updateUserSettings({ soundEffectVolume: event.target.value }));
+        dispatch(updateUserSettings({ [changeParams.field]: event.target.value }));
     };
 
     return (
@@ -67,20 +84,23 @@ export const UserSettings = () => {
                     <Slider
                         title={translateCommon('radioVolume', t)}
                         value={radioVolValue}
-                        changeCallback={(event) => setRadioVolValue(event.target.value)}
-                        onMouseUpCallback={updateRadioVolume}
+                        changeCallback={change}
+                        changeParams={{ field: 'radioVolume' }}
+                        onMouseUpCallback={updateVolume}
                     />
                     <Slider
                         title={translateCommon('textToSpeechVolume', t)}
                         value={textToSpeechVolValue}
-                        changeCallback={(event) => setText2SpeechVolValue(event.target.value)}
-                        onMouseUpCallback={updateTextToSpeechVolume}
+                        changeCallback={change}
+                        changeParams={{ field: 'textToSpeechVolume' }}
+                        onMouseUpCallback={updateVolume}
                     />
                     <Slider
                         title={translateCommon('soundEffectVolume', t)}
                         value={soundEffectVolValue}
-                        changeCallback={(event) => setSoundEffectVolValue(event.target.value)}
-                        onMouseUpCallback={updateSoundEffectVolume}
+                        changeCallback={change}
+                        changeParams={{ field: 'soundEffectVolume' }}
+                        onMouseUpCallback={updateVolume}
                     />
                 </div>
             }

@@ -1,3 +1,5 @@
+import { textToSpeechVolumeAdjuster } from './audio/volumeAdjusters';
+
 export function emptyFn() {
     return;
 }
@@ -46,7 +48,9 @@ export function textToSpeech(text, volume) {
         msg.lang = 'fi';
         msg.rate = 1;
         msg.text = text;
-        msg.volume = volume ? volume / 100 : 0.3;
+        msg.volume = textToSpeechVolumeAdjuster(volume);
+
+        console.log('msg.volume', msg.volume);
         window.speechSynthesis.speak(msg);
     }
 }
