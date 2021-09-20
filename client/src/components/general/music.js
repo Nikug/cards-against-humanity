@@ -1,32 +1,37 @@
 import Icon from './Icon';
-import React from 'react';
+import React, { useRef, useState, useEffect, useMemo } from 'react';
+import { userSettingsRadioVolumeSelector } from '../../selectors/userSettingsSelector';
+import { useSelector } from 'react-redux';
+import { radioVolumeAdjuster } from '../../helpers/audio/volumeAdjusters';
 
-export default class Music extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            play: false,
-        };
-        // this.url = "http://streaming.tdiradio.com:8000/house.mp3";
-        this.url = 'https://stream.bauermedia.fi/radionova/radionova_64.aac';
-        this.audio = new Audio(this.url);
-        this.audio.volume = 0.05;
-    }
+export const Music = () => {
+    // const audioRef = useRef(new Audio('https://stream.bauermedia.fi/radionova/radionova_64.aac'));
+    // "http://streaming.tdiradio.com:8000/house.mp3";
+    const audioRef = useRef(new Audio('https://stream.bauermedia.fi/radiopooki/radiopooki_64.aac'));
 
-    toggle = () => {
-        const newState = !this.state.play;
+    const [isPlaying, setIsPlaying] = useState(false);
 
-        this.setState({ play: newState });
+    const radioVolume = useSelector(userSettingsRadioVolumeSelector);
+
+    audioRef.current.volume = radioVolumeAdjuster(radioVolume);
+
+    useEffect(() => {
+        audioRef.current.volume = radioVolumeAdjuster(radioVolume);
+    }, [radioVolume]);
+
+    const toggle = () => {
+        const newState = !isPlaying;
+
+        setIsPlaying(newState);
 
         if (newState) {
-            this.audio.play();
+            audioRef.current.play();
         } else {
-            this.audio.pause();
+            audioRef.current.pause();
         }
     };
 
-    render() {
-        const icon = this.state.play ? 'pause_circle_outline' : 'play_circle_outline';
-        return <Icon onClick={this.toggle} name={icon} />;
-    }
-}
+    const icon = useMemo(() => (isPlaying ? 'pause_circle_outline' : 'play_circle_outline'), [isPlaying]);
+
+    return <Icon onClick={toggle} name={icon} />;
+};

@@ -1,12 +1,12 @@
 # Kortit ihmiskuntaa vastaan
 
-Modern cards against humanity online game. Hosted at [pelit.space](https://pelit.space)
+Modern cards against humanity online game. Hosted at [https://www.pelit.space](https://www.pelit.space)
 
 ## How to run
 
 You need Node version 14 to run this project.
 
-run `npm i` in root and in /client
+run `npm i` in root, in /client and in /server (in three (3) places in total)
 
 run `npm run dev` in root. Then navigate your browser to `localhost:3000` for lobby and `localhost:3000/g/:id` for the game lobby.
 

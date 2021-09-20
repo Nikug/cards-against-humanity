@@ -37,7 +37,7 @@ export const Setting = ({
             const cardpackId = 'U4nL88ujS' || 'qM1V1IaYBE';
             setInputText(cardpackId);
         }
-    }, []);
+    }, [DEV_CARD_PACK_AUTOFILL, isDisabled]);
 
     const renderNumberSelect = (currentValue, isDisabled, onChangeCallback, field) => {
         const showAsDisabled = isDisabled || currentValue === null;
@@ -96,7 +96,6 @@ export const Setting = ({
     };
 
     const handleTextFieldChange = (event, field, changeCallback) => {
-        console.log({ changeCallback });
         if (!event) {
             if (field) {
                 changeCallback({ field, value: inputText });
@@ -121,7 +120,7 @@ export const Setting = ({
         return <Icon name={name} className={`${className ? className : ''} ${isDisabled ? 'disabled' : ''}`} color={color} onClick={onClick} />;
     };
 
-    const renderMultiplseControls = (controls, currentValue, isDisabled, onChangeCallback, placeholderText) => {
+    const renderMultipleControls = (controls, currentValue, isDisabled, onChangeCallback, placeholderText) => {
         const renderedControls = [];
 
         for (let i = 0, len = controls.length; i < len; i++) {
@@ -135,7 +134,7 @@ export const Setting = ({
 
     const renderControl = (controlType, currentValue, isDisabled, onChangeCallback, placeholderText, field) => {
         if (Array.isArray(controlType)) {
-            return renderMultiplseControls(controlType, currentValue, isDisabled, onChangeCallback, placeholderText);
+            return renderMultipleControls(controlType, currentValue, isDisabled, onChangeCallback, placeholderText);
         }
 
         switch (controlType) {

@@ -1,6 +1,7 @@
 // React stuff
 import React, { Suspense } from 'react';
 import ReactDOM from 'react-dom';
+import { Provider } from 'react-redux';
 
 // CSS
 import './styles/_loadingstyles.scss';
@@ -14,14 +15,17 @@ import { App } from './App';
 import * as serviceWorker from './serviceWorker';
 import { BrowserRouter as Router } from 'react-router-dom';
 import { WholePageLoader } from './components/WholePageLoader.jsx';
+import store from './store';
 
 ReactDOM.render(
     <React.StrictMode>
-        <Suspense fallback={<WholePageLoader />}>
-            <Router>
-                <App />
-            </Router>
-        </Suspense>
+        <Provider store={store}>
+            <Suspense fallback={<WholePageLoader />}>
+                <Router>
+                    <App />
+                </Router>
+            </Suspense>
+        </Provider>
     </React.StrictMode>,
     document.getElementById('root')
 );

@@ -1,0 +1,12 @@
+.slider {
+    .title {
+        margin-bottom: 0.2em;
+    }
+    .slider-container {
+        display: flex;
+        align-items: center;
+        .slider-value {
+            min-width: 1.2em;
+        }
+    }
+}

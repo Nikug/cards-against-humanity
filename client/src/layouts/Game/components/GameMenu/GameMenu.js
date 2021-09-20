@@ -1,22 +1,23 @@
-import { isPlayerHost, isPlayerSpectator } from '../../../../helpers/player-helpers';
-
-import { ActionButtonRow } from './ActionButtonRow';
+import { ActionButtonRow, BUTTON_ROW_DIRECTION } from './ActionButtonRow';
 import { Button, BUTTON_TYPES } from '../../../../components/general/Button.jsx';
 import { GAME_STATES } from '../../../../consts/gamestates';
-import { PopOverMenu } from '../../../../components/popover-menu/PopoverMenu';
 import React from 'react';
-import { SocketMessenger } from '../../../../components/socket-messenger/socket-messenger';
-import { translateCommon } from '../../../../helpers/translation-helpers';
-import { useGameContext } from '../../../../contexts/GameContext';
+import { translateCommon, translateUnderWork } from '../../../../helpers/translation-helpers';
 import { useTranslation } from 'react-i18next';
 import Tippy from '@tippyjs/react';
+import { useSelector } from 'react-redux';
+import { gameRoundsSelector, gameStateSelector } from '../../../../selectors/gameSelectors';
+import { playerIsHostSelector, playerIsSpectatorSelector } from '../../../../selectors/playerSelectors';
 
-export const GameMenu = ({ callbacks: { togglePlayerMode, returnBackToLobby, openGameSettings, openHistory }, showDebug }) => {
+export const GameMenu = ({ callbacks: { togglePlayerMode, changeCards, returnBackToLobby, openGameSettings, openHistory } }) => {
     const { t } = useTranslation();
-    const { game, player } = useGameContext();
 
-    const isLobby = game?.state === GAME_STATES.LOBBY;
-    const isSpectator = isPlayerSpectator(player);
+    const gameState = useSelector(gameStateSelector);
+    const rounds = useSelector(gameRoundsSelector);
+    const isSpectator = useSelector(playerIsSpectatorSelector);
+    const isHost = useSelector(playerIsHostSelector);
+
+    const isLobby = gameState === GAME_STATES.LOBBY;
 
     return (
         <Tippy
@@ -31,59 +32,10 @@ export const GameMenu = ({ callbacks: { togglePlayerMode, returnBackToLobby, ope
                 <>
                     {translateCommon('menu', t)}
                     <ActionButtonRow
+                        direction={BUTTON_ROW_DIRECTION.COLUMN}
                         buttons={[
-                            isSpectator
-                                ? {
-                                      icon: 'login',
-                                      text: translateCommon('joinToGame', t),
-                                      callback: togglePlayerMode,
-                                      type: BUTTON_TYPES.PRIMARY,
-                                  }
-                                : {
-                                      icon: 'groups',
-                                      text: translateCommon('goToAudience', t),
-                                      callback: togglePlayerMode,
-                                      type: BUTTON_TYPES.PRIMARY,
-                                  },
-                            {
-                                icon: 'home',
-                                text: translateCommon('returnToLobby', t),
-                                callback: returnBackToLobby,
-                                type: BUTTON_TYPES.PRIMARY,
-                                disabled: !isPlayerHost(player) || isLobby,
-                            },
-                            {
-                                icon: 'settings',
-                                text: translateCommon('gameSettings', t),
-                                callback: openGameSettings,
-                                type: BUTTON_TYPES.PRIMARY,
-                            },
-                            {
-                                icon: 'history',
-                                text: translateCommon('history', t),
-                                callback: openHistory,
-                                type: BUTTON_TYPES.PRIMARY,
-                                disabled: !(game?.rounds?.length > 0),
-                            },
-                        ]}
-                    />
-                </>
-            }
-        >
-            <Button icon={'menu'}></Button>
-        </Tippy>
-    );
-
-    return (
-        <>
-            <PopOverMenu
-                buttonProps={{ icon: 'menu' }}
-                content={
-                    <>
-                        {translateCommon('menu', t)}
-                        <ActionButtonRow
-                            buttons={[
-                                isSpectator
+                            togglePlayerMode &&
+                                (isSpectator
                                     ? {
                                           icon: 'login',
                                           text: translateCommon('joinToGame', t),
@@ -95,33 +47,42 @@ export const GameMenu = ({ callbacks: { togglePlayerMode, returnBackToLobby, ope
                                           text: translateCommon('goToAudience', t),
                                           callback: togglePlayerMode,
                                           type: BUTTON_TYPES.PRIMARY,
-                                      },
-                                {
-                                    icon: 'home',
-                                    text: translateCommon('returnToLobby', t),
-                                    callback: returnBackToLobby,
-                                    type: BUTTON_TYPES.PRIMARY,
-                                    disabled: !isPlayerHost(player) || isLobby,
-                                },
-                                {
-                                    icon: 'settings',
-                                    text: translateCommon('gameSettings', t),
-                                    callback: openGameSettings,
-                                    type: BUTTON_TYPES.PRIMARY,
-                                },
-                                {
-                                    icon: 'history',
-                                    text: translateCommon('history', t),
-                                    callback: openHistory,
-                                    type: BUTTON_TYPES.PRIMARY,
-                                    disabled: !(game?.rounds?.length > 0),
-                                },
-                            ]}
-                        />
-                    </>
-                }
-            />
-            {showDebug && <PopOverMenu buttonProps={{ icon: 'menu', text: 'Debug' }} content={<SocketMessenger gameID={game?.id} playerID={player?.id} />} />}
-        </>
+                                      }),
+                            changeCards && {
+                                icon: 'refresh',
+                                text: translateCommon('changeCards', t),
+                                callback: changeCards,
+                                type: BUTTON_TYPES.PRIMARY,
+                                disabled: true, // isPlayerCardCzar(player) || isPlayerSpectatorOrJoining(player) || isLobby,
+                                tooltip: translateUnderWork('underWork', t),
+                            },
+                            returnBackToLobby && {
+                                icon: 'home',
+                                text: translateCommon('returnToLobby', t),
+                                callback: returnBackToLobby,
+                                type: BUTTON_TYPES.PRIMARY,
+                                disabled: !isHost || isLobby,
+                            },
+                            openGameSettings && {
+                                icon: 'settings',
+                                text: translateCommon('gameSettings', t),
+                                callback: openGameSettings,
+                                type: BUTTON_TYPES.PRIMARY,
+                                disabled: isLobby,
+                            },
+                            openHistory && {
+                                icon: 'history',
+                                text: translateCommon('history', t),
+                                callback: openHistory,
+                                type: BUTTON_TYPES.PRIMARY,
+                                disabled: !(rounds?.length > 0),
+                            },
+                        ]}
+                    />
+                </>
+            }
+        >
+            <Button icon={'menu'}></Button>
+        </Tippy>
     );
 };

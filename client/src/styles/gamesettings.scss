@@ -23,24 +23,19 @@
         display: flex;
         justify-content: flex-end;
 
-        > .button {
-            box-shadow: 0 -0.2em 0.4em $color-black-50;
-        }
-
-        @include small-desktop {
+        @include mobile-only {
             > .button {
-                box-shadow: none;
+                box-shadow: 0 -0.2em 0.4em $color-black-50;
             }
-        }
-
-        .big-btn {
-            position: fixed;
-            bottom: 0px;
-            left: 0px;
-            right: 0px;
-            border-radius: 0;
-            z-index: 30;
-            justify-content: center;
+            .big-btn {
+                position: fixed;
+                bottom: 0px;
+                left: 0px;
+                right: 0px;
+                border-radius: 0;
+                z-index: 30;
+                justify-content: center;
+            }
         }
 
         @include small-desktop {
@@ -73,6 +68,32 @@
         @include small-desktop {
             padding: 0;
         }
+    }
+
+    .game-settings-info {
+        display: flex;
+        flex-direction: row;
+
+        font-size: 0.9rem;
+        color: $icon-light-blue;
+
+        > .icon {
+            margin-right: 0.6em;
+        }
+
+        > .link:hover {
+            text-decoration: underline;
+        }
+    }
+
+    .game-settings-quick-select {
+        margin-top: 0.2em;
+
+        display: flex;
+        flex-direction: row;
+        justify-content: flex-end;
+        flex-wrap: wrap;
+        gap: 0.3em;
     }
 
     &.disabled {

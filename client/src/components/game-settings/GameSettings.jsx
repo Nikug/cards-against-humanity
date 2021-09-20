@@ -8,9 +8,23 @@ import { translateCommon } from '../../helpers/translation-helpers';
 import { useTranslation } from 'react-i18next';
 import { GameSettingsHeader } from './GamseSettingsHeader';
 import { CANNOT_CHANGE, changeValue } from './gamesettingshelpers';
+import { GameSettingsInfo } from './GameSettingsInfo';
+import { GameSettingsQuickSelect } from './GamseSettingsQuickSelect';
+import { BUTTON_TYPES } from '../general/Button';
+import { useSelector } from 'react-redux';
+import { gameIdSelector } from '../../selectors/gameSelectors';
+import { playerIdSelector } from '../../selectors/playerSelectors';
+import { gameSettingsSelector } from '../../selectors/gameSettingsSelectors';
 
-export const GameSettings = ({ options, gameID, isDisabled, playerID }) => {
+export const GameSettings = ({ isDisabled }) => {
+    // State
+    const options = useSelector(gameSettingsSelector);
+    const gameID = useSelector(gameIdSelector);
+    const playerID = useSelector(playerIdSelector);
+
+    // Hooks
     const { t } = useTranslation();
+
     const updateOptions = (key, value) => {
         if (!playerID || !gameID) return;
         if (value === undefined) return;
@@ -108,7 +122,7 @@ export const GameSettings = ({ options, gameID, isDisabled, playerID }) => {
         const renderedCardPacks = [];
 
         if (!cardPacks) {
-            return;
+            return renderedCardPacks;
         }
 
         cardPacks.forEach((cardPack) => {
@@ -136,8 +150,8 @@ export const GameSettings = ({ options, gameID, isDisabled, playerID }) => {
         useSelectBlackCard,
         useSelectWhiteCards,
         useSelectWinner,
-    } = options.timers;
-    const { roundLimit, scoreLimit, useRoundLimit, useScoreLimit } = winConditions;
+    } = options?.timers || {};
+    const { roundLimit, scoreLimit, useRoundLimit, useScoreLimit } = winConditions || {};
 
     return (
         <>
@@ -273,6 +287,7 @@ export const GameSettings = ({ options, gameID, isDisabled, playerID }) => {
             </div>
             <div className="settings-block divider">
                 <GameSettingsHeader keyword={'cardDecks'} />
+                <GameSettingsInfo keyword={'cardDeckInstructions'} link={'https://allbad.cards/packs'} />
                 <Setting
                     DEV_CARD_PACK_AUTOFILL={false}
                     text={translateCommon('addCardDeck', t)}
@@ -286,7 +301,26 @@ export const GameSettings = ({ options, gameID, isDisabled, playerID }) => {
                         isDisabled: isDisabled,
                     }}
                 />
-                {/*<GameSettingsHeader keyword={"addedCardDecks"} />*/}
+                <GameSettingsQuickSelect
+                    buttonsProps={[
+                        {
+                            callback: addCardPack,
+                            callbackParams: 'qM1V1IaYBE',
+                            disabled: isDisabled || (cardPacks && cardPacks.some((pack) => pack.id === 'qM1V1IaYBE')),
+                            icon: 'add_circle_outline',
+                            text: 'Autismipakka',
+                            type: BUTTON_TYPES.PRIMARY,
+                        },
+                        {
+                            callback: addCardPack,
+                            callbackParams: 'U4nL88ujS',
+                            disabled: isDisabled || (cardPacks && cardPacks.some((pack) => pack.id === 'U4nL88ujS')),
+                            icon: 'add_circle_outline',
+                            text: 'The Coronavirus Box',
+                            type: BUTTON_TYPES.PRIMARY,
+                        },
+                    ]}
+                />
                 <div className="imported-card-packs">{renderedCardPacks.length === 0 ? translateCommon('noCardDecks', t) : renderedCardPacks}</div>
             </div>
         </>

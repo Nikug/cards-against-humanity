@@ -1,8 +1,11 @@
 .button-row-container {
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
 
-    .button {
-        margin-top: 0.2em;
+    &.column {
+        flex-direction: column;
+        .button {
+            margin-top: 0.2em;
+        }
     }
 }

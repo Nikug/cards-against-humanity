@@ -1,15 +1,17 @@
-import { BUTTON_TYPES, Button } from '../general/Button';
+import { BUTTON_TYPES } from '../general/Button';
 import { containsObjectWithMatchingField, emptyFn, isNullOrUndefined } from '../../helpers/generalhelpers';
 
 import React from 'react';
-import { isPlayerJoining } from '../../helpers/player-helpers';
 import { renderBlackCardwithWhiteCards } from './cardformathelpers/renderBlackcardWithWhiteCards';
 import { translateCommon } from '../../helpers/translation-helpers';
-import { useGameContext } from '../../contexts/GameContext';
 import { useTranslation } from 'react-i18next';
 import { Card } from './card';
 import { classNames } from '../../helpers/classnames';
 import { CardPickerActionButton } from './components/CardPickerActionButton';
+import { useSelector } from 'react-redux';
+import { playerIsJoiningSelector } from '../../selectors/playerSelectors';
+import { gameRoundNumberSelector, gameStreakSelector } from '../../selectors/gameSelectors';
+import { gameSettingsRoundLimitSelector, gameSettingsUseRoundLimitSelector } from '../../selectors/gameSettingsSelectors';
 
 export const CardPicker = ({
     alternativeText,
@@ -35,10 +37,18 @@ export const CardPicker = ({
     selectedCards = [],
     showPopularVote,
     showPreviewTitle,
+    showStreaks,
     topText,
 }) => {
     const { t } = useTranslation();
-    const { player } = useGameContext();
+
+    // TODO: Refactor these out of this component, provide as props?
+    const isJoining = useSelector(playerIsJoiningSelector);
+    const roundNumber = useSelector(gameRoundNumberSelector);
+    const roundLimit = useSelector(gameSettingsRoundLimitSelector);
+    const useRoundLimit = useSelector(gameSettingsUseRoundLimitSelector);
+    const streak = useSelector(gameStreakSelector);
+    const streakCount = streak?.wins;
 
     const renderedCards = preRenderedCards.slice();
     const selectableCardsLength = selectableCards ? selectableCards.length : 0;
@@ -109,22 +119,6 @@ export const CardPicker = ({
             );
         }
 
-        if (alternativeText) {
-            content.push(
-                <div className="alternativetext" key="alternativeText">
-                    {alternativeText}
-                    <i className="fa fa-spinner fa-spin" style={{ fontSize: '24px' }} />
-                </div>
-            );
-        }
-        if (isPlayerJoining(player)) {
-            content.push(
-                <div className="alternativetext" key="joining-text">
-                    {translateCommon('youGetToPlayOnNextRound', t)}!
-                </div>
-            );
-        }
-
         mainContent.push(
             <div key="content" className="content-wrapper">
                 {content}
@@ -153,6 +147,37 @@ export const CardPicker = ({
         }
         buttonIcons = customButtonIcons;
     }
+    let streakEmojies = '';
+
+    if (streakCount > 1) {
+        streakEmojies = `${streakCount}x 🔥`;
+    }
+
+    const gameInfo = (
+        <div className="game-info">
+            {!isNullOrUndefined(roundNumber) && (
+                <div className="round">{`${translateCommon('round', t)}: ${roundNumber || 1}${useRoundLimit ? ` / ${roundLimit}` : ''}`}</div>
+            )}
+        </div>
+    );
+
+    let alternativeTextContent = [];
+
+    if (alternativeText) {
+        alternativeTextContent.push(
+            <div className="alternativetext" key="alternativeText">
+                {alternativeText}
+                <i className="fa fa-spinner fa-spin" style={{ fontSize: '24px' }} />
+            </div>
+        );
+    }
+    if (isJoining) {
+        alternativeTextContent.push(
+            <div className="alternativetext" key="joining-text">
+                {translateCommon('youGetToPlayOnNextRound', t)}!
+            </div>
+        );
+    }
 
     const buttonText = !isNullOrUndefined(customButtonState) ? buttonTexts[customButtonState] : cardsAreSelected ? buttonTexts[1] : buttonTexts[0];
     const buttonType = !isNullOrUndefined(customButtonState)
@@ -168,10 +193,15 @@ export const CardPicker = ({
 
     return (
         <div className={classNames('cardpicker-wrapper', { 'instructions-cardpicker': isForInstructions })}>
-            {topText && <div className="toptext">{topText}</div>}
+            {topText && (
+                <>
+                    <div className="toptext">{topText}</div>
+                    {showStreaks && streakCount > 1 && <div className="streak">{`${streak?.name} ${translateCommon('hasStreak', t)}! ${streakEmojies}`}</div>}
+                </>
+            )}
             <div className="main">
+                {!centerActionButton ? gameInfo : <span />}
                 {showPreviewTitle && <div className="description mobile-only">{translateCommon('preview', t)}</div>}
-                {!centerActionButton && <span />}
                 {mainContent}
                 {hasActionButton && (
                     <div className={'action-button-container'}>
@@ -190,6 +220,7 @@ export const CardPicker = ({
                     </div>
                 )}
             </div>
+            {alternativeTextContent}
             <div className="description">{description}</div>
             <div className={classNames('selectable', { 'non-selectable': cardsAreSelected || selectCard === emptyFn })}>{renderedCards}</div>
             {hasActionButton && (

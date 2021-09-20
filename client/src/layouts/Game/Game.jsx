@@ -2,62 +2,53 @@ import React, { useEffect, useState } from 'react';
 import { getCookie, setCookie } from '../../helpers/cookies';
 
 import { GAME_STATES } from '../../consts/gamestates';
-import { GameMenu } from './components/GameMenu/GameMenu';
 import { GameSettingsContainer } from '../../components/game-settings/gamesettingscontainer';
 import { HistoryContainer } from './components/GameMenu/history/HistoryContainer';
 import { LayerMenu } from '../../components/layer-menu/LayerMenu';
-import { NOTIFICATION_TYPES } from '../../components/notification/notification';
 import { PLAYER_STATES } from '../../consts/playerstates';
-import { PlayersWidget } from '../../components/players-widget/playerswidget';
+import { PlayersWidget } from '../../components/players-widget/PlayersWidget';
 import { SpectatorsInfo } from './components/SpectatorsInfo/SpectatorsInfo';
 import { Timer } from '../../components/timer';
 import { TimerV2 } from '../../components/Timer/timerV2';
 import { WholePageLoader } from '../../components/WholePageLoader.jsx';
 import { getGamePhaseContent } from './getGamePhaseContent';
-import { isNullOrUndefined } from '../../helpers/generalhelpers';
 import { socket } from '../../components/sockets/socket';
 import { socketOn } from '../../helpers/communicationhelpers';
-import { useGameContext } from '../../contexts/GameContext';
 import { useNotification } from '../../contexts/NotificationContext';
 import { useTranslation } from 'react-i18next';
 import { classNames } from '../../helpers/classnames';
+import { GameMenuButtonRow } from './components/GameMenu/GameMenuButtonRow';
+import { useDispatch, useSelector } from 'react-redux';
+import { updatePlayer } from '../../actions/playerActions';
+import { updateGame, updateGameTimers } from '../../actions/gameActions';
+import { updatePlayersList } from '../../actions/playersListActions';
+import { updateGameSettings } from '../../actions/gameSettingsActions';
+import { hasTimerInUse } from './helpers/hasTimerInUse';
+import { gameIdSelector, gameSelector, gameStateSelector } from '../../selectors/gameSelectors';
+import { playerIdSelector, playerSelector } from '../../selectors/playerSelectors';
+import { playersListSelector } from '../../selectors/playersListSelectors';
+import { gameSettingsSelector } from '../../selectors/gameSettingsSelectors';
 
 export const NAME_CHAR_LIMIT = 50;
 
-const hasTimerInUse = (game) => {
-    const gameState = game?.state;
-    const timers = game?.options?.timers;
-
-    if (isNullOrUndefined(gameState) || isNullOrUndefined(timers)) {
-        return false;
-    }
-
-    switch (gameState) {
-        case GAME_STATES.LOBBY:
-            return false;
-        case GAME_STATES.PICKING_BLACK_CARD:
-            return timers.useSelectBlackCard;
-        case GAME_STATES.PLAYING_WHITE_CARDS:
-            return timers.useSelectWhiteCards;
-        case GAME_STATES.READING_CARDS:
-            return timers.useReadBlackCard;
-        case GAME_STATES.SHOWING_CARDS:
-            return timers.useSelectWinner;
-        case GAME_STATES.ROUND_END:
-            return timers.useRoundEnd;
-        case GAME_STATES.GAME_OVER:
-            return false;
-        default:
-            return false;
-    }
-};
-
 export const Game = ({ showDebug }) => {
+    // Hooks
     const { t } = useTranslation();
+    const dispatch = useDispatch();
+
     // Contexts
-    const { game, player, updateData } = useGameContext();
     const notificationParams = useNotification();
     const { fireNotification, notificationCount } = notificationParams;
+
+    // State
+    const player = useSelector(playerSelector);
+    const game = useSelector(gameSelector);
+    const players = useSelector(playersListSelector);
+    const options = useSelector(gameSettingsSelector);
+    const gameID = useSelector(gameIdSelector);
+    const playerID = useSelector(playerIdSelector);
+    const gameState = useSelector(gameStateSelector);
+    const timerOptions = useSelector((state) => state.gameSettings.value?.timers);
 
     // States
     const [isLoading, setIsLoading] = useState(false);
@@ -69,32 +60,37 @@ export const Game = ({ showDebug }) => {
     const [popularVotedCardsIDs, setPopularVotedCardsIDs] = useState([]);
 
     // Common consts
-    const isSpectator = player ? player.state === 'spectating' : false;
-    const isLobby = game?.state === GAME_STATES.LOBBY;
+    const isLobby = gameState === GAME_STATES.LOBBY;
 
     // useEffects
     useEffect(() => {
         setIsLoading(false);
-        if (game === undefined) {
+
+        if (!gameID) {
             setIsLoading(true);
+
             const cookie = getCookie('playerID');
+
             if (socket.disconnected) {
-                console.log('opening socket');
                 socket.open();
             }
+
             socket.emit('join_game', {
                 gameID: getGameIdFromURL(),
                 playerID: cookie,
             });
         }
-    }, [game, player]);
+    }, [gameID]);
 
     useEffect(() => {
         socketOn(
             'update_player',
             (data) => {
+                if (data.player) {
+                    dispatch(updatePlayer(data.player));
+                }
+
                 setCookie({ field: 'playerID', value: data.player.id });
-                updateData({ player: data.player });
             },
             notificationParams
         );
@@ -102,7 +98,11 @@ export const Game = ({ showDebug }) => {
         socketOn(
             'update_game',
             (data) => {
-                updateData({ game: data.game });
+                if (data.game) {
+                    dispatch(updateGame(data.game));
+                    dispatch(updateGameSettings(data.game.options));
+                }
+
                 setIsLoading(false);
             },
             notificationParams
@@ -111,7 +111,9 @@ export const Game = ({ showDebug }) => {
         socketOn(
             'update_players',
             (data) => {
-                updateData({ players: data.players });
+                if (data.players) {
+                    dispatch(updatePlayersList(data.players));
+                }
             },
             notificationParams
         );
@@ -119,7 +121,9 @@ export const Game = ({ showDebug }) => {
         socketOn(
             'update_game_options',
             (data) => {
-                updateData({ options: data.options });
+                if (data.options) {
+                    dispatch(updateGameSettings(data.options));
+                }
             },
             notificationParams
         );
@@ -135,7 +139,9 @@ export const Game = ({ showDebug }) => {
         socketOn(
             'update_timers',
             (data) => {
-                updateData({ timers: data.timers });
+                if (data.timers) {
+                    dispatch(updateGameTimers(data.timers));
+                }
             },
             notificationParams
         );
@@ -157,10 +163,10 @@ export const Game = ({ showDebug }) => {
             socket.off('deal_black_cards');
             socket.off('send_popular_voted_cards');
         };
-    }, [notificationParams, fireNotification, notificationCount, updateData]);
+    }, [notificationParams, fireNotification, notificationCount, dispatch]);
 
     useEffect(() => {
-        if (game?.timers.passedTime && game?.timers.duration) {
+        if (game?.timers?.passedTime && game?.timers?.duration) {
             const { passedTime, duration } = game.timers;
             let currentProgress = (passedTime + 0.1) / duration;
             currentProgress = currentProgress < 0.01 ? 0 : currentProgress;
@@ -170,15 +176,16 @@ export const Game = ({ showDebug }) => {
         resetTimer();
     }, [game?.state, game?.timers]);
 
+    // This is probably not needed anymore, as listener is in this component too and server sends them automatically
     // Ask for black cards
-    useEffect(() => {
-        if (game?.state === GAME_STATES.PICKING_BLACK_CARD && player?.isCardCzar) {
-            socket.emit('draw_black_cards', {
-                gameID: game.id,
-                playerID: player.id,
-            });
-        }
-    }, []);
+    // useEffect(() => {
+    //     if (game?.state === GAME_STATES.PICKING_BLACK_CARD && player?.isCardCzar) {
+    //         socket.emit('draw_black_cards', {
+    //             gameID: game.id,
+    //             playerID: player.id,
+    //         });
+    //     }
+    // }, [game?.id, game?.state, player?.id, player?.isCardCzar]);
 
     // Functions
     const getGameIdFromURL = () => {
@@ -228,6 +235,10 @@ export const Game = ({ showDebug }) => {
         });
     };
 
+    const changeCards = () => {
+        alert('Korttien vaihtaminen ei ole vielä mahdollista. Odota hetki (jos toinenkin)');
+    };
+
     const returnBackToLobby = () => {
         socket.emit('return_to_lobby', {
             gameID: game?.id,
@@ -259,13 +270,15 @@ export const Game = ({ showDebug }) => {
         },
         game,
         player,
+        players,
+        options,
         blackCards,
         popularVotedCardsIDs,
     };
 
     const renderedContent = getGamePhaseContent(contentProps);
     const hasProgressInTimer = !isLobby && timerIsOn;
-    const hasTimer = hasTimerInUse(game);
+    const hasTimer = hasTimerInUse(gameState, timerOptions);
 
     return (
         <>
@@ -284,8 +297,18 @@ export const Game = ({ showDebug }) => {
                     />
                 )}
                 {historyMenuOpen && <LayerMenu content={<HistoryContainer />} closeLayerMenu={openHistory} />}
+                <GameMenuButtonRow
+                    callbacks={{
+                        togglePlayerMode,
+                        changeCards,
+                        returnBackToLobby,
+                        openGameSettings,
+                        openHistory,
+                    }}
+                    showDebug={showDebug}
+                />
                 <div className="info">
-                    <PlayersWidget game={game} player={player} />
+                    <PlayersWidget />
                 </div>
             </div>
             <div className="game-wrapper-2">
@@ -295,7 +318,7 @@ export const Game = ({ showDebug }) => {
                             width={100}
                             percent={!hasTimer ? 0 : timerIsOn ? 1 : 0}
                             startingPercent={!hasTimer ? 0 : startingProgress}
-                            time={game?.timers.duration ?? 0}
+                            time={game?.timers?.duration ?? 0}
                             empty={!hasTimer}
                         />
                     )}
@@ -322,20 +345,7 @@ export const Game = ({ showDebug }) => {
                     )}
                 </div>
                 <div className="info">
-                    {true && (
-                        <div className="actions-wrapper">
-                            <GameMenu
-                                callbacks={{
-                                    togglePlayerMode,
-                                    returnBackToLobby,
-                                    openGameSettings,
-                                    openHistory,
-                                }}
-                                showDebug={showDebug}
-                            />
-                            <SpectatorsInfo />
-                        </div>
-                    )}
+                    <SpectatorsInfo />
                 </div>
                 <div className="game-wrapper-3">{renderedContent}</div>
             </div>

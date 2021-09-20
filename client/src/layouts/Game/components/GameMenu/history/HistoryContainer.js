@@ -1,14 +1,16 @@
-import { OneRoundHistory } from './OneRoundHistory';
 import React from 'react';
+import { useTranslation } from 'react-i18next';
+import { useSelector } from 'react-redux';
+
+import { OneRoundHistory } from './OneRoundHistory';
 import { renderBlackCardwithWhiteCards } from '../../../../../components/card-picker/cardformathelpers/renderBlackcardWithWhiteCards';
 import { translateCommon } from '../../../../../helpers/translation-helpers';
-import { useGameContext } from '../../../../../contexts/GameContext';
-import { useTranslation } from 'react-i18next';
+import { gameRoundsSelector } from '../../../../../selectors/gameSelectors';
 
 export const HistoryContainer = () => {
     const { t } = useTranslation();
-    const { game } = useGameContext();
-    const rounds = game?.rounds;
+
+    const rounds = useSelector(gameRoundsSelector);
     const roundContainers = [];
 
     if (rounds?.length > 0) {

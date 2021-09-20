@@ -1,32 +1,30 @@
 import React, { useCallback, useState } from 'react';
+import { useSelector } from 'react-redux';
+import { socket } from '../sockets/socket';
 
-import { ActionButtonRow } from '../../layouts/Game/components/GameMenu/ActionButtonRow';
-import Icon from '../general/Icon';
-import { PopOverMenu } from '../popover-menu/PopoverMenu';
-import { animated } from 'react-spring';
-import crownIcon from './../../assets/svgicons/crown-svgrepo-com.svg';
-import { isPlayerHost } from '../../helpers/player-helpers';
-import { socket } from './../sockets/socket';
-import { translateCommon } from '../../helpers/translation-helpers';
-import { useGameContext } from '../../contexts/GameContext';
 import { useTransition } from 'react-spring';
+import { animated } from 'react-spring';
 import { useTranslation } from 'react-i18next';
 import Tippy from '@tippyjs/react';
+
+import { ActionButtonRow, BUTTON_ROW_DIRECTION } from '../../layouts/Game/components/GameMenu/ActionButtonRow';
+import Icon from '../general/Icon';
+import crownIcon from './../../assets/svgicons/crown-svgrepo-com.svg';
+import { translateCommon } from '../../helpers/translation-helpers';
 import { BUTTON_TYPES } from '../general/Button';
+import { playerIdSelector, playerIsHostSelector } from '../../selectors/playerSelectors';
+import { gameIdSelector } from '../../selectors/gameSelectors';
 
 export const Player = ({ name, state, score, isCardCzar, isHost, isPopularVoteKing, isSelf, publicID }) => {
     const { t } = useTranslation();
 
-    const { player, game } = useGameContext();
-    const noName = name === null || name === undefined;
+    // State
+    const isSelfHost = useSelector(playerIsHostSelector);
+    const selfID = useSelector(playerIdSelector);
+    const gameID = useSelector(gameIdSelector);
     const [showTitle, setShowTitle] = useState(false);
-    const [menuIsOpen, setMenuIsOpen] = useState(false);
 
-    const toggleMenu = () => {
-        if (isPlayerHost(player)) {
-            setMenuIsOpen(!menuIsOpen);
-        }
-    };
+    const noName = name === null || name === undefined;
 
     const nameRef = useCallback(
         (node) => {
@@ -44,7 +42,7 @@ export const Player = ({ name, state, score, isCardCzar, isHost, isPopularVoteKi
             }
             return node;
         },
-        [name]
+        [showTitle]
     );
 
     // Score animation
@@ -77,8 +75,8 @@ export const Player = ({ name, state, score, isCardCzar, isHost, isPopularVoteKi
 
     const removePlayer = (removeFromGame = true) => {
         socket.emit('kick_player', {
-            gameID: game?.id,
-            playerID: player?.id,
+            gameID,
+            playerID: selfID,
             targetID: publicID,
             removeFromGame: removeFromGame,
         });
@@ -89,10 +87,10 @@ export const Player = ({ name, state, score, isCardCzar, isHost, isPopularVoteKi
     };
 
     const playerElement = (
-        <div title={showTitle ? name : undefined} className={`player ${isCardCzar ? 'cardCzar' : ''}`} onClick={toggleMenu}>
+        <div title={showTitle ? name : undefined} className={`player ${isCardCzar ? 'cardCzar' : ''}`}>
             {isCardCzar && (
                 <div className="icon-anchor">
-                    <img className="crown-icon" src={crownIcon} />
+                    <img className="crown-icon" src={crownIcon} alt="crown" />
                 </div>
             )}
             <span className={`player-name-and-status  ${isHost && false ? 'host' : ''}  ${isSelf ? 'myself' : ''}`}>
@@ -134,7 +132,7 @@ export const Player = ({ name, state, score, isCardCzar, isHost, isPopularVoteKi
         </div>
     );
 
-    return isPlayerHost(player) ? (
+    return isSelfHost && !isSelf ? (
         <Tippy
             trigger={'click'}
             duration={[100, 0]}
@@ -147,6 +145,7 @@ export const Player = ({ name, state, score, isCardCzar, isHost, isPopularVoteKi
                 <>
                     <span className="title">{name}</span>
                     <ActionButtonRow
+                        direction={BUTTON_ROW_DIRECTION.COLUMN}
                         buttons={[
                             {
                                 type: BUTTON_TYPES.PRIMARY,

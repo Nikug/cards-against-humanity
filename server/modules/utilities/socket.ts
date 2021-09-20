@@ -25,8 +25,11 @@ export const sendNotification = (
 ) => {
     if (options.io && options.gameID) {
         options.io.in(options.gameID).emit("notification", {
-            notification: message,
-            type: type,
+            notification: {
+                text: message,
+                type: type,
+                time: NOTIFICATION_TIME,
+            },
         });
     } else if (options.socket) {
         options.socket.emit("notification", {
@@ -39,7 +42,7 @@ export const sendNotification = (
     } else if (options.sockets && options.io) {
         const sockets = getSocketsWithIDs(options.io, options.sockets);
         sockets.map((socket) =>
-            socket.emit("notification", {
+            socket?.emit("notification", {
                 notification: {
                     text: message,
                     type: type,
