@@ -5,7 +5,10 @@ import { useSelector } from 'react-redux';
 import { radioVolumeAdjuster } from '../../helpers/audio/volumeAdjusters';
 
 export const Music = () => {
-    const audioRef = useRef(new Audio('https://stream.bauermedia.fi/radionova/radionova_64.aac'));
+    // const audioRef = useRef(new Audio('https://stream.bauermedia.fi/radionova/radionova_64.aac'));
+    // "http://streaming.tdiradio.com:8000/house.mp3";
+    const audioRef = useRef(new Audio('https://stream.bauermedia.fi/radiopooki/radiopooki_64.aac'));
+
     const [isPlaying, setIsPlaying] = useState(false);
 
     const radioVolume = useSelector(userSettingsRadioVolumeSelector);

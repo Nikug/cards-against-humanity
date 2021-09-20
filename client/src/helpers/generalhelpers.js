@@ -49,8 +49,6 @@ export function textToSpeech(text, volume) {
         msg.rate = 1;
         msg.text = text;
         msg.volume = textToSpeechVolumeAdjuster(volume);
-
-        console.log('msg.volume', msg.volume);
         window.speechSynthesis.speak(msg);
     }
 }
