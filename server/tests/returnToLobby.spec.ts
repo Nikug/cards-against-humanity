@@ -1,3 +1,5 @@
+import * as timeouts from "../modules/utilities/timeout";
+
 import {
     createPlayer,
     ioMock,
@@ -15,6 +17,7 @@ import { newGameTemplate } from "../modules/games/newGame";
 import { validateHostAndReturnToLobby } from "../modules/rounds/returnToLobby";
 
 jest.mock("../modules/cards/cardpack");
+const mockRemoveTimeout = () => jest.spyOn(timeouts, "removeTimeout");
 
 beforeAll(() => {
     jest.useFakeTimers();
@@ -40,6 +43,7 @@ describe("Return To Lobby", () => {
         newGame.players = [host, cardCzar];
 
         mockGetGame(newGame);
+        const removeTimeoutMock = mockRemoveTimeout();
 
         await validateHostAndReturnToLobby(
             ioMock,
@@ -53,6 +57,8 @@ describe("Return To Lobby", () => {
         const game: Game = await mockSet.mock.results[0].value;
         expect(game.stateMachine.state).toBe("lobby");
         expect(game.client.options.loadingCardPacks).toBe(true);
+        expect(game.timeout).toBe(undefined);
+        expect(removeTimeoutMock).toHaveBeenCalledTimes(1);
     });
 
     it("Allows host to return to in gameOver phase", async () => {
