@@ -10,6 +10,7 @@ import logo from './../assets/images/korttipeli_favicon.png';
 import thinkingIcon from './../assets/svgicons/thinking.svg';
 import { translateCommon } from '../helpers/translation-helpers';
 import { LanguageSelector } from './languageselector';
+import { UserSettings } from './usersettings';
 
 export const Header = () => {
     const { t } = useTranslation();
@@ -80,9 +81,8 @@ export const Header = () => {
                         <span className="header-button-text">{translateCommon('instructions', t)}</span>
                     </span>
                 </Link>
-                <span className="header-button" onClick={() => alert('Tästä aukeaa vielä joskus ehkä asetusvalikko')}>
-                    <Icon className="header-icon" name="settings" />
-                    <span className="header-button-text">{translateCommon('settings', t)}</span>
+                <span className="header-button">
+                    <UserSettings />
                 </span>
                 {gameID && pathName === `/g/${gameID}` && (
                     <Link to="/">
