@@ -14,6 +14,7 @@ import { translateCommon } from '../../helpers/translation-helpers';
 import { BUTTON_TYPES } from '../general/Button';
 import { playerIdSelector, playerIsHostSelector } from '../../selectors/playerSelectors';
 import { gameIdSelector } from '../../selectors/gameSelectors';
+import { AvatarImage } from '../game-settings/AvatarImage';
 
 export const Player = ({ name, state, score, isCardCzar, isHost, isPopularVoteKing, isSelf, publicID }) => {
     const { t } = useTranslation();
@@ -87,49 +88,61 @@ export const Player = ({ name, state, score, isCardCzar, isHost, isPopularVoteKi
     };
 
     const playerElement = (
-        <div title={showTitle ? name : undefined} className={`player ${isCardCzar ? 'cardCzar' : ''}`}>
-            {isCardCzar && (
-                <div className="icon-anchor">
-                    <img className="crown-icon" src={crownIcon} alt="crown" />
-                </div>
-            )}
-            <span className={`player-name-and-status  ${isHost && false ? 'host' : ''}  ${isSelf ? 'myself' : ''}`}>
-                {state === 'playing' && (
-                    <Icon
-                        name={'watch_later'}
-                        className={`player-status clock status-${state}
-            `}
-                    />
+        <div className="player-container">
+
+            <div className="player-avatar">
+                <AvatarImage
+                    displayType="playerWidget" 
+                    hatNumber={1}
+                    eyeNumber={1}
+                    mouthNumber={1}
+                />
+            </div>
+            <div title={showTitle ? name : undefined} className={`player ${isCardCzar ? 'cardCzar' : ''}`}>
+                {isCardCzar && (
+                    <div className="icon-anchor">
+                        <img className="crown-icon" src={crownIcon} alt="crown" />
+                    </div>
                 )}
-                {(state === 'disconnected' || state === 'kicked') && (
-                    <Icon
-                        name={'error_outline'}
-                        className={`player-status clock status-${state}
-            `}
-                    />
-                )}
-                {isHost && <Icon name={'home'} className={`player-status white`} />}
-                <span ref={nameRef} className={`player-name ${noName ? 'no-name' : ''}`}>
-                    {name}
-                    {noName && <i className="fa fa-spinner fa-spin" style={{ fontSize: '24px' }} />}
-                </span>
-            </span>
-            <span className="🦄">
-                <span className="player-score">
-                    <Icon name="emoji_events" className="win-icon" />
-                    {scoreTransitions.map(({ item, props, key }) => (
-                        <animated.div className="score" key={key} style={props}>
-                            {item}
-                        </animated.div>
-                    ))}
-                </span>
-                {isPopularVoteKing && (
-                    <span className="player-popularVoteScore">
-                        <Icon name="thumb_up_alt" className="popular-vote-icon" />
+                <span className={`player-name-and-status  ${isHost && false ? 'host' : ''}  ${isSelf ? 'myself' : ''}`}>
+                    {state === 'playing' && (
+                        <Icon
+                            name={'watch_later'}
+                            className={`player-status clock status-${state}
+                `}
+                        />
+                    )}
+                    {(state === 'disconnected' || state === 'kicked') && (
+                        <Icon
+                            name={'error_outline'}
+                            className={`player-status clock status-${state}
+                `}
+                        />
+                    )}
+                    {isHost && <Icon name={'home'} className={`player-status white`} />}
+                    <span ref={nameRef} className={`player-name ${noName ? 'no-name' : ''}`}>
+                        {name}
+                        {noName && <i className="fa fa-spinner fa-spin" style={{ fontSize: '24px' }} />}
                     </span>
-                )}
-            </span>
+                </span>
+                <span className="🦄">
+                    <span className="player-score">
+                        <Icon name="emoji_events" className="win-icon" />
+                        {scoreTransitions.map(({ item, props, key }) => (
+                            <animated.div className="score" key={key} style={props}>
+                                {item}
+                            </animated.div>
+                        ))}
+                    </span>
+                    {isPopularVoteKing && (
+                        <span className="player-popularVoteScore">
+                            <Icon name="thumb_up_alt" className="popular-vote-icon" />
+                        </span>
+                    )}
+                </span>
+            </div>
         </div>
+
     );
 
     return isSelfHost && !isSelf ? (

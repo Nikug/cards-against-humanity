@@ -7,6 +7,11 @@
     min-width: 150px;
     min-height: 150px;
 }
+.bgr-img-small {
+    max-width: 100px;
+    min-width: 100px;
+    min-height: 100px;
+}
 
 .hat-img {
     position: absolute;
@@ -19,7 +24,17 @@
     max-height: 50px;
     min-height: 50px;
 }
-
+.hat-img-small {
+    position: absolute;
+    z-index: 1;
+    left: 33px;
+    right: 33px;
+    top: 5px;
+    max-width: 33px;
+    min-width: 33px;
+    max-height: 33px;
+    min-height: 33px;
+}
 .eye-img {
     position: absolute;
     z-index: 1;
@@ -30,6 +45,17 @@
     min-width: 50px;
     max-height: 25px;
     min-height: 25px;
+}
+.eye-img-small {
+    position: absolute;
+    z-index: 1;
+    left: 33px;
+    right: 33px;
+    top: 38px;
+    max-width: 33px;
+    min-width: 33px;
+    max-height: 18px;
+    min-height: 18px;
 }
 
 .mouth-img {
@@ -42,4 +68,15 @@
     min-width: 24px;
     max-height: 25px;
     min-height: 25px;
+}
+.mouth-img-small {
+    position: absolute;
+    z-index: 1;
+    left: 33px;
+    right: 33px;
+    top: 55px;
+    max-width: 24px;
+    min-width: 24px;
+    max-height: 20px;
+    min-height: 20px;
 }

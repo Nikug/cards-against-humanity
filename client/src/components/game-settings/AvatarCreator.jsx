@@ -12,9 +12,9 @@ const defaultAvatar = {
 };
 
 const maxAvatarTypes = {
-    hatType: 5,
-    eyeType: 5,
-    mouthType: 5,
+    hatType: 2,
+    eyeType: 2,
+    mouthType: 2,
 };
 
 const avatarImg = 'https://cdn.shopify.com/s/files/1/0220/9497/0980/products/image_e0191ed4-1fcc-4e99-a811-0624189386bc.png?v=1558095871';
@@ -58,7 +58,7 @@ export const AvatarCreator = () => {
                 <Icon name="arrow_back_ios" className="" onClick={() => changeAvatar('mouthType', 'prev')} />
             </div>
             <div className="avatar">
-                <AvatarImage imagesrc={avatarImg} hatNumber={currentAvatar.hatType} eyeNumber={currentAvatar.eyeType} mouthNumber={currentAvatar.mouthType} />
+                <AvatarImage displayType="avatarCreator" imagesrc={avatarImg} hatNumber={currentAvatar.hatType} eyeNumber={currentAvatar.eyeType} mouthNumber={currentAvatar.mouthType} />
             </div>
             <div className="arrow-right-1">
                 <Icon name="arrow_forward_ios" className="" onClick={() => changeAvatar('hatType', 'next')} />
