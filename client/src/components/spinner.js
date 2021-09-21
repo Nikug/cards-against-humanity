@@ -8,13 +8,13 @@ import {
     SpinnerRound,
     SpinnerRoundFilled,
     SpinnerRoundOutlined,
-} from "spinners-react";
+} from 'spinners-react';
 
-import React from "react";
+import React from 'react';
 
 //https://www.npmjs.com/package/spinners-react
 
-const SPINNER_TYPES = {
+export const SPINNER_TYPES = {
     SpinnerCircular: 0,
     SpinnerRound: 1,
     SpinnerDotted: 2,
@@ -27,8 +27,8 @@ const SPINNER_TYPES = {
 };
 
 const defaultProps = {
-    color: "#268bd2",
-    style: { width: "100%" },
+    color: '#268bd2',
+    style: { width: '100%' },
 };
 
 export const Spinner = ({ type }) => {
