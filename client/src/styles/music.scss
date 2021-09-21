@@ -1,3 +1,16 @@
-.music {
-    cursor: pointer;
+.radio {
+    display: flex;
+    flex-direction: row;
+
+    .radio-channel-changers-wrapper {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+
+        > .channel-name {
+            display: flex;
+            min-width: 2.3em;
+            justify-content: center;
+        }
+    }
 }
