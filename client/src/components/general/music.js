@@ -3,6 +3,7 @@ import React, { useRef, useState, useEffect, useMemo } from 'react';
 import { userSettingsRadioVolumeSelector } from '../../selectors/userSettingsSelector';
 import { useSelector } from 'react-redux';
 import { radioVolumeAdjuster } from '../../helpers/audio/volumeAdjusters';
+import { SPINNER_TYPES, Spinner } from '../spinner';
 
 const radioChannels = [
     {
@@ -22,9 +23,14 @@ const radioChannels = [
 export const Music = () => {
     const [isPlaying, setIsPlaying] = useState(false);
     const [channel, setChannel] = useState(0);
+    const [changeingDisabled, setChangeingDisabled] = useState(true);
 
     const audioRef = useRef(new Audio(radioChannels[channel].url));
     const radioVolume = useSelector(userSettingsRadioVolumeSelector);
+
+    audioRef.current.addEventListener('canplaythrough', () => {
+        setChangeingDisabled(false);
+    });
 
     audioRef.current.volume = radioVolumeAdjuster(radioVolume);
 
@@ -45,6 +51,7 @@ export const Music = () => {
     };
 
     const previousChannel = () => {
+        setChangeingDisabled(true);
         audioRef.current.pause();
 
         let newChannel = channel - 1;
@@ -56,10 +63,13 @@ export const Music = () => {
         setChannel(newChannel);
         audioRef.current.src = radioChannels[newChannel].url;
 
-        audioRef.current.play();
+        if (isPlaying) {
+            audioRef.current.play();
+        }
     };
 
     const nextChannel = () => {
+        setChangeingDisabled(true);
         audioRef.current.pause();
 
         let newChannel = channel + 1;
@@ -71,7 +81,9 @@ export const Music = () => {
         setChannel(newChannel);
         audioRef.current.src = radioChannels[newChannel].url;
 
-        audioRef.current.play();
+        if (isPlaying) {
+            audioRef.current.play();
+        }
     };
 
     const icon = useMemo(() => (isPlaying ? 'pause_circle_outline' : 'play_circle_outline'), [isPlaying]);
@@ -79,11 +91,12 @@ export const Music = () => {
     return (
         <div className="radio">
             <div className="radio-channel-changers-wrapper">
-                <Icon onClick={previousChannel} name={'skip_previous'} />
+                <Icon onClick={previousChannel} name={'skip_previous'} disabled={changeingDisabled} />
                 <span className="channel-name">{radioChannels[channel].displayName}</span>
-                <Icon onClick={nextChannel} name={'skip_next'} />
+                <Icon onClick={nextChannel} name={'skip_next'} disabled={changeingDisabled} />
             </div>
             <Icon onClick={toggle} name={icon} />
+            <div className="spinner">{changeingDisabled && <Spinner type={SPINNER_TYPES.SpinnerCircular} />}</div>
         </div>
     );
 };
