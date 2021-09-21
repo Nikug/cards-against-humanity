@@ -1,7 +1,9 @@
-export const radioVolumeAdjuster = (volume = 10) => {
+import { VOLUMES } from '../../consts/volumes';
+
+export const radioVolumeAdjuster = (volume = VOLUMES.RADIO) => {
     return volume / 200;
 };
 
-export const textToSpeechVolumeAdjuster = (volume = 30) => {
+export const textToSpeechVolumeAdjuster = (volume = VOLUMES.TEXTTOSPEECH) => {
     return volume / 100;
 };
