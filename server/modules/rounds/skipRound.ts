@@ -42,17 +42,17 @@ export const skipRound = async (
 };
 
 export const shouldSkipRound = (game: CAH.Game) => {
-    if (game.stateMachine.state !== "lobby") {
-        const activePlayerCount = getActivePlayers(game.players).length;
-        const joiningPlayerCount = getPlayersWithState(game.players, "joining")
-            .length;
-        return (
-            activePlayerCount < gameOptions.minimumPlayers &&
-            activePlayerCount + joiningPlayerCount >= gameOptions.minimumPlayers
-        );
-    } else {
-        return false;
-    }
+    if (game.stateMachine.state === "lobby") return false;
+
+    const activePlayerCount = getActivePlayers(game.players).length;
+    const joiningPlayerCount = getPlayersWithState(
+        game.players,
+        "joining"
+    ).length;
+    return (
+        activePlayerCount < gameOptions.minimumPlayers &&
+        activePlayerCount + joiningPlayerCount >= gameOptions.minimumPlayers
+    );
 };
 
 export const restartRound = async (

@@ -7,7 +7,6 @@
         "@popperjs/core": "^2.9.2",
         "@reduxjs/toolkit": "^1.6.1",
         "@testing-library/jest-dom": "^4.2.4",
-        "@testing-library/react": "^9.5.0",
         "@testing-library/user-event": "^7.2.1",
         "@tippyjs/react": "^4.2.5",
         "axios": "^0.21.1",
@@ -37,6 +36,7 @@
         "start": "react-scripts start",
         "build": "react-scripts build",
         "test": "react-scripts test",
+        "test-no-watch": "react-scripts test --watchAll=false",
         "eject": "react-scripts eject"
     },
     "eslintConfig": {
@@ -55,6 +55,7 @@
         ]
     },
     "devDependencies": {
+        "@testing-library/react": "^9.5.0",
         "redux-devtools": "^3.7.0"
     }
 }

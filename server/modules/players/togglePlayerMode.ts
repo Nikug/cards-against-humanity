@@ -6,7 +6,7 @@ import { findPlayer, setPlayerState } from "./playerUtil";
 import { getGame, setGame } from "../games/gameUtil";
 
 import { PoolClient } from "pg";
-import { handleSpecialCases } from "../connections/disconnect";
+import { handlePlayerLeaving } from "../connections/disconnect";
 import { playerName } from "../../consts/gameSettings";
 import { sendNotification } from "../utilities/socket";
 import { updatePlayersIndividually } from "./emitPlayers";
@@ -27,7 +27,7 @@ export const togglePlayerMode = async (
     if (player.state !== "spectating") {
         if (checkSpectatorLimit(game)) {
             game.players = setPlayerState(game.players, playerID, "spectating");
-            await handleSpecialCases(io, game, player, true, client);
+            await handlePlayerLeaving(io, game, player, true, client);
             return;
         } else {
             sendNotification(

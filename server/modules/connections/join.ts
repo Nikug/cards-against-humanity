@@ -28,7 +28,7 @@ export const joinGame = async (
         if (!!game) {
             if (!!gameID) {
                 if (gameID === game.id) {
-                    addPlayerToGame(
+                    await addPlayerToGame(
                         io,
                         socket,
                         gameID,
@@ -38,7 +38,7 @@ export const joinGame = async (
                     );
                 } else {
                     // Join the game but send also warning about joining a different game than expected
-                    addPlayerToGame(
+                    await addPlayerToGame(
                         io,
                         socket,
                         game.id,
@@ -53,7 +53,7 @@ export const joinGame = async (
                     );
                 }
             } else {
-                addPlayerToGame(
+                await addPlayerToGame(
                     io,
                     socket,
                     game.id,
@@ -63,10 +63,10 @@ export const joinGame = async (
                 );
             }
         } else {
-            handleGameID(io, socket, gameID, password, client);
+            await handleGameID(io, socket, gameID, password, client);
         }
     } else {
-        handleGameID(io, socket, gameID, password, client);
+        await handleGameID(io, socket, gameID, password, client);
     }
 };
 
@@ -80,7 +80,14 @@ const handleGameID = async (
     if (!!gameID) {
         const game = await getGame(gameID, client);
         if (!!game) {
-            addPlayerToGame(io, socket, gameID, undefined, password, client);
+            await addPlayerToGame(
+                io,
+                socket,
+                gameID,
+                undefined,
+                password,
+                client
+            );
         } else {
             // Can't find a game with the id, return error
             returnError(socket);
@@ -114,7 +121,7 @@ const addPlayerToGame = async (
     if (game.client.options.password) {
         const match = handlePassword(game.client.options.password, password);
         if (!match) {
-            socket.send("join_game", { password: false });
+            socket.emit("join_game", { password: false });
             return;
         }
     }

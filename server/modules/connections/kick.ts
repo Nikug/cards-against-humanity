@@ -11,7 +11,7 @@ import {
 import { PoolClient } from "pg";
 import { checkSpectatorLimit } from "../games/gameOptions";
 import { getGame } from "../games/gameUtil";
-import { handleSpecialCases } from "./disconnect";
+import { handlePlayerLeaving } from "./disconnect";
 import { validateHost } from "../utilities/validate";
 
 export const hostKick = async (
@@ -59,5 +59,5 @@ export const hostKick = async (
             }
         );
     }
-    handleSpecialCases(io, game, target, false, client);
+    handlePlayerLeaving(io, game, target, false, client);
 };

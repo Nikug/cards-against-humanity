@@ -28,6 +28,7 @@ export const playWhiteCards = async (
         playerID,
         whiteCardIDs
     );
+
     if (!!error) {
         sendNotification(error, NOTIFICATION_TYPES.error, { socket: socket });
         return;

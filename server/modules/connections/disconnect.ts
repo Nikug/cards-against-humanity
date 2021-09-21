@@ -103,10 +103,10 @@ export const setPlayerDisconnected = async (
         });
     }
 
-    handleSpecialCases(io, game, player, true, client);
+    handlePlayerLeaving(io, game, player, true, client);
 };
 
-export const handleSpecialCases = async (
+export const handlePlayerLeaving = async (
     io: SocketIO.Server,
     game: CAH.Game,
     player: CAH.Player,

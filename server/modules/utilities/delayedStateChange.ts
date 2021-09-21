@@ -44,6 +44,7 @@ export const clearGameTimer = (game: CAH.Game) => {
     removeTimeout(game.id);
     game.client.timers.duration = undefined;
     game.client.timers.passedTime = undefined;
+    game.timeout = undefined;
     return game;
 };
 
