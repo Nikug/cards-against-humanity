@@ -7,6 +7,7 @@ export const Slider = ({ title, value, changeCallback, changeParams, onMouseUpCa
             <div className="slider-container">
                 <div className="slider-value">{value}</div>
                 <input
+                    className="slider-itself"
                     type="range"
                     min={min}
                     max={max}
