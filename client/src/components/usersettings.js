@@ -8,7 +8,7 @@ import Icon from './general/Icon';
 import { Slider } from './general/Slider';
 import { userSettingsSelector } from '../selectors/userSettingsSelector';
 import { updateUserSettings } from '../actions/userSettingsActions';
-import { VOLUMES } from '../consts/volumes';
+import { DEFAULT_VOLUMES } from '../consts/volumes';
 
 export const UserSettings = () => {
     const { t } = useTranslation();
@@ -16,9 +16,9 @@ export const UserSettings = () => {
 
     const userSettings = useSelector(userSettingsSelector);
 
-    const [radioVolValue, setRadioVolValue] = useState(VOLUMES.RADIO);
-    const [textToSpeechVolValue, setText2SpeechVolValue] = useState(VOLUMES.TEXTTOSPEECH);
-    const [soundEffectVolValue, setSoundEffectVolValue] = useState(VOLUMES.DEFAULT);
+    const [radioVolValue, setRadioVolValue] = useState(DEFAULT_VOLUMES.RADIO);
+    const [textToSpeechVolValue, setText2SpeechVolValue] = useState(DEFAULT_VOLUMES.TEXTTOSPEECH);
+    const [soundEffectVolValue, setSoundEffectVolValue] = useState(DEFAULT_VOLUMES.DEFAULT);
 
     useEffect(() => {
         if (userSettings.radioVolume !== undefined) {
