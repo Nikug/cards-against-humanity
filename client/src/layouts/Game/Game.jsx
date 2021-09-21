@@ -220,6 +220,16 @@ export const Game = ({ showDebug }) => {
         }
     };
 
+    const setPlayerAvatar = (avatar) => {
+        if (!!player?.id) {
+            socket.emit('set_player_avatar', {
+                gameID: game?.id,
+                playerID: player?.id,
+                avatar: avatar,
+            });
+        }
+    };
+
     const givePopularVote = (cardIDs) => {
         socket.emit('give_popular_vote', {
             gameID: game?.id,
@@ -264,6 +274,7 @@ export const Game = ({ showDebug }) => {
         t,
         callbacks: {
             setPlayerName,
+            setPlayerAvatar,
             givePopularVote,
             togglePlayerMode,
             startGame,

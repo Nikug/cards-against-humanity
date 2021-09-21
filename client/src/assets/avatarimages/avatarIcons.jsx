@@ -225,8 +225,8 @@ export const AvatarIcon = ({ className }) => {
     );
 };
 
-export const Eyes = ({ className, number }) => {
-    switch (number) {
+export const Eyes = ({ className, type }) => {
+    switch (type) {
         case 1:
             return (
                 <svg className={className} xmlns="http://www.w3.org/2000/svg" x="0" y="0" version="1.1" viewBox="0 0 2637.921 1083.578" xmlSpace="preserve">
@@ -362,12 +362,12 @@ export const Eyes = ({ className, number }) => {
                 </svg>
             );
         default:
-            return <svg />;
+            return null;
     }
 };
 
-export const Hat = ({ className, number }) => {
-    switch (number) {
+export const Hat = ({ className, type }) => {
+    switch (type) {
         case 1:
             return (
                 <svg className={className} xmlns="http://www.w3.org/2000/svg" width="260" height="172" version="1" viewBox="0 0 195 129">
@@ -387,12 +387,12 @@ export const Hat = ({ className, number }) => {
             );
 
         default:
-            return <svg />;
+            return null;
     }
 };
 
-export const Mouth = ({ className, number }) => {
-    switch (number) {
+export const Mouth = ({ className, type }) => {
+    switch (type) {
         case 1:
             return (
                 <svg className={className} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
@@ -444,6 +444,6 @@ export const Mouth = ({ className, number }) => {
                 </svg>
             );
         default:
-            return <svg />;
+            return null;
     }
 };

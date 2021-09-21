@@ -1,24 +1,24 @@
 import React from 'react';
 import { AvatarIcon, Hat, Mouth, Eyes } from '../../assets/avatarimages/avatarIcons.jsx';
 
-export const AvatarImage = ({ hatNumber, eyeNumber, mouthNumber, displayType }) => {
+export const AvatarImage = ({ hatType, eyeType, mouthType, displayType }) => {
     
     if (displayType === "playerWidget") {
         return (
             <div className="avatar-img-container">
                 <AvatarIcon className="bgr-img-small" />
-                {hatNumber > 0 && <Hat number={hatNumber} className="hat-img-small" />}
-                {eyeNumber > 0 && <Eyes number={eyeNumber} className="eye-img-small" />}
-                {mouthNumber > 0 && <Mouth number={mouthNumber} className="mouth-img-small" />}
+                {hatType > 0 && <Hat type={hatType} className="hat-img-small" />}
+                {eyeType > 0 && <Eyes type={eyeType} className="eye-img-small" />}
+                {mouthType > 0 && <Mouth type={mouthType} className="mouth-img-small" />}
             </div>
         );
     } else if ( displayType === "avatarCreator") {
         return (
             <div className="avatar-img-container">
                 <AvatarIcon className="bgr-img" />
-                {hatNumber > 0 && <Hat number={hatNumber} className="hat-img" />}
-                {eyeNumber > 0 && <Eyes number={eyeNumber} className="eye-img" />}
-                {mouthNumber > 0 && <Mouth number={mouthNumber} className="mouth-img" />}
+                {hatType > 0 && <Hat type={hatType} className="hat-img" />}
+                {eyeType > 0 && <Eyes type={eyeType} className="eye-img" />}
+                {mouthType > 0 && <Mouth type={mouthType} className="mouth-img" />}
             </div>
         );
     } else {

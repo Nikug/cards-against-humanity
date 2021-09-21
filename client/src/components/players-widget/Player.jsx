@@ -16,7 +16,7 @@ import { playerIdSelector, playerIsHostSelector } from '../../selectors/playerSe
 import { gameIdSelector } from '../../selectors/gameSelectors';
 import { AvatarImage } from '../game-settings/AvatarImage';
 
-export const Player = ({ name, state, score, isCardCzar, isHost, isPopularVoteKing, isSelf, publicID }) => {
+export const Player = ({ avatar, name, state, score, isCardCzar, isHost, isPopularVoteKing, isSelf, publicID }) => {
     const { t } = useTranslation();
 
     // State
@@ -93,9 +93,10 @@ export const Player = ({ name, state, score, isCardCzar, isHost, isPopularVoteKi
             <div className="player-avatar">
                 <AvatarImage
                     displayType="playerWidget" 
-                    hatNumber={1}
-                    eyeNumber={1}
-                    mouthNumber={1}
+                    hatType={avatar.hatType}
+                    eyeType={avatar.eyeType}
+                    mouthType={avatar.mouthType}
+                    skinType={avatar.skinType}
                 />
             </div>
             <div title={showTitle ? name : undefined} className={`player ${isCardCzar ? 'cardCzar' : ''}`}>

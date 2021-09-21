@@ -1,14 +1,16 @@
 import React from 'react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { translateUnderWork } from '../../helpers/translation-helpers';
 import Icon from '../general/Icon';
 import { AvatarImage } from './AvatarImage';
 
+
 const defaultAvatar = {
     hatType: 0,
     eyeType: 0,
     mouthType: 0,
+    skinType: 0,
 };
 
 const maxAvatarTypes = {
@@ -17,15 +19,7 @@ const maxAvatarTypes = {
     mouthType: 2,
 };
 
-const avatarImg = 'https://cdn.shopify.com/s/files/1/0220/9497/0980/products/image_e0191ed4-1fcc-4e99-a811-0624189386bc.png?v=1558095871';
-
-const propImages = {
-    hat: ['', 'https://mpng.subpng.com/20180701/rhj/kisspng-six-thinking-hats-fedora-cap-top-hat-coat-cartoon-5b38964d5378f4.3315111915304351493419.jpg'],
-    eyes: ['', 'https://image.shutterstock.com/image-vector/pixel-glasses-black-white-vector-260nw-1911336118.jpg'],
-    mouth: ['', 'https://toppng.com/uploads/preview/cartoon-mouth-11548528846msrwbrhwg4.png'],
-};
-
-export const AvatarCreator = () => {
+export const AvatarCreator = ( {setPlayerAvatar} ) => {
     const { t } = useTranslation();
     const [currentAvatar, setCurrentAvatar] = useState(defaultAvatar);
 
@@ -40,6 +34,12 @@ export const AvatarCreator = () => {
             return;
         }
     };
+
+    useEffect ( () => {
+        setPlayerAvatar(currentAvatar);
+    }, [currentAvatar]);
+
+
 
     return (
         <div className="avatar-creator-container">
@@ -58,7 +58,7 @@ export const AvatarCreator = () => {
                 <Icon name="arrow_back_ios" className="" onClick={() => changeAvatar('mouthType', 'prev')} />
             </div>
             <div className="avatar">
-                <AvatarImage displayType="avatarCreator" imagesrc={avatarImg} hatNumber={currentAvatar.hatType} eyeNumber={currentAvatar.eyeType} mouthNumber={currentAvatar.mouthType} />
+                <AvatarImage displayType="avatarCreator" hatType={currentAvatar.hatType} eyeType={currentAvatar.eyeType} mouthType={currentAvatar.mouthType} skinType={currentAvatar.skinType}/>
             </div>
             <div className="arrow-right-1">
                 <Icon name="arrow_forward_ios" className="" onClick={() => changeAvatar('hatType', 'next')} />

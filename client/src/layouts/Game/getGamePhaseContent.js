@@ -23,7 +23,7 @@ export const getGamePhaseContent = ({
     player,
     players,
     options,
-    callbacks: { setPlayerName, givePopularVote, startGame },
+    callbacks: { setPlayerName, setPlayerAvatar, givePopularVote, startGame },
     blackCards,
     popularVotedCardsIDs,
 }) => {
@@ -54,7 +54,14 @@ export const getGamePhaseContent = ({
 
     switch (gameState) {
         case GAME_STATES.LOBBY:
-            return <LobbyContent setPlayerName={setPlayerName} startGame={startGame} disableStartGameButton={disableStartGameButton} />;
+            return (
+                <LobbyContent
+                    setPlayerName={setPlayerName}
+                    setPlayerAvatar={setPlayerAvatar}
+                    startGame={startGame}
+                    disableStartGameButton={disableStartGameButton}
+                />
+            );
         case GAME_STATES.PICKING_BLACK_CARD:
             if (isCardCzar) {
                 return <BlackCardPickerContainer blackCards={blackCards} />;

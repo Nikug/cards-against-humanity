@@ -5,5 +5,5 @@ export const PLAYER_STATES = {
     PICKING_NAME: 'pickingName',
     DISCONNECTED: 'disconnected',
     SPECTATING: 'spectating',
-    KICKED: 'kicked'
+    KICKED: 'kicked',
 };
