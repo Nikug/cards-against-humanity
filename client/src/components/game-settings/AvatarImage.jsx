@@ -2,26 +2,23 @@ import React from 'react';
 import { AvatarIcon, Hat, Mouth, Eyes } from '../../assets/avatarimages/avatarIcons.jsx';
 
 export const AvatarImage = ({ hatType, eyeType, mouthType, displayType }) => {
-    
-    if (displayType === "playerWidget") {
+    const avatar = () => {
         return (
-            <div className="avatar-img-container">
-                <AvatarIcon className="bgr-img-small" />
-                {hatType > 0 && <Hat type={hatType} className="hat-img-small" />}
-                {eyeType > 0 && <Eyes type={eyeType} className="eye-img-small" />}
-                {mouthType > 0 && <Mouth type={mouthType} className="mouth-img-small" />}
-            </div>
+            <>
+                <AvatarIcon className="avatar-background-image" />
+                {hatType > 0 && <Hat type={hatType} className="avatar-overlay-image" />}
+                {eyeType > 0 && <Eyes type={eyeType} className="avatar-overlay-image" />}
+                {mouthType > 0 && <Mouth type={mouthType} className="avatar-overlay-image" />}
+            </>
         );
-    } else if ( displayType === "avatarCreator") {
-        return (
-            <div className="avatar-img-container">
-                <AvatarIcon className="bgr-img" />
-                {hatType > 0 && <Hat type={hatType} className="hat-img" />}
-                {eyeType > 0 && <Eyes type={eyeType} className="eye-img" />}
-                {mouthType > 0 && <Mouth type={mouthType} className="mouth-img" />}
-            </div>
-        );
+    };
+
+    if (displayType === 'small') {
+        return <div className="avatar-img-container-small">{avatar()}</div>;
+    } else if (displayType === 'large') {
+        return <div className="avatar-img-container-large">{avatar()}</div>;
     } else {
         return null;
     }
+    return <div className="avatar-img-container">{avatar()}</div>;
 };

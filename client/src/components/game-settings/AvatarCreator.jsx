@@ -5,7 +5,6 @@ import { translateUnderWork } from '../../helpers/translation-helpers';
 import Icon from '../general/Icon';
 import { AvatarImage } from './AvatarImage';
 
-
 const defaultAvatar = {
     hatType: 0,
     eyeType: 0,
@@ -19,7 +18,7 @@ const maxAvatarTypes = {
     mouthType: 2,
 };
 
-export const AvatarCreator = ( {setPlayerAvatar} ) => {
+export const AvatarCreator = ({ setPlayerAvatar }) => {
     const { t } = useTranslation();
     const [currentAvatar, setCurrentAvatar] = useState(defaultAvatar);
 
@@ -35,11 +34,9 @@ export const AvatarCreator = ( {setPlayerAvatar} ) => {
         }
     };
 
-    useEffect ( () => {
+    useEffect(() => {
         setPlayerAvatar(currentAvatar);
     }, [currentAvatar]);
-
-
 
     return (
         <div className="avatar-creator-container">
@@ -58,7 +55,13 @@ export const AvatarCreator = ( {setPlayerAvatar} ) => {
                 <Icon name="arrow_back_ios" className="" onClick={() => changeAvatar('mouthType', 'prev')} />
             </div>
             <div className="avatar">
-                <AvatarImage displayType="avatarCreator" hatType={currentAvatar.hatType} eyeType={currentAvatar.eyeType} mouthType={currentAvatar.mouthType} skinType={currentAvatar.skinType}/>
+                <AvatarImage
+                    displayType="large"
+                    hatType={currentAvatar.hatType}
+                    eyeType={currentAvatar.eyeType}
+                    mouthType={currentAvatar.mouthType}
+                    skinType={currentAvatar.skinType}
+                />
             </div>
             <div className="arrow-right-1">
                 <Icon name="arrow_forward_ios" className="" onClick={() => changeAvatar('hatType', 'next')} />

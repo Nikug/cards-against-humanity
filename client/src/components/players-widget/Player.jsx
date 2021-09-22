@@ -89,15 +89,8 @@ export const Player = ({ avatar, name, state, score, isCardCzar, isHost, isPopul
 
     const playerElement = (
         <div className="player-container">
-
             <div className="player-avatar">
-                <AvatarImage
-                    displayType="playerWidget" 
-                    hatType={avatar.hatType}
-                    eyeType={avatar.eyeType}
-                    mouthType={avatar.mouthType}
-                    skinType={avatar.skinType}
-                />
+                <AvatarImage displayType="small" hatType={avatar.hatType} eyeType={avatar.eyeType} mouthType={avatar.mouthType} skinType={avatar.skinType} />
             </div>
             <div title={showTitle ? name : undefined} className={`player ${isCardCzar ? 'cardCzar' : ''}`}>
                 {isCardCzar && (
@@ -143,7 +136,6 @@ export const Player = ({ avatar, name, state, score, isCardCzar, isHost, isPopul
                 </span>
             </div>
         </div>
-
     );
 
     return isSelfHost && !isSelf ? (
