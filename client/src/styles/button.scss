@@ -38,11 +38,13 @@ $shadow-color: rgba(0, 0, 0, 0.6);
         &-vertical {
             width: fit-content;
             height: 100%;
+            align-items: center;
         }
 
         &-horizontal {
             width: 100%;
             height: fit-content;
+            justify-content: center;
         }
     }
 
