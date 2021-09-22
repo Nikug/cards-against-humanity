@@ -9,6 +9,7 @@ import { translateCommon, translateUnderWork } from '../../../../helpers/transla
 import { GameMenu } from './GameMenu';
 import { gameStateSelector } from '../../../../selectors/gameSelectors';
 import { playerIsSpectatorSelector } from '../../../../selectors/playerSelectors';
+import { CopyGameLinkButton } from '../../../../components/game-settings/CopyGameLinkButton';
 
 export const GameMenuButtonRow = ({ callbacks: { togglePlayerMode, changeCards, returnBackToLobby, openGameSettings, openHistory } }) => {
     const { t } = useTranslation();
@@ -22,6 +23,10 @@ export const GameMenuButtonRow = ({ callbacks: { togglePlayerMode, changeCards, 
         <div className="game-menu-button-row">
             <ActionButtonRow
                 buttons={[
+                    {
+                        custom: true,
+                        component: <CopyGameLinkButton key={'copy-button'}/>
+                    },
                     isSpectator
                         ? {
                               icon: 'login',
@@ -45,6 +50,7 @@ export const GameMenuButtonRow = ({ callbacks: { togglePlayerMode, changeCards, 
                             tooltip: translateUnderWork('underWork', t),
                         },
                 ]}
+                wrap={true}
             />
             <GameMenu
                 callbacks={{
