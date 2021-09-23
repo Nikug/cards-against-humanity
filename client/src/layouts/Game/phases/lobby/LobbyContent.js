@@ -1,7 +1,7 @@
 import React from 'react';
 import { StartGameButton } from './StartGameButton';
 import { GameSettings } from '../../../../components/game-settings/GameSettings';
-import { GameSettingsHeader } from '../../../../components/game-settings/GamseSettingsHeader';
+import { GameSettingsHeader } from '../../../../components/game-settings/GameSettingsHeader';
 import { useSelector } from 'react-redux';
 import { playerSelector } from '../../../../selectors/playerSelectors';
 import { gameSelector } from '../../../../selectors/gameSelectors';
