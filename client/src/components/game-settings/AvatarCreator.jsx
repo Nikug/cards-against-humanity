@@ -1,7 +1,6 @@
 import React from 'react';
 import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { translateUnderWork } from '../../helpers/translation-helpers';
 import Icon from '../general/Icon';
 import { AvatarImage } from './AvatarImage';
 import { maxAvatarTypes } from '../../assets/avatarimages/avatarIcons';
@@ -23,7 +22,6 @@ const defaultButtonStates = {
 };
 
 export const AvatarCreator = ({ setPlayerAvatar }) => {
-    const { t } = useTranslation();
     const [currentAvatar, setCurrentAvatar] = useState(defaultAvatar);
 
     /* Figure out a reasonable way to disable/activate buttons */
@@ -40,8 +38,7 @@ export const AvatarCreator = ({ setPlayerAvatar }) => {
                         console.debug(showAsDisabled);
                     }, [showAsDisabled]);
                 )
-            BUTTON COLORS DON'T HAVE 'active' and 'disabled'
-                    -> No result is shown
+            BUTTON COLORS DON'T SHOW 'active' and 'disabled'
         */
 
         if (dir === 'next' && newAvatar >= maxAvatarTypes[type]) {
@@ -92,7 +89,7 @@ export const AvatarCreator = ({ setPlayerAvatar }) => {
             <div className="arrow-left-1">
                 <Icon
                     name="arrow_back_ios"
-                    className="button-icon"
+                    className="button-icon no-margin-right"
                     color={showAsDisabled.hatprev ? 'disabled' : 'active'}
                     onClick={() => changeAvatar('hatType', 'prev')}
                 />
@@ -100,7 +97,7 @@ export const AvatarCreator = ({ setPlayerAvatar }) => {
             <div className="arrow-left-2">
                 <Icon
                     name="arrow_back_ios"
-                    className="button-icon"
+                    className="button-icon no-margin-right"
                     color={showAsDisabled.eyeprev ? 'disabled' : 'active'}
                     onClick={() => changeAvatar('eyeType', 'prev')}
                 />
@@ -108,7 +105,7 @@ export const AvatarCreator = ({ setPlayerAvatar }) => {
             <div className="arrow-left-3">
                 <Icon
                     name="arrow_back_ios"
-                    className="button-icon"
+                    className="button-icon no-margin-right"
                     color={showAsDisabled.mouthprev ? 'disabled' : 'active'}
                     onClick={() => changeAvatar('mouthType', 'prev')}
                 />
@@ -125,7 +122,7 @@ export const AvatarCreator = ({ setPlayerAvatar }) => {
             <div className="arrow-right-1">
                 <Icon
                     name="arrow_forward_ios"
-                    className="button-icon"
+                    className="button-icon no-margin-right"
                     color={showAsDisabled.hatnext ? 'disabled' : 'active'}
                     onClick={() => changeAvatar('hatType', 'next')}
                 />
@@ -133,7 +130,7 @@ export const AvatarCreator = ({ setPlayerAvatar }) => {
             <div className="arrow-right-2">
                 <Icon
                     name="arrow_forward_ios"
-                    className="button-icon"
+                    className="button-icon no-margin-right"
                     color={showAsDisabled.eyenext ? 'disabled' : 'active'}
                     onClick={() => changeAvatar('eyeType', 'next')}
                 />
@@ -141,7 +138,7 @@ export const AvatarCreator = ({ setPlayerAvatar }) => {
             <div className="arrow-right-3">
                 <Icon
                     name="arrow_forward_ios"
-                    className="button-icon"
+                    className="button-icon no-margin-right"
                     color={showAsDisabled.mouthnext ? 'disabled' : 'active'}
                     onClick={() => changeAvatar('mouthType', 'next')}
                 />

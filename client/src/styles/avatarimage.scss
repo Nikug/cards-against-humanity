@@ -1,10 +1,18 @@
 .avatar-img-container-small {
     position: relative;
-    width: 75px;
+    width: 2em;
+
+    @include small-desktop {
+        width: 2.8em;
+    }
 }
 .avatar-img-container-large {
     position: relative;
-    width: 150px;
+    width: auto;
+
+    @include small-desktop {
+        width: 7em;
+    }
 }
 .avatar-background-image {
     width: 100%;

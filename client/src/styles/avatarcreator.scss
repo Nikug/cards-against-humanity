@@ -1,13 +1,14 @@
 .avatar-creator-container {
-    padding: 0.2rem 0.8rem;
-    margin: 0.2rem 0;
-    border-radius: 2px;
+    padding: 0.2rem;
+    margin: 0.2rem;
+    height: min-content;
+    align-self: center;
     background-color: $setting-background;
     color: darken($app-text, 15%);
 
     display: grid;
     grid-template-columns: 2em auto 2em;
-    grid-template-rows: auto;
+    grid-template-rows: min-content;
     grid-template-areas:
         'arrowleft1 avatar arrowright1'
         'arrowleft2 avatar arrowright2'

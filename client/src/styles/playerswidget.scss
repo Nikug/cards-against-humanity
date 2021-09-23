@@ -34,8 +34,8 @@
     overflow-y: hidden;
 
     @include small-desktop {
-        min-height: 4em;
-        max-height: 4em;
+        min-height: 8em;
+        max-height: 8em;
         overflow-x: hidden;
         overflow-y: auto;
     }

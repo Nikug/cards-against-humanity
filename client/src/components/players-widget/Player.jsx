@@ -89,10 +89,8 @@ export const Player = ({ avatar, name, state, score, isCardCzar, isHost, isPopul
 
     const playerElement = (
         <div className="player-container">
-            <div className="player-avatar">
-                <AvatarImage displayType="small" hatType={avatar.hatType} eyeType={avatar.eyeType} mouthType={avatar.mouthType} skinType={avatar.skinType} />
-            </div>
             <div title={showTitle ? name : undefined} className={`player ${isCardCzar ? 'cardCzar' : ''}`}>
+                <AvatarImage displayType="small" hatType={avatar.hatType} eyeType={avatar.eyeType} mouthType={avatar.mouthType} skinType={avatar.skinType} />
                 {isCardCzar && (
                     <div className="icon-anchor">
                         <img className="crown-icon" src={crownIcon} alt="crown" />
