@@ -25,7 +25,8 @@ import { updatePlayersList } from '../../actions/playersListActions';
 import { updateGameSettings } from '../../actions/gameSettingsActions';
 import { hasTimerInUse } from './helpers/hasTimerInUse';
 import { gameIdSelector, gameSelector, gameStateSelector } from '../../selectors/gameSelectors';
-import { playerIdSelector, playerSelector } from '../../selectors/playerSelectors';
+//import { playerIdSelector } from '../../selectors/playerSelectors';
+import { playerSelector } from '../../selectors/playerSelectors';
 import { playersListSelector } from '../../selectors/playersListSelectors';
 import { gameSettingsSelector } from '../../selectors/gameSettingsSelectors';
 
@@ -46,7 +47,7 @@ export const Game = ({ showDebug }) => {
     const players = useSelector(playersListSelector);
     const options = useSelector(gameSettingsSelector);
     const gameID = useSelector(gameIdSelector);
-    const playerID = useSelector(playerIdSelector);
+    //const playerID = useSelector(playerIdSelector);
     const gameState = useSelector(gameStateSelector);
     const timerOptions = useSelector((state) => state.gameSettings.value?.timers);
 

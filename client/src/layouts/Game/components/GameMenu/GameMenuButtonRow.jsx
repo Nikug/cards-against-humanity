@@ -4,19 +4,21 @@ import { useTranslation } from 'react-i18next';
 
 import { ActionButtonRow } from './ActionButtonRow';
 import { BUTTON_TYPES } from '../../../../components/general/Button.jsx';
-import { GAME_STATES } from '../../../../consts/gamestates';
 import { translateCommon, translateUnderWork } from '../../../../helpers/translation-helpers';
 import { GameMenu } from './GameMenu';
+/*
+import { GAME_STATES } from '../../../../consts/gamestates';
 import { gameStateSelector } from '../../../../selectors/gameSelectors';
+*/
 import { playerIsSpectatorSelector } from '../../../../selectors/playerSelectors';
 
 export const GameMenuButtonRow = ({ callbacks: { togglePlayerMode, changeCards, returnBackToLobby, openGameSettings, openHistory } }) => {
     const { t } = useTranslation();
 
-    const gameState = useSelector(gameStateSelector);
+    //const gameState = useSelector(gameStateSelector);
     const isSpectator = useSelector(playerIsSpectatorSelector);
 
-    const isLobby = gameState === GAME_STATES.LOBBY;
+    //const isLobby = gameState === GAME_STATES.LOBBY;
 
     return (
         <div className="game-menu-button-row">

@@ -1,6 +1,5 @@
 import React from 'react';
 import { useState, useEffect } from 'react';
-import { useTranslation } from 'react-i18next';
 import Icon from '../general/Icon';
 import { AvatarImage } from './AvatarImage';
 import { maxAvatarTypes } from '../../assets/avatarimages/avatarIcons';
@@ -82,7 +81,7 @@ export const AvatarCreator = ({ setPlayerAvatar }) => {
 
     useEffect(() => {
         setPlayerAvatar(currentAvatar);
-    }, [currentAvatar]);
+    }, [currentAvatar, setPlayerAvatar]);
 
     return (
         <div className="avatar-creator-container">

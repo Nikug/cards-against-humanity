@@ -1,5 +1,4 @@
 import React from 'react';
-import { StartGameButton } from './StartGameButton';
 import { GameSettings } from '../../../../components/game-settings/GameSettings';
 import { GameSettingsHeader } from '../../../../components/game-settings/GameSettingsHeader';
 import { useSelector } from 'react-redux';
