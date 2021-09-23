@@ -14,7 +14,7 @@ export const updateGameOptions = async (
     socket: SocketIO.Socket,
     gameID: string,
     playerID: string,
-    newOptions: CAH.Options,
+    newOptions: Partial<CAH.Options>,
     client?: pg.PoolClient
 ) => {
     const game = await getGame(gameID, client);

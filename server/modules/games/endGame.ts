@@ -42,5 +42,8 @@ export const resetGame = (game: CAH.Game) => {
         gameWithNoCards.stateMachine.returnToLobby();
     }
 
+    // Reset streaks
+    gameWithNoCards.streak = undefined;
+
     return gameWithNoCards;
 };

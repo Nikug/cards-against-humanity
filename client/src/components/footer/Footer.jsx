@@ -2,7 +2,7 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { translateCommon } from '../../helpers/translation-helpers';
-import Music from '../general/music';
+import { Music } from '../general/music';
 import { Tooltip } from '../popovers/Tooltip';
 
 export const Footer = ({ secretClick }) => {

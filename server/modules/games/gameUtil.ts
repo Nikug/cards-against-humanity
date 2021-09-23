@@ -25,8 +25,8 @@ export const addGame = async (newGame: CAH.Game, client?: pg.PoolClient) => {
     }
 };
 
-export const getGameIds = async (client: pg.PoolClient) => {
-    if (process.env.USE_DB) {
+export const getGameIds = async (client?: pg.PoolClient) => {
+    if (process.env.USE_DB && client) {
         const result = await getDBGameIds(client);
         const gameNames = result.rows.map((row) => row.gameid);
         return gameNames;
@@ -66,10 +66,8 @@ export const removeGameIfNoActivePlayers = async (
     const game = await getGame(gameID, client);
     if (!game) return;
 
-    if (
-        !game.players ||
-        getAllButDisconnectedPlayers(game.players).length === 0
-    ) {
+    const players = getAllButDisconnectedPlayers(game.players);
+    if (!game.players || players.length === 0) {
         await removeGame(gameID, client);
     }
 };

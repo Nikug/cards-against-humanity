@@ -10,7 +10,7 @@ import hri from "human-readable-ids";
 import { newGameTemplate } from "./newGame";
 import { transactionize } from "../db/util";
 
-export const createGame = async (client: pg.PoolClient) => {
+export const createGame = async (client?: pg.PoolClient) => {
     const gameNames = await getGameIds(client);
     let gameURL = "";
     for (let i = 0, limit = GAME_NAME_GENERATOR_MAX_RUNS; i < limit; i++) {

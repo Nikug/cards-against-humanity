@@ -1,31 +1,31 @@
+import './index.scss';
+
+import { LOCAL_STORAGE_FIELDS, getItemFromLocalStorage, removeItemFromLocalStorage } from './helpers/localstoragehelpers';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { Route, Switch, useHistory, useLocation } from 'react-router-dom';
 import { deleteCookie, setCookie } from './helpers/cookies';
-
-import './index.scss';
+import { resetGame, updateGame } from './actions/gameActions';
+import { resetGameSettings, updateGameSettings } from './actions/gameSettingsActions';
+import { resetPlayer, updatePlayer } from './actions/playerActions';
+import { resetPlayersList, updatePlayersList } from './actions/playersListActions';
 
 import { Button } from './components/general/Button';
 import { Footer } from './components/footer/Footer';
 import { Game } from './layouts/Game/Game';
-import { getItemFromLocalStorage, LOCAL_STORAGE_FIELDS, removeItemFromLocalStorage } from './helpers/localstoragehelpers';
 import { Header } from './components/header';
 import { Home } from './layouts/Home/Home';
 import { Instructions } from './layouts/Instructions';
-import { isNullOrUndefined } from './helpers/generalhelpers';
 import { Notification } from './components/notification/notification';
 import { NotificationContextProvider } from './contexts/NotificationContext';
-import { socket } from './components/sockets/socket';
-import { socketOn } from './helpers/communicationhelpers';
-import { translateCommon } from './helpers/translation-helpers';
-import { useTranslation } from 'react-i18next';
 import { WholePageLoader } from './components/WholePageLoader';
 import axios from 'axios';
 import i18n from './i18n';
-import { resetGame, updateGame } from './actions/gameActions';
-import { resetPlayer, updatePlayer } from './actions/playerActions';
-import { resetPlayersList, updatePlayersList } from './actions/playersListActions';
+import { isNullOrUndefined } from './helpers/generalhelpers';
+import { socket } from './components/sockets/socket';
+import { socketOn } from './helpers/communicationhelpers';
+import { translateCommon } from './helpers/translation-helpers';
 import { useDispatch } from 'react-redux';
-import { resetGameSettings, updateGameSettings } from './actions/gameSettingsActions';
+import { useTranslation } from 'react-i18next';
 
 export const App = () => {
     /*****************************************************************/ // Purely for hiding dev things from the production.
