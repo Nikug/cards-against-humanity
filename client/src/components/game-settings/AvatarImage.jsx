@@ -20,5 +20,4 @@ export const AvatarImage = ({ hatType, eyeType, mouthType, displayType }) => {
     } else {
         return null;
     }
-    return <div className="avatar-img-container">{avatar()}</div>;
 };

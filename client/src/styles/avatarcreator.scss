@@ -1,15 +1,26 @@
 .avatar-creator-container {
-    background-color: rgba(112, 144, 151, 0.3);
+    padding: 0.2rem 0.8rem;
+    margin: 0.2rem 0;
     border-radius: 2px;
+    background-color: $setting-background;
     color: darken($app-text, 15%);
 
     display: grid;
-    grid-template-columns: auto auto 2em min-content 2em;
+    grid-template-columns: 2em auto 2em;
     grid-template-rows: auto;
     grid-template-areas:
-        'text hat arrowleft1 avatar arrowright1'
-        'text eyes arrowleft2 avatar arrowright2'
-        'text mouth arrowleft3 avatar arrowright3';
+        'arrowleft1 avatar arrowright1'
+        'arrowleft2 avatar arrowright2'
+        'arrowleft3 avatar arrowright3';
+
+    &:hover {
+        background-color: $setting-background-hover;
+        color: $header-button-text-hover;
+
+        .control {
+            text-shadow: none;
+        }
+    }
 }
 
 .text {

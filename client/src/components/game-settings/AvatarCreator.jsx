@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { translateUnderWork } from '../../helpers/translation-helpers';
 import Icon from '../general/Icon';
 import { AvatarImage } from './AvatarImage';
+import { maxAvatarTypes } from '../../assets/avatarimages/avatarIcons';
 
 const defaultAvatar = {
     hatType: 0,
@@ -12,23 +13,71 @@ const defaultAvatar = {
     skinType: 0,
 };
 
-const maxAvatarTypes = {
-    hatType: 2,
-    eyeType: 2,
-    mouthType: 2,
+const defaultButtonStates = {
+    hatTypenext: false,
+    hatTypeprev: false,
+    eyeTypenext: false,
+    eyeTypeprev: false,
+    mouthTypenext: false,
+    mouthTypeprev: false,
 };
 
 export const AvatarCreator = ({ setPlayerAvatar }) => {
     const { t } = useTranslation();
     const [currentAvatar, setCurrentAvatar] = useState(defaultAvatar);
 
+    /* Figure out a reasonable way to disable/activate buttons */
+    const [showAsDisabled, setShowAsDisabled] = useState(defaultButtonStates);
+
+    const updateButtons = (type, dir, newAvatar) => {
+        const nextButton = type + 'next';
+        const prevButton = type + 'prev';
+
+        /* HOX
+            If-statements work
+                (tested with: 
+                    useEffect(() => {
+                        console.debug(showAsDisabled);
+                    }, [showAsDisabled]);
+                )
+            BUTTON COLORS DON'T HAVE 'active' and 'disabled'
+                    -> No result is shown
+        */
+
+        if (dir === 'next' && newAvatar >= maxAvatarTypes[type]) {
+            // Disable next button
+            console.debug('Set nextButton1');
+            setShowAsDisabled((prevState) => ({ ...prevState, [nextButton]: true }));
+        } else if (dir === 'prev' && showAsDisabled[nextButton] === true) {
+            // Activate next button
+            console.debug('Set nextButton2');
+            setShowAsDisabled((prevState) => ({ ...prevState, [nextButton]: false }));
+        }
+        if (dir === 'prev' && newAvatar <= 0) {
+            // Disable prev button
+            console.debug('Set prevButton1');
+            setShowAsDisabled((prevState) => ({ ...prevState, [prevButton]: true }));
+        } else if (dir === 'next' && showAsDisabled[prevButton] === true) {
+            // Activate prev button
+            console.debug('Set prevButton2');
+            setShowAsDisabled((prevState) => ({ ...prevState, [prevButton]: false }));
+        }
+    };
+
     const changeAvatar = (type, dir) => {
         if (dir === 'next') {
-            let newAvatar = Math.min(currentAvatar[type] + 1, maxAvatarTypes[type]);
-            setCurrentAvatar((prevAvatar) => ({ ...prevAvatar, [type]: newAvatar }));
+            // If there is a picture for the next type
+            if (currentAvatar[type] + 1 <= maxAvatarTypes[type]) {
+                const newAvatar = currentAvatar[type] + 1;
+                setCurrentAvatar((prevAvatar) => ({ ...prevAvatar, [type]: newAvatar }));
+                updateButtons(type, dir, newAvatar);
+            }
         } else if (dir === 'prev') {
-            let newAvatar = Math.max(currentAvatar[type] - 1, 0);
-            setCurrentAvatar((prevAvatar) => ({ ...prevAvatar, [type]: newAvatar }));
+            if (currentAvatar[type] - 1 >= 0) {
+                const newAvatar = currentAvatar[type] - 1;
+                setCurrentAvatar((prevAvatar) => ({ ...prevAvatar, [type]: newAvatar }));
+                updateButtons(type, dir, newAvatar);
+            }
         } else {
             return;
         }
@@ -40,19 +89,29 @@ export const AvatarCreator = ({ setPlayerAvatar }) => {
 
     return (
         <div className="avatar-creator-container">
-            <div className="text">{translateUnderWork('avatarCreator', t)}</div>
-
-            <span className="hat-text">Hat: {currentAvatar.hatType} </span>
             <div className="arrow-left-1">
-                <Icon name="arrow_back_ios" className="" onClick={() => changeAvatar('hatType', 'prev')} />
+                <Icon
+                    name="arrow_back_ios"
+                    className="button-icon"
+                    color={showAsDisabled.hatprev ? 'disabled' : 'active'}
+                    onClick={() => changeAvatar('hatType', 'prev')}
+                />
             </div>
-            <span className="eyes-text">Eyes: {currentAvatar.eyeType}</span>
             <div className="arrow-left-2">
-                <Icon name="arrow_back_ios" className="" onClick={() => changeAvatar('eyeType', 'prev')} />
+                <Icon
+                    name="arrow_back_ios"
+                    className="button-icon"
+                    color={showAsDisabled.eyeprev ? 'disabled' : 'active'}
+                    onClick={() => changeAvatar('eyeType', 'prev')}
+                />
             </div>
-            <span className="mouth-text">Mouth: {currentAvatar.mouthType}</span>
             <div className="arrow-left-3">
-                <Icon name="arrow_back_ios" className="" onClick={() => changeAvatar('mouthType', 'prev')} />
+                <Icon
+                    name="arrow_back_ios"
+                    className="button-icon"
+                    color={showAsDisabled.mouthprev ? 'disabled' : 'active'}
+                    onClick={() => changeAvatar('mouthType', 'prev')}
+                />
             </div>
             <div className="avatar">
                 <AvatarImage
@@ -64,13 +123,28 @@ export const AvatarCreator = ({ setPlayerAvatar }) => {
                 />
             </div>
             <div className="arrow-right-1">
-                <Icon name="arrow_forward_ios" className="" onClick={() => changeAvatar('hatType', 'next')} />
+                <Icon
+                    name="arrow_forward_ios"
+                    className="button-icon"
+                    color={showAsDisabled.hatnext ? 'disabled' : 'active'}
+                    onClick={() => changeAvatar('hatType', 'next')}
+                />
             </div>
             <div className="arrow-right-2">
-                <Icon name="arrow_forward_ios" className="" onClick={() => changeAvatar('eyeType', 'next')} />
+                <Icon
+                    name="arrow_forward_ios"
+                    className="button-icon"
+                    color={showAsDisabled.eyenext ? 'disabled' : 'active'}
+                    onClick={() => changeAvatar('eyeType', 'next')}
+                />
             </div>
             <div className="arrow-right-3">
-                <Icon name="arrow_forward_ios" className="" onClick={() => changeAvatar('mouthType', 'next')} />
+                <Icon
+                    name="arrow_forward_ios"
+                    className="button-icon"
+                    color={showAsDisabled.mouthnext ? 'disabled' : 'active'}
+                    onClick={() => changeAvatar('mouthType', 'next')}
+                />
             </div>
         </div>
     );
