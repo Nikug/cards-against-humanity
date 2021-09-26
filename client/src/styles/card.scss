@@ -32,7 +32,12 @@
         text-align: left;
 
         display: flex;
-        flex-direction: column;
+        flex-direction: row;
+
+        @include small-desktop {
+            flex-direction: column;
+        }
+
         justify-content: space-between;
 
         box-sizing: border-box;
@@ -74,18 +79,21 @@
         }
 
         > .footer {
-            display: none; // Hide card footer from mobile.
-
-            @include small-desktop {
-                display: flex;
-            }
-
+            display: flex;
+            align-items: center;
             font-size: 0.4rem;
             text-align: right;
             line-height: normal;
             justify-content: space-between;
-            align-items: flex-end;
-            padding-top: 1em;
+            align-items: center;
+            padding-left: 2em;
+
+            @include small-desktop {
+                display: flex;
+                align-items: flex-end;
+                padding-left: 0;
+                padding-top: 1em;
+            }
 
             > .draw-and-play {
                 font-size: 0.6rem;
