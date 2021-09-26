@@ -5,16 +5,27 @@ import React from 'react';
 import { translateCommon } from '../../helpers/translation-helpers.js';
 import { useTranslation } from 'react-i18next';
 import { formatTextWithBlanksAsDiv } from './cardformathelpers/formattextwithblanks.js';
+import { classNames } from '../../helpers/classnames.js';
 
 const CARD_TYPES = {
     WHITE: 1,
     BLACK: 2,
 };
 
-export const Card = (props) => {
-    const card = props.card;
+export const Card = ({
+    bigCard,
+    blankTexts,
+    card,
+    confirmed,
+    givePopularVote,
+    hasBeenPopularVoted,
+    playerName,
+    popularVoteScore,
+    selectCard,
+    selected,
+    showPopularVote,
+}) => {
     const { cardPackID, text, whiteCardsToPlay, whiteCardsToDraw, id } = card;
-    const { bigCard, blankTexts, confirmed, givePopularVote, hasBeenPopularVoted, playerName, popularVoteScore, selectCard, selected, showPopularVote } = props;
     const { t } = useTranslation();
     let type = CARD_TYPES.BLACK;
 
@@ -52,16 +63,16 @@ export const Card = (props) => {
                 }
             }}
         >
-            <div className={`card ${type === CARD_TYPES.BLACK ? 'black' : 'white'}`}>
+            <div className={classNames('card', { white: type === CARD_TYPES.WHITE, black: type === CARD_TYPES.BLACK })}>
                 {textToRender}
                 <div className="footer">
-                    {type === CARD_TYPES.BLACK && isNullOrUndefined(playerName) && (
+                    {/* {type === CARD_TYPES.BLACK && isNullOrUndefined(playerName) && (
                         <span className="draw-and-play">
                             {isNullOrUndefined(cardPackID)
                                 ? ''
                                 : `${translateCommon('draw', t)} ${whiteCardsToDraw}, ${translateCommon('play', t)} ${whiteCardsToPlay}`}
                         </span>
-                    )}
+                    )} */}
                     {playerName && <span className="draw-and-play">{playerName}</span>}
                     <span>&nbsp;</span>
                     {!isNullOrUndefined(cardPackID) && isNullOrUndefined(popularVoteScore) && !Array.isArray(cardPackID) && (
