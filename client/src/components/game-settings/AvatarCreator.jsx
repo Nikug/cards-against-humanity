@@ -17,11 +17,11 @@ const defaultAvatar = {
 
 const defaultButtonStates = {
     hatTypenext: false,
-    hatTypeprev: false,
+    hatTypeprev: true,
     eyeTypenext: false,
-    eyeTypeprev: false,
+    eyeTypeprev: true,
     mouthTypenext: false,
-    mouthTypeprev: false,
+    mouthTypeprev: true,
 };
 
 export const AvatarCreator = () => {
@@ -30,16 +30,6 @@ export const AvatarCreator = () => {
     const updateButtons = (type, dir, newAvatar) => {
         const nextButton = type + 'next';
         const prevButton = type + 'prev';
-
-        /* HOX
-            If-statements work
-                (tested with: 
-                    useEffect(() => {
-                        console.debug(showAsDisabled);
-                    }, [showAsDisabled]);
-                )
-            BUTTON COLORS DON'T SHOW 'active' and 'disabled'
-        */
 
         if (dir === 'next' && newAvatar >= maxAvatarTypes[type]) {
             // Disable next button
@@ -101,7 +91,7 @@ export const AvatarCreator = () => {
                 <Icon
                     name="arrow_back_ios"
                     className="button-icon no-margin-right"
-                    color={showAsDisabled.hatprev ? 'disabled' : 'active'}
+                    color={showAsDisabled.hatTypeprev ? 'disabled' : 'active'}
                     onClick={() => changeAvatar('hatType', 'prev')}
                 />
             </div>
@@ -109,7 +99,7 @@ export const AvatarCreator = () => {
                 <Icon
                     name="arrow_back_ios"
                     className="button-icon no-margin-right"
-                    color={showAsDisabled.eyeprev ? 'disabled' : 'active'}
+                    color={showAsDisabled.eyeTypeprev ? 'disabled' : 'active'}
                     onClick={() => changeAvatar('eyeType', 'prev')}
                 />
             </div>
@@ -117,18 +107,18 @@ export const AvatarCreator = () => {
                 <Icon
                     name="arrow_back_ios"
                     className="button-icon no-margin-right"
-                    color={showAsDisabled.mouthprev ? 'disabled' : 'active'}
+                    color={showAsDisabled.mouthTypeprev ? 'disabled' : 'active'}
                     onClick={() => changeAvatar('mouthType', 'prev')}
                 />
             </div>
             <div className="avatar">
-                <AvatarImage displayType="large" avatar={currentAvatar} />
+                <AvatarImage displaySize="large" avatar={currentAvatar} />
             </div>
             <div className="arrow-right-1">
                 <Icon
                     name="arrow_forward_ios"
                     className="button-icon no-margin-right"
-                    color={showAsDisabled.hatnext ? 'disabled' : 'active'}
+                    color={showAsDisabled.hatTypenext ? 'disabled' : 'active'}
                     onClick={() => changeAvatar('hatType', 'next')}
                 />
             </div>
@@ -136,7 +126,7 @@ export const AvatarCreator = () => {
                 <Icon
                     name="arrow_forward_ios"
                     className="button-icon no-margin-right"
-                    color={showAsDisabled.eyenext ? 'disabled' : 'active'}
+                    color={showAsDisabled.eyeTypenext ? 'disabled' : 'active'}
                     onClick={() => changeAvatar('eyeType', 'next')}
                 />
             </div>
@@ -144,7 +134,7 @@ export const AvatarCreator = () => {
                 <Icon
                     name="arrow_forward_ios"
                     className="button-icon no-margin-right"
-                    color={showAsDisabled.mouthnext ? 'disabled' : 'active'}
+                    color={showAsDisabled.mouthTypenext ? 'disabled' : 'active'}
                     onClick={() => changeAvatar('mouthType', 'next')}
                 />
             </div>

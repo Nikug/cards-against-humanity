@@ -28,7 +28,7 @@ const renderPlayers = (players, self) => {
                 isSelf={!isNullOrUndefined(ownId) && id === ownId}
                 key={publicID}
                 name={state === PLAYER_STATES.PICKING_NAME ? null : name}
-                avatar={/* Do we need a 'picking avatar' state ? */avatar}
+                avatar={avatar}
                 player={player}
                 publicID={publicID}
                 score={score}

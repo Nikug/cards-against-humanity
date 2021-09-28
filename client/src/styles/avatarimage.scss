@@ -1,26 +1,35 @@
 .avatar-img-container-small {
     position: relative;
+    height: 3em;
     width: 2em;
+    object-fit: cover;
 
     @include small-desktop {
         width: 2.8em;
+        height: 3.5em;
     }
 }
 .avatar-img-container-large {
     position: relative;
-    width: auto;
-
-    @include small-desktop {
-        width: 7em;
-    }
+    height: 10em;
+    width: 7em;
+    object-fit: cover;
 }
+
 .avatar-background-image {
-    width: 100%;
+    width: inherit;
+    position: absolute;
+}
+.avatar-background-image svg {
+    height: auto;
+    width: inherit;
 }
 .avatar-overlay-image {
     position: absolute;
     z-index: 1;
     left: 0;
+}
+.avatar-overlay-image svg {
     width: 100%;
     height: 100%;
     overflow: visible;

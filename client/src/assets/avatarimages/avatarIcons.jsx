@@ -1,136 +1,69 @@
 import React from 'react';
 
+import { ReactComponent as KoalaHat } from './KoalaEars.svg';
+import { ReactComponent as KoalaEyes } from './KoalaEyes.svg';
+import { ReactComponent as KoalaMouth } from './KoalaMouth.svg';
+import { ReactComponent as MehHat } from './MehHat.svg';
+import { ReactComponent as MehEyes } from './MehEyes.svg';
+import { ReactComponent as MehMouth } from './MehMouth.svg';
+
+import { ReactComponent as AvatarIcon } from './avatar.svg';
+
 export const maxAvatarTypes = {
     hatType: 2,
     eyeType: 2,
     mouthType: 2,
 };
 
-export const AvatarIcon = ({ className }) => {
-    const svgProps = { className: className, preserveAspectRatio: 'xMidYMin slice' };
+export const Avatar = () => {
     return (
-        <svg {...svgProps} version="1.1" viewBox="0 0 210 297" xmlns="http://www.w3.org/2000/svg">
-            <g stroke="#000">
-                <rect x="2.3862" y="196.14" width="206.39" height="99.954" rx="19.817" ry="42.469" fill="#000d25" strokeWidth="2.6635" />
-                <ellipse cx="104.96" cy="149.24" rx="103.18" ry="112.16" fill="#383f4e" fillRule="evenodd" strokeWidth="2.9184" />
-            </g>
-        </svg>
+        <div className={'avatar-background-image'}>
+            <AvatarIcon />
+        </div>
     );
 };
 
-export const Hat = ({ className, type }) => {
-    const svgProps = { className: className, preserveAspectRatio: 'xMidYMin slice' };
-    switch (type) {
-        case 1:
-            return (
-                <svg {...svgProps} width="210mm" height="297mm" version="1.1" viewBox="0 0 210 297" xmlns="http://www.w3.org/2000/svg">
-                    <path
-                        d="m9.6534 111.26c-.25331-.11098-6.4917-16.626-.85439-21.928l-3.8261.90667c.75035-5.9528-1.4714-9.516 1.7844-14.389l-5.9414 1.6766s.02573-24.086 16.501-28.882l-5.1823-2.0623c-1.4822-.44209 25.211-16.151 33.471-13.815l-3.4845-3.5963s26.635-2.4255 33.04 6.5287l.83367-4.3216c5.7459 3.8204 13.784 10.259 18.33 15.167 3.8846 4.194 7.8626 15.241 7.8626 15.241s-14.695-1.2635-22.027-.79655c-8.9845.57222-18.176 1.3491-26.649 4.3923-7.7649 2.7889-15.056 7.161-21.402 12.433-5.6633 4.7052-10.384 10.577-14.408 16.743-3.3013 5.0585-8.0488 16.702-8.0488 16.702z"
-                        fill="#878d99"
-                        stroke="#000"
-                        strokeWidth=".765"
-                    />
-                    <path
-                        d="m200.55 111.29c.25332-.11098 6.4917-16.626.85439-21.928l3.8261.90667c-.75035-5.9528 1.4714-9.516-1.7844-14.389l5.9414 1.6766s-.0257-24.086-16.501-28.882l5.1823-2.0623c1.4822-.44209-25.211-16.151-33.471-13.815l3.4845-3.5963s-26.635-2.4255-33.04 6.5287l-.83367-4.3216c-5.7459 3.8204-13.784 10.259-18.33 15.167-3.8846 4.194-7.8626 15.241-7.8626 15.241s14.695-1.2635 22.027-.79655c8.9845.57222 18.176 1.3491 26.649 4.3923 7.7649 2.7889 15.056 7.161 21.402 12.433 5.6633 4.7052 10.384 10.577 14.408 16.743 3.3013 5.0585 8.0488 16.702 8.0488 16.702z"
-                        fill="#878d99"
-                        stroke="#000"
-                        strokeWidth=".765"
-                    />
-                </svg>
-            );
-        case 2:
-            return (
-                <svg {...svgProps} width="210mm" height="297mm" version="1.1" viewBox="0 0 210 297" xmlns="http://www.w3.org/2000/svg">
-                    <g transform="translate(-12.137 6.4255)" stroke="#000" strokeWidth=".965">
-                        <path
-                            d="m169.12 95.918s-22.559 9.1612-34.329 12.116c-10.734 2.6947-21.769 5.7341-32.814 5.0483-14.142-.87807-28.538-4.6716-40.892-11.611-10.797-6.0652-20.155-15.099-27.261-25.242-3.9814-5.6822-8.1176-12.246-8.0773-19.184.02449-4.2203 1.9485-8.7471 5.0483-11.611 4.1823-3.8642 10.526-4.6951 16.155-5.5532 5.8248-.88788 17.669.50483 17.669.50483s4.2422-12.519 7.5725-18.174c5.2277-8.8772 10.862-16.784 19.898-21.733 10.236-5.6068 22.454-5.6729 34.12-6.0326 12.793-.39447 25.907-1.4125 38.367 1.5145 8.799 2.067 18.214 4.8496 24.737 11.106 6.2457 5.9909 9.1187 14.935 11.611 23.222 4.833 16.07 4.437 26.46 3.2022 43.196-.65481 8.8755-.64729 17.747-6.7107 22.891-3.5413 3.0042-9.1856 1.7477-13.829 1.6877-4.8747-.06297-14.467-2.1462-14.467-2.1462z"
-                            fill="#1d1d1d"
-                        />
-                        <path d="m169.12 95.918c-47.282-7.2287-87.476-20.882-104.5-55.532" fill="none" />
-                    </g>
-                </svg>
-            );
+export const Hat = ({ type }) => {
+    const renderImage = (type) => {
+        switch (type) {
+            case 1:
+                return <KoalaHat />;
+            case 2:
+                return <MehHat />;
+            default:
+                return null;
+        }
+    };
 
-        default:
-            return null;
-    }
+    return <div className={'avatar-overlay-image'}>{renderImage(type)}</div>;
 };
 
-export const Eyes = ({ className, type }) => {
-    const svgProps = { className: className, preserveAspectRatio: 'xMidYMin slice' };
-    switch (type) {
-        case 1:
-            return (
-                <svg {...svgProps} width="210mm" height="297mm" version="1.1" viewBox="0 0 210 297" xmlns="http://www.w3.org/2000/svg">
-                    <g transform="translate(208.11 34.441)">
-                        <path
-                            d="m-52.69 132.82s-9.5067-4.5362-14.64-5.3008c-4.8333-.71987-9.8492-.20476-14.64.75725-3.4182.68637-9.8443 3.5338-9.8443 3.5338s-2.9494-24.762 0-36.6c1.4741-5.9167 3.9953-12.137 8.5822-16.155 2.9039-2.5435 7.0106-3.6763 10.854-4.0387 4.5032-.42458 9.4153.0909 13.378 2.2718 3.9669 2.1831 7.5946 5.8218 9.087 10.097 5.0012 14.325-2.7766 45.435-2.7766 45.435z"
-                            fill="#e5e5e5"
-                            stroke="#000"
-                            strokeWidth=".26458px"
-                        />
-                        <path
-                            d="m-69.428 127.25-4.9964-.0155c-2.2638-.007-1.1556-7.8474-1.3006-9.9785-.26326-3.8697 1.6512-7.9136 4.356-10.693 2.2831-2.3464 4.9997-3.8254 8.2666-4.0387 2.6551-.17336 7.3242.77816 9.53 2.266 2.0347 1.3724 4.3073 2.945 4.5106 5.4959.51749 6.4915-3.836 22.91-3.5654 23.033-6.21-2.9122-11.459-5.4732-16.801-6.0688z"
-                            fill="#151515"
-                        />
-                        <ellipse cx="-69.203" cy="107.42" rx="2.0676" ry="2.1055" fill="#fff" fillRule="evenodd" strokeOpacity="0" />
-                    </g>
-                    <g transform="translate(6.4255 .71394)">
-                        <path
-                            d="m46.95 166.85s9.5067-4.5362 14.64-5.3008c4.8333-.71987 9.8492-.20476 14.64.75725 3.4182.68637 9.8443 3.5338 9.8443 3.5338s2.9494-24.762 0-36.6c-1.4741-5.9167-3.9953-12.137-8.5822-16.155-2.9039-2.5435-7.0106-3.6763-10.854-4.0387-4.5032-.42458-9.4153.0909-13.378 2.2718-3.9669 2.1831-7.5946 5.8218-9.087 10.097-5.0012 14.325 2.7766 45.435 2.7766 45.435z"
-                            fill="#e6e6e6"
-                            stroke="#000"
-                            strokeWidth=".26458px"
-                        />
-                        <path
-                            d="m69.147 161.22s-2.5238.62776-3.9236-1.1514c-1.3998-1.7791-1.408-6.1436-1.553-8.2747-.26326-3.8697 1.0201-9.4281 3.725-12.208 2.2831-2.3464 5.5677-4.0778 8.8346-4.2911 2.6551-.17336 6.3083-.40908 8.3311 1.3194 1.9455 1.6624 2.4773 1.8722 2.6806 4.4231.51749 6.4915-1.438 24.677-1.1674 24.8-6.21-2.9122-11.586-4.0218-16.927-4.6174z"
-                            fill="#151515"
-                        />
-                        <ellipse cx="69.561" cy="140.44" rx="2.0676" ry="2.1055" fill="#fff" fillRule="evenodd" strokeOpacity="0" />
-                    </g>
-                </svg>
-            );
-        case 2:
-            return (
-                <svg {...svgProps} width="210mm" height="297mm" version="1.1" viewBox="0 0 210 297" xmlns="http://www.w3.org/2000/svg">
-                    <rect x="86.07" y="143.24" width="12.991" height="31.878" rx="6.4953" ry="10.715" fill="#1d1d1d" fillRule="evenodd" strokeOpacity="0" />
-                    <rect x="116.03" y="143.08" width="12.991" height="31.878" rx="6.4953" ry="10.715" fill="#1d1d1d" fillRule="evenodd" strokeOpacity="0" />
-                </svg>
-            );
-        default:
-            return null;
-    }
+export const Eyes = ({ type }) => {
+    const renderImage = (type) => {
+        switch (type) {
+            case 1:
+                return <KoalaEyes />;
+            case 2:
+                return <MehEyes />;
+            default:
+                return null;
+        }
+    };
+
+    return <div className={'avatar-overlay-image'}>{renderImage(type)}</div>;
 };
 
-export const Mouth = ({ className, type }) => {
-    const svgProps = { className: className, preserveAspectRatio: 'xMidYMin slice' };
-    switch (type) {
-        case 1:
-            return (
-                <svg {...svgProps} width="210mm" height="297mm" version="1.1" viewBox="0 0 210 297" xmlns="http://www.w3.org/2000/svg">
-                    <g transform="translate(-5.7115 3.2127)">
-                        <g fill="none" stroke="#000" strokeWidth="2.265">
-                            <path d="m62.347 213.8 14.893-5.3008" />
-                            <path d="m69.288 211.53s13.582 7.0625 20.951 8.8346c8.9817 2.1599 18.419 2.5752 27.64 2.0193 6.1191-.3689 12.254-1.5319 18.048-3.5338 6.3841-2.2059 18.048-9.2132 18.048-9.2132" />
-                            <path d="m146.15 205.85 14.135 6.9415" />
-                        </g>
-                        <path
-                            d="m89.103 200.17s4.1588 3.3336 6.5628 4.4173c2.893 1.3042 6.0655 1.995 9.2132 2.398 3.6304.46471 7.3403.38393 10.98 0 3.2084-.33842 6.4738-.81206 9.4656-2.0193 2.4357-.98288 6.689-4.1649 6.689-4.1649s.0497-20.658-3.1552-30.29c-1.2688-3.8131-2.8604-8.0903-6.1842-10.349-3.2434-2.2042-7.6898-1.927-11.611-1.8931-4.0185.0347-8.4257.0645-11.864 2.1455-3.6931 2.2356-6.403 6.193-7.9511 10.223-3.5396 9.2137-2.1455 29.533-2.1455 29.533z"
-                            fill="#1c1c1c"
-                            stroke="#000"
-                            strokeWidth=".26458px"
-                        />
-                        <ellipse cx="104" cy="166.22" rx="2.5242" ry="3.4076" fill="#e2e2e2" fillRule="evenodd" strokeOpacity="0" />
-                    </g>
-                </svg>
-            );
-        case 2:
-            return (
-                <svg {...svgProps} width="210mm" height="297mm" version="1.1" viewBox="0 0 210 297" xmlns="http://www.w3.org/2000/svg">
-                    <path d="m59.971 208.11 96.382-.35697" fill="none" stroke="#000" strokeWidth="2.065" />
-                </svg>
-            );
-        default:
-            return null;
-    }
+export const Mouth = ({ type }) => {
+    const renderImage = (type) => {
+        switch (type) {
+            case 1:
+                return <KoalaMouth />;
+            case 2:
+                return <MehMouth />;
+            default:
+                return null;
+        }
+    };
+
+    return <div className={'avatar-overlay-image'}>{renderImage(type)}</div>;
 };

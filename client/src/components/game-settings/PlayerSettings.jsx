@@ -8,16 +8,14 @@ export const PlayerSettings = (props) => {
     const { isHost, disableStartGameButton, game, player, startGame } = props;
 
     return (
-        <SettingsContainer className="settings-justify-between row fill">
-            <SettingsContainer className="settings-justify-center column">
-                <NamePicker />
-                {isHost && (
-                    <div className="start-game-button-container">
-                        <StartGameButton disableStartGameButton={disableStartGameButton} game={game} player={player} startGame={startGame} />
-                    </div>
-                )}
-            </SettingsContainer>
+        <>
+            <NamePicker />
             <AvatarCreator />
-        </SettingsContainer>
+            {isHost && (
+                <div className="start-game-button-container">
+                    <StartGameButton disableStartGameButton={disableStartGameButton} game={game} player={player} startGame={startGame} />
+                </div>
+            )}
+        </>
     );
 };

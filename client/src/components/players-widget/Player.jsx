@@ -89,7 +89,7 @@ export const Player = ({ avatar, name, state, score, isCardCzar, isHost, isPopul
 
     const playerElement = (
         <div title={showTitle ? name : undefined} className={`player ${isCardCzar ? 'cardCzar' : ''}`}>
-            <AvatarImage displayType="small" avatar={avatar} />
+            <AvatarImage displaySize="small" avatar={avatar} />
             {isCardCzar && (
                 <div className="icon-anchor">
                     <img className="crown-icon" src={crownIcon} alt="crown" />

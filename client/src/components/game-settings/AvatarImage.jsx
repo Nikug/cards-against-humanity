@@ -1,13 +1,13 @@
 import React from 'react';
-import { AvatarIcon, Hat, Mouth, Eyes } from '../../assets/avatarimages/avatarIcons.jsx';
+import { Avatar, Hat, Mouth, Eyes } from '../../assets/avatarimages/avatarIcons.jsx';
 
-export const AvatarImage = ({ avatar, displayType }) => {
+export const AvatarImage = ({ avatar, displaySize }) => {
     const { hatType, eyeType, mouthType } = avatar;
 
     const avatarLayout = () => {
         return (
             <>
-                <AvatarIcon className="avatar-background-image" />
+                <Avatar className="avatar-background-image" />
                 {hatType > 0 && <Hat type={hatType} className="avatar-overlay-image" />}
                 {eyeType > 0 && <Eyes type={eyeType} className="avatar-overlay-image" />}
                 {mouthType > 0 && <Mouth type={mouthType} className="avatar-overlay-image" />}
@@ -15,7 +15,7 @@ export const AvatarImage = ({ avatar, displayType }) => {
         );
     };
 
-    switch (displayType) {
+    switch (displaySize) {
         case 'small':
             return <div className="avatar-img-container-small">{avatarLayout()}</div>;
         case 'large':
