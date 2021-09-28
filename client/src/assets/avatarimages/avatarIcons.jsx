@@ -32,7 +32,7 @@ const getMouth = (type) => {
     return mouths[type];
 };
 
-const AvatarOverLayImage = ({ children }) => {
+const AvatarOverLayImageWrapper = ({ children }) => {
     return <div className={'avatar-overlay-image'}>{children}</div>;
 };
 
@@ -45,13 +45,13 @@ export const Avatar = () => {
 };
 
 export const Hat = ({ type }) => {
-    return <AvatarOverLayImage>{getHat(type)}</AvatarOverLayImage>;
+    return <AvatarOverLayImageWrapper>{getHat(type)}</AvatarOverLayImageWrapper>;
 };
 
 export const Eyes = ({ type }) => {
-    return <AvatarOverLayImage>{getEyes(type)}</AvatarOverLayImage>;
+    return <AvatarOverLayImageWrapper>{getEyes(type)}</AvatarOverLayImageWrapper>;
 };
 
 export const Mouth = ({ type }) => {
-    return <AvatarOverLayImage>{getMouth(type)}</AvatarOverLayImage>;
+    return <AvatarOverLayImageWrapper>{getMouth(type)}</AvatarOverLayImageWrapper>;
 };
