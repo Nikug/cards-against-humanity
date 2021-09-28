@@ -15,14 +15,6 @@ export const everyoneHasPlayedTurn = (game: CAH.Game) => {
 export const getCardCzar = (players: CAH.Player[]) =>
     players.find((player) => player.isCardCzar);
 
-export const updatePlayers = (io: SocketIO.Server, game: CAH.Game) => {
-    game.players.map((player) => {
-        emitToAllPlayerSockets(io, player, "update_players", {
-            players: publicPlayersObject(game.players, player.id),
-        });
-    });
-};
-
 export const punishCardCzar = (game: CAH.Game) => {
     return game.players.map((player) => {
         if (player.isCardCzar && game.stateMachine.state !== "roundEnd") {
