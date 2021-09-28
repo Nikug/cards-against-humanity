@@ -12,7 +12,6 @@
     "test": "cd server && npm run test && cd ../client && npm run test-no-watch"
   },
   "dependencies": {
-    "cross-env": "^7.0.3",
-    "sass": "^1.41.1"
+    "cross-env": "^7.0.3"
   }
 }

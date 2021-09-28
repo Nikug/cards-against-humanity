@@ -47,7 +47,6 @@ export const Game = ({ showDebug }) => {
     const players = useSelector(playersListSelector);
     const options = useSelector(gameSettingsSelector);
     const gameID = useSelector(gameIdSelector);
-    //const playerID = useSelector(playerIdSelector);
     const gameState = useSelector(gameStateSelector);
     const timerOptions = useSelector((state) => state.gameSettings.value?.timers);
 
@@ -209,28 +208,6 @@ export const Game = ({ showDebug }) => {
         }
     };
 
-    const setPlayerName = (name) => {
-        const cleanedName = name.trim();
-
-        if (!!player?.id && cleanedName.length > 0) {
-            socket.emit('set_player_name', {
-                gameID: game?.id,
-                playerID: player?.id,
-                playerName: cleanedName,
-            });
-        }
-    };
-
-    const setPlayerAvatar = (avatar) => {
-        if (!!player?.id) {
-            socket.emit('set_player_avatar', {
-                gameID: game?.id,
-                playerID: player?.id,
-                avatar: avatar,
-            });
-        }
-    };
-
     const givePopularVote = (cardIDs) => {
         socket.emit('give_popular_vote', {
             gameID: game?.id,
@@ -274,8 +251,6 @@ export const Game = ({ showDebug }) => {
     const contentProps = {
         t,
         callbacks: {
-            setPlayerName,
-            setPlayerAvatar,
             givePopularVote,
             togglePlayerMode,
             startGame,

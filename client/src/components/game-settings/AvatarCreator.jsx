@@ -1,8 +1,12 @@
 import React from 'react';
 import { useState, useEffect } from 'react';
+import { useSelector } from 'react-redux';
 import Icon from '../general/Icon';
 import { AvatarImage } from './AvatarImage';
 import { maxAvatarTypes } from '../../assets/avatarimages/avatarIcons';
+import { socket } from '../../components/sockets/socket';
+import { playerSelector } from '../../selectors/playerSelectors';
+import { gameSelector } from '../../selectors/gameSelectors';
 
 const defaultAvatar = {
     hatType: 0,
@@ -20,12 +24,9 @@ const defaultButtonStates = {
     mouthTypeprev: false,
 };
 
-export const AvatarCreator = ({ setPlayerAvatar }) => {
+export const AvatarCreator = () => {
     const [currentAvatar, setCurrentAvatar] = useState(defaultAvatar);
-
-    /* Figure out a reasonable way to disable/activate buttons */
     const [showAsDisabled, setShowAsDisabled] = useState(defaultButtonStates);
-
     const updateButtons = (type, dir, newAvatar) => {
         const nextButton = type + 'next';
         const prevButton = type + 'prev';
@@ -79,9 +80,20 @@ export const AvatarCreator = ({ setPlayerAvatar }) => {
         }
     };
 
+    const player = useSelector(playerSelector);
+    const game = useSelector(gameSelector);
     useEffect(() => {
+        const setPlayerAvatar = (avatar) => {
+            if (!!player?.id) {
+                socket.emit('set_player_avatar', {
+                    gameID: game?.id,
+                    playerID: player?.id,
+                    avatar: avatar,
+                });
+            }
+        };
         setPlayerAvatar(currentAvatar);
-    }, [currentAvatar, setPlayerAvatar]);
+    }, [currentAvatar]);
 
     return (
         <div className="avatar-creator-container">
@@ -110,13 +122,7 @@ export const AvatarCreator = ({ setPlayerAvatar }) => {
                 />
             </div>
             <div className="avatar">
-                <AvatarImage
-                    displayType="large"
-                    hatType={currentAvatar.hatType}
-                    eyeType={currentAvatar.eyeType}
-                    mouthType={currentAvatar.mouthType}
-                    skinType={currentAvatar.skinType}
-                />
+                <AvatarImage displayType="large" avatar={currentAvatar} />
             </div>
             <div className="arrow-right-1">
                 <Icon

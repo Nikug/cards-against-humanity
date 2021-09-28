@@ -88,51 +88,49 @@ export const Player = ({ avatar, name, state, score, isCardCzar, isHost, isPopul
     };
 
     const playerElement = (
-        <div className="player-container">
-            <div title={showTitle ? name : undefined} className={`player ${isCardCzar ? 'cardCzar' : ''}`}>
-                <AvatarImage displayType="small" hatType={avatar.hatType} eyeType={avatar.eyeType} mouthType={avatar.mouthType} skinType={avatar.skinType} />
-                {isCardCzar && (
-                    <div className="icon-anchor">
-                        <img className="crown-icon" src={crownIcon} alt="crown" />
-                    </div>
+        <div title={showTitle ? name : undefined} className={`player ${isCardCzar ? 'cardCzar' : ''}`}>
+            <AvatarImage displayType="small" avatar={avatar} />
+            {isCardCzar && (
+                <div className="icon-anchor">
+                    <img className="crown-icon" src={crownIcon} alt="crown" />
+                </div>
+            )}
+            <span className={`player-name-and-status  ${isHost && false ? 'host' : ''}  ${isSelf ? 'myself' : ''}`}>
+                {state === 'playing' && (
+                    <Icon
+                        name={'watch_later'}
+                        className={`player-status clock status-${state}
+                `}
+                    />
                 )}
-                <span className={`player-name-and-status  ${isHost && false ? 'host' : ''}  ${isSelf ? 'myself' : ''}`}>
-                    {state === 'playing' && (
-                        <Icon
-                            name={'watch_later'}
-                            className={`player-status clock status-${state}
+                {(state === 'disconnected' || state === 'kicked') && (
+                    <Icon
+                        name={'error_outline'}
+                        className={`player-status clock status-${state}
                 `}
-                        />
-                    )}
-                    {(state === 'disconnected' || state === 'kicked') && (
-                        <Icon
-                            name={'error_outline'}
-                            className={`player-status clock status-${state}
-                `}
-                        />
-                    )}
-                    {isHost && <Icon name={'home'} className={`player-status white`} />}
-                    <span ref={nameRef} className={`player-name ${noName ? 'no-name' : ''}`}>
-                        {name}
-                        {noName && <i className="fa fa-spinner fa-spin" style={{ fontSize: '24px' }} />}
-                    </span>
+                    />
+                )}
+                {isHost && <Icon name={'home'} className={`player-status white`} />}
+                <span ref={nameRef} className={`player-name ${noName ? 'no-name' : ''}`}>
+                    {name}
+                    {noName && <i className="fa fa-spinner fa-spin" style={{ fontSize: '24px' }} />}
                 </span>
-                <span className="🦄">
-                    <span className="player-score">
-                        <Icon name="emoji_events" className="win-icon" />
-                        {scoreTransitions.map(({ item, props, key }) => (
-                            <animated.div className="score" key={key} style={props}>
-                                {item}
-                            </animated.div>
-                        ))}
-                    </span>
-                    {isPopularVoteKing && (
-                        <span className="player-popularVoteScore">
-                            <Icon name="thumb_up_alt" className="popular-vote-icon" />
-                        </span>
-                    )}
+            </span>
+            <span className="🦄">
+                <span className="player-score">
+                    <Icon name="emoji_events" className="win-icon" />
+                    {scoreTransitions.map(({ item, props, key }) => (
+                        <animated.div className="score" key={key} style={props}>
+                            {item}
+                        </animated.div>
+                    ))}
                 </span>
-            </div>
+                {isPopularVoteKing && (
+                    <span className="player-popularVoteScore">
+                        <Icon name="thumb_up_alt" className="popular-vote-icon" />
+                    </span>
+                )}
+            </span>
         </div>
     );
 

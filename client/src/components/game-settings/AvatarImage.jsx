@@ -1,8 +1,10 @@
 import React from 'react';
 import { AvatarIcon, Hat, Mouth, Eyes } from '../../assets/avatarimages/avatarIcons.jsx';
 
-export const AvatarImage = ({ hatType, eyeType, mouthType, displayType }) => {
-    const avatar = () => {
+export const AvatarImage = ({ avatar, displayType }) => {
+    const { hatType, eyeType, mouthType } = avatar;
+
+    const avatarLayout = () => {
         return (
             <>
                 <AvatarIcon className="avatar-background-image" />
@@ -13,11 +15,12 @@ export const AvatarImage = ({ hatType, eyeType, mouthType, displayType }) => {
         );
     };
 
-    if (displayType === 'small') {
-        return <div className="avatar-img-container-small">{avatar()}</div>;
-    } else if (displayType === 'large') {
-        return <div className="avatar-img-container-large">{avatar()}</div>;
-    } else {
-        return null;
+    switch (displayType) {
+        case 'small':
+            return <div className="avatar-img-container-small">{avatarLayout()}</div>;
+        case 'large':
+            return <div className="avatar-img-container-large">{avatarLayout()}</div>;
+        default:
+            return null;
     }
 };
