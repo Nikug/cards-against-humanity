@@ -9,10 +9,31 @@ import { ReactComponent as MehMouth } from './MehMouth.svg';
 
 import { ReactComponent as AvatarIcon } from './avatar.svg';
 
+const hats = [null, <KoalaHat />, <MehHat />];
+const eyes = [null, <KoalaEyes />, <MehEyes />];
+const mouths = [null, <KoalaMouth />, <MehMouth />];
+
 export const maxAvatarTypes = {
-    hatType: 2,
-    eyeType: 2,
-    mouthType: 2,
+    // -1 because there is null option
+    hatType: hats.length - 1,
+    eyeType: eyes.length - 1,
+    mouthType: mouths.length - 1,
+};
+
+const getHat = (type) => {
+    return hats[type];
+};
+
+const getEyes = (type) => {
+    return eyes[type];
+};
+
+const getMouth = (type) => {
+    return mouths[type];
+};
+
+const AvatarOverLayImage = ({ children }) => {
+    return <div className={'avatar-overlay-image'}>{children}</div>;
 };
 
 export const Avatar = () => {
@@ -24,46 +45,13 @@ export const Avatar = () => {
 };
 
 export const Hat = ({ type }) => {
-    const renderImage = (type) => {
-        switch (type) {
-            case 1:
-                return <KoalaHat />;
-            case 2:
-                return <MehHat />;
-            default:
-                return null;
-        }
-    };
-
-    return <div className={'avatar-overlay-image'}>{renderImage(type)}</div>;
+    return <AvatarOverLayImage>{getHat(type)}</AvatarOverLayImage>;
 };
 
 export const Eyes = ({ type }) => {
-    const renderImage = (type) => {
-        switch (type) {
-            case 1:
-                return <KoalaEyes />;
-            case 2:
-                return <MehEyes />;
-            default:
-                return null;
-        }
-    };
-
-    return <div className={'avatar-overlay-image'}>{renderImage(type)}</div>;
+    return <AvatarOverLayImage>{getEyes(type)}</AvatarOverLayImage>;
 };
 
 export const Mouth = ({ type }) => {
-    const renderImage = (type) => {
-        switch (type) {
-            case 1:
-                return <KoalaMouth />;
-            case 2:
-                return <MehMouth />;
-            default:
-                return null;
-        }
-    };
-
-    return <div className={'avatar-overlay-image'}>{renderImage(type)}</div>;
+    return <AvatarOverLayImage>{getMouth(type)}</AvatarOverLayImage>;
 };
