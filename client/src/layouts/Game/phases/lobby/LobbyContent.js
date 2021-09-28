@@ -4,8 +4,9 @@ import { GameSettingsHeader } from '../../../../components/game-settings/GameSet
 import { useSelector } from 'react-redux';
 import { playerSelector } from '../../../../selectors/playerSelectors';
 import { gameSelector } from '../../../../selectors/gameSelectors';
-import { PlayerSettings } from '../../../../components/game-settings/PlayerSettings';
 import { StartGameButton } from './StartGameButton';
+import { NamePicker } from './NamePicker';
+import { AvatarCreator } from '../../../../components/game-settings/avatar-creator/AvatarCreator';
 
 export const LobbyContent = ({ disableStartGameButton, startGame }) => {
     const player = useSelector(playerSelector);
@@ -16,8 +17,12 @@ export const LobbyContent = ({ disableStartGameButton, startGame }) => {
         <div className="game-settings-container">
             <div className="lobby-container-grid">
                 <div className="settings-block">
+                    <GameSettingsHeader keyword={'avatar'} />
+                    <AvatarCreator />
+                </div>
+                <div className="settings-block">
                     <GameSettingsHeader keyword={'ownSettings'} />
-                    <PlayerSettings isHost={isHost} disableStartGameButton={disableStartGameButton} game={game} player={player} />
+                    <NamePicker />
                     {isHost && (
                         <div className="start-game-button-container">
                             <StartGameButton disableStartGameButton={disableStartGameButton} game={game} player={player} startGame={startGame} />

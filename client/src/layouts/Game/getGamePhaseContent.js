@@ -17,7 +17,7 @@ import { getRandomSpinner } from '../../components/spinner';
 import { translateCommon } from '../../helpers/translation-helpers';
 import { getCardCzarNameFromPlayersList } from '../../helpers/getCardCzarNameFromPlayersList';
 
-export const getGamePhaseContent = ({ t, game, player, players, options, callbacks: { givePopularVote, startGame }, blackCards, popularVotedCardsIDs }) => {
+export const getGamePhaseContent = ({ blackCards, callbacks: { givePopularVote, startGame }, game, options, player, players, popularVotedCardsIDs, t }) => {
     const gameState = game?.state;
     const playerState = player?.state;
     const disableStartGameButton = !canStartGame(options, players);
