@@ -1,36 +1,38 @@
-.avatar-img-container-small {
+.avatar-img-container {
     position: relative;
-    height: 3em;
-    width: 2em;
     object-fit: cover;
 
-    @include small-desktop {
-        width: 2.8em;
-        height: 3.5em;
+    &.small {
+        height: 3em;
+        width: 2em;
+
+        @include small-desktop {
+            width: 2.8em;
+            height: 3.5em;
+        }
     }
-}
-.avatar-img-container-large {
-    position: relative;
-    height: 10em;
-    width: 7em;
-    object-fit: cover;
-}
 
-.avatar-background-image {
-    width: inherit;
-    position: absolute;
-}
-.avatar-background-image svg {
-    height: auto;
-    width: inherit;
-}
-.avatar-overlay-image {
-    position: absolute;
-    z-index: 1;
-    left: 0;
-}
-.avatar-overlay-image svg {
-    width: 100%;
-    height: 100%;
-    overflow: visible;
+    &.large {
+        height: 10em;
+        width: 7em;
+    }
+
+    .avatar-background-image {
+        width: inherit;
+        position: absolute;
+    }
+    .avatar-background-image svg {
+        height: auto;
+        width: inherit;
+    }
+    .avatar-overlay-image {
+        position: absolute;
+        z-index: 1;
+        left: 0;
+    }
+    .avatar-overlay-image svg {
+        width: 100%;
+        height: 100%;
+        overflow: visible;
+    }
 }

@@ -6,7 +6,7 @@ export const AvatarImage = ({ avatar, displaySize }) => {
     const { hatType, eyeType, mouthType } = avatar;
 
     return (
-        <div className={classNames({ 'avatar-img-container-small': displaySize === 'small', 'avatar-img-container-large': displaySize === 'large' })}>
+        <div className={classNames('avatar-img-container', { small: displaySize === 'small', large: displaySize === 'large' })}>
             <Avatar className="avatar-background-image" />
             {hatType > 0 && <Hat type={hatType} />}
             {eyeType > 0 && <Eyes type={eyeType} />}

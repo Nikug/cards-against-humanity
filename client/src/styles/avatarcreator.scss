@@ -1,9 +1,4 @@
 .avatar-creator-container {
-    // padding: 0.2rem;
-    // margin: 0.2rem;
-    // background-color: $setting-background;
-    // color: darken($app-text, 15%);
-
     display: grid;
     grid-template-columns: 2em auto 2em;
     grid-template-rows: auto;
@@ -20,40 +15,40 @@
             text-shadow: none;
         }
     }
-}
 
-.text {
-    grid-area: text;
-}
-.hat-text {
-    grid-area: hat;
-}
-.eyes-text {
-    grid-area: eyes;
-}
-.mouth-text {
-    grid-area: mouth;
-}
-.arrow-left-1 {
-    grid-area: arrowleft1;
-}
-.arrow-left-2 {
-    grid-area: arrowleft2;
-}
-.arrow-left-3 {
-    grid-area: arrowleft3;
-}
-.avatar {
-    grid-area: avatar;
-    justify-self: center;
-}
+    .text {
+        grid-area: text;
+    }
+    .hat-text {
+        grid-area: hat;
+    }
+    .eyes-text {
+        grid-area: eyes;
+    }
+    .mouth-text {
+        grid-area: mouth;
+    }
+    .arrow-left-1 {
+        grid-area: arrowleft1;
+    }
+    .arrow-left-2 {
+        grid-area: arrowleft2;
+    }
+    .arrow-left-3 {
+        grid-area: arrowleft3;
+    }
+    .avatar {
+        grid-area: avatar;
+        justify-self: center;
+    }
 
-.arrow-right-1 {
-    grid-area: arrowright1;
-}
-.arrow-right-2 {
-    grid-area: arrowright2;
-}
-.arrow-right-3 {
-    grid-area: arrowright3;
+    .arrow-right-1 {
+        grid-area: arrowright1;
+    }
+    .arrow-right-2 {
+        grid-area: arrowright2;
+    }
+    .arrow-right-3 {
+        grid-area: arrowright3;
+    }
 }
