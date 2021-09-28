@@ -17,7 +17,12 @@ export const LobbyContent = ({ disableStartGameButton, startGame }) => {
             <div className="lobby-container-grid">
                 <div className="settings-block">
                     <GameSettingsHeader keyword={'ownSettings'} />
-                    <PlayerSettings isHost={isHost} disableStartGameButton={disableStartGameButton} game={game} player={player} startGame={startGame} />
+                    <PlayerSettings isHost={isHost} disableStartGameButton={disableStartGameButton} game={game} player={player} />
+                    {isHost && (
+                        <div className="start-game-button-container">
+                            <StartGameButton disableStartGameButton={disableStartGameButton} game={game} player={player} startGame={startGame} />
+                        </div>
+                    )}
                 </div>
                 <GameSettings options={game ? game.options : {}} gameID={game?.id} isDisabled={player?.isHost !== true} playerID={player?.id} />
                 {isHost && (
