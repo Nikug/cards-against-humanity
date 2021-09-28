@@ -14,7 +14,7 @@ import { translateCommon } from '../../helpers/translation-helpers';
 import { BUTTON_TYPES } from '../general/Button';
 import { playerIdSelector, playerIsHostSelector } from '../../selectors/playerSelectors';
 import { gameIdSelector } from '../../selectors/gameSelectors';
-import { AvatarImage } from '../game-settings/AvatarImage';
+import { AvatarImage } from '../game-settings/avatar-creator/AvatarImage';
 
 export const Player = ({ avatar, name, state, score, isCardCzar, isHost, isPopularVoteKing, isSelf, publicID }) => {
     const { t } = useTranslation();

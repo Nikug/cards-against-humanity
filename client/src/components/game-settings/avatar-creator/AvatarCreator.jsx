@@ -1,12 +1,13 @@
 import React from 'react';
 import { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
-import Icon from '../general/Icon';
+import Icon from '../../general/Icon';
 import { AvatarImage } from './AvatarImage';
-import { maxAvatarTypes } from '../../assets/avatarimages/avatarIcons';
-import { socket } from '../../components/sockets/socket';
-import { playerSelector } from '../../selectors/playerSelectors';
-import { gameSelector } from '../../selectors/gameSelectors';
+import { maxAvatarTypes } from '../../../assets/avatarimages/avatarIcons';
+import { socket } from '../../sockets/socket';
+import { playerIdSelector } from '../../../selectors/playerSelectors';
+import { gameIdSelector } from '../../../selectors/gameSelectors';
+import { SettingContainer } from '../../settings/SettingContainer';
 
 const defaultAvatar = {
     hatType: 0,
@@ -25,8 +26,12 @@ const defaultButtonStates = {
 };
 
 export const AvatarCreator = () => {
+    const playerID = useSelector(playerIdSelector);
+    const gameID = useSelector(gameIdSelector);
+
     const [currentAvatar, setCurrentAvatar] = useState(defaultAvatar);
     const [showAsDisabled, setShowAsDisabled] = useState(defaultButtonStates);
+
     const updateButtons = (type, dir, newAvatar) => {
         const nextButton = type + 'next';
         const prevButton = type + 'prev';
@@ -55,38 +60,41 @@ export const AvatarCreator = () => {
         if (dir === 'next') {
             // If there is a picture for the next type
             if (currentAvatar[type] + 1 <= maxAvatarTypes[type]) {
-                const newAvatar = currentAvatar[type] + 1;
-                setCurrentAvatar((prevAvatar) => ({ ...prevAvatar, [type]: newAvatar }));
-                updateButtons(type, dir, newAvatar);
+                const newValue = currentAvatar[type] + 1;
+                const newAvatar = { ...currentAvatar, [type]: newValue };
+
+                setCurrentAvatar(newAvatar);
+                updateButtons(type, dir, newValue);
             }
         } else if (dir === 'prev') {
             if (currentAvatar[type] - 1 >= 0) {
-                const newAvatar = currentAvatar[type] - 1;
-                setCurrentAvatar((prevAvatar) => ({ ...prevAvatar, [type]: newAvatar }));
-                updateButtons(type, dir, newAvatar);
+                const newValue = currentAvatar[type] - 1;
+                const newAvatar = { ...currentAvatar, [type]: newValue };
+
+                setCurrentAvatar(newAvatar);
+                updateButtons(type, dir, newValue);
             }
         } else {
             return;
         }
     };
 
-    const player = useSelector(playerSelector);
-    const game = useSelector(gameSelector);
     useEffect(() => {
         const setPlayerAvatar = (avatar) => {
-            if (!!player?.id) {
+            if (playerID) {
                 socket.emit('set_player_avatar', {
-                    gameID: game?.id,
-                    playerID: player?.id,
+                    gameID: gameID,
+                    playerID: playerID,
                     avatar: avatar,
                 });
             }
         };
+
         setPlayerAvatar(currentAvatar);
-    }, [currentAvatar]);
+    }, [currentAvatar, gameID, playerID]);
 
     return (
-        <div className="avatar-creator-container">
+        <SettingContainer className="avatar-creator-container">
             <div className="arrow-left-1">
                 <Icon
                     name="arrow_back_ios"
@@ -138,6 +146,6 @@ export const AvatarCreator = () => {
                     onClick={() => changeAvatar('mouthType', 'next')}
                 />
             </div>
-        </div>
+        </SettingContainer>
     );
 };

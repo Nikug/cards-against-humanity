@@ -1,5 +1,5 @@
 import React from 'react';
-import { Avatar, Hat, Mouth, Eyes } from '../../assets/avatarimages/avatarIcons.jsx';
+import { Avatar, Hat, Mouth, Eyes } from '../../../assets/avatarimages/avatarIcons.jsx';
 
 export const AvatarImage = ({ avatar, displaySize }) => {
     const { hatType, eyeType, mouthType } = avatar;

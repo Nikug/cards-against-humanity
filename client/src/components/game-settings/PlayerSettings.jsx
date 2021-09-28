@@ -1,7 +1,6 @@
 import React from 'react';
 import { NamePicker } from '../../layouts/Game/phases/lobby/NamePicker';
-import { AvatarCreator } from './AvatarCreator';
-import { SettingsContainer } from '../settings/SettingsContainer';
+import { AvatarCreator } from './avatar-creator/AvatarCreator';
 import { StartGameButton } from '../../layouts/Game/phases/lobby/StartGameButton';
 
 export const PlayerSettings = (props) => {
