@@ -1,7 +1,10 @@
 import { userSettingsActionTypes } from '../actions/userSettingsActions';
+import { getJsonFromLocalStorage, LOCAL_STORAGE_FIELDS, setJsonToLocalStorage } from '../helpers/localstoragehelpers';
 
 export const getInitialUserSettingsState = () => {
-    return { value: {}, state: null };
+    const settings = getJsonFromLocalStorage(LOCAL_STORAGE_FIELDS.USER_SETTINGS) || {};
+
+    return { value: settings, state: null };
 };
 
 const userSettingsReducer = (state = getInitialUserSettingsState(), action) => {
@@ -18,6 +21,9 @@ const userSettingsReducer = (state = getInitialUserSettingsState(), action) => {
         default:
             break;
     }
+
+    setJsonToLocalStorage(LOCAL_STORAGE_FIELDS.USER_SETTINGS, state.value);
+
     return state;
 };
 

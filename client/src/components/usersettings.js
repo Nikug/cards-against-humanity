@@ -33,10 +33,10 @@ export const UserSettings = () => {
     }, [userSettings.textToSpeechVolume]);
 
     useEffect(() => {
-        if (userSettings.soundEffectVolValue !== undefined) {
-            setSoundEffectVolValue(userSettings.soundEffectVolValue);
+        if (userSettings.soundEffectVolume !== undefined) {
+            setSoundEffectVolValue(userSettings.soundEffectVolume);
         }
-    }, [userSettings.soundEffectVolValue]);
+    }, [userSettings.soundEffectVolume]);
 
     const change = (event, changeParams) => {
         const field = changeParams?.field;

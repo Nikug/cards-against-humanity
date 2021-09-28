@@ -27,21 +27,21 @@ export const GameMenuButtonRow = ({ callbacks: { togglePlayerMode, changeCards, 
                 buttons={[
                     {
                         custom: true,
-                        component: <CopyGameLinkButton key={'copy-button'}/>
+                        component: <CopyGameLinkButton key={'copy-button'} />,
                     },
-                    isSpectator
-                        ? {
-                              icon: 'login',
-                              text: translateCommon('joinToGame', t),
-                              callback: togglePlayerMode,
-                              type: BUTTON_TYPES.PRIMARY,
-                          }
-                        : {
-                              icon: 'groups',
-                              text: translateCommon('goToAudience', t),
-                              callback: togglePlayerMode,
-                              type: BUTTON_TYPES.PRIMARY,
-                          },
+                    // isSpectator
+                    //     ? {
+                    //           icon: 'login',
+                    //           text: translateCommon('joinToGame', t),
+                    //           callback: togglePlayerMode,
+                    //           type: BUTTON_TYPES.PRIMARY,
+                    //       }
+                    //     : {
+                    //           icon: 'groups',
+                    //           text: translateCommon('goToAudience', t),
+                    //           callback: togglePlayerMode,
+                    //           type: BUTTON_TYPES.PRIMARY,
+                    //       },
                     false &&
                         changeCards && {
                             icon: 'refresh',
@@ -56,7 +56,7 @@ export const GameMenuButtonRow = ({ callbacks: { togglePlayerMode, changeCards, 
             />
             <GameMenu
                 callbacks={{
-                    //togglePlayerMode,
+                    togglePlayerMode,
                     changeCards,
                     returnBackToLobby,
                     openGameSettings,
