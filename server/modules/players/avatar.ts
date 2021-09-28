@@ -4,7 +4,7 @@ import * as SocketIO from "socket.io";
 import { getGame, setGame } from "../games/gameUtil";
 
 import { PoolClient } from "pg";
-import { updatePlayers } from "./playerUtil";
+import { updatePlayersIndividually } from "./emitPlayers";
 
 export const updateAvatar = async (
     io: SocketIO.Server,
@@ -20,7 +20,7 @@ export const updateAvatar = async (
     game.players = setAvatar(game.players, playerID, avatar);
     await setGame(game, client);
 
-    updatePlayers(io, game);
+    updatePlayersIndividually(io, game);
 };
 
 export const defaultAvatar = () => {
