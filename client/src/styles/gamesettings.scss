@@ -217,12 +217,7 @@
 
     .icon-margin-right {
         margin-right: 0.6em;
-        color: $settings-icon;
         text-shadow: none;
-
-        &.disabled {
-            //color: $settings-icon-disabled;
-        }
     }
 }
 
