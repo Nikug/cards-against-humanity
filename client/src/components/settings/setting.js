@@ -62,9 +62,15 @@ export const Setting = ({
 
         return (
             <div className="number-control">
-                <Icon name="arrow_back_ios" className="button-icon" color={showAsDisabled ? 'disabled' : 'active'} onClick={onDecrease} />
+                <Icon name="arrow_back_ios" className="button-icon" color={showAsDisabled ? 'disabled' : 'active'} disabled={isDisabled} onClick={onDecrease} />
                 <span className={`number ${currentValue > 99 ? 'three-numbers' : ''}`}>{currentValue}</span>
-                <Icon name="arrow_forward_ios" className="button-icon" color={showAsDisabled ? 'disabled' : 'active'} onClick={onIncrease} />
+                <Icon
+                    name="arrow_forward_ios"
+                    className="button-icon"
+                    color={showAsDisabled ? 'disabled' : 'active'}
+                    disabled={isDisabled}
+                    onClick={onIncrease}
+                />
             </div>
         );
     };
@@ -117,7 +123,7 @@ export const Setting = ({
     const renderIcon = (icon) => {
         const { name, className, color, onClick, isDisabled } = icon;
 
-        return <Icon name={name} className={`${className ? className : ''} ${isDisabled ? 'disabled' : ''}`} color={color} onClick={onClick} />;
+        return <Icon name={name} className={classNames('settings-icon', className)} disabled={isDisabled} color={color} onClick={onClick} />;
     };
 
     const renderMultipleControls = (controls, currentValue, isDisabled, onChangeCallback, placeholderText) => {

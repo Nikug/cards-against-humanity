@@ -27,5 +27,5 @@ export const Toggle = ({ currentValue, isDisabled, onChangeCallback, field }) =>
     const onClickFunction = useMemo(() => getOnclickFunction(onChangeCallback, field, currentValue), [onChangeCallback, field, currentValue]);
     const iconName = currentValue ? 'check_box' : 'check_box_outline_blank';
 
-    return <Icon name={iconName} className={classNameString} onClick={onClickFunction} />;
+    return <Icon name={iconName} className={classNameString} disabled={isDisabled} onClick={onClickFunction} />;
 };
