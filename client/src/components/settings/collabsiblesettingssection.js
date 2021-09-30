@@ -3,7 +3,7 @@ import { CONTROL_TYPES, Setting } from './setting';
 import { emptyFn } from '../../helpers/generalhelpers';
 import Icon from '../general/Icon';
 
-export const CollabsibelSettingsSection = ({ content, isDisabled, title }) => {
+export const CollabsibelSettingsSection = ({ content, disabled, title }) => {
     const [isOpen, setIsOpen] = useState(false);
     const iconClassnames = 'icon-margin-right';
 
@@ -19,8 +19,8 @@ export const CollabsibelSettingsSection = ({ content, isDisabled, title }) => {
                 className="title"
                 controlType={CONTROL_TYPES.custom}
                 customControl={<Icon name={isOpen ? 'expand_less' : 'expand_more'} />}
-                icon={{ name: titleIconName, className: iconClassnames, isDisabled: isDisabled }}
-                isDisabled={isDisabled}
+                icon={{ name: titleIconName, className: iconClassnames, disabled }}
+                disabled={disabled}
                 onChangeCallback={emptyFn}
                 onClick={toggle}
                 text={titleText}

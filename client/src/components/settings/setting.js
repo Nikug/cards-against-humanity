@@ -20,7 +20,7 @@ export const Setting = ({
     toolTipText,
     controlType,
     currentValue,
-    isDisabled,
+    disabled,
     onChangeCallback,
     customControl,
     placeholderText,
@@ -33,14 +33,14 @@ export const Setting = ({
     const [inputText, setInputText] = useState('');
 
     useEffect(() => {
-        if (DEV_CARD_PACK_AUTOFILL === true && !isDisabled) {
+        if (DEV_CARD_PACK_AUTOFILL === true && !disabled) {
             const cardpackId = 'U4nL88ujS' || 'qM1V1IaYBE';
             setInputText(cardpackId);
         }
-    }, [DEV_CARD_PACK_AUTOFILL, isDisabled]);
+    }, [DEV_CARD_PACK_AUTOFILL, disabled]);
 
-    const renderNumberSelect = (currentValue, isDisabled, onChangeCallback, field) => {
-        const showAsDisabled = isDisabled || currentValue === null;
+    const renderNumberSelect = (currentValue, disabled, onChangeCallback, field) => {
+        const showAsDisabled = disabled || currentValue === null;
 
         const onIncrease = () => {
             if (field) {
@@ -62,20 +62,20 @@ export const Setting = ({
 
         return (
             <div className="number-control">
-                <Icon name="arrow_back_ios" className="button-icon" color={showAsDisabled ? 'disabled' : 'active'} disabled={isDisabled} onClick={onDecrease} />
+                <Icon name="arrow_back_ios" className="button-icon" color={showAsDisabled ? 'disabled' : 'active'} disabled={disabled} onClick={onDecrease} />
                 <span className={`number ${currentValue > 99 ? 'three-numbers' : ''}`}>{currentValue}</span>
                 <Icon
                     name="arrow_forward_ios"
                     className="button-icon"
                     color={showAsDisabled ? 'disabled' : 'active'}
-                    disabled={isDisabled}
+                    disabled={disabled}
                     onClick={onIncrease}
                 />
             </div>
         );
     };
 
-    const renderTextField = (currentValue = inputText, isDisabled, onChangeCallback, field, placeholderText, hasConfirm = false) => {
+    const renderTextField = (currentValue = inputText, disabled, onChangeCallback, field, placeholderText, hasConfirm = false) => {
         return (
             <TextControl
                 buttonIcon={customButtonIcon || 'add_circle_outline'}
@@ -83,7 +83,7 @@ export const Setting = ({
                 buttonOnClickParams={[onChangeCallback]}
                 field={field}
                 hasConfirm={hasConfirm}
-                isDisabled={isDisabled}
+                disabled={disabled}
                 onChange={hasConfirm ? handleKeyDown : handleTextFieldChange}
                 onChangeParams={hasConfirm ? [] : [onChangeCallback]}
                 onKeyDown={hasConfirm ? null : handleKeyDown}
@@ -121,37 +121,35 @@ export const Setting = ({
     };
 
     const renderIcon = (icon) => {
-        const { name, className, color, onClick, isDisabled } = icon;
+        const { name, className, color, onClick, disabled } = icon;
 
-        return <Icon name={name} className={classNames('settings-icon', className)} disabled={isDisabled} color={color} onClick={onClick} />;
+        return <Icon name={name} className={classNames('settings-icon', className)} disabled={disabled} color={color} onClick={onClick} />;
     };
 
-    const renderMultipleControls = (controls, currentValue, isDisabled, onChangeCallback, placeholderText) => {
+    const renderMultipleControls = (controls, currentValue, disabled, onChangeCallback, placeholderText) => {
         const renderedControls = [];
 
         for (let i = 0, len = controls.length; i < len; i++) {
-            renderedControls.push(
-                <div key={i}>{renderControl(controls[i], currentValue?.[i], isDisabled, onChangeCallback, placeholderText, field?.[i])}</div>
-            );
+            renderedControls.push(<div key={i}>{renderControl(controls[i], currentValue?.[i], disabled, onChangeCallback, placeholderText, field?.[i])}</div>);
         }
 
         return renderedControls;
     };
 
-    const renderControl = (controlType, currentValue, isDisabled, onChangeCallback, placeholderText, field) => {
+    const renderControl = (controlType, currentValue, disabled, onChangeCallback, placeholderText, field) => {
         if (Array.isArray(controlType)) {
-            return renderMultipleControls(controlType, currentValue, isDisabled, onChangeCallback, placeholderText);
+            return renderMultipleControls(controlType, currentValue, disabled, onChangeCallback, placeholderText);
         }
 
         switch (controlType) {
             case CONTROL_TYPES.toggle:
-                return <Toggle currentValue={currentValue} isDisabled={isDisabled} onChangeCallback={onChangeCallback} field={field} />;
+                return <Toggle currentValue={currentValue} disabled={disabled} onChangeCallback={onChangeCallback} field={field} />;
             case CONTROL_TYPES.number:
-                return renderNumberSelect(currentValue, isDisabled, onChangeCallback, field);
+                return renderNumberSelect(currentValue, disabled, onChangeCallback, field);
             case CONTROL_TYPES.text:
-                return renderTextField(currentValue, isDisabled, onChangeCallback, field, placeholderText, false);
+                return renderTextField(currentValue, disabled, onChangeCallback, field, placeholderText, false);
             case CONTROL_TYPES.textWithConfirm:
-                return renderTextField(currentValue, isDisabled, onChangeCallback, field, placeholderText, true);
+                return renderTextField(currentValue, disabled, onChangeCallback, field, placeholderText, true);
             default:
                 break;
         }
@@ -171,8 +169,7 @@ export const Setting = ({
         renderedIcon = renderIcon(icon);
     }
 
-    const control =
-        controlType === CONTROL_TYPES.custom ? customControl : renderControl(controlType, currentValue, isDisabled, changeCallback, placeholderText);
+    const control = controlType === CONTROL_TYPES.custom ? customControl : renderControl(controlType, currentValue, disabled, changeCallback, placeholderText);
 
     return (
         <div
