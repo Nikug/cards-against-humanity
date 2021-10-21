@@ -1,6 +1,6 @@
 import React from 'react';
 import { classNames } from '../../helpers/classnames';
-import { Button, BUTTON_TYPES } from './Button.jsx';
+import { Button, BUTTON_TYPES } from './Button.tsx';
 import { Input } from './Input';
 
 export const TextControl = ({

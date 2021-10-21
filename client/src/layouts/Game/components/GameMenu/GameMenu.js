@@ -1,5 +1,5 @@
 import { ActionButtonRow, BUTTON_ROW_DIRECTION } from './ActionButtonRow';
-import { Button, BUTTON_TYPES } from '../../../../components/general/Button.jsx';
+import { Button, BUTTON_TYPES } from '../../../../components/general/Button.tsx';
 import { GAME_STATES } from '../../../../consts/gamestates';
 import React from 'react';
 import { translateCommon, translateUnderWork } from '../../../../helpers/translation-helpers';

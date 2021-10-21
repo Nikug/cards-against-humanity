@@ -1,4 +1,4 @@
-import { Button } from '../../../../components/general/Button.jsx';
+import { Button } from '../../../../components/general/Button.tsx';
 import React from 'react';
 import { classNames } from '../../../../helpers/classnames.js';
 import { Tooltip } from '../../../../components/popovers/Tooltip.jsx';
@@ -32,9 +32,5 @@ export const ActionButtonRow = ({ buttons, direction = BUTTON_ROW_DIRECTION.ROW,
         }
     }
 
-    return (
-        <div className={classNames('button-row-container', { column: direction === BUTTON_ROW_DIRECTION.COLUMN, wrap })}>
-            {renderedButtons}
-        </div>
-    );
+    return <div className={classNames('button-row-container', { column: direction === BUTTON_ROW_DIRECTION.COLUMN, wrap })}>{renderedButtons}</div>;
 };

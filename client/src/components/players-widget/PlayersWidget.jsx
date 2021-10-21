@@ -1,9 +1,8 @@
 import { animated, useTransition } from 'react-spring';
 
-import Icon from '../general/Icon';
+import Icon from '../general/Icon.tsx';
 import { PLAYER_STATES } from '../../consts/playerstates';
 import { Player } from './Player';
-import React from 'react';
 import { Spinner } from '../spinner';
 import { isNullOrUndefined } from '../../helpers/generalhelpers';
 import { translateCommon } from '../../helpers/translation-helpers';

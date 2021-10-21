@@ -1,4 +1,4 @@
-import { BUTTON_TYPES, Button } from '../../components/general/Button.jsx';
+import { BUTTON_TYPES, Button } from '../../components/general/Button.tsx';
 import React, { useState } from 'react';
 
 import { translateCommon } from '../../helpers/translation-helpers';

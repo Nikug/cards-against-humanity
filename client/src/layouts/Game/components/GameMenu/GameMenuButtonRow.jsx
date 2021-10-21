@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 
 import { ActionButtonRow } from './ActionButtonRow';
-import { BUTTON_TYPES } from '../../../../components/general/Button.jsx';
+import { BUTTON_TYPES } from '../../../../components/general/Button.tsx';
 import { GAME_STATES } from '../../../../consts/gamestates';
 import { translateCommon, translateUnderWork } from '../../../../helpers/translation-helpers';
 import { GameMenu } from './GameMenu';

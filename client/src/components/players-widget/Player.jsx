@@ -11,7 +11,7 @@ import { ActionButtonRow, BUTTON_ROW_DIRECTION } from '../../layouts/Game/compon
 import Icon from '../general/Icon';
 import crownIcon from './../../assets/svgicons/crown-svgrepo-com.svg';
 import { translateCommon } from '../../helpers/translation-helpers';
-import { BUTTON_TYPES } from '../general/Button';
+import { BUTTON_TYPES } from '../general/Button.tsx';
 import { playerIdSelector, playerIsHostSelector } from '../../selectors/playerSelectors';
 import { gameIdSelector } from '../../selectors/gameSelectors';
 

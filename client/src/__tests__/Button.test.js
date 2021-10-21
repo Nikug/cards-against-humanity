@@ -2,7 +2,7 @@ import '@testing-library/jest-dom';
 
 import { render, screen } from '@testing-library/react';
 
-import { Button } from '../components/general/Button';
+import { Button } from '../components/general/Button.tsx';
 import React from 'react';
 
 describe('Button', () => {

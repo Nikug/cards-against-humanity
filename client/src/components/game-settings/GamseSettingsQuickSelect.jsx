@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button } from '../general/Button';
+import { Button } from '../general/Button.tsx';
 
 export const GameSettingsQuickSelect = ({ buttonsProps }) => {
     if (!(buttonsProps && buttonsProps.length)) {

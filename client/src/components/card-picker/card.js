@@ -1,9 +1,6 @@
 import { emptyFn, isNullOrUndefined } from '../../helpers/generalhelpers.js';
 
 import Icon from '../general/Icon';
-import React from 'react';
-import { translateCommon } from '../../helpers/translation-helpers.js';
-import { useTranslation } from 'react-i18next';
 import { formatTextWithBlanksAsDiv } from './cardformathelpers/formattextwithblanks.js';
 import { classNames } from '../../helpers/classnames.js';
 
@@ -25,8 +22,7 @@ export const Card = ({
     selected,
     showPopularVote,
 }) => {
-    const { cardPackID, text, whiteCardsToPlay, whiteCardsToDraw, id } = card;
-    const { t } = useTranslation();
+    const { cardPackID, text, whiteCardsToPlay, id } = card;
     let type = CARD_TYPES.BLACK;
 
     if (isNullOrUndefined(whiteCardsToPlay)) {
@@ -66,13 +62,6 @@ export const Card = ({
             <div className={classNames('card', { white: type === CARD_TYPES.WHITE, black: type === CARD_TYPES.BLACK })}>
                 {textToRender}
                 <div className="footer">
-                    {/* {type === CARD_TYPES.BLACK && isNullOrUndefined(playerName) && (
-                        <span className="draw-and-play">
-                            {isNullOrUndefined(cardPackID)
-                                ? ''
-                                : `${translateCommon('draw', t)} ${whiteCardsToDraw}, ${translateCommon('play', t)} ${whiteCardsToPlay}`}
-                        </span>
-                    )} */}
                     {playerName && <span className="draw-and-play">{playerName}</span>}
                     <span>&nbsp;</span>
                     {!isNullOrUndefined(cardPackID) && isNullOrUndefined(popularVoteScore) && !Array.isArray(cardPackID) && (

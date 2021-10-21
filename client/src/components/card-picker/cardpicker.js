@@ -1,4 +1,4 @@
-import { BUTTON_TYPES } from '../general/Button';
+import { BUTTON_TYPES } from '../general/Button.tsx';
 import { containsObjectWithMatchingField, emptyFn, isNullOrUndefined } from '../../helpers/generalhelpers';
 
 import React from 'react';

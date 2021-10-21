@@ -1,0 +1,1 @@
+export type OnClickEventCallback = (event: React.MouseEvent<HTMLElement>) => void;

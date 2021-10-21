@@ -9,7 +9,7 @@ import { resetGameSettings, updateGameSettings } from './actions/gameSettingsAct
 import { resetPlayer, updatePlayer } from './actions/playerActions';
 import { resetPlayersList, updatePlayersList } from './actions/playersListActions';
 
-import { Button } from './components/general/Button';
+import { Button } from './components/general/Button.tsx';
 import { Footer } from './components/footer/Footer';
 import { Game } from './layouts/Game/Game';
 import { Header } from './components/header';

@@ -10,7 +10,7 @@ import { GameSettingsHeader } from './GamseSettingsHeader';
 import { CANNOT_CHANGE, changeValue } from './gamesettingshelpers';
 import { GameSettingsInfo } from './GameSettingsInfo';
 import { GameSettingsQuickSelect } from './GamseSettingsQuickSelect';
-import { BUTTON_TYPES } from '../general/Button';
+import { BUTTON_TYPES } from '../general/Button.tsx';
 import { useSelector } from 'react-redux';
 import { gameIdSelector } from '../../selectors/gameSelectors';
 import { playerIdSelector } from '../../selectors/playerSelectors';

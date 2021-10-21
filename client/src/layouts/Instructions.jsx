@@ -1,7 +1,7 @@
 import React from 'react';
 import { Route, Switch, useHistory } from 'react-router-dom';
 
-import { Button } from '../components/general/Button.jsx';
+import { Button } from '../components/general/Button.tsx';
 import { translateCommon } from '../helpers/translation-helpers';
 import { useTranslation } from 'react-i18next';
 
