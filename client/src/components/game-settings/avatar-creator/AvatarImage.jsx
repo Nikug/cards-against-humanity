@@ -7,10 +7,13 @@ export const AvatarImage = ({ avatar, displaySize }) => {
 
     return (
         <div className={classNames('avatar-img-container', { small: displaySize === 'small', large: displaySize === 'large' })}>
+            {/* TODO: Change to PNG image
+            
             <Avatar className="avatar-background-image" />
             {hatType > 0 && <Hat type={hatType} />}
             {eyeType > 0 && <Eyes type={eyeType} />}
             {mouthType > 0 && <Mouth type={mouthType} />}
+    */}
         </div>
     );
 };

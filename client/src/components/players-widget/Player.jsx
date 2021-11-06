@@ -9,12 +9,12 @@ import Tippy from '@tippyjs/react';
 
 import { ActionButtonRow, BUTTON_ROW_DIRECTION } from '../../layouts/Game/components/GameMenu/ActionButtonRow';
 import Icon from '../general/Icon';
-import crownIcon from './../../assets/svgicons/crown-svgrepo-com.svg';
 import { translateCommon } from '../../helpers/translation-helpers';
 import { BUTTON_TYPES } from '../general/Button';
 import { playerIdSelector, playerIsHostSelector } from '../../selectors/playerSelectors';
 import { gameIdSelector } from '../../selectors/gameSelectors';
 import { AvatarImage } from '../game-settings/avatar-creator/AvatarImage';
+import { classNames } from '../../helpers/classnames';
 
 export const Player = ({ avatar, name, state, score, isCardCzar, isHost, isPopularVoteKing, isSelf, publicID }) => {
     const { t } = useTranslation();
@@ -87,50 +87,53 @@ export const Player = ({ avatar, name, state, score, isCardCzar, isHost, isPopul
         removePlayer(false);
     };
 
+    /* TODO, GET DIFFERENT STATES FOR ELSE CONDITION */
+    const playerStatus = (state) => {
+        if (state === 'disconnected' || state === 'kicked') {
+            return (<Icon name={'error_outline'} className={`player-status clock status-${state}`} />)();
+        } else {
+            return <Icon name={'watch_later'} className={`player-status clock status-${state}`} />;
+        }
+    };
+
     const playerElement = (
         <div title={showTitle ? name : undefined} className={`player ${isCardCzar ? 'cardCzar' : ''}`}>
-            <AvatarImage displaySize="small" avatar={avatar} />
-            {isCardCzar && (
-                <div className="icon-anchor">
-                    <img className="crown-icon" src={crownIcon} alt="crown" />
-                </div>
+            {/* AVATAR ICON */}
+            <AvatarImage displaySize="small" avatar={avatar} isCardCzar={isCardCzar} />
+
+            {/* PLAYER STATUS */}
+            {playerStatus(state)}
+
+            {/* PLAYER NAME */}
+            {noName ? (
+                <span ref={nameRef}>
+                    <i className="fa fa-spinner fa-spin" style={{ fontSize: '24px' }} />
+                </span>
+            ) : (
+                <span className={classNames('player-name', { host: isHost === true, myself: isSelf === true })}>{name}</span>
             )}
-            <span className={`player-name-and-status  ${isHost && false ? 'host' : ''}  ${isSelf ? 'myself' : ''}`}>
-                {state === 'playing' && (
-                    <Icon
-                        name={'watch_later'}
-                        className={`player-status clock status-${state}
-                `}
-                    />
-                )}
-                {(state === 'disconnected' || state === 'kicked') && (
-                    <Icon
-                        name={'error_outline'}
-                        className={`player-status clock status-${state}
-                `}
-                    />
-                )}
-                {isHost && <Icon name={'home'} className={`player-status white`} />}
-                <span ref={nameRef} className={`player-name ${noName ? 'no-name' : ''}`}>
-                    {name}
-                    {noName && <i className="fa fa-spinner fa-spin" style={{ fontSize: '24px' }} />}
-                </span>
+
+            {/* PLAYER SCORE ICON */}
+            <Icon name="emoji_events" className="win-icon" />
+
+            {/* PLAYER SCORE*/}
+            <span className="player-score">
+                {scoreTransitions.map(({ item, props, key }) => (
+                    <animated.div className="score" key={key} style={props}>
+                        {item}
+                    </animated.div>
+                ))}
             </span>
-            <span className="🦄">
-                <span className="player-score">
-                    <Icon name="emoji_events" className="win-icon" />
-                    {scoreTransitions.map(({ item, props, key }) => (
-                        <animated.div className="score" key={key} style={props}>
-                            {item}
-                        </animated.div>
-                    ))}
+
+            {/* HOST ICON */}
+            {isHost && <Icon name={'home'} className={`host-icon white`} />}
+
+            {/* POPULAR VOTE ICON */}
+            {isPopularVoteKing && (
+                <span className="player-popularVoteScore">
+                    <Icon name="thumb_up_alt" className="popular-vote-icon" />
                 </span>
-                {isPopularVoteKing && (
-                    <span className="player-popularVoteScore">
-                        <Icon name="thumb_up_alt" className="popular-vote-icon" />
-                    </span>
-                )}
-            </span>
+            )}
         </div>
     );
 
