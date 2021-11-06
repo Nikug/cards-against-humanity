@@ -87,12 +87,34 @@ export const Player = ({ avatar, name, state, score, isCardCzar, isHost, isPopul
         removePlayer(false);
     };
 
-    /* TODO, GET DIFFERENT STATES FOR ELSE CONDITION */
     const playerStatus = (state) => {
-        if (state === 'disconnected' || state === 'kicked') {
-            return (<Icon name={'error_outline'} className={`player-status clock status-${state}`} />)();
-        } else {
-            return <Icon name={'watch_later'} className={`player-status clock status-${state}`} />;
+        switch (state) {
+            case 'disconnected':
+                return <Icon name={'error_outline'} className={`player-status clock status-${state}`} />;
+            case 'kicked':
+                return <Icon name={'error_outline'} className={`player-status clock status-${state}`} />;
+            case 'active':
+                return <Icon name={'error_outline'} className={`player-status clock status-${state}`} />;
+            case 'playing':
+                return <Icon name={'error_outline'} className={`player-status clock status-${state}`} />;
+            case 'waiting':
+                return <Icon name={'watch_later'} className={`player-status clock status-${state}`} />;
+            case 'joining':
+                return <Icon name={'watch_later'} className={`player-status clock status-${state}`} />;
+            case 'pickingName':
+                /* Switched the spinner from player-name span to status 
+                    Not working currently :c */
+                /*
+                return (
+                    <span ref={nameRef} className={`player-status clock status-${state}`}>
+                        <i className="fa fa-spinner fa-spin" style={{ fontSize: '24px' }} />
+                    </span>
+                ); */
+                return <Icon name={'watch_later'} className={`player-status clock status-${state}`} />;
+            case 'spectating':
+                return <Icon name={'error_outline'} className={`player-status clock status-${state}`} />;
+            default:
+                return <Icon name={'watch_later'} className={`player-status clock status-${state}`} />;
         }
     };
 
@@ -104,14 +126,9 @@ export const Player = ({ avatar, name, state, score, isCardCzar, isHost, isPopul
             {/* PLAYER STATUS */}
             {playerStatus(state)}
 
-            {/* PLAYER NAME */}
-            {noName ? (
-                <span ref={nameRef}>
-                    <i className="fa fa-spinner fa-spin" style={{ fontSize: '24px' }} />
-                </span>
-            ) : (
-                <span className={classNames('player-name', { host: isHost === true, myself: isSelf === true })}>{name}</span>
-            )}
+            {/* PLAYER NAME (Name icon could now be switched for status icon*/}
+
+            <span className={classNames('player-name', { host: isHost === true, myself: isSelf === true })}>{name}</span>
 
             {/* PLAYER SCORE ICON */}
             <Icon name="emoji_events" className="win-icon" />

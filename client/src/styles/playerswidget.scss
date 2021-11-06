@@ -71,6 +71,9 @@
     padding: 0.15em 0.5em;
 
     display: grid;
+    align-items: center;
+    justify-items: center;
+
     grid-template-columns: repeat(6, 30px);
     grid-template-rows: repeat(2, 30px);
 
@@ -145,59 +148,47 @@
         font-style: italic;
         padding-right: 0.2rem;
     }
-}
-.host {
-    text-decoration: underline;
-}
-
-.myself {
-    color: $players-own-name;
+    &.host {
+        text-decoration: underline;
+    }
+    &.myself {
+        color: $players-own-name;
+    }
 }
 
 .status-active {
     color: $player-ready;
 }
-
 .status-playing {
     color: $player-waiting;
 }
-
 .status-waiting {
     color: $player-ready;
 }
-
 .status-joining {
     color: $player-ghost;
 }
-
 .status-pickingName {
     color: $player-ghost;
 }
-
 .status-disconnected {
     color: $player-error;
 }
-
 .status-spectating {
     color: $player-ghost;
 }
-
 .status-kicked {
     color: $player-error;
 }
-
 .status-card-czar {
     color: $player-card-czar !important;
 }
-
 .win-icon {
     color: $icon-win;
 }
-
 .popular-vote-icon {
     color: $icon-popular-vote;
 }
-
 .icon-with-border {
     @include text-shadow;
 }
