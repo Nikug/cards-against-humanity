@@ -29,13 +29,10 @@
     gap: 0.4em;
 
     padding: 0.6rem;
-    min-height: 2em;
     overflow-x: auto;
     overflow-y: hidden;
 
     @include small-desktop {
-        min-height: 8em;
-        max-height: 8em;
         overflow-x: hidden;
         overflow-y: auto;
     }
@@ -82,7 +79,6 @@
         grid-template-rows: repeat(2, 50px);
         padding: 0.4rem 0.8rem;
         border-radius: 1rem;
-        height: 100%;
     }
     grid-template-areas:
         'image image status-icon name name name'
