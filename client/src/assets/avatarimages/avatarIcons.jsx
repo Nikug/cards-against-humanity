@@ -7,7 +7,7 @@ import { ReactComponent as MehHat } from './MehHat.svg';
 import { ReactComponent as MehEyes } from './MehEyes.svg';
 import { ReactComponent as MehMouth } from './MehMouth.svg';
 
-import { ReactComponent as AvatarIcon } from './avatar.svg';
+import avatarIcon from './koala.png';
 
 const hats = [null, <KoalaHat />, <MehHat />];
 const eyes = [null, <KoalaEyes />, <MehEyes />];
@@ -39,7 +39,7 @@ const AvatarOverLayImageWrapper = ({ children }) => {
 export const Avatar = () => {
     return (
         <div className={'avatar-background-image'}>
-            <AvatarIcon />
+            <img src={avatarIcon} />
         </div>
     );
 };

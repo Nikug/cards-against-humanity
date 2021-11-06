@@ -78,8 +78,11 @@
     grid-template-rows: repeat(2, 30px);
 
     @include small-desktop {
-        grid-template-columns: repeat(6, 35px);
-        grid-template-rows: repeat(2, 50px);
+        $image-size-x: 70px / 2;
+        $icon-size-x: 35px;
+        $row-size: 35px;
+        grid-template-columns: repeat(2, $image-size-x) $icon-size-x max-content;
+        grid-template-rows: repeat(2, $row-size);
         padding: 0.4rem 0.8rem;
         border-radius: 1rem;
     }
@@ -92,30 +95,6 @@
     .score {
         @include small-desktop {
             color: $app-text;
-        }
-    }
-
-    .icon-anchor {
-        width: 100%;
-        height: 0;
-        position: relative;
-        top: 0;
-        right: 0;
-        overflow: visible;
-
-        .crown-icon {
-            width: 0.9em;
-
-            position: absolute;
-            top: -1.3rem;
-            left: -0.6rem;
-            transform: rotate(-30deg);
-
-            @include small-desktop {
-                width: 1em;
-                top: -0.95rem;
-                left: -1rem;
-            }
         }
     }
 }
@@ -141,9 +120,12 @@
 }
 .player-name {
     grid-area: name;
-    white-space: nowrap;
-    overflow: hidden;
+
+    max-width: 105px;
+    justify-self: start;
     text-overflow: ellipsis;
+    overflow: hidden;
+
     &.no-name {
         font-style: italic;
         padding-right: 0.2rem;
