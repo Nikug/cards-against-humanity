@@ -16,7 +16,7 @@ import { gameIdSelector } from '../../selectors/gameSelectors';
 import { playerIdSelector } from '../../selectors/playerSelectors';
 import { gameSettingsSelector } from '../../selectors/gameSettingsSelectors';
 
-export const GameSettings = ({ isDisabled }) => {
+export const GameSettings = ({ disabled }) => {
     // State
     const options = useSelector(gameSettingsSelector);
     const gameID = useSelector(gameIdSelector);
@@ -158,7 +158,7 @@ export const GameSettings = ({ isDisabled }) => {
             <div className="settings-block">
                 <GameSettingsHeader keyword={'gameSettings'} />
                 <CollabsibelSettingsSection
-                    isDisabled={isDisabled}
+                    disabled={disabled}
                     title={{
                         titleText: translateCommon('winCondition', t),
                         titleIconName: 'emoji_events',
@@ -171,7 +171,7 @@ export const GameSettings = ({ isDisabled }) => {
                                 onChangeCallback={changeWinCondition}
                                 field={['useScoreLimit', 'scoreLimit']}
                                 currentValue={[useScoreLimit, scoreLimit]}
-                                isDisabled={isDisabled}
+                                disabled={disabled}
                             />
                             <Setting
                                 text={translateCommon('roundLimit', t)}
@@ -179,7 +179,7 @@ export const GameSettings = ({ isDisabled }) => {
                                 onChangeCallback={changeWinCondition}
                                 field={['useRoundLimit', 'roundLimit']}
                                 currentValue={[useRoundLimit, roundLimit]}
-                                isDisabled={isDisabled}
+                                disabled={disabled}
                             />
                         </>
                     }
@@ -190,15 +190,15 @@ export const GameSettings = ({ isDisabled }) => {
                     controlType={[CONTROL_TYPES.number]}
                     onChangeCallback={changeMaxPlayers}
                     currentValue={[maximumPlayers]}
-                    isDisabled={isDisabled}
+                    disabled={disabled}
                     icon={{
                         name: 'groups',
                         className: iconClassnames,
-                        isDisabled: isDisabled,
+                        disabled: disabled,
                     }}
                 />
                 <CollabsibelSettingsSection
-                    isDisabled={isDisabled}
+                    disabled={disabled}
                     title={{
                         titleText: translateCommon('timers', t),
                         titleIconName: 'hourglass_bottom',
@@ -211,7 +211,7 @@ export const GameSettings = ({ isDisabled }) => {
                                 onChangeCallback={updateTimers}
                                 field={['useSelectBlackCard', 'selectBlackCard']}
                                 currentValue={[useSelectBlackCard, selectBlackCard]}
-                                isDisabled={isDisabled}
+                                disabled={disabled}
                             />
                             <Setting
                                 text={translateCommon('choosingWhiteCard', t)}
@@ -219,7 +219,7 @@ export const GameSettings = ({ isDisabled }) => {
                                 onChangeCallback={updateTimers}
                                 field={['useSelectWhiteCards', 'selectWhiteCards']}
                                 currentValue={[useSelectWhiteCards, selectWhiteCards]}
-                                isDisabled={isDisabled}
+                                disabled={disabled}
                             />
                             <Setting
                                 text={translateCommon('readingCard', t)}
@@ -227,7 +227,7 @@ export const GameSettings = ({ isDisabled }) => {
                                 onChangeCallback={updateTimers}
                                 field={['useReadBlackCard', 'readBlackCard']}
                                 currentValue={[useReadBlackCard, readBlackCard]}
-                                isDisabled={isDisabled}
+                                disabled={disabled}
                             />
                             <Setting
                                 text={translateCommon('choosingWinner', t)}
@@ -235,7 +235,7 @@ export const GameSettings = ({ isDisabled }) => {
                                 onChangeCallback={updateTimers}
                                 field={['useSelectWinner', 'selectWinner']}
                                 currentValue={[useSelectWinner, selectWinner]}
-                                isDisabled={isDisabled}
+                                disabled={disabled}
                             />
                             <Setting
                                 text={translateCommon('startingNextRound', t)}
@@ -243,7 +243,7 @@ export const GameSettings = ({ isDisabled }) => {
                                 onChangeCallback={updateTimers}
                                 field={['useRoundEnd', 'roundEnd']}
                                 currentValue={[useRoundEnd, roundEnd]}
-                                isDisabled={isDisabled}
+                                disabled={disabled}
                             />
                         </>
                     }
@@ -253,11 +253,11 @@ export const GameSettings = ({ isDisabled }) => {
                     controlType={[CONTROL_TYPES.toggle]}
                     onChangeCallback={() => toggleValue('popularVote')}
                     currentValue={[popularVote ? popularVote : false]}
-                    isDisabled={isDisabled}
+                    disabled={disabled}
                     icon={{
                         name: 'thumb_up',
                         className: iconClassnames,
-                        isDisabled: isDisabled,
+                        disabled: disabled,
                     }}
                 />
                 <Setting
@@ -265,11 +265,11 @@ export const GameSettings = ({ isDisabled }) => {
                     controlType={[CONTROL_TYPES.toggle]}
                     onChangeCallback={() => toggleValue('winnerBecomesCardCzar')}
                     currentValue={[winnerBecomesCardCzar]}
-                    isDisabled={isDisabled}
+                    disabled={disabled}
                     icon={{
                         name: 'low_priority',
                         className: iconClassnames,
-                        isDisabled: isDisabled,
+                        disabled: disabled,
                     }}
                 />
                 <Setting
@@ -277,11 +277,11 @@ export const GameSettings = ({ isDisabled }) => {
                     controlType={[CONTROL_TYPES.toggle]}
                     onChangeCallback={() => toggleValue('allowKickedPlayerJoin')}
                     currentValue={[allowKickedPlayerJoin]}
-                    isDisabled={isDisabled}
+                    disabled={disabled}
                     icon={{
                         name: 'remove_circle_outline',
                         className: iconClassnames,
-                        isDisabled: isDisabled,
+                        disabled: disabled,
                     }}
                 />
             </div>
@@ -294,11 +294,11 @@ export const GameSettings = ({ isDisabled }) => {
                     placeholderText={'rAnD0MchArs'}
                     controlType={CONTROL_TYPES.textWithConfirm}
                     onChangeCallback={addCardPack}
-                    isDisabled={isDisabled}
+                    disabled={disabled}
                     icon={{
                         name: 'library_add',
                         className: iconClassnames,
-                        isDisabled: isDisabled,
+                        disabled: disabled,
                     }}
                 />
                 <GameSettingsQuickSelect
@@ -306,7 +306,7 @@ export const GameSettings = ({ isDisabled }) => {
                         {
                             callback: addCardPack,
                             callbackParams: 'qM1V1IaYBE',
-                            disabled: isDisabled || (cardPacks && cardPacks.some((pack) => pack.id === 'qM1V1IaYBE')),
+                            disabled: disabled || (cardPacks && cardPacks.some((pack) => pack.id === 'qM1V1IaYBE')),
                             icon: 'add_circle_outline',
                             text: 'Autismipakka',
                             type: BUTTON_TYPES.PRIMARY,
@@ -314,7 +314,7 @@ export const GameSettings = ({ isDisabled }) => {
                         {
                             callback: addCardPack,
                             callbackParams: 'U4nL88ujS',
-                            disabled: isDisabled || (cardPacks && cardPacks.some((pack) => pack.id === 'U4nL88ujS')),
+                            disabled: disabled || (cardPacks && cardPacks.some((pack) => pack.id === 'U4nL88ujS')),
                             icon: 'add_circle_outline',
                             text: 'The Coronavirus Box',
                             type: BUTTON_TYPES.PRIMARY,

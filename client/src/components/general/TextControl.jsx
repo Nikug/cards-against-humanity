@@ -14,7 +14,7 @@ export const TextControl = ({
     field,
     hasConfirm,
     inputClassName,
-    isDisabled,
+    disabled,
     onChange,
     onChangeParams,
     onKeyDown,
@@ -33,7 +33,7 @@ export const TextControl = ({
         <div className={classNames('text-control', className)}>
             <Input
                 className={inputClassName}
-                disabled={isDisabled}
+                disabled={disabled}
                 field={field}
                 onChange={onChange}
                 onChangeParams={onChangeParams}
@@ -47,7 +47,7 @@ export const TextControl = ({
                 <Button
                     callback={handleButtonCLick}
                     className={buttonClassName}
-                    disabled={isDisabled}
+                    disabled={disabled}
                     fill={'fill-vertical'}
                     icon={buttonIcon || undefined}
                     text={buttonText}

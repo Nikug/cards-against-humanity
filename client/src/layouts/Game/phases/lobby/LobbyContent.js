@@ -29,14 +29,14 @@ export const LobbyContent = ({ disableStartGameButton, startGame }) => {
                         </div>
                     )}
                 </div>
-                <GameSettings options={game ? game.options : {}} gameID={game?.id} isDisabled={player?.isHost !== true} playerID={player?.id} />
+                <GameSettings options={game ? game.options : {}} gameID={game?.id} disabled={player?.isHost !== true} playerID={player?.id} />
                 {isHost && (
                     <div
                         // This is here to occupy the same emount of space as the StartGameButton would
                         // (which is position absolute and at the bottom of the screen)
                         className="start-game-button-empty-space"
                     >
-                        <StartGameButton isDisabled={true} />
+                        <StartGameButton disabled={true} />
                     </div>
                 )}
             </div>

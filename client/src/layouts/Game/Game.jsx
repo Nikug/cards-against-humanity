@@ -276,7 +276,7 @@ export const Game = ({ showDebug }) => {
                             <GameSettingsContainer
                                 options={game ? game.options : {}}
                                 gameID={game?.id}
-                                isDisabled={player?.isHost !== true}
+                                disabled={player?.isHost !== true}
                                 playerID={player?.id}
                             />
                         }

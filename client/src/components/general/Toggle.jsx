@@ -15,17 +15,17 @@ const getOnclickFunction = (onChangeCallback, field, currentValue) => {
     };
 };
 
-const getClassNameString = (isDisabled) => {
+const getClassNameString = (disabled) => {
     return classNames('button-icon', {
-        disabled: isDisabled,
-        active: !isDisabled,
+        disabled,
+        active: !disabled,
     });
 };
 
-export const Toggle = ({ currentValue, isDisabled, onChangeCallback, field }) => {
-    const classNameString = useMemo(() => getClassNameString(isDisabled), [isDisabled]);
+export const Toggle = ({ currentValue, disabled, onChangeCallback, field }) => {
+    const classNameString = useMemo(() => getClassNameString(disabled), [disabled]);
     const onClickFunction = useMemo(() => getOnclickFunction(onChangeCallback, field, currentValue), [onChangeCallback, field, currentValue]);
     const iconName = currentValue ? 'check_box' : 'check_box_outline_blank';
 
-    return <Icon name={iconName} className={classNameString} onClick={onClickFunction} />;
+    return <Icon name={iconName} className={classNameString} disabled={disabled} onClick={onClickFunction} />;
 };
