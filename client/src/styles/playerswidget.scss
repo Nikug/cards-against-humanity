@@ -1,3 +1,14 @@
+// Imports
+
+@use 'sass:math';
+
+// Variables
+$image-size-x: math.div(70px, 2);
+$icon-size-x: 35px;
+$name-size-x: $icon-size-x * 3;
+$row-size: 35px;
+
+// Webkit stuff
 ::-webkit-scrollbar {
     width: 10px;
 }
@@ -78,10 +89,7 @@
     grid-template-rows: repeat(2, 30px);
 
     @include small-desktop {
-        $image-size-x: 70px / 2;
-        $icon-size-x: 35px;
-        $row-size: 35px;
-        grid-template-columns: repeat(2, $image-size-x) $icon-size-x max-content;
+        grid-template-columns: repeat(2, $image-size-x) repeat(2, $icon-size-x) repeat(2, min-content);
         grid-template-rows: repeat(2, $row-size);
         padding: 0.4rem 0.8rem;
         border-radius: 1rem;
@@ -121,7 +129,7 @@
 .player-name {
     grid-area: name;
 
-    max-width: 105px;
+    max-width: $name-size-x;
     justify-self: start;
     text-overflow: ellipsis;
     overflow: hidden;
@@ -129,9 +137,6 @@
     &.no-name {
         font-style: italic;
         padding-right: 0.2rem;
-    }
-    &.host {
-        text-decoration: underline;
     }
     &.myself {
         color: $players-own-name;

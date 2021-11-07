@@ -25,6 +25,8 @@ export const Player = ({ avatar, name, state, score, isCardCzar, isHost, isPopul
     const gameID = useSelector(gameIdSelector);
     const [showTitle, setShowTitle] = useState(false);
 
+    // Unused code - previously used for picking-name spinner
+    /* 
     const noName = name === null || name === undefined;
 
     const nameRef = useCallback(
@@ -45,6 +47,7 @@ export const Player = ({ avatar, name, state, score, isCardCzar, isHost, isPopul
         },
         [showTitle]
     );
+    */
 
     // Score animation
     const scoreTransitions = useTransition(score, null, {
@@ -90,18 +93,15 @@ export const Player = ({ avatar, name, state, score, isCardCzar, isHost, isPopul
     const playerStatus = (state) => {
         let iconName;
         switch (state) {
-            case 'disconnected':
-            case 'kicked':
+            case 'disconnected' || 'kicked':
                 iconName = 'error_outline';
                 break;
-            /* TODO: Figure out a fitting icon */
-            case 'active':
-            case 'playing':
+            case 'active' || 'playing':
                 iconName = 'bakery_dining';
                 break;
-            case 'waiting':
-            case 'joining':
-            case 'pickingName':
+            case 'waiting' || 'joining' || 'pickingName':
+                iconName = 'watch_later';
+                break;
             default:
                 iconName = 'watch_later';
                 break;
