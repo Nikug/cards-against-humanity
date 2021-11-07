@@ -46,6 +46,14 @@
     &.grey {
         color: $icon-grey;
     }
+
+    &.settings-icon {
+        color: $settings-icon;
+
+        &.disabled {
+            color: $settings-icon;
+        }
+    }
 }
 
 .button-icon {
