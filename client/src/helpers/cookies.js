@@ -1,4 +1,5 @@
 export function setCookie(cookie, expireTimeInHours = 1) {
+    // eslint-disable-next-line no-extend-native
     Date.prototype.addHours = function (h) {
         this.setTime(this.getTime() + h * 60 * 60 * 1000);
         return this;

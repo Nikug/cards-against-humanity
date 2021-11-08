@@ -17,16 +17,7 @@ import { getRandomSpinner } from '../../components/spinner';
 import { translateCommon } from '../../helpers/translation-helpers';
 import { getCardCzarNameFromPlayersList } from '../../helpers/getCardCzarNameFromPlayersList';
 
-export const getGamePhaseContent = ({
-    t,
-    game,
-    player,
-    players,
-    options,
-    callbacks: { setPlayerName, givePopularVote, startGame },
-    blackCards,
-    popularVotedCardsIDs,
-}) => {
+export const getGamePhaseContent = ({ blackCards, callbacks: { givePopularVote, startGame }, game, options, player, players, popularVotedCardsIDs, t }) => {
     const gameState = game?.state;
     const playerState = player?.state;
     const disableStartGameButton = !canStartGame(options, players);
@@ -49,12 +40,12 @@ export const getGamePhaseContent = ({
     }
 
     if (gameState !== 'lobby' && playerState === 'pickingName') {
-        return <NamePicker setPlayerName={setPlayerName} />;
+        return <NamePicker />;
     }
 
     switch (gameState) {
         case GAME_STATES.LOBBY:
-            return <LobbyContent setPlayerName={setPlayerName} startGame={startGame} disableStartGameButton={disableStartGameButton} />;
+            return <LobbyContent startGame={startGame} disableStartGameButton={disableStartGameButton} />;
         case GAME_STATES.PICKING_BLACK_CARD:
             if (isCardCzar) {
                 return <BlackCardPickerContainer blackCards={blackCards} />;

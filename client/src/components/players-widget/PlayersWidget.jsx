@@ -18,7 +18,7 @@ const renderPlayers = (players, self) => {
 
     for (let i = 0, len = players.length; i < len; i++) {
         const player = players[i];
-        const { id, isCardCzar, isHost, isPopularVoteKing, name, publicID, score, state } = player;
+        const { id, isCardCzar, isHost, isPopularVoteKing, name, avatar, publicID, score, state } = player;
 
         renderedPlayers.push(
             <Player
@@ -28,6 +28,7 @@ const renderPlayers = (players, self) => {
                 isSelf={!isNullOrUndefined(ownId) && id === ownId}
                 key={publicID}
                 name={state === PLAYER_STATES.PICKING_NAME ? null : name}
+                avatar={avatar}
                 player={player}
                 publicID={publicID}
                 score={score}

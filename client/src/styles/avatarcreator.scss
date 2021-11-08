@@ -1,14 +1,54 @@
 .avatar-creator-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    display: grid;
+    grid-template-columns: 2em auto 2em;
+    grid-template-rows: auto;
+    grid-template-areas:
+        'arrowleft1 avatar arrowright1'
+        'arrowleft2 avatar arrowright2'
+        'arrowleft3 avatar arrowright3';
 
-    flex-grow: 1;
+    &:hover {
+        background-color: $setting-background-hover;
+        color: $header-button-text-hover;
 
-    padding: 0.6em;
-    background-color: rgba(112, 144, 151, 0.3);
+        .control {
+            text-shadow: none;
+        }
+    }
 
-    border-radius: 2px;
+    .text {
+        grid-area: text;
+    }
+    .hat-text {
+        grid-area: hat;
+    }
+    .eyes-text {
+        grid-area: eyes;
+    }
+    .mouth-text {
+        grid-area: mouth;
+    }
+    .arrow-left-1 {
+        grid-area: arrowleft1;
+    }
+    .arrow-left-2 {
+        grid-area: arrowleft2;
+    }
+    .arrow-left-3 {
+        grid-area: arrowleft3;
+    }
+    .avatar {
+        grid-area: avatar;
+        justify-self: center;
+    }
 
-    color: darken($app-text, 15%);
+    .arrow-right-1 {
+        grid-area: arrowright1;
+    }
+    .arrow-right-2 {
+        grid-area: arrowright2;
+    }
+    .arrow-right-3 {
+        grid-area: arrowright3;
+    }
 }

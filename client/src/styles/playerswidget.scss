@@ -1,3 +1,14 @@
+// Imports
+
+@use 'sass:math';
+
+// Variables
+$image-size-x: math.div(70px, 2);
+$icon-size-x: 35px;
+$name-size-x: $icon-size-x * 3;
+$row-size: 35px;
+
+// Webkit stuff
 ::-webkit-scrollbar {
     width: 10px;
 }
@@ -29,13 +40,10 @@
     gap: 0.4em;
 
     padding: 0.6rem;
-    min-height: 2em;
     overflow-x: auto;
     overflow-y: hidden;
 
     @include small-desktop {
-        min-height: 4em;
-        max-height: 4em;
         overflow-x: hidden;
         overflow-y: auto;
     }
@@ -59,8 +67,7 @@
 }
 
 .player {
-    box-sizing: border-box;
-
+    /* TODO: I do not see what this does
     // Is there a legit way to do this???
     :last-child:after {
         content: '';
@@ -69,189 +76,106 @@
         width: 0.6rem;
         margin: 0.6rem;
     }
-
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    align-items: center;
-
+    */
+    box-sizing: border-box;
     border-radius: 0.8em;
     padding: 0.15em 0.5em;
 
-    @include small-desktop {
-        height: 100%;
-        border-radius: 1rem;
-        padding: 0.4rem 0.8rem;
-        flex-direction: column;
-    }
-
+    display: grid;
     align-items: center;
-    justify-content: space-between;
+    justify-items: center;
+
+    grid-template-columns: repeat(6, 30px);
+    grid-template-rows: repeat(2, 30px);
+
+    @include small-desktop {
+        grid-template-columns: repeat(2, $image-size-x) repeat(2, $icon-size-x) repeat(2, min-content);
+        grid-template-rows: repeat(2, $row-size);
+        padding: 0.4rem 0.8rem;
+        border-radius: 1rem;
+    }
+    grid-template-areas:
+        'image image status-icon name name name'
+        'image image score-icon score host-icon popular-vote-icon';
 
     background-color: $players-background-hover;
     transition: width 2s, height 4s;
-
     .score {
-        //padding-top: 0.12em;
-        //color: $icon-win;
-        margin-left: 0.2em;
-
         @include small-desktop {
             color: $app-text;
-            margin-left: 0;
-        }
-    }
-
-    .icon-anchor {
-        width: 100%;
-        height: 0;
-        position: relative;
-        top: 0;
-        right: 0;
-        overflow: visible;
-
-        .crown-icon {
-            width: 0.9em;
-
-            position: absolute;
-            top: -1.3rem;
-            left: -0.6rem;
-            transform: rotate(-30deg);
-
-            @include small-desktop {
-                width: 1em;
-                top: -0.95rem;
-                left: -1rem;
-            }
         }
     }
 }
 
+/* GRID AREAS */
+.player-score {
+    grid-area: score;
+}
+.avatar-img-container {
+    grid-area: image;
+}
+.player-status {
+    grid-area: status-icon;
+}
+.host-icon {
+    grid-area: host-icon;
+}
+.popular-vote-icon {
+    grid-area: popular-vote-icon;
+}
+.win-icon {
+    grid-area: score-icon;
+}
 .player-name {
-    width: fit-content;
-    max-width: 3em;
+    grid-area: name;
 
-    @include small-desktop {
-        max-width: 4em;
-    }
-    white-space: nowrap;
-    overflow: hidden;
+    max-width: $name-size-x;
+    justify-self: start;
     text-overflow: ellipsis;
+    overflow: hidden;
 
     &.no-name {
         font-style: italic;
         padding-right: 0.2rem;
     }
-
-    i {
-        margin-left: 0.6rem;
-    }
-}
-
-.host {
-    .player-name {
-        text-decoration: underline;
-    }
-}
-
-.myself {
-    .player-name {
+    &.myself {
         color: $players-own-name;
     }
-}
-
-.player-status {
-    margin-right: 0.2rem;
-}
-
-.player-name-and-status {
-    display: flex;
-    align-content: center;
-    justify-content: center;
-}
-
-// Previously known as "player-scores"
-.🦄 {
-    display: flex;
-    align-content: center;
-    justify-content: center;
-    user-select: none;
-    margin-left: 0.2em;
-    width: fit-content;
-}
-
-.player-score {
-    display: flex;
-    align-content: center;
-    justify-content: center;
-}
-
-.player-popularVoteScore {
-    display: flex;
-    align-content: center;
-    justify-content: center;
-}
-
-.win-icon {
-    display: none;
-    margin-right: 0.1em;
-
-    @include small-desktop {
-        display: block;
-    }
-}
-
-.popular-vote-icon {
-    margin-right: 0.2rem;
-    margin-left: 0.4rem;
-    padding-left: 0.4rem;
-    //border-left: 1px solid white;
 }
 
 .status-active {
     color: $player-ready;
 }
-
 .status-playing {
     color: $player-waiting;
 }
-
 .status-waiting {
     color: $player-ready;
 }
-
 .status-joining {
     color: $player-ghost;
 }
-
 .status-pickingName {
     color: $player-ghost;
 }
-
 .status-disconnected {
     color: $player-error;
 }
-
 .status-spectating {
     color: $player-ghost;
 }
-
 .status-kicked {
     color: $player-error;
 }
-
 .status-card-czar {
     color: $player-card-czar !important;
 }
-
 .win-icon {
     color: $icon-win;
 }
-
 .popular-vote-icon {
     color: $icon-popular-vote;
 }
-
 .icon-with-border {
     @include text-shadow;
 }

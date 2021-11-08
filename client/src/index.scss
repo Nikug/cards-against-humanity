@@ -41,6 +41,7 @@ body {
 @import './styles/notification.scss';
 @import './styles/languageselector.scss';
 @import './styles/slider.scss';
+@import './styles/setting.scss';
 
 // Basic bigger components (umm this could use a better name?)
 @import './styles/footer.scss';
@@ -53,6 +54,7 @@ body {
 @import './styles/music.scss';
 @import './styles/timer.scss';
 @import './styles/avatarcreator.scss';
+@import './styles/avatarimage.scss';
 @import './styles/winnertext.scss';
 
 // Layouts
@@ -62,6 +64,7 @@ body {
 // Game layouts
 @import './styles/game.scss';
 @import './styles/settings.scss';
+@import './styles/settingscontainer.scss';
 @import './styles/gamesettings.scss';
 @import './styles/historycontainer.scss';
 @import './styles/playerswidget.scss';

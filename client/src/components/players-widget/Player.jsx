@@ -9,13 +9,14 @@ import Tippy from '@tippyjs/react';
 
 import { ActionButtonRow, BUTTON_ROW_DIRECTION } from '../../layouts/Game/components/GameMenu/ActionButtonRow';
 import Icon from '../general/Icon';
-import crownIcon from './../../assets/svgicons/crown-svgrepo-com.svg';
 import { translateCommon } from '../../helpers/translation-helpers';
 import { BUTTON_TYPES } from '../general/Button';
 import { playerIdSelector, playerIsHostSelector } from '../../selectors/playerSelectors';
 import { gameIdSelector } from '../../selectors/gameSelectors';
+import { AvatarImage } from '../game-settings/avatar-creator/AvatarImage';
+import { classNames } from '../../helpers/classnames';
 
-export const Player = ({ name, state, score, isCardCzar, isHost, isPopularVoteKing, isSelf, publicID }) => {
+export const Player = ({ avatar, name, state, score, isCardCzar, isHost, isPopularVoteKing, isSelf, publicID }) => {
     const { t } = useTranslation();
 
     // State
@@ -24,6 +25,8 @@ export const Player = ({ name, state, score, isCardCzar, isHost, isPopularVoteKi
     const gameID = useSelector(gameIdSelector);
     const [showTitle, setShowTitle] = useState(false);
 
+    // Unused code - previously used for picking-name spinner
+    /* 
     const noName = name === null || name === undefined;
 
     const nameRef = useCallback(
@@ -44,6 +47,7 @@ export const Player = ({ name, state, score, isCardCzar, isHost, isPopularVoteKi
         },
         [showTitle]
     );
+    */
 
     // Score animation
     const scoreTransitions = useTransition(score, null, {
@@ -86,49 +90,57 @@ export const Player = ({ name, state, score, isCardCzar, isHost, isPopularVoteKi
         removePlayer(false);
     };
 
+    const playerStatus = (state) => {
+        let iconName;
+        switch (state) {
+            case 'disconnected' || 'kicked':
+                iconName = 'error_outline';
+                break;
+            case 'active' || 'playing':
+                iconName = 'bakery_dining';
+                break;
+            case 'waiting' || 'joining' || 'pickingName':
+                iconName = 'watch_later';
+                break;
+            default:
+                iconName = 'watch_later';
+                break;
+        }
+        return <Icon name={iconName} className={`player-status status-${state}`} />;
+    };
+
     const playerElement = (
         <div title={showTitle ? name : undefined} className={`player ${isCardCzar ? 'cardCzar' : ''}`}>
-            {isCardCzar && (
-                <div className="icon-anchor">
-                    <img className="crown-icon" src={crownIcon} alt="crown" />
-                </div>
+            {/* AVATAR ICON */}
+            <AvatarImage displaySize="small" avatar={avatar} isCardCzar={isCardCzar} />
+
+            {/* PLAYER STATUS */}
+            {playerStatus(state)}
+
+            {/* PLAYER NAME (Name icon could now be switched for status icon*/}
+            <span className={classNames('player-name', { host: isHost === true, myself: isSelf === true })}>{name}</span>
+
+            {/* PLAYER SCORE ICON */}
+            <Icon name="emoji_events" className="win-icon" />
+
+            {/* PLAYER SCORE*/}
+            <span className="player-score">
+                {scoreTransitions.map(({ item, props, key }) => (
+                    <animated.div className="score" key={key} style={props}>
+                        {item}
+                    </animated.div>
+                ))}
+            </span>
+
+            {/* HOST ICON */}
+            {isHost && <Icon name={'home'} className={`host-icon white`} />}
+
+            {/* POPULAR VOTE ICON */}
+            {isPopularVoteKing && (
+                <span className="player-popularVoteScore">
+                    <Icon name="thumb_up_alt" className="popular-vote-icon" />
+                </span>
             )}
-            <span className={`player-name-and-status  ${isHost && false ? 'host' : ''}  ${isSelf ? 'myself' : ''}`}>
-                {state === 'playing' && (
-                    <Icon
-                        name={'watch_later'}
-                        className={`player-status clock status-${state}
-            `}
-                    />
-                )}
-                {(state === 'disconnected' || state === 'kicked') && (
-                    <Icon
-                        name={'error_outline'}
-                        className={`player-status clock status-${state}
-            `}
-                    />
-                )}
-                {isHost && <Icon name={'home'} className={`player-status white`} />}
-                <span ref={nameRef} className={`player-name ${noName ? 'no-name' : ''}`}>
-                    {name}
-                    {noName && <i className="fa fa-spinner fa-spin" style={{ fontSize: '24px' }} />}
-                </span>
-            </span>
-            <span className="🦄">
-                <span className="player-score">
-                    <Icon name="emoji_events" className="win-icon" />
-                    {scoreTransitions.map(({ item, props, key }) => (
-                        <animated.div className="score" key={key} style={props}>
-                            {item}
-                        </animated.div>
-                    ))}
-                </span>
-                {isPopularVoteKing && (
-                    <span className="player-popularVoteScore">
-                        <Icon name="thumb_up_alt" className="popular-vote-icon" />
-                    </span>
-                )}
-            </span>
         </div>
     );
 
@@ -170,3 +182,12 @@ export const Player = ({ name, state, score, isCardCzar, isHost, isPopularVoteKi
         playerElement
     );
 };
+
+/* Switched the spinner from player-name span to status 
+                    Not working currently :c */
+/*
+                return (
+                    <span ref={nameRef} className={`player-status clock status-${state}`}>
+                        <i className="fa fa-spinner fa-spin" style={{ fontSize: '24px' }} />
+                    </span>
+                ); */

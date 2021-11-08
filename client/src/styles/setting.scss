@@ -1,0 +1,82 @@
+.setting {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: space-between;
+    align-items: center;
+
+    padding: 0.2rem 0.8rem;
+    margin: 0.2rem 0;
+    border-radius: 2px;
+    background-color: $setting-background;
+
+    &.text-control {
+        flex-wrap: wrap;
+    }
+
+    .icon-and-text {
+        align-items: center;
+        width: fit-content;
+        display: flex;
+        flex-grow: 0;
+        flex-shrink: 1;
+        margin-right: 1em;
+    }
+
+    .control {
+        display: flex;
+
+        flex-grow: 1;
+        margin: auto 0;
+        align-items: center;
+        justify-content: flex-end;
+
+        width: fit-content;
+
+        > .text-control {
+            flex-grow: 1;
+        }
+    }
+
+    &:hover {
+        background-color: $setting-background-hover;
+        color: $header-button-text-hover;
+
+        .control {
+            text-shadow: none;
+        }
+    }
+
+    &.disabled {
+        &:hover {
+            text-shadow: none;
+            background-color: $setting-background;
+        }
+
+        .button-icon {
+            cursor: default;
+
+            &.active {
+                color: $settings-control;
+                text-shadow: none;
+            }
+        }
+
+        .text-control {
+            .text-input {
+                background-color: lighten($input-background, 15%);
+                color: $settings-text-disabled;
+                border: none;
+
+                pointer-events: none;
+            }
+
+            .button {
+                pointer-events: none;
+                background: linear-gradient(180deg, darken($button-shadow, 40%), darken($button-background, 40%)) $button-background;
+                border: 1px solid darken($settings-text-disabled, 10%);
+                color: $settings-text-disabled;
+            }
+        }
+    }
+}

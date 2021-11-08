@@ -1,0 +1,16 @@
+.avatar-img-container {
+    position: relative;
+    img {
+        display: block;
+        width: 100%;
+    }
+}
+
+.avatar-overlay-image {
+    z-index: 1;
+    position: absolute;
+    top: 0;
+    img {
+        width: 100%;
+    }
+}

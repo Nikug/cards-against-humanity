@@ -2,9 +2,16 @@
     display: flex;
     justify-content: space-between;
 }
+.justify-center {
+    display: flex;
+    justify-content: center;
+}
 
 .column {
     flex-direction: column;
+}
+.row {
+    flex-direction: row;
 }
 
 .fill {
