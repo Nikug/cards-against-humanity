@@ -126,7 +126,7 @@ export const CardPicker = ({
         );
     }
 
-    const cardsAreSelected = confirmedCards.length > 0 && !isPlayerPlaying(playerState);
+    const cardsAreSelected = confirmedCards.length > 0;
     let buttonTexts = [translateCommon('choose', t), translateCommon('cardChosen', t)];
     let buttonIcons = ['send', 'done'];
 
