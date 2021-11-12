@@ -7,8 +7,9 @@ import { useSelector } from 'react-redux';
 import { CardPicker } from './cardpicker';
 import { containsObjectWithMatchingFieldIndex } from '../../helpers/generalhelpers';
 import { translateCommon } from '../../helpers/translation-helpers';
-import { playerIdSelector, playerWhiteCardsSelector } from '../../selectors/playerSelectors';
+import { playerIdSelector, playerWhiteCardsSelector, playerStateSelector } from '../../selectors/playerSelectors';
 import { gameIdSelector, gamePickLimitSelector, gameBlackCardSelector } from '../../selectors/gameSelectors';
+import { isPlayerPlaying } from '../../helpers/player-helpers';
 
 export function WhiteCardPickerContainer() {
     const { t } = useTranslation();
@@ -19,6 +20,7 @@ export function WhiteCardPickerContainer() {
     const whiteCards = useSelector(playerWhiteCardsSelector);
     const pickLimit = useSelector(gamePickLimitSelector);
     const blackCard = useSelector(gameBlackCardSelector);
+    const playerState = useSelector(playerStateSelector);
 
     const [selectedCards, setSelectedCards] = useState([]);
     const [confirmedCards, setConfirmedCards] = useState([]);
@@ -60,7 +62,7 @@ export function WhiteCardPickerContainer() {
     return (
         <div className="cardpicker-container">
             <CardPicker
-                alternativeText={confirmedCards.length > 0 ? translateCommon('otherPlayersAreStillChoosingCards', t) : null}
+                alternativeText={confirmedCards.length > 0 && !isPlayerPlaying(playerState) ? translateCommon('otherPlayersAreStillChoosingCards', t) : null}
                 mainCard={blackCard}
                 selectableCards={whiteCards}
                 selectedCards={selectedCards}
@@ -68,7 +70,7 @@ export function WhiteCardPickerContainer() {
                 selectCard={selectCard}
                 confirmCards={confirmCard}
                 description={translateCommon('chooseWhiteCard', t)}
-                selectDisabled={selectedCards.length !== pickLimit}
+                selectDisabled={isPlayerPlaying(playerState) ? false : selectedCards.length !== pickLimit}
                 noBigMainCard={false}
                 showPreviewTitle={true}
             />

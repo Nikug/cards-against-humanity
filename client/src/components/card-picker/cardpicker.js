@@ -9,9 +9,10 @@ import { Card } from './card';
 import { classNames } from '../../helpers/classnames';
 import { CardPickerActionButton } from './components/CardPickerActionButton';
 import { useSelector } from 'react-redux';
-import { playerIsJoiningSelector } from '../../selectors/playerSelectors';
+import { playerIsJoiningSelector, playerStateSelector } from '../../selectors/playerSelectors';
 import { gameRoundNumberSelector, gameStreakSelector } from '../../selectors/gameSelectors';
 import { gameSettingsRoundLimitSelector, gameSettingsUseRoundLimitSelector } from '../../selectors/gameSettingsSelectors';
+import { isPlayerPlaying } from '../../helpers/player-helpers';
 
 export const CardPicker = ({
     alternativeText,
@@ -48,6 +49,7 @@ export const CardPicker = ({
     const roundLimit = useSelector(gameSettingsRoundLimitSelector);
     const useRoundLimit = useSelector(gameSettingsUseRoundLimitSelector);
     const streak = useSelector(gameStreakSelector);
+    const playerState = useSelector(playerStateSelector);
     const streakCount = streak?.wins;
 
     const renderedCards = preRenderedCards.slice();
@@ -126,7 +128,7 @@ export const CardPicker = ({
         );
     }
 
-    const cardsAreSelected = confirmedCards.length > 0;
+    const cardsAreSelected = confirmedCards.length > 0 && !isPlayerPlaying(playerState);
     let buttonTexts = [translateCommon('choose', t), translateCommon('cardChosen', t)];
     let buttonIcons = ['send', 'done'];
 
@@ -208,7 +210,7 @@ export const CardPicker = ({
                         <CardPickerActionButton
                             additionalClassname={classNames('confirm-button', {
                                 'non-selectable': !isNullOrUndefined(customButtonState) ? customButtonState === 1 : cardsAreSelected,
-                                disabled: selectDisabled,
+                                disabled: isButtonDisabled,
                             })}
                             text={buttonText}
                             callback={confirmCards}

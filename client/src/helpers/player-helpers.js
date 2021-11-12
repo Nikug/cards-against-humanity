@@ -3,7 +3,7 @@ export const isPlayerSpectator = (player) => {
         return false;
     }
 
-    return player.state === "spectating";
+    return player.state === 'spectating';
 };
 
 export const isPlayerHost = (player) => {
@@ -27,7 +27,7 @@ export const isPlayerJoining = (player) => {
         return false;
     }
 
-    return player.state === "joining";
+    return player.state === 'joining';
 };
 
 export const isPlayerSpectatorOrJoining = (player) => {
@@ -36,4 +36,8 @@ export const isPlayerSpectatorOrJoining = (player) => {
     }
 
     return isPlayerSpectator(player) || isPlayerJoining(player);
+};
+
+export const isPlayerPlaying = (playerState) => {
+    return playerState === 'playing';
 };

@@ -9,6 +9,7 @@ import { Slider } from './general/Slider';
 import { userSettingsSelector } from '../selectors/userSettingsSelector';
 import { updateUserSettings } from '../actions/userSettingsActions';
 import { DEFAULT_VOLUMES } from '../consts/volumes';
+import { ToggleWithText } from './general/ToggleWithText';
 
 export const UserSettings = () => {
     const { t } = useTranslation();
@@ -68,6 +69,10 @@ export const UserSettings = () => {
         dispatch(updateUserSettings({ [changeParams.field]: event.target.value }));
     };
 
+    const toggleAlwaysReadCardsForMe = (newValue) => {
+        dispatch(updateUserSettings({ alwaysReadCardsForMe: newValue }));
+    };
+
     return (
         <Tippy
             trigger={'click'}
@@ -100,6 +105,11 @@ export const UserSettings = () => {
                         changeCallback={change}
                         changeParams={{ field: 'soundEffectVolume' }}
                         onMouseUpCallback={updateVolume}
+                    />
+                    <ToggleWithText
+                        text={translateCommon('alwaysReadCardsForMe', t)}
+                        currentValue={userSettings.alwaysReadCardsForMe}
+                        onChangeCallback={toggleAlwaysReadCardsForMe}
                     />
                 </div>
             }
