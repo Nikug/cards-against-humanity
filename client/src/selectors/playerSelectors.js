@@ -7,3 +7,4 @@ export const playerIsSpectatorSelector = (state) => isPlayerSpectator(state.play
 export const playerIsCardCzarSelector = (state) => state.player.value?.isCardCzar;
 export const playerIsJoiningSelector = (state) => isPlayerJoining(state.player.value?.state);
 export const playerWhiteCardsSelector = (state) => state.player.value?.whiteCards;
+export const playerStateSelector = (state) => state.player.value?.state;

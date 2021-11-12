@@ -6,6 +6,7 @@
     "accept": "Hyväksy",
     "addCardDeck": "Lisää korttipakka",
     "addedCardDecks": "Lisätyt korttipakat",
+    "alwaysReadCardsForMe": "Lue kortit aina ääneen minulle",
     "back": "Takaisin",
     "blackCard": "{{count}} musta kortti",
     "blackCard_plural": "{{count}} mustaa korttia",

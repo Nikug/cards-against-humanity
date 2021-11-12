@@ -12,7 +12,7 @@ import { useSelector } from 'react-redux';
 import { gameBlackCardSelector, gameIdSelector } from '../../selectors/gameSelectors';
 import { playerIdSelector, playerIsCardCzarSelector } from '../../selectors/playerSelectors';
 import { playersListTextToSpeechSelector } from '../../selectors/playersListSelectors';
-import { userSettingsTextToSpeechVolumeSelector } from '../../selectors/userSettingsSelector';
+import { userSettingsAlwaysReadCardsForMeSelector, userSettingsTextToSpeechVolumeSelector } from '../../selectors/userSettingsSelector';
 
 export const CardReadingContainer = () => {
     const { t } = useTranslation();
@@ -22,6 +22,7 @@ export const CardReadingContainer = () => {
     const playerID = useSelector(playerIdSelector);
     const isCardCzar = useSelector(playerIsCardCzarSelector);
     const blackCard = useSelector(gameBlackCardSelector);
+    const alwaysReadCardsForMe = useSelector(userSettingsAlwaysReadCardsForMeSelector);
     const textToSpeechInUse = useSelector(playersListTextToSpeechSelector);
     const textToSpeechVolume = useSelector(userSettingsTextToSpeechVolumeSelector);
 
@@ -38,7 +39,7 @@ export const CardReadingContainer = () => {
             // const blackCardToRead = game?.rounds[game.rounds.length - 1].blackCard;
             const blackCardToRead = blackCard;
 
-            if (textToSpeechInUse && !isNullOrUndefined(blackCardToRead)) {
+            if ((alwaysReadCardsForMe || textToSpeechInUse) && !isNullOrUndefined(blackCardToRead)) {
                 const whiteCardsToRead = data.whiteCards;
                 const blankTexts = [];
                 const blackCardTexts = blackCardToRead.text;
@@ -59,7 +60,7 @@ export const CardReadingContainer = () => {
         return () => {
             socket.off('show_white_card');
         };
-    }, [textToSpeechInUse, blackCard, textToSpeechVolume]);
+    }, [textToSpeechInUse, alwaysReadCardsForMe, blackCard, textToSpeechVolume]);
 
     function toggleTextToSpeech() {
         socket.emit('change_text_to_speech', {
