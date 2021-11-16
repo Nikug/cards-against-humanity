@@ -44,20 +44,21 @@ export const setPlayerDisconnected = async (
     if (!result || !result?.player || !result?.game) return;
     const { game, player } = result;
 
+    const shouldRemove = removePlayer || player.state === "pickingName";
     player.sockets = removeDisconnectedSockets(player.sockets, socketID);
 
     const remainingSockets = player.sockets.filter(
         (socket: string) => socket !== socketID
     );
 
-    if (remainingSockets.length > 0 && !removePlayer) {
+    if (remainingSockets.length > 0 && !shouldRemove) {
         player.sockets = remainingSockets;
         game.players = setPlayer(game.players, player);
         await setGame(game, client);
         return;
     }
 
-    if (removePlayer || player.state === "spectating") {
+    if (shouldRemove || player.state === "spectating") {
         game.players = game.players.filter(
             (gamePlayer: CAH.Player) => gamePlayer.id !== player.id
         );
@@ -71,7 +72,7 @@ export const setPlayerDisconnected = async (
     }
 
     if (shouldGameBeDeleted(game)) {
-        if (removePlayer) {
+        if (shouldRemove) {
             removeGame(game.id, client);
             return;
         } else {
