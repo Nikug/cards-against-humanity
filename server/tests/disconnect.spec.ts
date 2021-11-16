@@ -1,5 +1,5 @@
-import * as gameUtil from "../modules/games/gameUtil";
 import * as database from "../modules/db/database";
+import * as gameUtil from "../modules/games/gameUtil";
 
 import { Game, Player } from "types";
 import {
@@ -381,5 +381,27 @@ describe("Disconnect", () => {
         expect(game.players.length).toBe(2);
         expect(game.players[0].isCardCzar).toBe(true);
         expect(game.players[1].state).toBe("waiting");
+    });
+
+    it("removes player disconnecting from game if they have not picked a name", async () => {
+        const mockSet = mockSetGame();
+        const newGame = newGameTemplate(mockGameId);
+        const playerToDisconnect = createPlayer("disconnect");
+        playerToDisconnect.state = "pickingName";
+        playerToDisconnect.sockets = [mockSocketId];
+        newGame.players = [
+            createPlayer("host", true),
+            createPlayer("random"),
+            playerToDisconnect,
+        ];
+        mockGetGame(newGame);
+
+        mockFindGameAndPlayerBySocket(newGame, playerToDisconnect);
+
+        await setPlayerDisconnected(ioMock, mockSocketId, false, pgClientMock);
+        expect(mockSet).toHaveBeenCalledTimes(1);
+        const game: Game = await mockSet.mock.results[0].value;
+        expect(game.players).toHaveLength(2);
+        expect(game.stateMachine.state).toBe("lobby");
     });
 });
