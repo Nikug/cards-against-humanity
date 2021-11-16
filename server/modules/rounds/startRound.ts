@@ -38,7 +38,7 @@ export const startNewRound = async (
     }
 
     if (validateGameEnding(game)) {
-        await endGame(io, game);
+        await endGame(io, game, client);
         return;
     }
 

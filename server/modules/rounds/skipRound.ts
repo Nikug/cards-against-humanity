@@ -42,7 +42,11 @@ export const skipRound = async (
 };
 
 export const shouldSkipRound = (game: CAH.Game) => {
-    if (game.stateMachine.state === "lobby") return false;
+    if (
+        game.stateMachine.state === "lobby" ||
+        game.stateMachine.state === "gameOver"
+    )
+        return false;
 
     const activePlayerCount = getActivePlayers(game.players).length;
     const joiningPlayerCount = getPlayersWithState(

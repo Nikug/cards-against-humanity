@@ -1,20 +1,25 @@
 import type * as CAH from "types";
 import type * as SocketIO from "socket.io";
 
+import { PoolClient } from "pg";
 import { clearGameTimer } from "../utilities/delayedStateChange";
 import { removeAllCards } from "../cards/resetCards";
 import { resetPlayers } from "../players/resetPlayer";
 import { setGame } from "./gameUtil";
 import { updatePlayersIndividually } from "../players/emitPlayers";
 
-export const endGame = async (io: SocketIO.Server, game: CAH.Game) => {
+export const endGame = async (
+    io: SocketIO.Server,
+    game: CAH.Game,
+    client?: PoolClient
+) => {
     if (game.stateMachine.can("endGame")) {
         game.stateMachine.endGame();
         game.client.state = game.stateMachine.state;
 
         const updatedGame = clearGameTimer(game);
 
-        await setGame(updatedGame);
+        await setGame(updatedGame, client);
         updatePlayersIndividually(io, updatedGame);
     }
 };
