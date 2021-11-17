@@ -1,16 +1,16 @@
 import React, { useState } from 'react';
-import { useTranslation } from 'react-i18next';
-import { useSelector } from 'react-redux';
+import { gameIdSelector, gameRoundsSelector } from '../../selectors/gameSelectors';
+import { playerIdSelector, playerIsHostSelector } from '../../selectors/playerSelectors';
 
 import { CardPicker } from './cardpicker';
 import Confetti from 'react-confetti';
 import { emptyFn } from '../../helpers/generalhelpers';
+import { playersListSelector } from '../../selectors/playersListSelectors';
 import { renderBlackCardwithWhiteCards } from './cardformathelpers/renderBlackcardWithWhiteCards';
 import { socket } from '../sockets/socket';
 import { translateCommon } from '../../helpers/translation-helpers';
-import { playerIdSelector, playerIsHostSelector } from '../../selectors/playerSelectors';
-import { gameIdSelector, gameRoundsSelector } from '../../selectors/gameSelectors';
-import { playersListSelector } from '../../selectors/playersListSelectors';
+import { useSelector } from 'react-redux';
+import { useTranslation } from 'react-i18next';
 
 export const GameEndContainer = () => {
     const { t } = useTranslation();
@@ -85,7 +85,7 @@ export const GameEndContainer = () => {
                     customButtonTexts={[translateCommon('returnToLobby', t), `${translateCommon('returningToLobby', t)}...`]}
                     centerActionButton={true}
                     noActionButton={!isHost}
-                    topText={`🎉🎉🎉 ${playersSorted[0].name ?? translateCommon('someone', t)} ${translateCommon('wonTheGame', t)}! 🎉🎉🎉`}
+                    topText={`🎉🎉🎉 ${playersSorted[0]?.name ?? translateCommon('someone', t)} ${translateCommon('wonTheGame', t)}! 🎉🎉🎉`}
                     description={`${translateCommon('theWinnerCardsOfThisGame', t)}:`}
                     preRenderedCards={sortedWinnerCards}
                 />
