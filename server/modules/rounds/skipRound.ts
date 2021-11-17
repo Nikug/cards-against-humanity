@@ -11,11 +11,13 @@ import {
 
 import { appointNextCardCzar } from "../players/cardCzar";
 import { changeGameStateAfterTime } from "../utilities/delayedStateChange";
+import { endGame } from "../games/endGame";
 import { gameOptions } from "../../consts/gameSettings";
 import { setGame } from "../games/gameUtil";
 import { setPlayersWaiting } from "../players/setPlayers";
 import { shuffleCardsBackToDeck } from "../cards/shuffleCards";
 import { updatePlayersIndividually } from "../players/emitPlayers";
+import { validateGameEnding } from "../utilities/validate";
 
 export const skipRound = async (
     io: SocketIO.Server,
@@ -23,6 +25,11 @@ export const skipRound = async (
     newCardCzar: CAH.Player,
     client?: pg.PoolClient
 ) => {
+    if (game.stateMachine.state === "roundEnd" && validateGameEnding(game)) {
+        await endGame(io, game, client);
+        return;
+    }
+
     const newGame = replenishWhiteCards(game);
 
     newGame.stateMachine.skipRound();
