@@ -488,4 +488,30 @@ describe("Disconnect", () => {
         expect(game.players[0].name).toBe("host");
         expect(game.players[1].name).toBe("random");
     });
+
+    it("stays in game over screen if card czar leaves", async () => {
+        const mockSet = mockSetGame();
+        const newGame = newGameTemplate(mockGameId);
+
+        const host = createPlayer("host", true);
+        const cardCzar = createPlayer("cardCzar", false, true);
+        const random = createPlayer("random");
+        cardCzar.sockets = [mockSocketId];
+
+        newGame.players = [host, cardCzar, random];
+        newGame.stateMachine.jumpTo("gameOver");
+
+        mockGetGame(newGame);
+
+        mockFindGameAndPlayerBySocket(newGame, cardCzar);
+
+        await setPlayerDisconnected(ioMock, mockSocketId, true, pgClientMock);
+
+        expect(mockSet).toHaveBeenCalledTimes(1);
+        const game: Game = await mockSet.mock.results[0].value;
+        expect(game.stateMachine.state).toBe("gameOver");
+        expect(game.players).toHaveLength(2);
+        expect(game.players[0].name).toBe("host");
+        expect(game.players[1].name).toBe("random");
+    });
 });
