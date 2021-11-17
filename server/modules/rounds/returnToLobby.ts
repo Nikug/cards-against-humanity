@@ -14,7 +14,10 @@ import { updatePlayersIndividually } from "../players/emitPlayers";
 import { validateHost } from "../utilities/validate";
 
 export const shouldReturnToLobby = (game: CAH.Game) => {
-    if (game.stateMachine.state !== "lobby") {
+    if (
+        game.stateMachine.state !== "lobby" &&
+        game.stateMachine.state !== "gameOver"
+    ) {
         const activePlayers = getActivePlayers(game.players);
         if (activePlayers.length < gameOptions.minimumPlayers) {
             return true;

@@ -134,7 +134,7 @@ export const handlePlayerLeaving = async (
         return;
     }
 
-    if (player.isCardCzar) {
+    if (player.isCardCzar && game.stateMachine.state !== "gameOver") {
         handleCardCzarLeaving(io, game, player, shouldPunishCardCzar, client);
         return;
     }

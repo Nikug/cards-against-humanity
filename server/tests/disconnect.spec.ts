@@ -404,4 +404,114 @@ describe("Disconnect", () => {
         expect(game.players).toHaveLength(2);
         expect(game.stateMachine.state).toBe("lobby");
     });
+
+    it("goes to game over from round end if cardczar disconnects and score limit has been reached", async () => {
+        const mockSet = mockSetGame();
+        const newGame = newGameTemplate(mockGameId);
+
+        const host = createPlayer("host", true);
+        const cardCzar = createPlayer("cardCzar", false, true);
+        const random = createPlayer("random");
+        cardCzar.sockets = [mockSocketId];
+        host.score = 2;
+        newGame.client.options.winConditions.scoreLimit = 2;
+
+        newGame.players = [host, cardCzar, random];
+        newGame.stateMachine.jumpTo("roundEnd");
+
+        mockGetGame(newGame);
+
+        mockFindGameAndPlayerBySocket(newGame, cardCzar);
+
+        await setPlayerDisconnected(ioMock, mockSocketId, false, pgClientMock);
+
+        expect(mockSet).toHaveBeenCalledTimes(1);
+        const game: Game = await mockSet.mock.results[0].value;
+        expect(game.stateMachine.state).toBe("gameOver");
+        expect(game.players).toHaveLength(3);
+        expect(game.players[1].state).toBe("disconnected");
+        expect(game.players[1].name).toBe("cardCzar");
+    });
+
+    it("goes to game over from round end if cardczar leaves and score limit has been reached", async () => {
+        const mockSet = mockSetGame();
+        const newGame = newGameTemplate(mockGameId);
+
+        const host = createPlayer("host", true);
+        const cardCzar = createPlayer("cardCzar", false, true);
+        const random = createPlayer("random");
+        cardCzar.sockets = [mockSocketId];
+        host.score = 2;
+        newGame.client.options.winConditions.scoreLimit = 2;
+
+        newGame.players = [host, cardCzar, random];
+        newGame.stateMachine.jumpTo("roundEnd");
+
+        mockGetGame(newGame);
+
+        mockFindGameAndPlayerBySocket(newGame, cardCzar);
+
+        await setPlayerDisconnected(ioMock, mockSocketId, true, pgClientMock);
+
+        expect(mockSet).toHaveBeenCalledTimes(1);
+        const game: Game = await mockSet.mock.results[0].value;
+        expect(game.stateMachine.state).toBe("gameOver");
+        expect(game.players).toHaveLength(2);
+        expect(game.players[0].name).toBe("host");
+        expect(game.players[1].name).toBe("random");
+    });
+
+    it("doesn't go to game over from round end if cardczar leaves and score limit has not been reached", async () => {
+        const mockSet = mockSetGame();
+        const newGame = newGameTemplate(mockGameId);
+
+        const host = createPlayer("host", true);
+        const cardCzar = createPlayer("cardCzar", false, true);
+        const random = createPlayer("random");
+        cardCzar.sockets = [mockSocketId];
+        host.score = 2;
+        newGame.client.options.winConditions.scoreLimit = 5;
+
+        newGame.players = [host, cardCzar, random];
+        newGame.stateMachine.jumpTo("roundEnd");
+
+        mockGetGame(newGame);
+
+        mockFindGameAndPlayerBySocket(newGame, cardCzar);
+
+        await setPlayerDisconnected(ioMock, mockSocketId, true, pgClientMock);
+
+        expect(mockSet).toHaveBeenCalledTimes(1);
+        const game: Game = await mockSet.mock.results[0].value;
+        expect(game.stateMachine.state).toBe("pickingBlackCard");
+        expect(game.players).toHaveLength(2);
+        expect(game.players[0].name).toBe("host");
+        expect(game.players[1].name).toBe("random");
+    });
+
+    it("stays in game over screen if card czar leaves", async () => {
+        const mockSet = mockSetGame();
+        const newGame = newGameTemplate(mockGameId);
+
+        const host = createPlayer("host", true);
+        const cardCzar = createPlayer("cardCzar", false, true);
+        const random = createPlayer("random");
+        cardCzar.sockets = [mockSocketId];
+
+        newGame.players = [host, cardCzar, random];
+        newGame.stateMachine.jumpTo("gameOver");
+
+        mockGetGame(newGame);
+
+        mockFindGameAndPlayerBySocket(newGame, cardCzar);
+
+        await setPlayerDisconnected(ioMock, mockSocketId, true, pgClientMock);
+
+        expect(mockSet).toHaveBeenCalledTimes(1);
+        const game: Game = await mockSet.mock.results[0].value;
+        expect(game.stateMachine.state).toBe("gameOver");
+        expect(game.players).toHaveLength(2);
+        expect(game.players[0].name).toBe("host");
+        expect(game.players[1].name).toBe("random");
+    });
 });
