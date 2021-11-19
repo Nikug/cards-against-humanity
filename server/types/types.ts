@@ -226,7 +226,8 @@ export type PlayerState =
     | "joining"
     | "pickingName"
     | "disconnected"
-    | "spectating";
+    | "spectating"
+    | "leaving";
 
 export type NotificationType = "default" | "error" | "success";
 export type NotificationTypes = { [key: string]: NotificationType };

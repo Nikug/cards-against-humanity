@@ -107,7 +107,10 @@ export const getAllActivePlayers = (players: CAH.Player[]) =>
     );
 
 export const getAllButDisconnectedPlayers = (players: CAH.Player[]) =>
-    players.filter((player) => player.state !== "disconnected");
+    players.filter(
+        (player) =>
+            player.state !== "disconnected" && player.state !== "leaving"
+    );
 
 export const getPlayerByWhiteCards = (
     game: CAH.Game,
@@ -115,7 +118,7 @@ export const getPlayerByWhiteCards = (
 ) => {
     if (!game.currentRound) return undefined;
 
-    const players = game.currentRound.whiteCardsByPlayer.filter(
+    const player = game.currentRound.whiteCardsByPlayer.find(
         (whiteCardByPlayer) => {
             if (whiteCardIDs.length !== whiteCardByPlayer.whiteCards.length)
                 return false;
@@ -129,5 +132,5 @@ export const getPlayerByWhiteCards = (
 
     // There should always be exactly one player
     // No more, no less
-    return players.length === 1 ? players[0].playerID : undefined;
+    return player?.playerID;
 };

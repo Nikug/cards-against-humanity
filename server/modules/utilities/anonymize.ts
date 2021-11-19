@@ -53,7 +53,10 @@ export const publicPlayersObject = (
     players: CAH.Player[],
     playerID: string
 ) => {
-    return players?.map((player) => {
+    var filteredPlayers = players.filter(
+        (player) => player.state !== "leaving"
+    );
+    return filteredPlayers?.map((player) => {
         const { id, sockets, whiteCards, popularVoteScore, ...rest } = player;
         if (player.id === playerID) {
             return { id: playerID, ...rest };
