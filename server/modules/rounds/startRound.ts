@@ -80,7 +80,10 @@ export const startNewRound = async (
     updatePlayersIndividually(io, game);
 };
 
-const removeLeavingPlayers = (io: SocketIO.Server, players: CAH.Player[]) => {
+export const removeLeavingPlayers = (
+    io: SocketIO.Server,
+    players: CAH.Player[]
+) => {
     return players.filter((player) => {
         if (player.state === "leaving") {
             player.sockets.map((socket: string) => {

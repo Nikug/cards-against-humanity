@@ -54,7 +54,7 @@ describe("Disconnect", () => {
         expect(game.stateMachine.state).toBe("lobby");
     });
 
-    it("allows player to leave from game", async () => {
+    it("allows player to leave from game in lobby", async () => {
         const mockSet = mockSetGame();
         const newGame = newGameTemplate(mockGameId);
         const playerToDisconnect = createPlayer("disconnect");
@@ -74,6 +74,53 @@ describe("Disconnect", () => {
         expect(game.players.length).toBe(2);
         expect(game.players[2]).toBe(undefined);
         expect(game.stateMachine.state).toBe("lobby");
+    });
+
+    it("allows player to leave from game in game over", async () => {
+        const mockSet = mockSetGame();
+        const newGame = newGameTemplate(mockGameId);
+        newGame.stateMachine.jumpTo("gameOver");
+        const playerToDisconnect = createPlayer("disconnect");
+        playerToDisconnect.sockets = [mockSocketId];
+        newGame.players = [
+            createPlayer("host", true),
+            createPlayer("random"),
+            playerToDisconnect,
+        ];
+        mockGetGame(newGame);
+
+        mockFindGameAndPlayerBySocket(newGame, playerToDisconnect);
+
+        await setPlayerDisconnected(ioMock, mockSocketId, true, pgClientMock);
+        expect(mockSet).toHaveBeenCalledTimes(1);
+        const game: Game = await mockSet.mock.results[0].value;
+        expect(game.players.length).toBe(2);
+        expect(game.players[2]).toBe(undefined);
+        expect(game.stateMachine.state).toBe("gameOver");
+    });
+
+    it("allows player to leave from game in some active state", async () => {
+        const mockSet = mockSetGame();
+        const newGame = newGameTemplate(mockGameId);
+        newGame.stateMachine.jumpTo("playingWhiteCards");
+        const playerToDisconnect = createPlayer("disconnect");
+        playerToDisconnect.sockets = [mockSocketId];
+        newGame.players = [
+            createPlayer("host", true),
+            createPlayer("random"),
+            playerToDisconnect,
+        ];
+        mockGetGame(newGame);
+
+        mockFindGameAndPlayerBySocket(newGame, playerToDisconnect);
+
+        await setPlayerDisconnected(ioMock, mockSocketId, true, pgClientMock);
+        expect(mockSet).toHaveBeenCalledTimes(1);
+        const game: Game = await mockSet.mock.results[0].value;
+        expect(game.players).toHaveLength(3);
+        expect(game.players[2].state).toBe("leaving");
+        expect(game.players[2].name).toBe("disconnect");
+        expect(game.stateMachine.state).toBe("playingWhiteCards");
     });
 
     it("removes game after a delay if last player disconnects", async () => {
@@ -268,7 +315,11 @@ describe("Disconnect", () => {
         expect(mockSet).toHaveBeenCalledTimes(1);
         const game: Game = await mockSet.mock.results[0].value;
         expect(game.stateMachine.state).toBe("readingCards");
-        expect(game.players.length).toBe(2);
+        expect(game.players).toHaveLength(3);
+        expect(game.players[0].name).toBe("host");
+        expect(game.players[1].name).toBe("random 2");
+        expect(game.players[2].name).toBe("disconnect");
+        expect(game.players[2].state).toBe("leaving");
     });
 
     it("returns to lobby if there are not enough players due to player disconnecting", async () => {
@@ -378,7 +429,7 @@ describe("Disconnect", () => {
         expect(mockSet).toHaveBeenCalledTimes(1);
         const game: Game = await mockSet.mock.results[0].value;
         expect(game.stateMachine.state).toBe("pickingBlackCard");
-        expect(game.players.length).toBe(2);
+        expect(game.players).toHaveLength(2);
         expect(game.players[0].isCardCzar).toBe(true);
         expect(game.players[1].state).toBe("waiting");
     });
@@ -456,9 +507,11 @@ describe("Disconnect", () => {
         expect(mockSet).toHaveBeenCalledTimes(1);
         const game: Game = await mockSet.mock.results[0].value;
         expect(game.stateMachine.state).toBe("gameOver");
-        expect(game.players).toHaveLength(2);
+        expect(game.players).toHaveLength(3);
         expect(game.players[0].name).toBe("host");
-        expect(game.players[1].name).toBe("random");
+        expect(game.players[1].name).toBe("cardCzar");
+        expect(game.players[1].state).toBe("leaving");
+        expect(game.players[2].name).toBe("random");
     });
 
     it("doesn't go to game over from round end if cardczar leaves and score limit has not been reached", async () => {
