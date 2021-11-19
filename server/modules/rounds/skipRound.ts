@@ -13,6 +13,7 @@ import { appointNextCardCzar } from "../players/cardCzar";
 import { changeGameStateAfterTime } from "../utilities/delayedStateChange";
 import { endGame } from "../games/endGame";
 import { gameOptions } from "../../consts/gameSettings";
+import { returnToLobby } from "./returnToLobby";
 import { setGame } from "../games/gameUtil";
 import { setPlayersWaiting } from "../players/setPlayers";
 import { shuffleCardsBackToDeck } from "../cards/shuffleCards";
@@ -83,5 +84,9 @@ export const restartRound = async (
     game.players = appointNextCardCzar(game, cardCzar.id);
     const nextCardCzar = getCardCzar(game.players);
 
-    await skipRound(io, game, nextCardCzar!, client);
+    if (!nextCardCzar) {
+        returnToLobby(io, game, client);
+        return;
+    }
+    await skipRound(io, game, nextCardCzar, client);
 };

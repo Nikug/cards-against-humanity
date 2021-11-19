@@ -142,7 +142,7 @@ export const findGameByPlayerID = async (
 export const shouldGameBeDeleted = (game: CAH.Game) => {
     if (game.stateMachine.state === "lobby") {
         return game.players.every((player) =>
-            ["disconnected", "spectating"].includes(player.state)
+            ["disconnected", "leaving", "spectating"].includes(player.state)
         );
     } else {
         return false;
