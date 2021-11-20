@@ -11,7 +11,10 @@ const resetPlayerState = (player: CAH.Player) => {
 };
 
 export const resetPlayers = (players: CAH.Player[]): CAH.Player[] => {
-    return players.map((player) => ({
+    const filteredPlayers = players.filter(
+        (player) => player.state !== "leaving"
+    );
+    return filteredPlayers.map((player) => ({
         ...player,
         score: 0,
         state: resetPlayerState(player),

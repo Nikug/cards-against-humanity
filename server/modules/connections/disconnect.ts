@@ -59,12 +59,20 @@ export const setPlayerDisconnected = async (
     }
 
     if (shouldRemove || player.state === "spectating") {
-        game.players = game.players.filter(
-            (gamePlayer: CAH.Player) => gamePlayer.id !== player.id
-        );
-        player.sockets.map((socket: string) => {
-            closeSocketWithID(io, socket);
-        });
+        player.sockets.map((socket) => closeSocketWithID(io, socket));
+
+        if (
+            game.stateMachine.state === "lobby" ||
+            game.stateMachine.state === "gameOver"
+        ) {
+            game.players = game.players.filter(
+                (gamePlayer) => gamePlayer.id !== player.id
+            );
+        } else {
+            player.state = "leaving";
+            player.sockets = [];
+            game.players = setPlayer(game.players, player);
+        }
     } else {
         player.state = "disconnected";
         player.sockets = remainingSockets;

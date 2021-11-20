@@ -3,6 +3,7 @@ import * as SocketIO from "socket.io";
 import * as pg from "pg";
 
 import { ERROR_TYPES, NOTIFICATION_TYPES } from "../../consts/error";
+import { closeSocketWithID, sendNotification } from "../utilities/socket";
 import { dealBlackCards, replenishWhiteCards } from "../cards/drawCards";
 import { getGame, setGame } from "../games/gameUtil";
 import { validateCardCzar, validateGameEnding } from "../utilities/validate";
@@ -11,7 +12,6 @@ import { appointNextCardCzar } from "../players/cardCzar";
 import { changeGameStateAfterTime } from "../utilities/delayedStateChange";
 import { endGame } from "../games/endGame";
 import { getRoundWinner } from "../players/playerUtil";
-import { sendNotification } from "../utilities/socket";
 import { setPlayersWaiting } from "../players/setPlayers";
 import { setPopularVoteLeader } from "../cards/popularVote";
 import { updatePlayersIndividually } from "../players/emitPlayers";
@@ -36,6 +36,8 @@ export const startNewRound = async (
         }
         return;
     }
+
+    game.players = removeLeavingPlayers(io, game.players);
 
     if (validateGameEnding(game)) {
         await endGame(io, game, client);
@@ -76,4 +78,19 @@ export const startNewRound = async (
     game = changeGameStateAfterTime(io, game, "startPlayingWhiteCards");
     await setGame(game, client);
     updatePlayersIndividually(io, game);
+};
+
+export const removeLeavingPlayers = (
+    io: SocketIO.Server,
+    players: CAH.Player[]
+) => {
+    return players.filter((player) => {
+        if (player.state === "leaving") {
+            player.sockets.map((socket: string) => {
+                closeSocketWithID(io, socket);
+            });
+            return false;
+        }
+        return true;
+    });
 };

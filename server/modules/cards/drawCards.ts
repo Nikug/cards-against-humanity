@@ -34,7 +34,8 @@ export const replenishWhiteCards = (
 ) => {
     for (let i = 0, limit = game.players.length; i < limit; i++) {
         const player = game.players[i];
-        if (!["active", "playing", "waiting"].includes(player.state)) continue;
+        if (!["active", "playing", "waiting", "joining"].includes(player.state))
+            continue;
 
         const missingCards =
             gameOptions.startingWhiteCardCount - player.whiteCards.length;

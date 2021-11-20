@@ -416,4 +416,62 @@ describe("Start New Round", () => {
         const game: Game = await mockSet.mock.results[0].value;
         expect(game.stateMachine.state).toBe("gameOver");
     });
+
+    it("removes leaving players when new round starts", async () => {
+        const mockSet = mockSetGame();
+        const newGame = newGameTemplate(mockGameId);
+
+        const whiteCards = createWhiteCards(100);
+
+        const winner = createPlayer("winner");
+        winner.state = "leaving";
+        winner.whiteCards = whiteCards.splice(0, 10);
+        const host = createPlayer("host", true);
+        host.whiteCards = whiteCards.splice(0, 10);
+        const cardCzar = createPlayer("cardCzar", false, true);
+        cardCzar.whiteCards = whiteCards.splice(0, 10);
+
+        newGame.players = [host, cardCzar, winner];
+        newGame.stateMachine.jumpTo("roundEnd");
+        newGame.cards.whiteCards = whiteCards;
+
+        newGame.currentRound = createRound("cardCzar", createBlackCard(2));
+        newGame.currentRound.whiteCardsByPlayer = [
+            createWhiteCardsByPlayer(winner.id, winner.whiteCards.splice(0, 2)),
+            createWhiteCardsByPlayer(host.id, host.whiteCards.splice(0, 2)),
+            createWhiteCardsByPlayer(cardCzar.id, cardCzar.whiteCards),
+        ];
+
+        mockGetGame(newGame);
+
+        await startNewRound(
+            ioMock,
+            socketMock,
+            mockGameId,
+            "cardCzar",
+            pgClientMock
+        );
+
+        expect(mockSet).toHaveBeenCalledTimes(1);
+        const game: Game = await mockSet.mock.results[0].value;
+        expect(game.stateMachine.state).toBe("pickingBlackCard");
+
+        expect(game.players).toHaveLength(2);
+        expect(game.players[0].isCardCzar).toBe(true);
+        expect(game.players[1].isCardCzar).toBe(false);
+
+        expect(game.players[0].name).toBe("host");
+        expect(game.players[1].name).toBe("cardCzar");
+
+        expect(game.players[0].state).toBe("playing");
+        expect(game.players[1].state).toBe("waiting");
+
+        expect(
+            game.players.every(
+                (player) =>
+                    player.whiteCards.length ===
+                    gameOptions.startingWhiteCardCount
+            )
+        ).toBe(true);
+    });
 });
