@@ -130,7 +130,5 @@ export const getPlayerByWhiteCards = (
         }
     );
 
-    // There should always be exactly one player
-    // No more, no less
     return player?.playerID;
 };
