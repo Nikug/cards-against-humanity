@@ -98,6 +98,12 @@
             > .draw-and-play {
                 font-size: 0.6rem;
             }
+
+            .cardpackid {
+                @include mobile-only {
+                    display: none;
+                }
+            }
         }
 
         .popularvote-btn {

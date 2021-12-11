@@ -75,9 +75,7 @@ export const Card = ({
                     )} */}
                     {playerName && <span className="draw-and-play">{playerName}</span>}
                     <span>&nbsp;</span>
-                    {!isNullOrUndefined(cardPackID) && isNullOrUndefined(popularVoteScore) && !Array.isArray(cardPackID) && (
-                        <span className="cardpackid">{cardPackID}</span>
-                    )}
+                    {!isNullOrUndefined(cardPackID) && !Array.isArray(cardPackID) && <span className="cardpackid">{cardPackID}</span>}
                     {showPopularVote && isNullOrUndefined(popularVoteScore) && !isNullOrUndefined(cardPackID) && Array.isArray(cardPackID) && (
                         <span className="popularvote-btn">
                             <Icon
