@@ -287,7 +287,7 @@ export const GameSettings = ({ disabled }) => {
             </div>
             <div className="settings-block divider">
                 <GameSettingsHeader keyword={'cardDecks'} />
-                <GameSettingsInfo keyword={'cardDeckInstructions'} link={'https://allbad.cards/packs'} />
+                <GameSettingsInfo keyword={'cardDeckInstructions'} link={'https://allbad.cards/custom-packs'} />
                 <Setting
                     DEV_CARD_PACK_AUTOFILL={false}
                     text={translateCommon('addCardDeck', t)}
