@@ -1,38 +1,39 @@
 version: "3.9"
 services:
-    db:
-        image: postgres
-        restart: always
-        environment:
-            POSTGRES_PASSWORD: "${POSTGRES_PASSWORD}"
-            POSTGRES_USER: "${POSTGRES_USER}"
-            POSTGRES_DB: "${POSTGRES_DB}"
-        networks:
-            - db-network
+  db:
+    image: postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_PASSWORD: "${POSTGRES_PASSWORD}"
+      POSTGRES_USER: "${POSTGRES_USER}"
+      POSTGRES_DB: "${POSTGRES_DB}"
+    networks:
+      - db-network
 
-    full-stack:
-        build: .
-        image: cardsagainsthumanity-full-stack
-        depends_on:
-            - "db"
-        labels:
-            - "traefik.enable=true"
-            - "traefik.http.routers.cah.rule=Host(`pelit.space`) || Host(`www.pelit.space`)"
-            - "traefik.http.routers.cah.entrypoints=web,websecure"
-            - "traefik.http.routers.cah.tls=true"
-            - "traefik.http.routers.cah.tls.certresolver=lets-encrypt"
-            - "traefik.port=4000"
-            - "traefik.docker.network=traefik_default"
-            - "traefik.http.middlewares.web-www-https-redirect.redirectregex.regex=^https?://www\\.pelit\\.space/(.*)"
-            - "traefik.http.middlewares.web-www-https-redirect.redirectregex.replacement=https://pelit.space/$${1}"
-            - "traefik.http.routers.web.middlewares=web-www-https-redirect"
-        networks:
-            - db-network
-            - traefik_default
+  full-stack:
+    build: .
+    restart: unless-stopped
+    image: cardsagainsthumanity-full-stack
+    depends_on:
+      - "db"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.cah.rule=Host(`pelit.space`) || Host(`www.pelit.space`)"
+      - "traefik.http.routers.cah.entrypoints=web,websecure"
+      - "traefik.http.routers.cah.tls=true"
+      - "traefik.http.routers.cah.tls.certresolver=lets-encrypt"
+      - "traefik.port=4000"
+      - "traefik.docker.network=traefik_default"
+      - "traefik.http.middlewares.web-www-https-redirect.redirectregex.regex=^https?://www\\.pelit\\.space/(.*)"
+      - "traefik.http.middlewares.web-www-https-redirect.redirectregex.replacement=https://pelit.space/$${1}"
+      - "traefik.http.routers.web.middlewares=web-www-https-redirect"
+    networks:
+      - db-network
+      - traefik_default
 
 networks:
-    traefik_default:
-        driver: bridge
-        external: true
-    db-network:
-        driver: bridge
+  traefik_default:
+    driver: bridge
+    external: true
+  db-network:
+    driver: bridge
