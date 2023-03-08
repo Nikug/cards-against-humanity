@@ -68,10 +68,10 @@ const processCardPack = (apiPack: CAH.ApiCardPack) => {
     }
 
     const whiteCards = apiPack.definition.white.map(
-        (item: string, i: number) => ({
+        (item: CAH.ApiWhiteCard, i: number) => ({
             id: `w-${apiPack.id}-${i.toString()}`,
             cardPackID: apiPack.id,
-            text: item,
+            text: item.content,
         })
     );
     const blackCards = apiPack.definition.black.map(

@@ -169,6 +169,10 @@ export interface Notification {
     time?: number; // seconds
 }
 
+export interface ApiWhiteCard {
+    content: string;
+}
+
 export interface ApiBlackCard {
     pick: number;
     draw: number;
@@ -183,7 +187,7 @@ export interface ApiCardPack {
     dateCreated: string;
     dateUpdated: string;
     definition: {
-        white: string[];
+        white: ApiWhiteCard[];
         black: ApiBlackCard[];
         family: boolean;
         pack: {
